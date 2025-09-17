@@ -1,0 +1,88 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug API Gateway",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/services/api-gateway/src/index.ts",
+      "cwd": "${workspaceFolder}/services/api-gateway",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3000"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "restart": true,
+      "protocol": "inspector",
+      "runtimeArgs": ["-r", "ts-node/register"]
+    },
+    {
+      "name": "Debug Meeting Intelligence",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/services/meeting-intelligence/main.py",
+      "cwd": "${workspaceFolder}/services/meeting-intelligence",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/services/meeting-intelligence"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Debug Content Creation",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/services/content-creation/main.py",
+      "cwd": "${workspaceFolder}/services/content-creation",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/services/content-creation"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "Debug Workflow Automation",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/services/workflow-automation/src/index.ts",
+      "cwd": "${workspaceFolder}/services/workflow-automation",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3005"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "restart": true,
+      "protocol": "inspector",
+      "runtimeArgs": ["-r", "ts-node/register"]
+    },
+    {
+      "name": "Debug All Services",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/package.json",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "runtimeArgs": ["run", "dev"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Microservices",
+      "configurations": [
+        "Debug API Gateway",
+        "Debug Meeting Intelligence",
+        "Debug Content Creation",
+        "Debug Workflow Automation"
+      ],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "Terraform Resource": {
+    "prefix": "tf-resource",
+    "body": [
+      "resource \"${1:resource_type}\" \"${2:resource_name}\" {",
+      "  ${3:configuration}",
+      "",
+      "  # Tags",
+      "  tags = {",
+      "    Name        = \"${4:name}\"",
+      "    Environment = var.environment",
+      "    Project     = var.project_name",
+      "    ManagedBy   = \"terraform\"",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Terraform resource with tags"
+  },
+  "Terraform Variable": {
+    "prefix": "tf-variable",
+    "body": [
+      "variable \"${1:variable_name}\" {",
+      "  description = \"${2:description}\"",
+      "  type        = ${3:string}",
+      "  default     = ${4:default_value}",
+      "",
+      "  validation {",
+      "    condition     = ${5:condition}",
+      "    error_message = \"${6:error_message}\"",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Terraform variable with validation"
+  },
+  "Terraform Output": {
+    "prefix": "tf-output",
+    "body": [
+      "output \"${1:output_name}\" {",
+      "  description = \"${2:description}\"",
+      "  value       = ${3:value}",
+      "  ${4:sensitive = true}",
+      "}"
+    ],
+    "description": "Create a Terraform output"
+  },
+  "Terraform Data Source": {
+    "prefix": "tf-data",
+    "body": [
+      "data \"${1:data_source}\" \"${2:data_name}\" {",
+      "  ${3:configuration}",
+      "}",
+      "",
+      "output \"${2:data_name}_${4:attribute}\" {",
+      "  description = \"${5:description}\"",
+      "  value       = data.${1:data_source}.${2:data_name}.${4:attribute}",
+      "}"
+    ],
+    "description": "Create a Terraform data source with output"
+  },
+  "Terraform Module": {
+    "prefix": "tf-module",
+    "body": [
+      "module \"${1:module_name}\" {",
+      "  source = \"${2:module_source}\"",
+      "",
+      "  # Module variables",
+      "  ${3:variables}",
+      "",
+      "  # Tags",
+      "  tags = {",
+      "    Name        = \"${4:name}\"",
+      "    Environment = var.environment",
+      "    Project     = var.project_name",
+      "    ManagedBy   = \"terraform\"",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Terraform module"
+  },
+  "Terraform Local": {
+    "prefix": "tf-local",
+    "body": [
+      "locals {",
+      "  ${1:local_name} = ${2:value}",
+      "  ",
+      "  # Common tags",
+      "  common_tags = {",
+      "    Environment = var.environment",
+      "    Project     = var.project_name",
+      "    ManagedBy   = \"terraform\"",
+      "    CreatedAt   = timestamp()",
+      "  }",
+      "}"
+    ],
+    "description": "Create Terraform locals with common tags"
+  }
+}

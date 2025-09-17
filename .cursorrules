@@ -1,0 +1,471 @@
+# Qylon AI Automation Platform - Cursor Rules
+# Chief Architect: Bill (siwale)
+# Repository: https://github.com/KD-Squares/KDS-Development
+
+## 🎯 PROJECT OVERVIEW
+Qylon is an AI automation platform that transforms manual business processes into intelligent, self-running systems. This is a microservices architecture built on DigitalOcean + Supabase with 8 core services.
+
+## 🏗️ ARCHITECTURE PRINCIPLES
+
+### Core Architecture
+- **Microservices Pattern**: 8 independent services with clear boundaries
+- **Event-Driven**: Asynchronous communication via Supabase Realtime
+- **Cloud-Native**: DigitalOcean App Platform + Supabase Backend-as-a-Service
+- **Security-First**: Supabase Auth + Row Level Security (RLS)
+- **API-First**: RESTful APIs with OpenAPI documentation
+
+### Service Boundaries (DO NOT CROSS)
+```
+API Gateway (3000) → Routes to microservices
+├── User Management (3001) - Wilson's responsibility
+├── Client Management (3002) - Wilson's responsibility  
+├── Meeting Intelligence (3003) - Bill's responsibility
+├── Content Creation (3004) - Bill's responsibility
+├── Workflow Automation (3005) - Bill's responsibility
+├── Integration Management (3006) - Ayo's responsibility
+├── Notification Service (3007) - John's responsibility
+└── Analytics & Reporting (3008) - John's responsibility
+```
+
+## 🚫 CRITICAL ANTI-PATTERNS TO AVOID
+
+### 1. AI Code Generation Pitfalls
+- **NEVER** generate placeholder code or TODO comments
+- **NEVER** create mock data or fake implementations
+- **NEVER** generate code without proper error handling
+- **NEVER** create functions without input validation
+- **NEVER** generate code without proper logging
+- **NEVER** create database queries without parameterization
+- **NEVER** generate API endpoints without authentication
+- **NEVER** create components without accessibility considerations
+
+### 2. Code Editor Anti-Patterns
+- **NEVER** auto-import unused dependencies
+- **NEVER** generate code without TypeScript types
+- **NEVER** create files without proper exports
+- **NEVER** generate code without proper error boundaries
+- **NEVER** create components without proper state management
+- **NEVER** generate API calls without proper error handling
+- **NEVER** create database models without proper validation
+- **NEVER** generate code without proper testing considerations
+
+### 3. Architecture Violations
+- **NEVER** create direct database connections from frontend
+- **NEVER** bypass the API Gateway for service communication
+- **NEVER** create circular dependencies between services
+- **NEVER** hardcode configuration values
+- **NEVER** create services without proper health checks
+- **NEVER** generate code without proper environment variable handling
+- **NEVER** create APIs without proper rate limiting
+- **NEVER** generate code without proper security headers
+
+## ✅ MANDATORY CODE STANDARDS
+
+### TypeScript/JavaScript
+```typescript
+// ✅ CORRECT: Proper error handling with types
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  timestamp: string;
+}
+
+async function fetchData<T>(url: string): Promise<ApiResponse<T>> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return { success: true, data, timestamp: new Date().toISOString() };
+  } catch (error) {
+    logger.error('API call failed', { url, error: error.message });
+    return { 
+      success: false, 
+      error: error.message, 
+      timestamp: new Date().toISOString() 
+    };
+  }
+}
+
+// ❌ WRONG: No error handling, no types
+function fetchData(url) {
+  return fetch(url).then(res => res.json());
+}
+```
+
+### Python/FastAPI
+```python
+# ✅ CORRECT: Proper error handling with Pydantic models
+from pydantic import BaseModel, validator
+from fastapi import HTTPException, Depends
+import logging
+
+logger = logging.getLogger(__name__)
+
+class MeetingRequest(BaseModel):
+    title: str
+    client_id: str
+    start_time: datetime
+    
+    @validator('title')
+    def validate_title(cls, v):
+        if not v or len(v.strip()) < 3:
+            raise ValueError('Title must be at least 3 characters')
+        return v.strip()
+
+async def create_meeting(
+    meeting: MeetingRequest,
+    current_user: User = Depends(get_current_user)
+) -> MeetingResponse:
+    try:
+        # Validate client access
+        if not await has_client_access(current_user.id, meeting.client_id):
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        # Create meeting
+        meeting_data = await meeting_service.create_meeting(meeting, current_user.id)
+        logger.info("Meeting created", {"meeting_id": meeting_data.id})
+        return meeting_data
+        
+    except ValidationError as e:
+        logger.error("Validation error", {"error": str(e)})
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Meeting creation failed", {"error": str(e)})
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# ❌ WRONG: No validation, no error handling
+def create_meeting(title, client_id, start_time):
+    return db.meetings.insert({"title": title, "client_id": client_id})
+```
+
+### Database Operations
+```sql
+-- ✅ CORRECT: Parameterized queries with RLS
+CREATE POLICY "Users can view own meetings" ON meetings
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM clients 
+            WHERE id = meetings.client_id AND user_id = auth.uid()
+        )
+    );
+
+-- ❌ WRONG: No RLS, direct access
+SELECT * FROM meetings WHERE client_id = 'some-id';
+```
+
+## 🔒 SECURITY REQUIREMENTS
+
+### Authentication & Authorization
+- **ALWAYS** validate JWT tokens on every request
+- **ALWAYS** check user permissions before data access
+- **ALWAYS** use Row Level Security (RLS) policies
+- **ALWAYS** validate input data with proper schemas
+- **ALWAYS** use parameterized queries (no SQL injection)
+- **ALWAYS** implement proper CORS policies
+- **ALWAYS** use HTTPS in production
+- **ALWAYS** implement rate limiting
+
+### Environment Variables
+- **NEVER** commit environment variables to git
+- **ALWAYS** use environment-specific configuration
+- **ALWAYS** validate required environment variables on startup
+- **ALWAYS** use secure defaults for development
+
+## 📊 DATABASE PATTERNS
+
+### Supabase PostgreSQL
+```typescript
+// ✅ CORRECT: Proper Supabase client usage
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+async function getMeetingsForClient(clientId: string, userId: string) {
+  const { data, error } = await supabase
+    .from('meetings')
+    .select(`
+      id,
+      title,
+      start_time,
+      status,
+      clients!inner(user_id)
+    `)
+    .eq('client_id', clientId)
+    .eq('clients.user_id', userId)
+    .order('start_time', { ascending: false });
+
+  if (error) {
+    logger.error('Database query failed', { error: error.message });
+    throw new Error('Failed to fetch meetings');
+  }
+
+  return data;
+}
+```
+
+### MongoDB (Analytics)
+```python
+# ✅ CORRECT: Proper MongoDB operations
+from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo.errors import PyMongoError
+
+class AnalyticsService:
+    def __init__(self):
+        self.client = AsyncIOMotorClient(settings.MONGODB_URL)
+        self.db = self.client.qylon_analytics
+    
+    async def store_meeting_analytics(self, meeting_id: str, analytics: dict):
+        try:
+            result = await self.db.meeting_analytics.insert_one({
+                "meeting_id": meeting_id,
+                "analytics": analytics,
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            })
+            logger.info("Analytics stored", {"meeting_id": meeting_id})
+            return result.inserted_id
+        except PyMongoError as e:
+            logger.error("Failed to store analytics", {"error": str(e)})
+            raise
+```
+
+## 🧪 TESTING REQUIREMENTS
+
+### Unit Tests
+- **ALWAYS** write tests for business logic
+- **ALWAYS** mock external dependencies
+- **ALWAYS** test error conditions
+- **ALWAYS** test edge cases
+- **ALWAYS** maintain >80% code coverage
+
+### Integration Tests
+- **ALWAYS** test API endpoints
+- **ALWAYS** test database operations
+- **ALWAYS** test authentication flows
+- **ALWAYS** use test databases
+
+## 📝 LOGGING STANDARDS
+
+### Structured Logging
+```typescript
+// ✅ CORRECT: Structured logging with context
+logger.info('Meeting created', {
+  meetingId: meeting.id,
+  clientId: meeting.client_id,
+  userId: user.id,
+  duration: meeting.duration_minutes,
+  timestamp: new Date().toISOString()
+});
+
+// ❌ WRONG: Unstructured logging
+console.log('Meeting created');
+```
+
+## 🚀 DEPLOYMENT REQUIREMENTS
+
+### Docker
+- **ALWAYS** use multi-stage builds
+- **ALWAYS** run as non-root user
+- **ALWAYS** use specific version tags
+- **ALWAYS** include health checks
+- **ALWAYS** optimize image size
+
+### Environment Configuration
+- **ALWAYS** validate environment variables
+- **ALWAYS** use environment-specific configs
+- **ALWAYS** implement graceful shutdown
+- **ALWAYS** include proper error handling
+
+## 🔄 API DESIGN PATTERNS
+
+### RESTful APIs
+```typescript
+// ✅ CORRECT: Proper REST API design
+interface MeetingAPI {
+  // GET /api/v1/meetings - List meetings
+  listMeetings(filters?: MeetingFilters): Promise<Meeting[]>;
+  
+  // GET /api/v1/meetings/:id - Get specific meeting
+  getMeeting(id: string): Promise<Meeting>;
+  
+  // POST /api/v1/meetings - Create meeting
+  createMeeting(meeting: CreateMeetingRequest): Promise<Meeting>;
+  
+  // PUT /api/v1/meetings/:id - Update meeting
+  updateMeeting(id: string, updates: UpdateMeetingRequest): Promise<Meeting>;
+  
+  // DELETE /api/v1/meetings/:id - Delete meeting
+  deleteMeeting(id: string): Promise<void>;
+}
+```
+
+### Error Responses
+```typescript
+// ✅ CORRECT: Consistent error response format
+interface ErrorResponse {
+  error: string;
+  message: string;
+  details?: any;
+  timestamp: string;
+  requestId?: string;
+}
+
+// Example error responses
+const errors = {
+  400: { error: 'Bad Request', message: 'Invalid input data' },
+  401: { error: 'Unauthorized', message: 'Authentication required' },
+  403: { error: 'Forbidden', message: 'Insufficient permissions' },
+  404: { error: 'Not Found', message: 'Resource not found' },
+  500: { error: 'Internal Server Error', message: 'An unexpected error occurred' }
+};
+```
+
+## 🎨 FRONTEND PATTERNS
+
+### React Components
+```typescript
+// ✅ CORRECT: Proper React component with error handling
+interface MeetingCardProps {
+  meeting: Meeting;
+  onEdit: (meeting: Meeting) => void;
+  onDelete: (meetingId: string) => void;
+}
+
+export const MeetingCard: React.FC<MeetingCardProps> = ({ 
+  meeting, 
+  onEdit, 
+  onDelete 
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await onDelete(meeting.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete meeting');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (error) {
+    return <ErrorMessage message={error} onRetry={handleDelete} />;
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{meeting.title}</CardTitle>
+        <CardDescription>{meeting.description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>Start: {formatDate(meeting.start_time)}</p>
+        <p>Status: {meeting.status}</p>
+      </CardContent>
+      <CardFooter>
+        <Button onClick={() => onEdit(meeting)} disabled={isLoading}>
+          Edit
+        </Button>
+        <Button 
+          variant="destructive" 
+          onClick={handleDelete} 
+          disabled={isLoading}
+        >
+          {isLoading ? 'Deleting...' : 'Delete'}
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
+```
+
+## 🔧 DEVELOPMENT WORKFLOW
+
+### Git Workflow
+- **ALWAYS** create feature branches from main
+- **ALWAYS** write descriptive commit messages
+- **ALWAYS** run tests before committing
+- **ALWAYS** use conventional commit format
+- **NEVER** commit directly to main
+- **NEVER** commit sensitive data
+
+### Code Review Requirements
+- **ALWAYS** review for security vulnerabilities
+- **ALWAYS** check for proper error handling
+- **ALWAYS** verify input validation
+- **ALWAYS** ensure proper logging
+- **ALWAYS** check for performance issues
+- **ALWAYS** verify accessibility compliance
+
+## 📋 TEAM RESPONSIBILITIES
+
+### Bill (Chief Architect) - Core Services
+- Meeting Intelligence Service (3003)
+- Content Creation Service (3004) 
+- Workflow Automation Service (3005)
+- System Architecture & Infrastructure
+- Security Framework & Compliance
+
+### Wilson - User & Client Management
+- User Management Service (3001)
+- Client Management Service (3002)
+- User Onboarding & Registration
+
+### King - Frontend & UI
+- Dashboard Components
+- Meeting Intelligence UI
+- User Interface & Experience
+
+### Ayo - Integrations & Video Platforms
+- Integration Management Service (3006)
+- Video Platform Integrations
+- Real-time Communication
+
+### John - CRM & Communication
+- Notification Service (3007)
+- Analytics & Reporting Service (3008)
+- CRM Integrations
+
+### Favour - Design & UX
+- UI/UX Design System
+- Brand Guidelines
+- User Experience Optimization
+
+### Tekena - Quality & Infrastructure
+- Testing Framework
+- CI/CD Pipeline
+- Infrastructure Support
+
+## 🚨 CRITICAL REMINDERS
+
+1. **NEVER** generate code without proper error handling
+2. **NEVER** create APIs without authentication
+3. **NEVER** bypass the API Gateway
+4. **NEVER** commit environment variables
+5. **NEVER** create services without health checks
+6. **ALWAYS** validate input data
+7. **ALWAYS** use proper logging
+8. **ALWAYS** implement proper security
+9. **ALWAYS** write tests for new code
+10. **ALWAYS** follow the microservices boundaries
+
+## 📚 REFERENCE DOCUMENTS
+
+- **Technical Design**: `Qylon Technical Design Doc.md`
+- **Feature Assignment**: `Feature Work Assignment.md`
+- **Development Status**: `DEVELOPMENT_STATUS.md`
+- **API Documentation**: `docs/api/`
+- **Database Schema**: `database/schemas/`
+
+---
+
+**Remember**: This is a production system handling real user data. Every line of code must be secure, tested, and production-ready. When in doubt, ask for clarification rather than making assumptions.

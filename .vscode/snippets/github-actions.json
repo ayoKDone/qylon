@@ -1,0 +1,123 @@
+{
+  "GitHub Actions Workflow": {
+    "prefix": "gh-workflow",
+    "body": [
+      "name: ${1:Workflow Name}",
+      "",
+      "on:",
+      "  push:",
+      "    branches: [ main, develop ]",
+      "  pull_request:",
+      "    branches: [ main, develop ]",
+      "",
+      "env:",
+      "  NODE_VERSION: '20'",
+      "  PYTHON_VERSION: '3.11'",
+      "",
+      "jobs:",
+      "  ${2:job_name}:",
+      "    name: ${3:Job Description}",
+      "    runs-on: ubuntu-latest",
+      "    ",
+      "    steps:",
+      "      - name: Checkout code",
+      "        uses: actions/checkout@v4",
+      "        ",
+      "      - name: Setup Node.js",
+      "        uses: actions/setup-node@v4",
+      "        with:",
+      "          node-version: ${{ env.NODE_VERSION }}",
+      "          cache: 'npm'",
+      "        ",
+      "      - name: Setup Python",
+      "        uses: actions/setup-python@v4",
+      "        with:",
+      "          python-version: ${{ env.PYTHON_VERSION }}",
+      "        ",
+      "      - name: Install dependencies",
+      "        run: |",
+      "          npm ci",
+      "          python -m pip install --upgrade pip",
+      "          pip install -r requirements.txt",
+      "        ",
+      "      - name: Run tests",
+      "        run: npm test",
+      "        ",
+      "      - name: Run linting",
+      "        run: npm run lint"
+    ],
+    "description": "Create a GitHub Actions workflow"
+  },
+  "GitHub Actions Step": {
+    "prefix": "gh-step",
+    "body": [
+      "      - name: ${1:Step Name}",
+      "        ${2:uses|run}: ${3:action_or_command}",
+      "        ${4:with|env}:",
+      "          ${5:parameter}: ${6:value}",
+      "        ${7:if}: ${8:condition}"
+    ],
+    "description": "Create a GitHub Actions step"
+  },
+  "GitHub Actions Service": {
+    "prefix": "gh-service",
+    "body": [
+      "    services:",
+      "      ${1:service_name}:",
+      "        image: ${2:image}",
+      "        env:",
+      "          ${3:environment_variables}",
+      "        options: >-",
+      "          --health-cmd ${4:health_check}",
+      "          --health-interval 10s",
+      "          --health-timeout 5s",
+      "          --health-retries 5",
+      "        ports:",
+      "          - ${5:port_mapping}"
+    ],
+    "description": "Create a GitHub Actions service"
+  },
+  "GitHub Actions Matrix": {
+    "prefix": "gh-matrix",
+    "body": [
+      "    strategy:",
+      "      matrix:",
+      "        ${1:matrix_key}: [${2:values}]",
+      "        ${3:another_key}: [${4:values}]",
+      "      fail-fast: false",
+      "      max-parallel: 3"
+    ],
+    "description": "Create a GitHub Actions matrix strategy"
+  },
+  "GitHub Actions Cache": {
+    "prefix": "gh-cache",
+    "body": [
+      "      - name: Cache ${1:cache_name}",
+      "        uses: actions/cache@v3",
+      "        with:",
+      "          path: ${2:cache_path}",
+      "          key: ${{ runner.os }}-${3:cache_key}}-${{ hashFiles('${4:file_pattern}') }}",
+      "          restore-keys: |",
+      "            ${{ runner.os }}-${3:cache_key}}-"
+    ],
+    "description": "Create a GitHub Actions cache step"
+  },
+  "GitHub Actions Artifact": {
+    "prefix": "gh-artifact",
+    "body": [
+      "      - name: Upload ${1:artifact_name}",
+      "        uses: actions/upload-artifact@v3",
+      "        with:",
+      "          name: ${1:artifact_name}",
+      "          path: ${2:artifact_path}",
+      "          retention-days: ${3:7}",
+      "        ",
+      "      - name: Download ${1:artifact_name}",
+      "        uses: actions/download-artifact@v3",
+      "        with:",
+      "          name: ${1:artifact_name}",
+      "          path: ${4:download_path}"
+    ],
+    "description": "Create GitHub Actions artifact upload/download"
+  }
+}

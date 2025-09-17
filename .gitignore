@@ -11,15 +11,17 @@ venv/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Environment variables
+# Environment variables - CRITICAL: Never commit these to remote
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*
+!.env.example
 
-# IDE
-.vscode/
+# IDE - Allow VSCode configuration for team consistency
+# .vscode/
 .idea/
 *.swp
 *.swo
@@ -141,3 +143,40 @@ coverage/
 # Local development
 .local/
 local/
+
+# Documentation - Only allow specific docs to remote
+docs/
+!docs/architecture/
+!docs/api/
+!docs/deployment/
+*.md
+!README.md
+!Qylon Technical Design Doc.md
+!Feature Work Assignment.md
+!DEVELOPMENT_STATUS.md
+
+# Test files and scripts - Keep local only
+tests/
+test-results/
+coverage/
+*.test.js
+*.test.ts
+*.test.py
+*.spec.js
+*.spec.ts
+*.spec.py
+test-*.js
+test-*.ts
+test-*.py
+
+# Development scripts - Keep local only
+scripts/
+!scripts/setup/
+!scripts/deployment/
+
+# Logs and temporary files
+logs/
+*.log
+tmp/
+temp/
+.cache/

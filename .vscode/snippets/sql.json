@@ -1,0 +1,128 @@
+{
+  "Supabase Query": {
+    "prefix": "supabase-query",
+    "body": [
+      "const { data, error } = await supabase",
+      "  .from('${1:table_name}')",
+      "  .select('${2:columns}')",
+      "  .${3:condition}('${4:column}', ${5:value})",
+      "  .order('${6:order_column}', { ascending: ${7:true} })",
+      "  .limit(${8:limit});",
+      "",
+      "if (error) {",
+      "  logger.error('Database query failed', {",
+      "    error: error.message,",
+      "    table: '${1:table_name}',",
+      "    operation: '${9:operation}'",
+      "  });",
+      "  throw new Error('Database operation failed');",
+      "}",
+      "",
+      "return data;"
+    ],
+    "description": "Create a Supabase database query with error handling"
+  },
+  "RLS Policy": {
+    "prefix": "rls-policy",
+    "body": [
+      "-- Row Level Security Policy for ${1:table_name}",
+      "CREATE POLICY \"${2:policy_name}\" ON ${1:table_name}",
+      "    FOR ${3:operation} USING (",
+      "        ${4:condition}",
+      "    );",
+      "",
+      "-- Enable RLS on table",
+      "ALTER TABLE ${1:table_name} ENABLE ROW LEVEL SECURITY;"
+    ],
+    "description": "Create a Row Level Security policy"
+  },
+  "Database Index": {
+    "prefix": "db-index",
+    "body": [
+      "-- Performance index for ${1:table_name}",
+      "CREATE INDEX idx_${1:table_name}_${2:column_name} ON ${1:table_name}(${2:column_name});",
+      "",
+      "-- Composite index for multiple columns",
+      "CREATE INDEX idx_${1:table_name}_${3:composite_columns} ON ${1:table_name}(${4:column1}, ${5:column2});",
+      "",
+      "-- Partial index for filtered queries",
+      "CREATE INDEX idx_${1:table_name}_${6:filtered_column} ON ${1:table_name}(${6:filtered_column})",
+      "    WHERE ${7:filter_condition};"
+    ],
+    "description": "Create database indexes for performance optimization"
+  },
+  "Database Function": {
+    "prefix": "db-function",
+    "body": [
+      "CREATE OR REPLACE FUNCTION ${1:function_name}(${2:parameters})",
+      "RETURNS ${3:return_type} AS $$",
+      "BEGIN",
+      "    -- TODO: Implement function logic",
+      "    ",
+      "    ${4:function_body}",
+      "    ",
+      "    RETURN ${5:return_value};",
+      "END;",
+      "$$ LANGUAGE plpgsql;",
+      "",
+      "-- Grant permissions",
+      "GRANT EXECUTE ON FUNCTION ${1:function_name}(${2:parameters}) TO ${6:role};"
+    ],
+    "description": "Create a PostgreSQL function"
+  },
+  "Database Trigger": {
+    "prefix": "db-trigger",
+    "body": [
+      "-- Trigger function for ${1:table_name}",
+      "CREATE OR REPLACE FUNCTION ${2:trigger_function_name}()",
+      "RETURNS TRIGGER AS $$",
+      "BEGIN",
+      "    -- TODO: Implement trigger logic",
+      "    ",
+      "    ${3:trigger_body}",
+      "    ",
+      "    RETURN ${4:NEW|OLD};",
+      "END;",
+      "$$ LANGUAGE plpgsql;",
+      "",
+      "-- Create trigger",
+      "CREATE TRIGGER ${5:trigger_name}",
+      "    ${6:BEFORE|AFTER} ${7:INSERT|UPDATE|DELETE} ON ${1:table_name}",
+      "    FOR EACH ROW EXECUTE FUNCTION ${2:trigger_function_name}();"
+    ],
+    "description": "Create a database trigger with function"
+  },
+  "Migration Script": {
+    "prefix": "migration",
+    "body": [
+      "-- Migration: ${1:migration_name}",
+      "-- Date: ${2:date}",
+      "-- Description: ${3:description}",
+      "",
+      "-- Begin transaction",
+      "BEGIN;",
+      "",
+      "-- Create table if not exists",
+      "CREATE TABLE IF NOT EXISTS ${4:table_name} (",
+      "    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),",
+      "    ${5:columns}",
+      "    created_at TIMESTAMPTZ DEFAULT NOW(),",
+      "    updated_at TIMESTAMPTZ DEFAULT NOW()",
+      ");",
+      "",
+      "-- Create indexes",
+      "CREATE INDEX IF NOT EXISTS idx_${4:table_name}_created_at ON ${4:table_name}(created_at);",
+      "",
+      "-- Enable RLS",
+      "ALTER TABLE ${4:table_name} ENABLE ROW LEVEL SECURITY;",
+      "",
+      "-- Create RLS policies",
+      "CREATE POLICY \"${6:policy_name}\" ON ${4:table_name}",
+      "    FOR ALL USING (${7:condition});",
+      "",
+      "-- Commit transaction",
+      "COMMIT;"
+    ],
+    "description": "Create a database migration script"
+  }
+}
