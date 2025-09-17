@@ -154,6 +154,7 @@ docs/
 !Qylon Technical Design Doc.md
 !Feature Work Assignment.md
 !DEVELOPMENT_STATUS.md
+!AI_DEVELOPMENT_GUIDE.md
 
 # Test files and scripts - Keep local only
 tests/
