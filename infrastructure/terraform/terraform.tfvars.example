@@ -1,0 +1,52 @@
+# Qylon Infrastructure Configuration
+# Copy this file to terraform.tfvars and update the values
+
+# DigitalOcean API Token
+do_token = "your-digitalocean-api-token-here"
+
+# Project Configuration
+project_name = "qylon"
+environment  = "dev"  # dev, staging, prod
+region       = "nyc3"
+
+# Cluster Configuration
+node_count = 3
+node_size  = "s-2vcpu-4gb"
+
+# Database Configuration
+database_size = "db-s-2vcpu-4gb"
+redis_size    = "db-s-1vcpu-2gb"
+
+# Monitoring and Backups
+enable_monitoring      = true
+enable_backups         = true
+backup_retention_days  = 7
+
+# Maintenance Window
+maintenance_window_day  = "sunday"
+maintenance_window_hour = 4
+
+# Notifications
+notification_emails = [
+  "admin@qylon.ai",
+  "devops@qylon.ai"
+]
+
+# Tags
+tags = [
+  "qylon",
+  "microservices",
+  "ai-automation",
+  "kubernetes"
+]
+
+# Domain Configuration
+domain_name        = "qylon.ai"
+ssl_certificate_id = ""
+
+# Auto-scaling Configuration
+enable_auto_scaling = true
+min_nodes          = 2
+max_nodes          = 10
+cpu_threshold      = 80
+memory_threshold   = 80

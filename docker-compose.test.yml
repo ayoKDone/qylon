@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # Test PostgreSQL Database
+  postgres-test:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=qylon_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./database/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - qylon-test-network
+
+  # Test Redis Cache
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    networks:
+      - qylon-test-network
+
+  # Test MongoDB
+  mongodb-test:
+    image: mongo:7
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=qylon_test
+    ports:
+      - "27018:27017"
+    networks:
+      - qylon-test-network
+
+  # API Gateway Test
+  api-gateway-test:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
+      - REDIS_URL=redis://redis-test:6379
+      - JWT_SECRET=test-jwt-secret
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - qylon-test-network
+
+  # Meeting Intelligence Test
+  meeting-intelligence-test:
+    build:
+      context: ./services/meeting-intelligence
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - PORT=3003
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
+      - REDIS_URL=redis://redis-test:6379
+      - OPENAI_API_KEY=test-openai-key
+      - RECALL_AI_API_KEY=test-recall-key
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - qylon-test-network
+
+  # Content Creation Test
+  content-creation-test:
+    build:
+      context: ./services/content-creation
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - PORT=3004
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
+      - REDIS_URL=redis://redis-test:6379
+      - OPENAI_API_KEY=test-openai-key
+      - ANTHROPIC_API_KEY=test-anthropic-key
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - qylon-test-network
+
+  # Workflow Automation Test
+  workflow-automation-test:
+    build:
+      context: ./services/workflow-automation
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=test
+      - PORT=3005
+      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
+      - REDIS_URL=redis://redis-test:6379
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - qylon-test-network
+
+networks:
+  qylon-test-network:
+    driver: bridge
