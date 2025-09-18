@@ -1,7 +1,7 @@
-import { Router, Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '../../utils/logger';
+import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -31,10 +31,10 @@ router.get('/policies/:table', asyncHandler(async (req: Request, res: Response):
       .rpc('get_table_policies', { table_name: table });
 
     if (error) {
-      logger.error('Failed to get RLS policies', { 
-        table, 
-        userId, 
-        error: error.message 
+      logger.error('Failed to get RLS policies', {
+        table,
+        userId,
+        error: error.message
       });
       res.status(500).json({
         error: 'Internal Server Error',
@@ -54,8 +54,8 @@ router.get('/policies/:table', asyncHandler(async (req: Request, res: Response):
     });
 
   } catch (error) {
-    logger.error('RLS policies error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('RLS policies error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -88,17 +88,17 @@ router.post('/test/:table', asyncHandler(async (req: Request, res: Response): Pr
 
     // Test access to the record
     const { data, error } = await supabase
-      .from(table)
+      .from(table!)
       .select('*')
       .eq('id', recordId)
       .single();
 
     if (error) {
-      logger.warn('RLS policy test failed', { 
-        table, 
-        recordId, 
-        userId, 
-        error: error.message 
+      logger.warn('RLS policy test failed', {
+        table,
+        recordId,
+        userId,
+        error: error.message
       });
       res.status(403).json({
         error: 'Forbidden',
@@ -118,8 +118,8 @@ router.post('/test/:table', asyncHandler(async (req: Request, res: Response): Pr
     });
 
   } catch (error) {
-    logger.error('RLS policy test error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('RLS policy test error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -143,15 +143,15 @@ router.get('/accessible/:table', asyncHandler(async (req: Request, res: Response
 
     // Get records accessible to the user
     const { data, error, count } = await supabase
-      .from(table)
+      .from(table!)
       .select('*', { count: 'exact' })
       .range(Number(offset), Number(offset) + Number(limit) - 1);
 
     if (error) {
-      logger.error('Failed to get accessible records', { 
-        table, 
-        userId, 
-        error: error.message 
+      logger.error('Failed to get accessible records', {
+        table,
+        userId,
+        error: error.message
       });
       res.status(500).json({
         error: 'Internal Server Error',
@@ -161,10 +161,10 @@ router.get('/accessible/:table', asyncHandler(async (req: Request, res: Response
       return;
     }
 
-    logger.info('Accessible records retrieved', { 
-      table, 
-      userId, 
-      count: data?.length || 0 
+    logger.info('Accessible records retrieved', {
+      table,
+      userId,
+      count: data?.length || 0
     });
 
     res.status(200).json({
@@ -178,8 +178,8 @@ router.get('/accessible/:table', asyncHandler(async (req: Request, res: Response
     });
 
   } catch (error) {
-    logger.error('Accessible records error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Accessible records error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -210,20 +210,20 @@ router.post('/validate', asyncHandler(async (req: Request, res: Response): Promi
     }
 
     // Validate RLS policy syntax
-    const { data, error } = await supabase
-      .rpc('validate_rls_policy', { 
+    const { error } = await supabase
+      .rpc('validate_rls_policy', {
         table_name: table,
         policy_name: policy,
         operation: operation
       });
 
     if (error) {
-      logger.warn('RLS policy validation failed', { 
-        table, 
-        policy, 
-        operation, 
-        userId, 
-        error: error.message 
+      logger.warn('RLS policy validation failed', {
+        table,
+        policy,
+        operation,
+        userId,
+        error: error.message
       });
       res.status(400).json({
         error: 'Bad Request',
@@ -234,11 +234,11 @@ router.post('/validate', asyncHandler(async (req: Request, res: Response): Promi
       return;
     }
 
-    logger.info('RLS policy validation successful', { 
-      table, 
-      policy, 
-      operation, 
-      userId 
+    logger.info('RLS policy validation successful', {
+      table,
+      policy,
+      operation,
+      userId
     });
 
     res.status(200).json({
@@ -251,8 +251,8 @@ router.post('/validate', asyncHandler(async (req: Request, res: Response): Promi
     });
 
   } catch (error) {
-    logger.error('RLS policy validation error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('RLS policy validation error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }

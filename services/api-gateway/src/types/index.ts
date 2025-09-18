@@ -1,4 +1,18 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+
+// Extend Express Request interface
+declare global {
+  namespace Express {
+    interface Request {
+      rateLimit?: {
+        limit: number;
+        current: number;
+        remaining: number;
+        resetTime: number;
+      };
+    }
+  }
+}
 
 // User types
 export interface User {
@@ -35,6 +49,7 @@ export interface JWTPayload {
 export interface AuthenticatedRequest extends Request {
   user?: User;
   token?: string;
+  requestId?: string;
 }
 
 // Service endpoints

@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import { logger } from '../../utils/logger';
+import logger from '../utils/logger';
 
 // Rate limiting configuration
 const createRateLimiter = (windowMs: number, max: number, message: string) => {
@@ -23,7 +23,7 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
         limit: max,
         windowMs
       });
-      
+
       res.status(429).json({
         error: 'Too Many Requests',
         message,
@@ -51,7 +51,7 @@ export const authRateLimiter = createRateLimiter(
 // User-specific rate limiter
 export const userRateLimiter = (req: Request, res: Response, next: NextFunction): void => {
   const userId = (req as any).user?.id;
-  
+
   if (!userId) {
     // Fall back to IP-based rate limiting for unauthenticated requests
     apiRateLimiter(req, res, next);

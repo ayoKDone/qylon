@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../../utils/logger';
+import { NextFunction, Request, Response } from 'express';
+import logger from '../utils/logger';
 
 interface ErrorResponse {
   error: string;
@@ -13,10 +13,10 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   const requestId = req.headers['x-request-id'] as string;
-  
+
   // Log the error
   logger.error('Unhandled error', {
     error: error.message,

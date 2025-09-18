@@ -1,20 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '../../utils/logger';
+import { NextFunction, Request, Response } from 'express';
+import logger from '../utils/logger';
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-interface JWTPayload {
-  sub: string;
-  email: string;
-  role: string;
-  iat: number;
-  exp: number;
-}
+// JWTPayload interface removed as it's not used in this implementation
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -39,8 +32,8 @@ export const authenticateToken = async (
         userAgent: req.get('User-Agent'),
         path: req.path
       });
-      res.status(401).json({ 
-        error: 'Unauthorized', 
+      res.status(401).json({
+        error: 'Unauthorized',
         message: 'Access token required',
         timestamp: new Date().toISOString()
       });
@@ -56,8 +49,8 @@ export const authenticateToken = async (
         ip: req.ip,
         path: req.path
       });
-      res.status(401).json({ 
-        error: 'Unauthorized', 
+      res.status(401).json({
+        error: 'Unauthorized',
         message: 'Invalid or expired token',
         timestamp: new Date().toISOString()
       });
@@ -71,8 +64,8 @@ export const authenticateToken = async (
         ip: req.ip,
         path: req.path
       });
-      res.status(403).json({ 
-        error: 'Forbidden', 
+      res.status(403).json({
+        error: 'Forbidden',
         message: 'Account is inactive',
         timestamp: new Date().toISOString()
       });
@@ -101,8 +94,8 @@ export const authenticateToken = async (
       ip: req.ip,
       path: req.path
     });
-    res.status(500).json({ 
-      error: 'Internal Server Error', 
+    res.status(500).json({
+      error: 'Internal Server Error',
       message: 'Authentication service error',
       timestamp: new Date().toISOString()
     });
@@ -112,8 +105,8 @@ export const authenticateToken = async (
 export const requireRole = (roles: string[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({ 
-        error: 'Unauthorized', 
+      res.status(401).json({
+        error: 'Unauthorized',
         message: 'Authentication required',
         timestamp: new Date().toISOString()
       });
@@ -128,8 +121,8 @@ export const requireRole = (roles: string[]) => {
         ip: req.ip,
         path: req.path
       });
-      res.status(403).json({ 
-        error: 'Forbidden', 
+      res.status(403).json({
+        error: 'Forbidden',
         message: 'Insufficient permissions',
         timestamp: new Date().toISOString()
       });
@@ -147,8 +140,8 @@ export const requireClientAccess = async (
 ): Promise<void> => {
   try {
     if (!req.user) {
-      res.status(401).json({ 
-        error: 'Unauthorized', 
+      res.status(401).json({
+        error: 'Unauthorized',
         message: 'Authentication required',
         timestamp: new Date().toISOString()
       });
@@ -156,10 +149,10 @@ export const requireClientAccess = async (
     }
 
     const clientId = req.params.clientId || req.body.clientId;
-    
+
     if (!clientId) {
-      res.status(400).json({ 
-        error: 'Bad Request', 
+      res.status(400).json({
+        error: 'Bad Request',
         message: 'Client ID required',
         timestamp: new Date().toISOString()
       });
@@ -182,8 +175,8 @@ export const requireClientAccess = async (
         ip: req.ip,
         path: req.path
       });
-      res.status(403).json({ 
-        error: 'Forbidden', 
+      res.status(403).json({
+        error: 'Forbidden',
         message: 'Access denied to client',
         timestamp: new Date().toISOString()
       });
@@ -198,8 +191,8 @@ export const requireClientAccess = async (
       ip: req.ip,
       path: req.path
     });
-    res.status(500).json({ 
-      error: 'Internal Server Error', 
+    res.status(500).json({
+      error: 'Internal Server Error',
       message: 'Access check service error',
       timestamp: new Date().toISOString()
     });

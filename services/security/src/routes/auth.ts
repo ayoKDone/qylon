@@ -1,7 +1,7 @@
-import { Router, Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '../../utils/logger';
+import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -51,8 +51,8 @@ router.post('/validate', asyncHandler(async (req: Request, res: Response): Promi
     });
 
   } catch (error) {
-    logger.error('Token validation error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Token validation error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -86,7 +86,7 @@ router.post('/refresh', asyncHandler(async (req: Request, res: Response): Promis
       return;
     }
 
-    logger.info('Token refresh successful', { userId: data.user.id });
+    logger.info('Token refresh successful', { userId: data.user?.id });
 
     res.status(200).json({
       success: true,
@@ -94,16 +94,16 @@ router.post('/refresh', asyncHandler(async (req: Request, res: Response): Promis
       refreshToken: data.session.refresh_token,
       expiresIn: data.session.expires_in,
       user: {
-        id: data.user.id,
-        email: data.user.email,
-        role: data.user.user_metadata?.role || 'user'
+        id: data.user?.id || '',
+        email: data.user?.email || '',
+        role: data.user?.user_metadata?.role || 'user'
       },
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    logger.error('Token refresh error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Token refresh error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -144,8 +144,8 @@ router.post('/revoke', asyncHandler(async (req: Request, res: Response): Promise
     });
 
   } catch (error) {
-    logger.error('Token revocation error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Token revocation error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }
@@ -192,8 +192,8 @@ router.get('/permissions', asyncHandler(async (req: Request, res: Response): Pro
     });
 
   } catch (error) {
-    logger.error('User permissions error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('User permissions error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
     throw error;
   }

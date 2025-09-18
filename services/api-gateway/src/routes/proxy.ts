@@ -1,7 +1,7 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { ProxyConfig, ServiceRegistry } from '@/types';
 import { logger } from '@/utils/logger';
-import { ServiceRegistry, ProxyConfig } from '@/types';
+import { NextFunction, Request, Response, Router } from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const router = Router();
 
@@ -63,6 +63,13 @@ const serviceRegistry: ServiceRegistry = {
     healthCheck: '/health',
     routes: ['/analytics', '/reports'],
   },
+  'security': {
+    name: 'security',
+    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
+    port: 3001,
+    healthCheck: '/health',
+    routes: ['/auth', '/rls', '/api-keys'],
+  },
 };
 
 /**
@@ -82,7 +89,7 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
         method: req.method,
         requestId: (req as any).requestId,
       });
-      
+
       res.status(503).json({
         error: 'Service Unavailable',
         message: `${serviceName} service is currently unavailable`,
@@ -95,13 +102,13 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
       if ((req as any).requestId) {
         proxyReq.setHeader('X-Request-ID', (req as any).requestId);
       }
-      
+
       // Add user information to proxy request
       if ((req as any).user) {
         proxyReq.setHeader('X-User-ID', (req as any).user.id);
         proxyReq.setHeader('X-User-Role', (req as any).user.role);
       }
-      
+
       logger.debug(`Proxying request to ${serviceName}`, {
         method: req.method,
         url: req.originalUrl,
@@ -119,7 +126,7 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
       });
     },
   };
-  
+
   return createProxyMiddleware(proxyConfig);
 };
 
@@ -130,10 +137,10 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
 const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
   const path = req.path;
   const method = req.method;
-  
+
   // Find matching service
   let targetService: string | null = null;
-  
+
   for (const [serviceName, serviceConfig] of Object.entries(serviceRegistry)) {
     for (const route of serviceConfig.routes) {
       if (path.startsWith(`/api/v1${route}`)) {
@@ -143,14 +150,14 @@ const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
     }
     if (targetService) break;
   }
-  
+
   if (!targetService) {
     logger.warn('No service found for route', {
       path,
       method,
       requestId: (req as any).requestId,
     });
-    
+
     res.status(404).json({
       error: 'Not Found',
       message: `No service found for route ${path}`,
@@ -159,17 +166,17 @@ const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
     });
     return;
   }
-  
+
   // Attach target service to request
   (req as any).targetService = targetService;
-  
+
   logger.debug('Route discovered', {
     path,
     method,
     targetService,
     requestId: (req as any).requestId,
   });
-  
+
   next();
 };
 
@@ -178,21 +185,21 @@ const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
  */
 const serviceHealthCheck = async (req: Request, res: Response, next: NextFunction) => {
   const targetService = (req as any).targetService;
-  
+
   if (!targetService) {
     next();
     return;
   }
-  
+
   const serviceConfig = serviceRegistry[targetService];
-  
+
   try {
     // Simple health check - just verify the service is reachable
     const axios = require('axios');
     await axios.get(`${serviceConfig.url}${serviceConfig.healthCheck}`, {
       timeout: 2000, // 2 second timeout
     });
-    
+
     next();
   } catch (error) {
     logger.error(`Service ${targetService} is unhealthy`, {
@@ -200,7 +207,7 @@ const serviceHealthCheck = async (req: Request, res: Response, next: NextFunctio
       serviceUrl: serviceConfig.url,
       requestId: (req as any).requestId,
     });
-    
+
     res.status(503).json({
       error: 'Service Unavailable',
       message: `${targetService} service is currently unavailable`,
@@ -217,7 +224,7 @@ router.use(serviceHealthCheck);
 // Create proxy routes for each service
 Object.entries(serviceRegistry).forEach(([serviceName, serviceConfig]) => {
   const proxy = createServiceProxy(serviceName, serviceConfig);
-  
+
   // Create route for each service route
   serviceConfig.routes.forEach(route => {
     router.use(`/api/v1${route}`, proxy);
@@ -235,7 +242,7 @@ router.get('/services', (req: Request, res: Response) => {
     routes: service.routes,
     healthCheck: service.healthCheck,
   }));
-  
+
   res.json({
     services,
     timestamp: new Date().toISOString(),
@@ -254,7 +261,7 @@ router.get('/services/status', async (req: Request, res: Response) => {
         const response = await axios.get(`${serviceConfig.url}${serviceConfig.healthCheck}`, {
           timeout: 5000,
         });
-        
+
         return {
           name: serviceName,
           status: 'healthy',
@@ -271,7 +278,7 @@ router.get('/services/status', async (req: Request, res: Response) => {
       }
     })
   );
-  
+
   const services = serviceStatuses.map((result, index) => {
     if (result.status === 'fulfilled') {
       return result.value;
@@ -285,7 +292,7 @@ router.get('/services/status', async (req: Request, res: Response) => {
       };
     }
   });
-  
+
   res.json({
     services,
     timestamp: new Date().toISOString(),

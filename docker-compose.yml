@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # API Gateway
@@ -89,11 +89,13 @@ services:
       - RECALL_AI_BASE_URL=${RECALL_AI_BASE_URL}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - postgres
       - redis
     volumes:
       - ./services/meeting-intelligence:/app
+      - /app/node_modules
     networks:
       - qylon-network
 
@@ -135,6 +137,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - postgres
       - redis
@@ -210,6 +213,27 @@ services:
       - redis
     volumes:
       - ./services/analytics-reporting:/app
+    networks:
+      - qylon-network
+
+  # Security Service
+  security:
+    build:
+      context: ./services/security
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - postgres
+    volumes:
+      - ./services/security:/app
+      - /app/node_modules
     networks:
       - qylon-network
 

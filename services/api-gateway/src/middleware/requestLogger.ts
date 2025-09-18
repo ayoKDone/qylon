@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { logRequest, logger } from '@/utils/logger';
+import { NextFunction, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { logger, logRequest } from '@/utils/logger';
 
 /**
  * Request logging middleware
@@ -19,14 +19,14 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any) {
+  res.end = function(chunk?: any, encoding?: any): any {
     const responseTime = Date.now() - startTime;
-    
+
     // Log the request
     logRequest(req, res, responseTime);
-    
+
     // Call original end method
-    originalEnd.call(this, chunk, encoding);
+    return originalEnd.call(this, chunk, encoding);
   };
 
   // Log request start

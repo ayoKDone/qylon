@@ -1,6 +1,6 @@
-import { Router, Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
-import { logger } from '../../utils/logger';
+import { Request, Response, Router } from 'express';
+import logger from '../utils/logger';
 
 const router = Router();
 
@@ -11,7 +11,7 @@ const supabase = createClient(
 );
 
 // Health check endpoint
-router.get('/', async (req: Request, res: Response): Promise<void> => {
+router.get('/', async (_req: Request, res: Response): Promise<void> => {
   try {
     const healthCheck = {
       status: 'healthy',
@@ -59,10 +59,10 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
     });
 
   } catch (error) {
-    logger.error('Health check error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Health check error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
-    
+
     res.status(503).json({
       status: 'unhealthy',
       service: 'security-service',
@@ -73,7 +73,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 });
 
 // Detailed health check
-router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
+router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
   try {
     const checks = {
       database: { status: 'unknown', responseTime: 0 },
@@ -102,7 +102,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
     checks.memory.usage = Math.round(memUsage.heapUsed / 1024 / 1024); // MB
     checks.memory.status = checks.memory.usage > 500 ? 'warning' : 'healthy';
 
-    const overallStatus = Object.values(checks).every(check => 
+    const overallStatus = Object.values(checks).every(check =>
       check.status === 'healthy' || check.status === 'warning'
     ) ? 'healthy' : 'unhealthy';
 
@@ -114,10 +114,10 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
     });
 
   } catch (error) {
-    logger.error('Detailed health check error', { 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    logger.error('Detailed health check error', {
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
-    
+
     res.status(503).json({
       status: 'unhealthy',
       service: 'security-service',

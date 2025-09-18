@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../../utils/logger';
+import { NextFunction, Request, Response } from 'express';
+import logger from '../utils/logger';
 
 interface RequestWithUser extends Request {
   user?: {
@@ -12,10 +12,10 @@ interface RequestWithUser extends Request {
 export const requestLogger = (req: RequestWithUser, res: Response, next: NextFunction): void => {
   const startTime = Date.now();
   const requestId = req.headers['x-request-id'] as string || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  
+
   // Add request ID to headers for response
   res.setHeader('X-Request-ID', requestId);
-  
+
   // Log incoming request
   logger.info('Incoming request', {
     requestId,
@@ -30,9 +30,9 @@ export const requestLogger = (req: RequestWithUser, res: Response, next: NextFun
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any) {
+  res.end = function(chunk?: any, encoding?: any): any {
     const duration = Date.now() - startTime;
-    
+
     logger.info('Request completed', {
       requestId,
       method: req.method,
@@ -44,7 +44,7 @@ export const requestLogger = (req: RequestWithUser, res: Response, next: NextFun
     });
 
     // Call original end method
-    originalEnd.call(this, chunk, encoding);
+    return originalEnd.call(this, chunk, encoding);
   };
 
   next();
