@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from index import app, get_current_user  # noqa: E402
 
+
 # Override the authentication dependency for testing
 async def override_get_current_user():
     """Override authentication for testing"""
@@ -20,6 +21,7 @@ async def override_get_current_user():
         "role": "user",
     }
 
+
 # Override the dependency in the app
 app.dependency_overrides[get_current_user] = override_get_current_user
 
@@ -28,7 +30,6 @@ client = TestClient(app)
 
 class TestContentCreation:
     """Test cases for content creation endpoints"""
-
 
     @pytest.fixture
     def sample_content_request(self):
@@ -273,9 +274,7 @@ class TestContentCreation:
         assert response.status_code == 422  # Validation error
 
     @patch("index.save_template")
-    def test_create_template_success(
-        self, mock_save, sample_template_request
-    ):
+    def test_create_template_success(self, mock_save, sample_template_request):
         """Test successful template creation"""
         mock_save.return_value = "template_123"
 
@@ -338,6 +337,7 @@ class TestContentCreation:
         """Test access without authentication"""
         # Temporarily clear the dependency override
         from index import app, get_current_user
+
         original_override = app.dependency_overrides.get(get_current_user)
         app.dependency_overrides.clear()
 
@@ -364,9 +364,7 @@ class TestContentCreation:
                 app.dependency_overrides[get_current_user] = original_override
 
     @patch("index.generate_ai_content")
-    def test_ai_content_generation_error(
-        self, mock_generate, sample_content_request
-    ):
+    def test_ai_content_generation_error(self, mock_generate, sample_content_request):
         """Test content creation when AI generation fails"""
         mock_generate.side_effect = Exception("AI service unavailable")
 
