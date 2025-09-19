@@ -122,9 +122,27 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
           REDIS_URL: redis://localhost:6379
         run: |
-          pytest services/meeting-intelligence/tests/ -v --cov=services/meeting-intelligence/
-          pytest services/content-creation/tests/ -v --cov=services/content-creation/
-          pytest services/analytics-reporting/tests/ -v --cov=services/analytics-reporting/
+          # Check for Python services and run their tests
+          for service in services/*/; do
+            if [ -f "$service/requirements.txt" ]; then
+              service_name=$(basename "$service")
+              echo "Found Python service: $service_name"
+
+              # Look for tests in various locations
+              if [ -d "$service/tests" ]; then
+                echo "Running tests from $service/tests/"
+                pytest "$service/tests/" -v --cov="$service"
+              elif [ -d "$service/src/__tests__" ]; then
+                echo "Running tests from $service/src/__tests__/"
+                pytest "$service/src/__tests__/" -v --cov="$service"
+              elif [ -f "$service/test_*.py" ]; then
+                echo "Running test files in $service/"
+                pytest "$service/test_*.py" -v --cov="$service"
+              else
+                echo "No tests found for $service_name"
+              fi
+            fi
+          done
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
