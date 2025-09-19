@@ -134,7 +134,7 @@ jobs:
                 pytest "$service/tests/" -v --cov="$service"
               elif [ -d "$service/src/__tests__" ]; then
                 echo "Running tests from $service/src/__tests__/"
-                pytest "$service/src/__tests__/" -v --cov="$service"
+                cd "$service" && PYTHONPATH="$service/src:$PYTHONPATH" pytest src/__tests__/ -v --cov=src
               elif [ -f "$service/test_*.py" ]; then
                 echo "Running test files in $service/"
                 pytest "$service/test_*.py" -v --cov="$service"

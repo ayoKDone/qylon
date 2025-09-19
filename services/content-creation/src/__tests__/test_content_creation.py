@@ -1,8 +1,14 @@
+import sys
+import os
 from datetime import datetime
 from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
+
+# Add the parent directory to the Python path to import the main module
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from index import app
 
 client = TestClient(app)
