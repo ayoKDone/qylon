@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response, Router } from 'express';
 import { requireClientAccess } from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
-import { WorkflowEngine } from '../services/WorkflowEngine';
 import {
   ApiResponse,
   CreateWorkflowSchema,
@@ -17,7 +16,7 @@ const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-const workflowEngine = new WorkflowEngine();
+// const workflowEngine = new WorkflowEngine();
 
 /**
  * Create a new workflow

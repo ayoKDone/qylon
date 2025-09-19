@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
-import { OpenAIService } from '../services/OpenAIService';
-import { RecallAIService } from '../services/RecallAIService';
 import { ApiResponse, ProcessRecordingSchema } from '../types';
 import { logger } from '../utils/logger';
 
@@ -11,8 +9,8 @@ const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-const recallAIService = new RecallAIService();
-const openAIService = new OpenAIService();
+// const recallAIService = new RecallAIService();
+// const openAIService = new OpenAIService();
 
 /**
  * Process meeting recording and generate transcription
@@ -228,7 +226,7 @@ async function processRecordingAsync(
   meetingId: string,
   recordingUrl: string,
   transcriptionId: string,
-  options?: any
+  _options?: any
 ): Promise<void> {
   try {
     logger.info('Starting async recording processing', {

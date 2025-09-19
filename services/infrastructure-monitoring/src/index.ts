@@ -1,15 +1,14 @@
-import express from 'express';
 import dotenv from 'dotenv';
-import { createClient } from '@supabase/supabase-js';
-import { authenticateToken } from './middleware/auth';
-import { rateLimiter } from './middleware/rateLimiter';
-import { errorHandler } from './middleware/errorHandler';
-import { requestLogger } from './middleware/requestLogger';
+import express from 'express';
 import { logger } from '../utils/logger';
-import healthRoutes from './routes/health';
-import metricsRoutes from './routes/metrics';
+import { authenticateToken } from './middleware/auth';
+import { errorHandler } from './middleware/errorHandler';
+import { rateLimiter } from './middleware/rateLimiter';
+import { requestLogger } from './middleware/requestLogger';
 import alertsRoutes from './routes/alerts';
 import dashboardsRoutes from './routes/dashboards';
+import healthRoutes from './routes/health';
+import metricsRoutes from './routes/metrics';
 
 dotenv.config();
 
@@ -17,10 +16,10 @@ const app = express();
 const PORT = process.env.PORT || 3010;
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// const supabase = createClient(
+//   process.env.SUPABASE_URL!,
+//   process.env.SUPABASE_SERVICE_ROLE_KEY!
+// );
 
 // Middleware
 app.use(express.json());

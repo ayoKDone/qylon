@@ -1,16 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
+import { v4 as uuidv4 } from 'uuid';
+import { logger } from '../../utils/logger';
 import {
+  SagaManager as ISagaManager,
   Saga,
   SagaDefinition,
-  SagaStep,
   SagaStatus,
+  SagaStep,
   SagaStepStatus,
-  SagaManager as ISagaManager,
-  CompensationStrategy,
 } from '../models/Saga';
-import { Event, QylonEventTypes } from '../models/Event';
-import { logger } from '../../utils/logger';
-import { v4 as uuidv4 } from 'uuid';
 
 export class SupabaseSagaManager implements ISagaManager {
   private supabase;
@@ -367,7 +365,7 @@ export class SupabaseSagaManager implements ISagaManager {
 
   private async handleStepFailure(
     saga: Saga,
-    failedStep: SagaStep
+    _failedStep: SagaStep
   ): Promise<void> {
     // Determine compensation strategy based on saga definition
     // For now, we'll use backward recovery

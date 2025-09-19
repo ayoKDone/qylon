@@ -385,7 +385,7 @@ export class StateMachine {
    * Execute SMS send action
    */
   private async executeSmsSend(action: WorkflowAction): Promise<any> {
-    const { to, message } = action.config;
+    const { to: _to, message: _message } = action.config;
 
     // Implementation would use SMS service
     // This is a placeholder
@@ -396,7 +396,11 @@ export class StateMachine {
    * Execute file upload action
    */
   private async executeFileUpload(action: WorkflowAction): Promise<any> {
-    const { file, destination, options } = action.config;
+    const {
+      file: _file,
+      destination: _destination,
+      options: _options,
+    } = action.config;
 
     // Implementation would use file storage service
     // This is a placeholder
@@ -407,18 +411,19 @@ export class StateMachine {
    * Execute data transform action
    */
   private async executeDataTransform(action: WorkflowAction): Promise<any> {
-    const { input_data, transform_script } = action.config;
+    const { input_data: _input_data, transform_script: _transform_script } =
+      action.config;
 
     // Implementation would execute transformation logic
     // This is a placeholder
-    return { status: 'success', transformed_data: input_data };
+    return { status: 'success', transformed_data: _input_data };
   }
 
   /**
    * Execute condition check action
    */
   private async executeConditionCheck(action: WorkflowAction): Promise<any> {
-    const { condition, data } = action.config;
+    const { condition: _condition, data: _data } = action.config;
 
     // Implementation would evaluate condition
     // This is a placeholder
@@ -439,7 +444,12 @@ export class StateMachine {
    * Execute webhook call action
    */
   private async executeWebhookCall(action: WorkflowAction): Promise<any> {
-    const { url, method, headers, body } = action.config;
+    const {
+      url: _url,
+      method: _method,
+      headers: _headers,
+      body: _body,
+    } = action.config;
 
     // Implementation would call webhook
     // This is a placeholder
@@ -450,7 +460,11 @@ export class StateMachine {
    * Execute AI process action
    */
   private async executeAiProcess(action: WorkflowAction): Promise<any> {
-    const { process_type, input_data, model } = action.config;
+    const {
+      process_type: _process_type,
+      input_data: _input_data,
+      model: _model,
+    } = action.config;
 
     // Implementation would call AI service
     // This is a placeholder
@@ -562,7 +576,7 @@ export class StateMachine {
   /**
    * Evaluate a condition
    */
-  private async evaluateCondition(condition: any): Promise<boolean> {
+  private async evaluateCondition(_condition: any): Promise<boolean> {
     // Implementation would evaluate the condition expression
     // This is a placeholder
     return true;

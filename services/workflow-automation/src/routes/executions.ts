@@ -18,7 +18,7 @@ router.post(
   '/execute',
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     try {
-      const userId = (req as any).user?.id;
+      const _userId = (req as any).user?.id;
 
       // Validate request body
       const validationResult = ExecuteWorkflowSchema.safeParse(req.body);
@@ -45,7 +45,7 @@ router.post(
       logger.info('Workflow execution started', {
         workflowId: workflow_id,
         executionId: execution.id,
-        userId,
+        userId: _userId,
       });
 
       const response: ApiResponse<any> = {
@@ -79,7 +79,7 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     try {
       const { executionId } = req.params;
-      const userId = (req as any).user?.id;
+      const _userId = (req as any).user?.id;
 
       const execution = await workflowEngine.getExecution(executionId);
 
@@ -117,7 +117,7 @@ router.get(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     try {
       const { workflowId } = req.params;
-      const userId = (req as any).user?.id;
+      const _userId = (req as any).user?.id;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
 
@@ -159,13 +159,13 @@ router.post(
   asyncHandler(async (req: Request, res: Response): Promise<void> => {
     try {
       const { executionId } = req.params;
-      const userId = (req as any).user?.id;
+      const _userId = (req as any).user?.id;
 
       await workflowEngine.cancelExecution(executionId);
 
       logger.info('Execution cancelled', {
         executionId,
-        userId,
+        userId: _userId,
       });
 
       res.status(200).json({

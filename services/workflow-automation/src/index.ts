@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
@@ -18,10 +17,10 @@ const app = express();
 const PORT = process.env.PORT || 3005;
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// const supabase = createClient(
+//   process.env.SUPABASE_URL!,
+//   process.env.SUPABASE_SERVICE_ROLE_KEY!
+// );
 
 // Security middleware
 app.use(

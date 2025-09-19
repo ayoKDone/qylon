@@ -1,5 +1,5 @@
-import { Router, Request, Response } from 'express';
 import { createClient } from '@supabase/supabase-js';
+import { Request, Response, Router } from 'express';
 import { logger } from '../../utils/logger';
 import { asyncHandler } from '../middleware/errorHandler';
 
@@ -400,7 +400,7 @@ router.get(
 );
 
 // Helper methods
-function parseTimeRange(timeRange: string): number {
+function _parseTimeRange(timeRange: string): number {
   const timeRangeMap: { [key: string]: number } = {
     '5m': 5 * 60 * 1000,
     '15m': 15 * 60 * 1000,
@@ -413,7 +413,7 @@ function parseTimeRange(timeRange: string): number {
   return timeRangeMap[timeRange] || timeRangeMap['1h'];
 }
 
-function aggregateMetrics(
+function _aggregateMetrics(
   metrics: any[],
   metricType: string,
   aggregation: string,
@@ -448,7 +448,7 @@ function aggregateMetrics(
   );
 }
 
-function getBucketKey(timestamp: Date, granularity: string): string {
+function _getBucketKey(timestamp: Date, granularity: string): string {
   const granularityMs = this.parseTimeRange(granularity);
   const bucketTime = new Date(
     Math.floor(timestamp.getTime() / granularityMs) * granularityMs
@@ -456,7 +456,7 @@ function getBucketKey(timestamp: Date, granularity: string): string {
   return bucketTime.toISOString();
 }
 
-function calculateAggregation(
+function _calculateAggregation(
   metrics: any[],
   metricType: string,
   aggregation: string
@@ -480,7 +480,10 @@ function calculateAggregation(
   }
 }
 
-function calculateHealthStatus(metrics: any): { status: string; details: any } {
+function _calculateHealthStatus(metrics: any): {
+  status: string;
+  details: any;
+} {
   const cpuUsage = metrics.cpu?.usage || 0;
   const memoryUsage = metrics.memory?.usage || 0;
   const diskUsage = metrics.disk?.usage || 0;
@@ -524,7 +527,7 @@ function calculateHealthStatus(metrics: any): { status: string; details: any } {
   return { status, details };
 }
 
-function groupServicesHealth(metrics: any[]): any[] {
+function _groupServicesHealth(metrics: any[]): any[] {
   const serviceMap = new Map<string, any>();
 
   metrics.forEach(metric => {
