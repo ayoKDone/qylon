@@ -26,19 +26,17 @@ export class SupabaseEventStore implements IEventStore {
         user_id: event.userId,
         correlation_id: event.correlationId,
         causation_id: event.causationId,
-        metadata: event.metadata
+        metadata: event.metadata,
       };
 
-      const { error } = await this.supabase
-        .from('events')
-        .insert(eventRecord);
+      const { error } = await this.supabase.from('events').insert(eventRecord);
 
       if (error) {
         logger.error('Failed to save event', {
           eventId: event.id,
           aggregateId: event.aggregateId,
           eventType: event.eventType,
-          error: error.message
+          error: error.message,
         });
         throw new Error(`Failed to save event: ${error.message}`);
       }
@@ -47,18 +45,21 @@ export class SupabaseEventStore implements IEventStore {
         eventId: event.id,
         aggregateId: event.aggregateId,
         eventType: event.eventType,
-        version: event.eventVersion
+        version: event.eventVersion,
       });
     } catch (error) {
       logger.error('Event save error', {
         eventId: event.id,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
   }
 
-  async getEvents(aggregateId: string, fromVersion: number = 0): Promise<Event[]> {
+  async getEvents(
+    aggregateId: string,
+    fromVersion: number = 0
+  ): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
         .from('events')
@@ -71,17 +72,17 @@ export class SupabaseEventStore implements IEventStore {
         logger.error('Failed to get events', {
           aggregateId,
           fromVersion,
-          error: error.message
+          error: error.message,
         });
         throw new Error(`Failed to get events: ${error.message}`);
       }
 
       const events = data?.map(this.mapToEvent) || [];
-      
+
       logger.info('Events retrieved', {
         aggregateId,
         fromVersion,
-        count: events.length
+        count: events.length,
       });
 
       return events;
@@ -89,13 +90,16 @@ export class SupabaseEventStore implements IEventStore {
       logger.error('Get events error', {
         aggregateId,
         fromVersion,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
   }
 
-  async getEventsByType(eventType: string, limit: number = 100): Promise<Event[]> {
+  async getEventsByType(
+    eventType: string,
+    limit: number = 100
+  ): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
         .from('events')
@@ -108,17 +112,17 @@ export class SupabaseEventStore implements IEventStore {
         logger.error('Failed to get events by type', {
           eventType,
           limit,
-          error: error.message
+          error: error.message,
         });
         throw new Error(`Failed to get events by type: ${error.message}`);
       }
 
       const events = data?.map(this.mapToEvent) || [];
-      
+
       logger.info('Events by type retrieved', {
         eventType,
         limit,
-        count: events.length
+        count: events.length,
       });
 
       return events;
@@ -126,7 +130,7 @@ export class SupabaseEventStore implements IEventStore {
       logger.error('Get events by type error', {
         eventType,
         limit,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -143,23 +147,25 @@ export class SupabaseEventStore implements IEventStore {
       if (error) {
         logger.error('Failed to get events by correlation ID', {
           correlationId,
-          error: error.message
+          error: error.message,
         });
-        throw new Error(`Failed to get events by correlation ID: ${error.message}`);
+        throw new Error(
+          `Failed to get events by correlation ID: ${error.message}`
+        );
       }
 
       const events = data?.map(this.mapToEvent) || [];
-      
+
       logger.info('Events by correlation ID retrieved', {
         correlationId,
-        count: events.length
+        count: events.length,
       });
 
       return events;
     } catch (error) {
       logger.error('Get events by correlation ID error', {
         correlationId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -177,7 +183,7 @@ export class SupabaseEventStore implements IEventStore {
       userId: record.user_id,
       correlationId: record.correlation_id,
       causationId: record.causation_id,
-      metadata: record.metadata
+      metadata: record.metadata,
     };
   }
 }
@@ -189,7 +195,7 @@ export class EventBuilder {
     this.event = {
       id: uuidv4(),
       eventVersion: 1,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -231,7 +237,12 @@ export class EventBuilder {
   }
 
   build(): Event {
-    if (!this.event.aggregateId || !this.event.aggregateType || !this.event.eventType || !this.event.userId) {
+    if (
+      !this.event.aggregateId ||
+      !this.event.aggregateType ||
+      !this.event.eventType ||
+      !this.event.userId
+    ) {
       throw new Error('Missing required event fields');
     }
 

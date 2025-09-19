@@ -26,7 +26,7 @@ export const errorHandler = (
     path: req.path,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
-    userId: (req as any).user?.id
+    userId: (req as any).user?.id,
   });
 
   // Default error response
@@ -60,7 +60,7 @@ export const errorHandler = (
     error: errorMessage,
     message: error.message || 'An unexpected error occurred',
     timestamp: new Date().toISOString(),
-    requestId
+    requestId,
   };
 
   if (details) {

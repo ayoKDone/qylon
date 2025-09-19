@@ -9,9 +9,15 @@ interface RequestWithUser extends Request {
   };
 }
 
-export const requestLogger = (req: RequestWithUser, res: Response, next: NextFunction): void => {
+export const requestLogger = (
+  req: RequestWithUser,
+  res: Response,
+  next: NextFunction
+): void => {
   const startTime = Date.now();
-  const requestId = req.headers['x-request-id'] as string || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const requestId =
+    (req.headers['x-request-id'] as string) ||
+    `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // Add request ID to headers for response
   res.setHeader('X-Request-ID', requestId);
@@ -25,12 +31,12 @@ export const requestLogger = (req: RequestWithUser, res: Response, next: NextFun
     ip: req.ip,
     userAgent: req.get('User-Agent'),
     userId: req.user?.id,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any): any {
+  res.end = function (chunk?: any, encoding?: any): any {
     const duration = Date.now() - startTime;
 
     logger.info('Request completed', {
@@ -40,7 +46,7 @@ export const requestLogger = (req: RequestWithUser, res: Response, next: NextFun
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       userId: req.user?.id,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Call original end method

@@ -9,7 +9,8 @@ export class RecallAIService {
 
   constructor() {
     this.apiKey = process.env.RECALL_AI_API_KEY!;
-    this.baseURL = process.env.RECALL_AI_BASE_URL || 'https://api.recall.ai/api/v1';
+    this.baseURL =
+      process.env.RECALL_AI_BASE_URL || 'https://api.recall.ai/api/v1';
 
     if (!this.apiKey) {
       throw new Error('RECALL_AI_API_KEY environment variable is required');
@@ -18,44 +19,44 @@ export class RecallAIService {
     this.client = axios.create({
       baseURL: this.baseURL,
       headers: {
-        'Authorization': `Token ${this.apiKey}`,
+        Authorization: `Token ${this.apiKey}`,
         'Content-Type': 'application/json',
-        'User-Agent': 'Qylon-MeetingIntelligence/1.0.0'
+        'User-Agent': 'Qylon-MeetingIntelligence/1.0.0',
       },
-      timeout: 30000
+      timeout: 30000,
     });
 
     // Add request/response interceptors for logging
     this.client.interceptors.request.use(
-      (config) => {
+      config => {
         logger.debug('Recall.ai API request', {
           method: config.method?.toUpperCase(),
           url: config.url,
-          data: config.data
+          data: config.data,
         });
         return config;
       },
-      (error) => {
+      error => {
         logger.error('Recall.ai API request error', { error: error.message });
         return Promise.reject(error);
       }
     );
 
     this.client.interceptors.response.use(
-      (response) => {
+      response => {
         logger.debug('Recall.ai API response', {
           status: response.status,
           url: response.config.url,
-          data: response.data
+          data: response.data,
         });
         return response;
       },
-      (error) => {
+      error => {
         logger.error('Recall.ai API response error', {
           status: error.response?.status,
           url: error.config?.url,
           message: error.message,
-          data: error.response?.data
+          data: error.response?.data,
         });
         return Promise.reject(error);
       }
@@ -73,12 +74,12 @@ export class RecallAIService {
         transcription_options: {
           provider: 'deepgram',
           language: 'en',
-          model: 'nova-2'
+          model: 'nova-2',
         },
         recording_options: {
           auto_start: true,
-          auto_stop: true
-        }
+          auto_stop: true,
+        },
       });
 
       const bot = response.data;
@@ -86,7 +87,7 @@ export class RecallAIService {
       logger.info('Recall.ai bot created successfully', {
         botId: bot.id,
         botName: bot.bot_name,
-        meetingUrl
+        meetingUrl,
       });
 
       return {
@@ -95,15 +96,14 @@ export class RecallAIService {
         meeting_url: bot.meeting_url,
         bot_token: bot.bot_token,
         status: bot.status,
-        created_at: new Date(bot.created_at)
+        created_at: new Date(bot.created_at),
       };
-
     } catch (error: any) {
       logger.error('Failed to create Recall.ai bot', {
         meetingUrl,
         error: error.message,
         status: error.response?.status,
-        data: error.response?.data
+        data: error.response?.data,
       });
 
       throw new RecallAIError(
@@ -128,14 +128,13 @@ export class RecallAIService {
         meeting_url: bot.meeting_url,
         bot_token: bot.bot_token,
         status: bot.status,
-        created_at: new Date(bot.created_at)
+        created_at: new Date(bot.created_at),
       };
-
     } catch (error: any) {
       logger.error('Failed to get Recall.ai bot', {
         botId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -154,12 +153,11 @@ export class RecallAIService {
       await this.client.delete(`/bot/${botId}`);
 
       logger.info('Recall.ai bot deleted successfully', { botId });
-
     } catch (error: any) {
       logger.error('Failed to delete Recall.ai bot', {
         botId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -186,14 +184,13 @@ export class RecallAIService {
         transcription_url: recording.transcription_url,
         status: recording.status,
         created_at: new Date(recording.created_at),
-        updated_at: new Date(recording.updated_at)
+        updated_at: new Date(recording.updated_at),
       }));
-
     } catch (error: any) {
       logger.error('Failed to get Recall.ai recordings', {
         botId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -209,19 +206,20 @@ export class RecallAIService {
    */
   async getTranscription(recordingId: string): Promise<any> {
     try {
-      const response = await this.client.get(`/recording/${recordingId}/transcript`);
+      const response = await this.client.get(
+        `/recording/${recordingId}/transcript`
+      );
 
       logger.info('Recall.ai transcription retrieved successfully', {
-        recordingId
+        recordingId,
       });
 
       return response.data;
-
     } catch (error: any) {
       logger.error('Failed to get Recall.ai transcription', {
         recordingId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -240,12 +238,11 @@ export class RecallAIService {
       await this.client.post(`/bot/${botId}/recording/start`);
 
       logger.info('Recall.ai recording started successfully', { botId });
-
     } catch (error: any) {
       logger.error('Failed to start Recall.ai recording', {
         botId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -264,12 +261,11 @@ export class RecallAIService {
       await this.client.post(`/bot/${botId}/recording/stop`);
 
       logger.info('Recall.ai recording stopped successfully', { botId });
-
     } catch (error: any) {
       logger.error('Failed to stop Recall.ai recording', {
         botId,
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
 
       throw new RecallAIError(
@@ -287,11 +283,10 @@ export class RecallAIService {
     try {
       const bot = await this.getBot(botId);
       return bot.status;
-
     } catch (error: any) {
       logger.error('Failed to get bot status', {
         botId,
-        error: error.message
+        error: error.message,
       });
 
       throw new RecallAIError(
@@ -309,11 +304,10 @@ export class RecallAIService {
     try {
       const response = await this.client.get('/health');
       return response.status === 200;
-
     } catch (error: any) {
       logger.error('Recall.ai health check failed', {
         error: error.message,
-        status: error.response?.status
+        status: error.response?.status,
       });
       return false;
     }

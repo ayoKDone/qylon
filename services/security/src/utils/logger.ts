@@ -10,7 +10,7 @@ const logger = winston.createLogger({
   ),
   defaultMeta: {
     service: 'security-service',
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   },
   transports: [
     // Console transport
@@ -18,9 +18,9 @@ const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
-      )
+      ),
     }),
-    
+
     // File transport for errors
     new winston.transports.File({
       filename: 'logs/security-error.log',
@@ -28,18 +28,18 @@ const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.json()
-      )
+      ),
     }),
-    
+
     // File transport for all logs
     new winston.transports.File({
       filename: 'logs/security-combined.log',
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.json()
-      )
-    })
-  ]
+      ),
+    }),
+  ],
 });
 
 // Add request correlation ID to logs
@@ -52,7 +52,7 @@ export const logSecurityEvent = (event: string, details: any) => {
   logger.warn('Security Event', {
     event,
     ...details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
@@ -61,7 +61,7 @@ export const logAuthAttempt = (success: boolean, details: any) => {
   logger.log(level, 'Authentication Attempt', {
     success,
     ...details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
@@ -70,14 +70,14 @@ export const logAccessAttempt = (granted: boolean, details: any) => {
   logger.log(level, 'Access Attempt', {
     granted,
     ...details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
 export const logRateLimitHit = (details: any) => {
   logger.warn('Rate Limit Hit', {
     ...details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 

@@ -6,7 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
  * Request logging middleware
  * Adds request ID and logs request/response details
  */
-export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   // Generate unique request ID
   const requestId = uuidv4();
   (req as any).requestId = requestId;
@@ -19,7 +23,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any): any {
+  res.end = function (chunk?: any, encoding?: any): any {
     const responseTime = Date.now() - startTime;
 
     // Log the request
@@ -46,7 +50,11 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
  * Response time middleware
  * Adds response time to response headers
  */
-export const responseTime = (req: Request, res: Response, next: NextFunction): void => {
+export const responseTime = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const startTime = Date.now();
 
   res.on('finish', () => {
@@ -61,7 +69,11 @@ export const responseTime = (req: Request, res: Response, next: NextFunction): v
  * Request ID middleware
  * Ensures every request has a unique ID
  */
-export const requestId = (req: Request, res: Response, next: NextFunction): void => {
+export const requestId = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const requestId = req.get('X-Request-ID') || uuidv4();
   (req as any).requestId = requestId;
   res.setHeader('X-Request-ID', requestId);

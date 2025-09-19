@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-    MeetingIntelligenceError,
-    RecallAIError,
-    TranscriptionError
+  MeetingIntelligenceError,
+  RecallAIError,
+  TranscriptionError,
 } from '../types';
 import { logger } from '../utils/logger';
 
@@ -34,7 +34,7 @@ export const errorHandler = (
     method: req.method,
     url: req.url,
     ip: req.ip,
-    userAgent: req.get('User-Agent')
+    userAgent: req.get('User-Agent'),
   });
 
   // Handle specific error types
@@ -45,7 +45,7 @@ export const errorHandler = (
       message: error.message,
       code: error.code,
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -57,7 +57,7 @@ export const errorHandler = (
       message: error.message,
       code: error.code,
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -69,7 +69,7 @@ export const errorHandler = (
       message: error.message,
       code: error.code,
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -81,7 +81,7 @@ export const errorHandler = (
       error: 'ValidationError',
       message: error.message,
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -93,7 +93,7 @@ export const errorHandler = (
       error: 'Unauthorized',
       message: 'Invalid token',
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -104,7 +104,7 @@ export const errorHandler = (
       error: 'Unauthorized',
       message: 'Token has expired',
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -116,7 +116,7 @@ export const errorHandler = (
       error: 'DatabaseError',
       message: 'Database operation failed',
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -128,7 +128,7 @@ export const errorHandler = (
       error: 'TooManyRequests',
       message: 'Rate limit exceeded',
       timestamp: new Date().toISOString(),
-      requestId
+      requestId,
     });
     return;
   }
@@ -137,11 +137,12 @@ export const errorHandler = (
   res.status(500).json({
     success: false,
     error: 'InternalServerError',
-    message: process.env.NODE_ENV === 'production'
-      ? 'An unexpected error occurred'
-      : error.message,
+    message:
+      process.env.NODE_ENV === 'production'
+        ? 'An unexpected error occurred'
+        : error.message,
     timestamp: new Date().toISOString(),
-    requestId
+    requestId,
   });
 };
 
@@ -156,7 +157,7 @@ export const notFoundHandler = (req: Request, res: Response): void => {
     url: req.url,
     ip: req.ip,
     userAgent: req.get('User-Agent'),
-    requestId
+    requestId,
   });
 
   res.status(404).json({
@@ -164,6 +165,6 @@ export const notFoundHandler = (req: Request, res: Response): void => {
     error: 'NotFound',
     message: `Route ${req.method} ${req.url} not found`,
     timestamp: new Date().toISOString(),
-    requestId
+    requestId,
   });
 };

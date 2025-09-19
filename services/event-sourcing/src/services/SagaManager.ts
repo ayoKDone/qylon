@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
-import { 
-  Saga, 
-  SagaDefinition, 
-  SagaStep, 
-  SagaStatus, 
-  SagaStepStatus, 
+import {
+  Saga,
+  SagaDefinition,
+  SagaStep,
+  SagaStatus,
+  SagaStepStatus,
   SagaManager as ISagaManager,
-  CompensationStrategy 
+  CompensationStrategy,
 } from '../models/Saga';
 import { Event, QylonEventTypes } from '../models/Event';
 import { logger } from '../../utils/logger';
@@ -23,9 +23,9 @@ export class SupabaseSagaManager implements ISagaManager {
   }
 
   async startSaga(
-    definition: SagaDefinition, 
-    correlationId: string, 
-    userId: string, 
+    definition: SagaDefinition,
+    correlationId: string,
+    userId: string,
     metadata?: Record<string, any>
   ): Promise<Saga> {
     try {
@@ -37,7 +37,7 @@ export class SupabaseSagaManager implements ISagaManager {
         compensation: stepDef.compensation,
         timeout: stepDef.timeout,
         retryPolicy: stepDef.retryPolicy,
-        status: SagaStepStatus.PENDING
+        status: SagaStepStatus.PENDING,
       }));
 
       const saga: Saga = {
@@ -49,7 +49,7 @@ export class SupabaseSagaManager implements ISagaManager {
         correlationId,
         userId,
         startedAt: new Date(),
-        metadata
+        metadata,
       };
 
       const sagaRecord = {
@@ -61,19 +61,17 @@ export class SupabaseSagaManager implements ISagaManager {
         correlation_id: saga.correlationId,
         user_id: saga.userId,
         started_at: saga.startedAt.toISOString(),
-        metadata: saga.metadata
+        metadata: saga.metadata,
       };
 
-      const { error } = await this.supabase
-        .from('sagas')
-        .insert(sagaRecord);
+      const { error } = await this.supabase.from('sagas').insert(sagaRecord);
 
       if (error) {
         logger.error('Failed to start saga', {
           sagaId,
           name: definition.name,
           correlationId,
-          error: error.message
+          error: error.message,
         });
         throw new Error(`Failed to start saga: ${error.message}`);
       }
@@ -83,7 +81,7 @@ export class SupabaseSagaManager implements ISagaManager {
         name: definition.name,
         correlationId,
         userId,
-        stepCount: steps.length
+        stepCount: steps.length,
       });
 
       // Start executing the first step
@@ -96,7 +94,7 @@ export class SupabaseSagaManager implements ISagaManager {
       logger.error('Start saga error', {
         correlationId,
         userId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -118,21 +116,25 @@ export class SupabaseSagaManager implements ISagaManager {
         logger.warn('Step already executed or in progress', {
           sagaId,
           stepId,
-          status: step.status
+          status: step.status,
         });
         return;
       }
 
       // Check dependencies
       if (step.dependsOn) {
-        const dependencies = saga.steps.filter(s => step.dependsOn!.includes(s.name));
-        const incompleteDependencies = dependencies.filter(d => d.status !== SagaStepStatus.COMPLETED);
-        
+        const dependencies = saga.steps.filter(s =>
+          step.dependsOn!.includes(s.name)
+        );
+        const incompleteDependencies = dependencies.filter(
+          d => d.status !== SagaStepStatus.COMPLETED
+        );
+
         if (incompleteDependencies.length > 0) {
           logger.warn('Step dependencies not met', {
             sagaId,
             stepId,
-            incompleteDependencies: incompleteDependencies.map(d => d.name)
+            incompleteDependencies: incompleteDependencies.map(d => d.name),
           });
           return;
         }
@@ -147,7 +149,7 @@ export class SupabaseSagaManager implements ISagaManager {
         sagaId,
         stepId,
         stepName: step.name,
-        action: step.action
+        action: step.action,
       });
 
       // Execute the step action
@@ -169,7 +171,7 @@ export class SupabaseSagaManager implements ISagaManager {
         logger.info('Saga step completed successfully', {
           sagaId,
           stepId,
-          stepName: step.name
+          stepName: step.name,
         });
 
         // Execute next step if available
@@ -177,7 +179,6 @@ export class SupabaseSagaManager implements ISagaManager {
           const nextStep = saga.steps[saga.currentStepIndex];
           await this.executeStep(sagaId, nextStep.id);
         }
-
       } catch (error) {
         step.status = SagaStepStatus.FAILED;
         step.failedAt = new Date();
@@ -187,18 +188,17 @@ export class SupabaseSagaManager implements ISagaManager {
           sagaId,
           stepId,
           stepName: step.name,
-          error: step.error
+          error: step.error,
         });
 
         // Handle step failure based on compensation strategy
         await this.handleStepFailure(saga, step);
       }
-
     } catch (error) {
       logger.error('Execute step error', {
         sagaId,
         stepId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -216,7 +216,7 @@ export class SupabaseSagaManager implements ISagaManager {
 
       logger.info('Starting saga compensation', {
         sagaId,
-        name: saga.name
+        name: saga.name,
       });
 
       // Execute compensation steps in reverse order
@@ -229,18 +229,18 @@ export class SupabaseSagaManager implements ISagaManager {
           try {
             await this.executeAction(step.compensation, saga);
             step.status = SagaStepStatus.COMPENSATED;
-            
+
             logger.info('Step compensation completed', {
               sagaId,
               stepId: step.id,
-              stepName: step.name
+              stepName: step.name,
             });
           } catch (error) {
             logger.error('Step compensation failed', {
               sagaId,
               stepId: step.id,
               stepName: step.name,
-              error: error instanceof Error ? error.message : 'Unknown error'
+              error: error instanceof Error ? error.message : 'Unknown error',
             });
             // Continue with other compensations even if one fails
           }
@@ -252,13 +252,12 @@ export class SupabaseSagaManager implements ISagaManager {
 
       logger.info('Saga compensation completed', {
         sagaId,
-        name: saga.name
+        name: saga.name,
       });
-
     } catch (error) {
       logger.error('Compensate saga error', {
         sagaId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -283,7 +282,7 @@ export class SupabaseSagaManager implements ISagaManager {
     } catch (error) {
       logger.error('Get saga error', {
         sagaId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -298,14 +297,16 @@ export class SupabaseSagaManager implements ISagaManager {
         .order('started_at', { ascending: false });
 
       if (error) {
-        throw new Error(`Failed to get sagas by correlation ID: ${error.message}`);
+        throw new Error(
+          `Failed to get sagas by correlation ID: ${error.message}`
+        );
       }
 
       return data?.map(this.mapToSaga) || [];
     } catch (error) {
       logger.error('Get sagas by correlation ID error', {
         correlationId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -327,7 +328,7 @@ export class SupabaseSagaManager implements ISagaManager {
     } catch (error) {
       logger.error('Get sagas by status error', {
         status,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -340,7 +341,7 @@ export class SupabaseSagaManager implements ISagaManager {
       current_step_index: saga.currentStepIndex,
       completed_at: saga.completedAt?.toISOString(),
       failed_at: saga.failedAt?.toISOString(),
-      error: saga.error
+      error: saga.error,
     };
 
     const { error } = await this.supabase
@@ -357,14 +358,17 @@ export class SupabaseSagaManager implements ISagaManager {
     // This would integrate with the actual service actions
     // For now, we'll simulate the action execution
     logger.info('Executing action', { action, sagaId: saga.id });
-    
+
     // Simulate action execution
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     return { success: true, action };
   }
 
-  private async handleStepFailure(saga: Saga, failedStep: SagaStep): Promise<void> {
+  private async handleStepFailure(
+    saga: Saga,
+    failedStep: SagaStep
+  ): Promise<void> {
     // Determine compensation strategy based on saga definition
     // For now, we'll use backward recovery
     await this.compensateSaga(saga.id);
@@ -380,10 +384,12 @@ export class SupabaseSagaManager implements ISagaManager {
       correlationId: record.correlation_id,
       userId: record.user_id,
       startedAt: new Date(record.started_at),
-      completedAt: record.completed_at ? new Date(record.completed_at) : undefined,
+      completedAt: record.completed_at
+        ? new Date(record.completed_at)
+        : undefined,
       failedAt: record.failed_at ? new Date(record.failed_at) : undefined,
       error: record.error,
-      metadata: record.metadata
+      metadata: record.metadata,
     };
   }
 }

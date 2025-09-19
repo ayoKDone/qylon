@@ -95,7 +95,7 @@ export interface WorkflowExecution {
   context: ExecutionContext;
   started_at: Date;
   completed_at?: Date;
-  error?: ExecutionError;
+  error?: ExecutionErrorData;
   metadata?: Record<string, any>;
 }
 
@@ -127,7 +127,7 @@ export interface ActionResult {
   retry_count: number;
 }
 
-export interface ExecutionError {
+export interface ExecutionErrorData {
   type: string;
   message: string;
   state_id?: string;
@@ -141,7 +141,7 @@ export enum WorkflowStatus {
   DRAFT = 'draft',
   ACTIVE = 'active',
   INACTIVE = 'inactive',
-  ARCHIVED = 'archived'
+  ARCHIVED = 'archived',
 }
 
 export enum ExecutionStatus {
@@ -150,7 +150,7 @@ export enum ExecutionStatus {
   COMPLETED = 'completed',
   FAILED = 'failed',
   CANCELLED = 'cancelled',
-  TIMEOUT = 'timeout'
+  TIMEOUT = 'timeout',
 }
 
 export enum TriggerType {
@@ -158,7 +158,7 @@ export enum TriggerType {
   SCHEDULED = 'scheduled',
   WEBHOOK = 'webhook',
   EVENT = 'event',
-  API = 'api'
+  API = 'api',
 }
 
 export enum StateType {
@@ -168,7 +168,7 @@ export enum StateType {
   DECISION = 'decision',
   PARALLEL = 'parallel',
   WAIT = 'wait',
-  SUBWORKFLOW = 'subworkflow'
+  SUBWORKFLOW = 'subworkflow',
 }
 
 export enum ActionType {
@@ -181,14 +181,14 @@ export enum ActionType {
   CONDITION_CHECK = 'condition_check',
   DELAY = 'delay',
   WEBHOOK_CALL = 'webhook_call',
-  AI_PROCESS = 'ai_process'
+  AI_PROCESS = 'ai_process',
 }
 
 export enum ConditionType {
   EXPRESSION = 'expression',
   DATA_CHECK = 'data_check',
   TIME_CHECK = 'time_check',
-  EXTERNAL_API = 'external_api'
+  EXTERNAL_API = 'external_api',
 }
 
 // Request/Response Types
@@ -231,68 +231,88 @@ export const CreateWorkflowSchema = z.object({
     name: z.string(),
     description: z.string().optional(),
     version: z.string(),
-    triggers: z.array(z.object({
-      id: z.string(),
-      type: z.nativeEnum(TriggerType),
-      name: z.string(),
-      config: z.record(z.any()),
-      enabled: z.boolean()
-    })),
-    states: z.array(z.object({
-      id: z.string(),
-      name: z.string(),
-      type: z.nativeEnum(StateType),
-      actions: z.array(z.object({
+    triggers: z.array(
+      z.object({
         id: z.string(),
-        type: z.nativeEnum(ActionType),
+        type: z.nativeEnum(TriggerType),
         name: z.string(),
         config: z.record(z.any()),
-        timeout: z.number().optional(),
-        retry_policy: z.object({
-          max_retries: z.number(),
-          backoff_ms: z.number(),
-          backoff_multiplier: z.number(),
-          max_backoff_ms: z.number().optional()
-        }).optional()
-      })).optional(),
-      conditions: z.array(z.object({
+        enabled: z.boolean(),
+      })
+    ),
+    states: z.array(
+      z.object({
         id: z.string(),
-        type: z.nativeEnum(ConditionType),
-        expression: z.string(),
-        on_true: z.string().optional(),
-        on_false: z.string().optional()
-      })).optional(),
-      timeout: z.number().optional(),
-      retry_policy: z.object({
-        max_retries: z.number(),
-        backoff_ms: z.number(),
-        backoff_multiplier: z.number(),
-        max_backoff_ms: z.number().optional()
-      }).optional(),
-      metadata: z.record(z.any()).optional()
-    })),
-    transitions: z.array(z.object({
-      id: z.string(),
-      from_state: z.string(),
-      to_state: z.string(),
-      condition: z.string().optional(),
-      event: z.string().optional()
-    })),
+        name: z.string(),
+        type: z.nativeEnum(StateType),
+        actions: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.nativeEnum(ActionType),
+              name: z.string(),
+              config: z.record(z.any()),
+              timeout: z.number().optional(),
+              retry_policy: z
+                .object({
+                  max_retries: z.number(),
+                  backoff_ms: z.number(),
+                  backoff_multiplier: z.number(),
+                  max_backoff_ms: z.number().optional(),
+                })
+                .optional(),
+            })
+          )
+          .optional(),
+        conditions: z
+          .array(
+            z.object({
+              id: z.string(),
+              type: z.nativeEnum(ConditionType),
+              expression: z.string(),
+              on_true: z.string().optional(),
+              on_false: z.string().optional(),
+            })
+          )
+          .optional(),
+        timeout: z.number().optional(),
+        retry_policy: z
+          .object({
+            max_retries: z.number(),
+            backoff_ms: z.number(),
+            backoff_multiplier: z.number(),
+            max_backoff_ms: z.number().optional(),
+          })
+          .optional(),
+        metadata: z.record(z.any()).optional(),
+      })
+    ),
+    transitions: z.array(
+      z.object({
+        id: z.string(),
+        from_state: z.string(),
+        to_state: z.string(),
+        condition: z.string().optional(),
+        event: z.string().optional(),
+      })
+    ),
     variables: z.record(z.any()).optional(),
-    settings: z.object({
-      max_execution_time: z.number().optional(),
-      max_retries: z.number().optional(),
-      timeout_action: z.enum(['fail', 'continue', 'retry']).optional(),
-      parallel_execution: z.boolean().optional(),
-      error_handling: z.enum(['stop', 'continue', 'retry']).optional()
-    }).optional()
-  })
+    settings: z
+      .object({
+        max_execution_time: z.number().optional(),
+        max_retries: z.number().optional(),
+        timeout_action: z.enum(['fail', 'continue', 'retry']).optional(),
+        parallel_execution: z.boolean().optional(),
+        error_handling: z.enum(['stop', 'continue', 'retry']).optional(),
+      })
+      .optional(),
+  }),
 });
 
 export const ExecuteWorkflowSchema = z.object({
   workflow_id: z.string().uuid(),
   input_data: z.record(z.any()),
-  context: z.record(z.any()).optional()
+  context: z.record(z.any()).optional(),
 });
 
 // API Response Types

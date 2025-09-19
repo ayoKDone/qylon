@@ -41,7 +41,7 @@ app.listen(PORT, () => {
   logger.info(`Security service running on port ${PORT}`, {
     port: PORT,
     environment: process.env.NODE_ENV || 'development',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 

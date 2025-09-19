@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { logger, logError } from '@/utils/logger';
 import { ErrorResponse } from '@/types';
+import { logError, logger } from '@/utils/logger';
+import { NextFunction, Request, Response } from 'express';
 
 /**
  * Global error handler middleware
@@ -9,7 +9,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   // Log the error
   logError(error, req);
@@ -71,12 +71,12 @@ export const errorHandler = (
  */
 export const notFoundHandler = (
   req: Request,
-  res: Response,
-  next: NextFunction
+  _res: Response,
+  _next: NextFunction
 ): void => {
   const error = new Error(`Route ${req.originalUrl} not found`);
   (error as any).statusCode = 404;
-  next(error);
+  _next(error);
 };
 
 /**
@@ -95,7 +95,10 @@ export class ValidationError extends Error {
   public statusCode: number = 400;
   public name: string = 'ValidationError';
 
-  constructor(message: string, public details?: any) {
+  constructor(
+    message: string,
+    public details?: any
+  ) {
     super(message);
   }
 }
@@ -173,7 +176,7 @@ process.on('uncaughtException', (error: Error) => {
     error: error.message,
     stack: error.stack,
   });
-  
+
   // Exit the process after logging
   process.exit(1);
 });

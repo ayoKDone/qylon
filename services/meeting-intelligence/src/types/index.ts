@@ -67,10 +67,13 @@ export interface MeetingSummary {
 export interface SentimentAnalysis {
   overall_sentiment: 'positive' | 'neutral' | 'negative';
   confidence: number;
-  speaker_sentiments: Record<string, {
-    sentiment: 'positive' | 'neutral' | 'negative';
-    confidence: number;
-  }>;
+  speaker_sentiments: Record<
+    string,
+    {
+      sentiment: 'positive' | 'neutral' | 'negative';
+      confidence: number;
+    }
+  >;
 }
 
 // Enums
@@ -79,7 +82,7 @@ export enum MeetingPlatform {
   TEAMS = 'teams',
   GOOGLE_MEET = 'google_meet',
   WEBEX = 'webex',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export enum MeetingStatus {
@@ -88,28 +91,28 @@ export enum MeetingStatus {
   PROCESSING = 'processing',
   COMPLETED = 'completed',
   FAILED = 'failed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 export enum ProcessingStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 export enum PriorityLevel {
   LOW = 'low',
   MEDIUM = 'medium',
   HIGH = 'high',
-  URGENT = 'urgent'
+  URGENT = 'urgent',
 }
 
 export enum ActionItemStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 
 // Request/Response Types
@@ -205,7 +208,7 @@ export const CreateMeetingSchema = z.object({
   platform: z.nativeEnum(MeetingPlatform),
   meeting_url: z.string().url().optional(),
   participants: z.array(z.string().email()).min(1),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.any()).optional(),
 });
 
 export const UpdateMeetingSchema = z.object({
@@ -214,18 +217,20 @@ export const UpdateMeetingSchema = z.object({
   end_time: z.date().optional(),
   status: z.nativeEnum(MeetingStatus).optional(),
   recording_url: z.string().url().optional(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.any()).optional(),
 });
 
 export const ProcessRecordingSchema = z.object({
   meeting_id: z.string().uuid(),
   recording_url: z.string().url(),
   language: z.string().length(2).optional(),
-  options: z.object({
-    enable_speaker_diarization: z.boolean().optional(),
-    enable_sentiment_analysis: z.boolean().optional(),
-    enable_action_item_extraction: z.boolean().optional()
-  }).optional()
+  options: z
+    .object({
+      enable_speaker_diarization: z.boolean().optional(),
+      enable_sentiment_analysis: z.boolean().optional(),
+      enable_action_item_extraction: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 // API Response Types

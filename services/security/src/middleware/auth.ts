@@ -30,29 +30,32 @@ export const authenticateToken = async (
       logger.warn('Authentication failed: No token provided', {
         ip: req.ip,
         userAgent: req.get('User-Agent'),
-        path: req.path
+        path: req.path,
       });
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Access token required',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
 
     // Verify JWT token with Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       logger.warn('Authentication failed: Invalid token', {
         error: error?.message,
         ip: req.ip,
-        path: req.path
+        path: req.path,
       });
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Invalid or expired token',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -62,12 +65,12 @@ export const authenticateToken = async (
       logger.warn('Authentication failed: Inactive user', {
         userId: user.id,
         ip: req.ip,
-        path: req.path
+        path: req.path,
       });
       res.status(403).json({
         error: 'Forbidden',
         message: 'Account is inactive',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -76,7 +79,7 @@ export const authenticateToken = async (
     req.user = {
       id: user.id,
       email: user.email!,
-      role: user.user_metadata?.role || 'user'
+      role: user.user_metadata?.role || 'user',
     };
 
     logger.info('Authentication successful', {
@@ -84,7 +87,7 @@ export const authenticateToken = async (
       email: user.email,
       role: req.user.role,
       ip: req.ip,
-      path: req.path
+      path: req.path,
     });
 
     next();
@@ -92,23 +95,27 @@ export const authenticateToken = async (
     logger.error('Authentication error', {
       error: error instanceof Error ? error.message : 'Unknown error',
       ip: req.ip,
-      path: req.path
+      path: req.path,
     });
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Authentication service error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };
 
 export const requireRole = (roles: string[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  return (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Authentication required',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -119,12 +126,12 @@ export const requireRole = (roles: string[]) => {
         userRole: req.user.role,
         requiredRoles: roles,
         ip: req.ip,
-        path: req.path
+        path: req.path,
       });
       res.status(403).json({
         error: 'Forbidden',
         message: 'Insufficient permissions',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -143,7 +150,7 @@ export const requireClientAccess = async (
       res.status(401).json({
         error: 'Unauthorized',
         message: 'Authentication required',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -154,7 +161,7 @@ export const requireClientAccess = async (
       res.status(400).json({
         error: 'Bad Request',
         message: 'Client ID required',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -173,12 +180,12 @@ export const requireClientAccess = async (
         clientId,
         error: error?.message,
         ip: req.ip,
-        path: req.path
+        path: req.path,
       });
       res.status(403).json({
         error: 'Forbidden',
         message: 'Access denied to client',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -189,12 +196,12 @@ export const requireClientAccess = async (
       error: error instanceof Error ? error.message : 'Unknown error',
       userId: req.user?.id,
       ip: req.ip,
-      path: req.path
+      path: req.path,
     });
     res.status(500).json({
       error: 'Internal Server Error',
       message: 'Access check service error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };

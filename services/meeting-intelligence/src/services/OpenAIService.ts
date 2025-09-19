@@ -1,12 +1,12 @@
 import OpenAI from 'openai';
 import {
-    ActionItem,
-    MeetingSummary,
-    MeetingTranscription,
-    PriorityLevel,
-    SentimentAnalysis,
-    SpeakerSegment,
-    TranscriptionError
+  ActionItem,
+  MeetingSummary,
+  MeetingTranscription,
+  PriorityLevel,
+  SentimentAnalysis,
+  SpeakerSegment,
+  TranscriptionError,
 } from '../types';
 import { logger } from '../utils/logger';
 
@@ -22,7 +22,7 @@ export class OpenAIService {
     }
 
     this.client = new OpenAI({
-      apiKey: apiKey
+      apiKey: apiKey,
     });
 
     this.model = process.env.OPENAI_MODEL || 'gpt-4-turbo-preview';
@@ -36,22 +36,26 @@ export class OpenAIService {
     meetingTitle: string
   ): Promise<ActionItem[]> {
     try {
-      const prompt = this.buildActionItemPrompt(transcription.content, meetingTitle);
+      const prompt = this.buildActionItemPrompt(
+        transcription.content,
+        meetingTitle
+      );
 
       const response = await this.client.chat.completions.create({
         model: this.model,
         messages: [
           {
             role: 'system',
-            content: 'You are an expert meeting assistant that extracts action items from meeting transcriptions. Return only valid JSON.'
+            content:
+              'You are an expert meeting assistant that extracts action items from meeting transcriptions. Return only valid JSON.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.3,
-        max_tokens: 2000
+        max_tokens: 2000,
       });
 
       const content = response.choices[0]?.message?.content;
@@ -63,7 +67,7 @@ export class OpenAIService {
 
       logger.info('Action items extracted successfully', {
         meetingId: transcription.meeting_id,
-        actionItemCount: actionItems.length
+        actionItemCount: actionItems.length,
       });
 
       return actionItems.map((item: any) => ({
@@ -76,13 +80,12 @@ export class OpenAIService {
         priority: this.mapPriority(item.priority),
         status: 'pending' as const,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       }));
-
     } catch (error: any) {
       logger.error('Failed to extract action items', {
         meetingId: transcription.meeting_id,
-        error: error.message
+        error: error.message,
       });
 
       throw new TranscriptionError(
@@ -101,22 +104,26 @@ export class OpenAIService {
     meetingTitle: string
   ): Promise<MeetingSummary> {
     try {
-      const prompt = this.buildSummaryPrompt(transcription.content, meetingTitle);
+      const prompt = this.buildSummaryPrompt(
+        transcription.content,
+        meetingTitle
+      );
 
       const response = await this.client.chat.completions.create({
         model: this.model,
         messages: [
           {
             role: 'system',
-            content: 'You are an expert meeting assistant that creates comprehensive meeting summaries. Return only valid JSON.'
+            content:
+              'You are an expert meeting assistant that creates comprehensive meeting summaries. Return only valid JSON.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.3,
-        max_tokens: 3000
+        max_tokens: 3000,
       });
 
       const content = response.choices[0]?.message?.content;
@@ -127,7 +134,7 @@ export class OpenAIService {
       const summaryData = JSON.parse(content);
 
       logger.info('Meeting summary generated successfully', {
-        meetingId: transcription.meeting_id
+        meetingId: transcription.meeting_id,
       });
 
       return {
@@ -139,13 +146,12 @@ export class OpenAIService {
         next_steps: summaryData.next_steps,
         sentiment: summaryData.sentiment,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
-
     } catch (error: any) {
       logger.error('Failed to generate meeting summary', {
         meetingId: transcription.meeting_id,
-        error: error.message
+        error: error.message,
       });
 
       throw new TranscriptionError(
@@ -170,15 +176,16 @@ export class OpenAIService {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert sentiment analysis assistant. Return only valid JSON.'
+            content:
+              'You are an expert sentiment analysis assistant. Return only valid JSON.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.1,
-        max_tokens: 1000
+        max_tokens: 1000,
       });
 
       const content = response.choices[0]?.message?.content;
@@ -189,15 +196,14 @@ export class OpenAIService {
       const sentimentData = JSON.parse(content);
 
       logger.info('Sentiment analysis completed successfully', {
-        meetingId: transcription.meeting_id
+        meetingId: transcription.meeting_id,
       });
 
       return sentimentData;
-
     } catch (error: any) {
       logger.error('Failed to analyze sentiment', {
         meetingId: transcription.meeting_id,
-        error: error.message
+        error: error.message,
       });
 
       throw new TranscriptionError(
@@ -222,15 +228,16 @@ export class OpenAIService {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert at speaker identification and diarization. Return only valid JSON.'
+            content:
+              'You are an expert at speaker identification and diarization. Return only valid JSON.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.2,
-        max_tokens: 2000
+        max_tokens: 2000,
       });
 
       const content = response.choices[0]?.message?.content;
@@ -241,14 +248,13 @@ export class OpenAIService {
       const enhancedSegments = JSON.parse(content);
 
       logger.info('Speaker diarization enhanced successfully', {
-        segmentCount: enhancedSegments.length
+        segmentCount: enhancedSegments.length,
       });
 
       return enhancedSegments;
-
     } catch (error: any) {
       logger.error('Failed to enhance speaker diarization', {
-        error: error.message
+        error: error.message,
       });
 
       throw new TranscriptionError(
@@ -362,9 +368,9 @@ Guidelines:
    * Build prompt for speaker enhancement
    */
   private buildSpeakerEnhancementPrompt(segments: SpeakerSegment[]): string {
-    const segmentsText = segments.map(seg =>
-      `Speaker ${seg.speaker_id}: ${seg.text}`
-    ).join('\n');
+    const segmentsText = segments
+      .map(seg => `Speaker ${seg.speaker_id}: ${seg.text}`)
+      .join('\n');
 
     return `
 Enhance the speaker diarization for the following meeting segments. Return a JSON array with enhanced speaker information:
@@ -420,13 +426,13 @@ Guidelines:
       const response = await this.client.chat.completions.create({
         model: this.model,
         messages: [{ role: 'user', content: 'Hello' }],
-        max_tokens: 1
+        max_tokens: 1,
       });
 
       return response.choices.length > 0;
     } catch (error: any) {
       logger.error('OpenAI health check failed', {
-        error: error.message
+        error: error.message,
       });
       return false;
     }

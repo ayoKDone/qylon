@@ -63,7 +63,7 @@ const serviceRegistry: ServiceRegistry = {
     healthCheck: '/health',
     routes: ['/analytics', '/reports'],
   },
-  'security': {
+  security: {
     name: 'security',
     url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
     port: 3001,
@@ -82,7 +82,7 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
     pathRewrite: {
       [`^/api/v1/${serviceName}`]: '', // Remove service prefix
     },
-    onError: (err: Error, req: Request, res: Response) => {
+    onError: (err: Error, req: Request, _res: Response) => {
       logger.error(`Proxy error for ${serviceName}`, {
         error: err.message,
         url: req.originalUrl,
@@ -90,14 +90,14 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
         requestId: (req as any).requestId,
       });
 
-      res.status(503).json({
+      _res.status(503).json({
         error: 'Service Unavailable',
         message: `${serviceName} service is currently unavailable`,
         timestamp: new Date().toISOString(),
         requestId: (req as any).requestId,
       });
     },
-    onProxyReq: (proxyReq: any, req: Request, res: Response) => {
+    onProxyReq: (proxyReq: any, req: Request, _res: Response) => {
       // Add request ID to proxy request
       if ((req as any).requestId) {
         proxyReq.setHeader('X-Request-ID', (req as any).requestId);
@@ -117,7 +117,7 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
         userId: (req as any).user?.id,
       });
     },
-    onProxyRes: (proxyRes: any, req: Request, res: Response) => {
+    onProxyRes: (proxyRes: any, req: Request, _res: Response) => {
       logger.debug(`Proxy response from ${serviceName}`, {
         statusCode: proxyRes.statusCode,
         url: req.originalUrl,
@@ -134,7 +134,7 @@ const createServiceProxy = (serviceName: string, serviceConfig: any) => {
  * Route discovery middleware
  * Determines which service should handle the request
  */
-const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
+const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
   const path = req.path;
   const method = req.method;
 
@@ -158,7 +158,7 @@ const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
       requestId: (req as any).requestId,
     });
 
-    res.status(404).json({
+    _res.status(404).json({
       error: 'Not Found',
       message: `No service found for route ${path}`,
       timestamp: new Date().toISOString(),
@@ -183,7 +183,11 @@ const routeDiscovery = (req: Request, res: Response, next: NextFunction) => {
 /**
  * Service health check middleware
  */
-const serviceHealthCheck = async (req: Request, res: Response, next: NextFunction) => {
+const serviceHealthCheck = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
   const targetService = (req as any).targetService;
 
   if (!targetService) {
@@ -208,7 +212,7 @@ const serviceHealthCheck = async (req: Request, res: Response, next: NextFunctio
       requestId: (req as any).requestId,
     });
 
-    res.status(503).json({
+    _res.status(503).json({
       error: 'Service Unavailable',
       message: `${targetService} service is currently unavailable`,
       timestamp: new Date().toISOString(),
@@ -234,7 +238,7 @@ Object.entries(serviceRegistry).forEach(([serviceName, serviceConfig]) => {
 /**
  * Service discovery endpoint
  */
-router.get('/services', (req: Request, res: Response) => {
+router.get('/services', (req: Request, _res: Response) => {
   const services = Object.values(serviceRegistry).map(service => ({
     name: service.name,
     url: service.url,
@@ -243,7 +247,7 @@ router.get('/services', (req: Request, res: Response) => {
     healthCheck: service.healthCheck,
   }));
 
-  res.json({
+  _res.json({
     services,
     timestamp: new Date().toISOString(),
     requestId: (req as any).requestId,
@@ -253,30 +257,35 @@ router.get('/services', (req: Request, res: Response) => {
 /**
  * Service status endpoint
  */
-router.get('/services/status', async (req: Request, res: Response) => {
+router.get('/services/status', async (req: Request, _res: Response) => {
   const axios = require('axios');
   const serviceStatuses = await Promise.allSettled(
-    Object.entries(serviceRegistry).map(async ([serviceName, serviceConfig]) => {
-      try {
-        const response = await axios.get(`${serviceConfig.url}${serviceConfig.healthCheck}`, {
-          timeout: 5000,
-        });
+    Object.entries(serviceRegistry).map(
+      async ([serviceName, serviceConfig]) => {
+        try {
+          const response = await axios.get(
+            `${serviceConfig.url}${serviceConfig.healthCheck}`,
+            {
+              timeout: 5000,
+            }
+          );
 
-        return {
-          name: serviceName,
-          status: 'healthy',
-          responseTime: response.headers['x-response-time'] || 'unknown',
-          lastCheck: new Date().toISOString(),
-        };
-      } catch (error) {
-        return {
-          name: serviceName,
-          status: 'unhealthy',
-          error: error instanceof Error ? error.message : 'Unknown error',
-          lastCheck: new Date().toISOString(),
-        };
+          return {
+            name: serviceName,
+            status: 'healthy',
+            responseTime: response.headers['x-response-time'] || 'unknown',
+            lastCheck: new Date().toISOString(),
+          };
+        } catch (error) {
+          return {
+            name: serviceName,
+            status: 'unhealthy',
+            error: error instanceof Error ? error.message : 'Unknown error',
+            lastCheck: new Date().toISOString(),
+          };
+        }
       }
-    })
+    )
   );
 
   const services = serviceStatuses.map((result, index) => {
@@ -287,13 +296,16 @@ router.get('/services/status', async (req: Request, res: Response) => {
       return {
         name: serviceName,
         status: 'unhealthy',
-        error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
+        error:
+          result.reason instanceof Error
+            ? result.reason.message
+            : 'Unknown error',
         lastCheck: new Date().toISOString(),
       };
     }
   });
 
-  res.json({
+  _res.json({
     services,
     timestamp: new Date().toISOString(),
     requestId: (req as any).requestId,

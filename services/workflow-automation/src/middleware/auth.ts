@@ -51,7 +51,10 @@ export const authMiddleware = async (
     }
 
     // Verify JWT token with Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       logSecurity('Invalid JWT token', req, { error: error?.message });
@@ -67,7 +70,7 @@ export const authMiddleware = async (
     if (user.user_metadata?.status !== 'active') {
       logSecurity('Inactive user attempted access', req, {
         userId: user.id,
-        status: user.user_metadata?.status
+        status: user.user_metadata?.status,
       });
       res.status(403).json({
         error: 'Forbidden',
@@ -81,7 +84,7 @@ export const authMiddleware = async (
     req.user = {
       id: user.id,
       email: user.email!,
-      role: user.user_metadata?.role || 'user'
+      role: user.user_metadata?.role || 'user',
     };
 
     logger.info('User authenticated successfully', {
@@ -111,7 +114,11 @@ export const authMiddleware = async (
  * Role-based authorization middleware
  */
 export const requireRole = (roles: string | string[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  return (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',
@@ -193,7 +200,7 @@ export const requireClientAccess = async (
     if (error || !client) {
       logSecurity('Client access denied', req, {
         userId: req.user.id,
-        clientId
+        clientId,
       });
 
       res.status(403).json({

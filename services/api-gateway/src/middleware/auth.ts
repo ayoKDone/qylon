@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { AuthenticatedRequest, JWTPayload, UserRole } from '@/types';
-import { logger, logSecurity } from '@/utils/logger';
+import { logSecurity, logger } from '@/utils/logger';
 import { createClient } from '@supabase/supabase-js';
+import { NextFunction, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -21,7 +21,7 @@ export const authMiddleware = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       logSecurity('Missing or invalid authorization header', req);
       res.status(401).json({
@@ -33,7 +33,7 @@ export const authMiddleware = async (
     }
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    
+
     if (!token) {
       logSecurity('Empty token provided', req);
       res.status(401).json({
@@ -46,7 +46,7 @@ export const authMiddleware = async (
 
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
-    
+
     // Get user from database
     const { data: user, error } = await supabase
       .from('users')
@@ -55,7 +55,9 @@ export const authMiddleware = async (
       .single();
 
     if (error || !user) {
-      logSecurity('User not found in database', req, { userId: decoded.userId });
+      logSecurity('User not found in database', req, {
+        userId: decoded.userId,
+      });
       res.status(401).json({
         error: 'Unauthorized',
         message: 'User not found',
@@ -66,7 +68,10 @@ export const authMiddleware = async (
 
     // Check if user is active
     if (user.status !== 'active') {
-      logSecurity('Inactive user attempted access', req, { userId: user.id, status: user.status });
+      logSecurity('Inactive user attempted access', req, {
+        userId: user.id,
+        status: user.status,
+      });
       res.status(403).json({
         error: 'Forbidden',
         message: 'User account is inactive',
@@ -126,7 +131,11 @@ export const authMiddleware = async (
  * Role-based authorization middleware
  */
 export const requireRole = (roles: UserRole | UserRole[]) => {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+  return (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',
@@ -144,7 +153,7 @@ export const requireRole = (roles: UserRole | UserRole[]) => {
         userRole,
         requiredRoles: allowedRoles,
       });
-      
+
       res.status(403).json({
         error: 'Forbidden',
         message: 'Insufficient permissions',
@@ -165,7 +174,10 @@ export const requireAdmin = requireRole(UserRole.ADMIN);
 /**
  * MSP Admin or Admin middleware
  */
-export const requireMSPAdmin = requireRole([UserRole.ADMIN, UserRole.MSP_ADMIN]);
+export const requireMSPAdmin = requireRole([
+  UserRole.ADMIN,
+  UserRole.MSP_ADMIN,
+]);
 
 /**
  * Optional authentication middleware
@@ -178,14 +190,14 @@ export const optionalAuth = async (
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       next();
       return;
     }
 
     const token = authHeader.substring(7);
-    
+
     if (!token) {
       next();
       return;
@@ -193,7 +205,7 @@ export const optionalAuth = async (
 
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
-    
+
     // Get user from database
     const { data: user, error } = await supabase
       .from('users')
@@ -237,7 +249,7 @@ export const requireClientAccess = async (
     }
 
     const clientId = req.params.clientId || req.body.clientId;
-    
+
     if (!clientId) {
       res.status(400).json({
         error: 'Bad Request',
@@ -266,7 +278,7 @@ export const requireClientAccess = async (
         clientId,
         userId: req.user.id,
       });
-      
+
       res.status(403).json({
         error: 'Forbidden',
         message: 'Access denied to this client',

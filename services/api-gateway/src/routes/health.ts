@@ -54,14 +54,14 @@ const services = [
  */
 const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
   const startTime = Date.now();
-  
+
   try {
     const response = await axios.get(`${service.url}${service.healthCheck}`, {
       timeout: 5000, // 5 second timeout
     });
-    
+
     const responseTime = Date.now() - startTime;
-    
+
     return {
       name: service.name,
       status: response.status === 200 ? 'healthy' : 'unhealthy',
@@ -70,7 +70,7 @@ const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
     };
   } catch (error) {
     const responseTime = Date.now() - startTime;
-    
+
     return {
       name: service.name,
       status: 'unhealthy',
@@ -87,51 +87,59 @@ const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
 router.get('/', async (req: Request, res: Response) => {
   try {
     const startTime = Date.now();
-    
+
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
       services.map(service => checkServiceHealth(service))
     );
-    
-    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
-      if (result.status === 'fulfilled') {
-        return result.value;
-      } else {
-        return {
-          name: services[index].name,
-          status: 'unhealthy',
-          lastCheck: new Date().toISOString(),
-          error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
-        };
+
+    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
+      (result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        } else {
+          return {
+            name: services[index].name,
+            status: 'unhealthy',
+            lastCheck: new Date().toISOString(),
+            error:
+              result.reason instanceof Error
+                ? result.reason.message
+                : 'Unknown error',
+          };
+        }
       }
-    });
-    
+    );
+
     // Determine overall health
-    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
-    const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
-    
+    const unhealthyServices = serviceHealths.filter(
+      service => service.status === 'unhealthy'
+    );
+    const overallStatus =
+      unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
+
     const response: HealthCheckResponse = {
       status: overallStatus,
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       services: serviceHealths,
     };
-    
+
     const statusCode = overallStatus === 'healthy' ? 200 : 503;
-    
+
     logger.info('Health check completed', {
       status: overallStatus,
       unhealthyServices: unhealthyServices.length,
       responseTime: Date.now() - startTime,
     });
-    
+
     res.status(statusCode).json(response);
   } catch (error) {
     logger.error('Health check failed', {
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
     });
-    
+
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
@@ -148,25 +156,30 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/detailed', async (req: Request, res: Response) => {
   try {
     const startTime = Date.now();
-    
+
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
       services.map(service => checkServiceHealth(service))
     );
-    
-    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
-      if (result.status === 'fulfilled') {
-        return result.value;
-      } else {
-        return {
-          name: services[index].name,
-          status: 'unhealthy',
-          lastCheck: new Date().toISOString(),
-          error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
-        };
+
+    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
+      (result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        } else {
+          return {
+            name: services[index].name,
+            status: 'unhealthy',
+            lastCheck: new Date().toISOString(),
+            error:
+              result.reason instanceof Error
+                ? result.reason.message
+                : 'Unknown error',
+          };
+        }
       }
-    });
-    
+    );
+
     // Get system information
     const systemInfo = {
       nodeVersion: process.version,
@@ -177,11 +190,14 @@ router.get('/detailed', async (req: Request, res: Response) => {
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
     };
-    
+
     // Determine overall health
-    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
-    const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
-    
+    const unhealthyServices = serviceHealths.filter(
+      service => service.status === 'unhealthy'
+    );
+    const overallStatus =
+      unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
+
     const response = {
       status: overallStatus,
       timestamp: new Date().toISOString(),
@@ -190,22 +206,22 @@ router.get('/detailed', async (req: Request, res: Response) => {
       system: systemInfo,
       responseTime: Date.now() - startTime,
     };
-    
+
     const statusCode = overallStatus === 'healthy' ? 200 : 503;
-    
+
     logger.info('Detailed health check completed', {
       status: overallStatus,
       unhealthyServices: unhealthyServices.length,
       responseTime: Date.now() - startTime,
     });
-    
+
     res.status(statusCode).json(response);
   } catch (error) {
     logger.error('Detailed health check failed', {
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
     });
-    
+
     res.status(503).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),

@@ -12,386 +12,392 @@ const supabase = createClient(
 );
 
 // Collect system metrics
-router.post('/collect', asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      serviceName,
-      metrics,
-      timestamp
-    } = req.body;
+router.post(
+  '/collect',
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { serviceName, metrics, timestamp } = req.body;
 
-    const userId = (req as any).user?.id;
+      const userId = (req as any).user?.id;
 
-    if (!userId) {
-      res.status(401).json({
-        error: 'Unauthorized',
-        message: 'User ID not found',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    if (!serviceName || !metrics) {
-      res.status(400).json({
-        error: 'Bad Request',
-        message: 'Missing required fields: serviceName, metrics',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    // Validate metrics structure
-    const requiredMetrics = ['cpu', 'memory', 'disk', 'network'];
-    const missingMetrics = requiredMetrics.filter(metric => !metrics[metric]);
-    
-    if (missingMetrics.length > 0) {
-      res.status(400).json({
-        error: 'Bad Request',
-        message: `Missing required metrics: ${missingMetrics.join(', ')}`,
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    // Save metrics to database
-    const metricsRecord = {
-      service_name: serviceName,
-      metrics: metrics,
-      timestamp: timestamp || new Date().toISOString(),
-      user_id: userId
-    };
-
-    const { error } = await supabase
-      .from('infrastructure_metrics')
-      .insert(metricsRecord);
-
-    if (error) {
-      logger.error('Failed to save metrics', {
-        serviceName,
-        userId,
-        error: error.message
-      });
-      res.status(500).json({
-        error: 'Internal Server Error',
-        message: 'Failed to save metrics',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    logger.info('Metrics collected successfully', {
-      serviceName,
-      userId,
-      timestamp: metricsRecord.timestamp
-    });
-
-    res.status(201).json({
-      success: true,
-      message: 'Metrics collected successfully',
-      serviceName,
-      timestamp: metricsRecord.timestamp
-    });
-
-  } catch (error) {
-    logger.error('Metrics collection error', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: (req as any).user?.id
-    });
-    throw error;
-  }
-}));
-
-// Get metrics for a service
-router.get('/service/:serviceName', asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { serviceName } = req.params;
-    const { startTime, endTime, limit = 100 } = req.query;
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      res.status(401).json({
-        error: 'Unauthorized',
-        message: 'User ID not found',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    let query = supabase
-      .from('infrastructure_metrics')
-      .select('*')
-      .eq('service_name', serviceName)
-      .order('timestamp', { ascending: false })
-      .limit(Number(limit));
-
-    if (startTime) {
-      query = query.gte('timestamp', startTime);
-    }
-
-    if (endTime) {
-      query = query.lte('timestamp', endTime);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      logger.error('Failed to get metrics', {
-        serviceName,
-        userId,
-        error: error.message
-      });
-      res.status(500).json({
-        error: 'Internal Server Error',
-        message: 'Failed to retrieve metrics',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    logger.info('Metrics retrieved successfully', {
-      serviceName,
-      userId,
-      count: data?.length || 0
-    });
-
-    res.status(200).json({
-      success: true,
-      serviceName,
-      metrics: data || [],
-      count: data?.length || 0,
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    logger.error('Get metrics error', {
-      serviceName: req.params.serviceName,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: (req as any).user?.id
-    });
-    throw error;
-  }
-}));
-
-// Get aggregated metrics
-router.get('/aggregated', asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { 
-      serviceName, 
-      metricType, 
-      aggregation = 'avg', 
-      timeRange = '1h',
-      granularity = '5m'
-    } = req.query;
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      res.status(401).json({
-        error: 'Unauthorized',
-        message: 'User ID not found',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    // Calculate time range
-    const now = new Date();
-    const timeRangeMs = this.parseTimeRange(timeRange as string);
-    const startTime = new Date(now.getTime() - timeRangeMs);
-
-    let query = supabase
-      .from('infrastructure_metrics')
-      .select('*')
-      .gte('timestamp', startTime.toISOString())
-      .order('timestamp', { ascending: true });
-
-    if (serviceName) {
-      query = query.eq('service_name', serviceName);
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      logger.error('Failed to get aggregated metrics', {
-        serviceName,
-        userId,
-        error: error.message
-      });
-      res.status(500).json({
-        error: 'Internal Server Error',
-        message: 'Failed to retrieve aggregated metrics',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    // Aggregate metrics
-    const aggregatedMetrics = this.aggregateMetrics(
-      data || [],
-      metricType as string,
-      aggregation as string,
-      granularity as string
-    );
-
-    logger.info('Aggregated metrics retrieved successfully', {
-      serviceName,
-      metricType,
-      aggregation,
-      timeRange,
-      userId,
-      count: aggregatedMetrics.length
-    });
-
-    res.status(200).json({
-      success: true,
-      serviceName,
-      metricType,
-      aggregation,
-      timeRange,
-      granularity,
-      metrics: aggregatedMetrics,
-      count: aggregatedMetrics.length,
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    logger.error('Get aggregated metrics error', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: (req as any).user?.id
-    });
-    throw error;
-  }
-}));
-
-// Get service health status
-router.get('/health/:serviceName', asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { serviceName } = req.params;
-    const userId = (req as any).user?.id;
-
-    if (!userId) {
-      res.status(401).json({
-        error: 'Unauthorized',
-        message: 'User ID not found',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
-
-    // Get latest metrics for the service
-    const { data, error } = await supabase
-      .from('infrastructure_metrics')
-      .select('*')
-      .eq('service_name', serviceName)
-      .order('timestamp', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        res.status(404).json({
-          error: 'Not Found',
-          message: 'No metrics found for service',
-          timestamp: new Date().toISOString()
+      if (!userId) {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'User ID not found',
+          timestamp: new Date().toISOString(),
         });
         return;
       }
-      
-      logger.error('Failed to get service health', {
+
+      if (!serviceName || !metrics) {
+        res.status(400).json({
+          error: 'Bad Request',
+          message: 'Missing required fields: serviceName, metrics',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Validate metrics structure
+      const requiredMetrics = ['cpu', 'memory', 'disk', 'network'];
+      const missingMetrics = requiredMetrics.filter(metric => !metrics[metric]);
+
+      if (missingMetrics.length > 0) {
+        res.status(400).json({
+          error: 'Bad Request',
+          message: `Missing required metrics: ${missingMetrics.join(', ')}`,
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Save metrics to database
+      const metricsRecord = {
+        service_name: serviceName,
+        metrics: metrics,
+        timestamp: timestamp || new Date().toISOString(),
+        user_id: userId,
+      };
+
+      const { error } = await supabase
+        .from('infrastructure_metrics')
+        .insert(metricsRecord);
+
+      if (error) {
+        logger.error('Failed to save metrics', {
+          serviceName,
+          userId,
+          error: error.message,
+        });
+        res.status(500).json({
+          error: 'Internal Server Error',
+          message: 'Failed to save metrics',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      logger.info('Metrics collected successfully', {
         serviceName,
         userId,
-        error: error.message
+        timestamp: metricsRecord.timestamp,
       });
-      res.status(500).json({
-        error: 'Internal Server Error',
-        message: 'Failed to retrieve service health',
-        timestamp: new Date().toISOString()
+
+      res.status(201).json({
+        success: true,
+        message: 'Metrics collected successfully',
+        serviceName,
+        timestamp: metricsRecord.timestamp,
       });
-      return;
+    } catch (error) {
+      logger.error('Metrics collection error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: (req as any).user?.id,
+      });
+      throw error;
     }
+  })
+);
 
-    // Calculate health status based on metrics
-    const healthStatus = this.calculateHealthStatus(data.metrics);
+// Get metrics for a service
+router.get(
+  '/service/:serviceName',
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { serviceName } = req.params;
+      const { startTime, endTime, limit = 100 } = req.query;
+      const userId = (req as any).user?.id;
 
-    logger.info('Service health retrieved successfully', {
-      serviceName,
-      userId,
-      status: healthStatus.status
-    });
+      if (!userId) {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'User ID not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
 
-    res.status(200).json({
-      success: true,
-      serviceName,
-      health: healthStatus,
-      lastUpdated: data.timestamp,
-      timestamp: new Date().toISOString()
-    });
+      let query = supabase
+        .from('infrastructure_metrics')
+        .select('*')
+        .eq('service_name', serviceName)
+        .order('timestamp', { ascending: false })
+        .limit(Number(limit));
 
-  } catch (error) {
-    logger.error('Get service health error', {
-      serviceName: req.params.serviceName,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: (req as any).user?.id
-    });
-    throw error;
-  }
-}));
+      if (startTime) {
+        query = query.gte('timestamp', startTime);
+      }
+
+      if (endTime) {
+        query = query.lte('timestamp', endTime);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        logger.error('Failed to get metrics', {
+          serviceName,
+          userId,
+          error: error.message,
+        });
+        res.status(500).json({
+          error: 'Internal Server Error',
+          message: 'Failed to retrieve metrics',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      logger.info('Metrics retrieved successfully', {
+        serviceName,
+        userId,
+        count: data?.length || 0,
+      });
+
+      res.status(200).json({
+        success: true,
+        serviceName,
+        metrics: data || [],
+        count: data?.length || 0,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      logger.error('Get metrics error', {
+        serviceName: req.params.serviceName,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: (req as any).user?.id,
+      });
+      throw error;
+    }
+  })
+);
+
+// Get aggregated metrics
+router.get(
+  '/aggregated',
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    try {
+      const {
+        serviceName,
+        metricType,
+        aggregation = 'avg',
+        timeRange = '1h',
+        granularity = '5m',
+      } = req.query;
+      const userId = (req as any).user?.id;
+
+      if (!userId) {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'User ID not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Calculate time range
+      const now = new Date();
+      const timeRangeMs = this.parseTimeRange(timeRange as string);
+      const startTime = new Date(now.getTime() - timeRangeMs);
+
+      let query = supabase
+        .from('infrastructure_metrics')
+        .select('*')
+        .gte('timestamp', startTime.toISOString())
+        .order('timestamp', { ascending: true });
+
+      if (serviceName) {
+        query = query.eq('service_name', serviceName);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        logger.error('Failed to get aggregated metrics', {
+          serviceName,
+          userId,
+          error: error.message,
+        });
+        res.status(500).json({
+          error: 'Internal Server Error',
+          message: 'Failed to retrieve aggregated metrics',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Aggregate metrics
+      const aggregatedMetrics = this.aggregateMetrics(
+        data || [],
+        metricType as string,
+        aggregation as string,
+        granularity as string
+      );
+
+      logger.info('Aggregated metrics retrieved successfully', {
+        serviceName,
+        metricType,
+        aggregation,
+        timeRange,
+        userId,
+        count: aggregatedMetrics.length,
+      });
+
+      res.status(200).json({
+        success: true,
+        serviceName,
+        metricType,
+        aggregation,
+        timeRange,
+        granularity,
+        metrics: aggregatedMetrics,
+        count: aggregatedMetrics.length,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      logger.error('Get aggregated metrics error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: (req as any).user?.id,
+      });
+      throw error;
+    }
+  })
+);
+
+// Get service health status
+router.get(
+  '/health/:serviceName',
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { serviceName } = req.params;
+      const userId = (req as any).user?.id;
+
+      if (!userId) {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'User ID not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Get latest metrics for the service
+      const { data, error } = await supabase
+        .from('infrastructure_metrics')
+        .select('*')
+        .eq('service_name', serviceName)
+        .order('timestamp', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          res.status(404).json({
+            error: 'Not Found',
+            message: 'No metrics found for service',
+            timestamp: new Date().toISOString(),
+          });
+          return;
+        }
+
+        logger.error('Failed to get service health', {
+          serviceName,
+          userId,
+          error: error.message,
+        });
+        res.status(500).json({
+          error: 'Internal Server Error',
+          message: 'Failed to retrieve service health',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Calculate health status based on metrics
+      const healthStatus = this.calculateHealthStatus(data.metrics);
+
+      logger.info('Service health retrieved successfully', {
+        serviceName,
+        userId,
+        status: healthStatus.status,
+      });
+
+      res.status(200).json({
+        success: true,
+        serviceName,
+        health: healthStatus,
+        lastUpdated: data.timestamp,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      logger.error('Get service health error', {
+        serviceName: req.params.serviceName,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: (req as any).user?.id,
+      });
+      throw error;
+    }
+  })
+);
 
 // Get all services health status
-router.get('/health', asyncHandler(async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = (req as any).user?.id;
+router.get(
+  '/health',
+  asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    try {
+      const userId = (req as any).user?.id;
 
-    if (!userId) {
-      res.status(401).json({
-        error: 'Unauthorized',
-        message: 'User ID not found',
-        timestamp: new Date().toISOString()
-      });
-      return;
-    }
+      if (!userId) {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'User ID not found',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
 
-    // Get latest metrics for all services
-    const { data, error } = await supabase
-      .from('infrastructure_metrics')
-      .select('service_name, metrics, timestamp')
-      .order('timestamp', { ascending: false });
+      // Get latest metrics for all services
+      const { data, error } = await supabase
+        .from('infrastructure_metrics')
+        .select('service_name, metrics, timestamp')
+        .order('timestamp', { ascending: false });
 
-    if (error) {
-      logger.error('Failed to get all services health', {
+      if (error) {
+        logger.error('Failed to get all services health', {
+          userId,
+          error: error.message,
+        });
+        res.status(500).json({
+          error: 'Internal Server Error',
+          message: 'Failed to retrieve services health',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      // Group by service and get latest metrics
+      const servicesHealth = this.groupServicesHealth(data || []);
+
+      logger.info('All services health retrieved successfully', {
         userId,
-        error: error.message
+        serviceCount: servicesHealth.length,
       });
-      res.status(500).json({
-        error: 'Internal Server Error',
-        message: 'Failed to retrieve services health',
-        timestamp: new Date().toISOString()
+
+      res.status(200).json({
+        success: true,
+        services: servicesHealth,
+        count: servicesHealth.length,
+        timestamp: new Date().toISOString(),
       });
-      return;
+    } catch (error) {
+      logger.error('Get all services health error', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        userId: (req as any).user?.id,
+      });
+      throw error;
     }
-
-    // Group by service and get latest metrics
-    const servicesHealth = this.groupServicesHealth(data || []);
-
-    logger.info('All services health retrieved successfully', {
-      userId,
-      serviceCount: servicesHealth.length
-    });
-
-    res.status(200).json({
-      success: true,
-      services: servicesHealth,
-      count: servicesHealth.length,
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    logger.error('Get all services health error', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      userId: (req as any).user?.id
-    });
-    throw error;
-  }
-}));
+  })
+);
 
 // Helper methods
 function parseTimeRange(timeRange: string): number {
@@ -401,9 +407,9 @@ function parseTimeRange(timeRange: string): number {
     '1h': 60 * 60 * 1000,
     '4h': 4 * 60 * 60 * 1000,
     '24h': 24 * 60 * 60 * 1000,
-    '7d': 7 * 24 * 60 * 60 * 1000
+    '7d': 7 * 24 * 60 * 60 * 1000,
   };
-  
+
   return timeRangeMap[timeRange] || timeRangeMap['1h'];
 }
 
@@ -415,11 +421,11 @@ function aggregateMetrics(
 ): any[] {
   // Group metrics by time buckets
   const buckets = new Map<string, any[]>();
-  
+
   metrics.forEach(metric => {
     const timestamp = new Date(metric.timestamp);
     const bucketKey = this.getBucketKey(timestamp, granularity);
-    
+
     if (!buckets.has(bucketKey)) {
       buckets.set(bucketKey, []);
     }
@@ -428,27 +434,33 @@ function aggregateMetrics(
 
   // Aggregate each bucket
   const aggregatedMetrics: any[] = [];
-  
+
   buckets.forEach((bucketMetrics, bucketKey) => {
     const aggregatedMetric = {
       timestamp: bucketKey,
-      value: this.calculateAggregation(bucketMetrics, metricType, aggregation)
+      value: this.calculateAggregation(bucketMetrics, metricType, aggregation),
     };
     aggregatedMetrics.push(aggregatedMetric);
   });
 
-  return aggregatedMetrics.sort((a, b) => 
-    new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  return aggregatedMetrics.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
 }
 
 function getBucketKey(timestamp: Date, granularity: string): string {
   const granularityMs = this.parseTimeRange(granularity);
-  const bucketTime = new Date(Math.floor(timestamp.getTime() / granularityMs) * granularityMs);
+  const bucketTime = new Date(
+    Math.floor(timestamp.getTime() / granularityMs) * granularityMs
+  );
   return bucketTime.toISOString();
 }
 
-function calculateAggregation(metrics: any[], metricType: string, aggregation: string): number {
+function calculateAggregation(
+  metrics: any[],
+  metricType: string,
+  aggregation: string
+): number {
   const values = metrics.map(metric => {
     const metricValue = metric.metrics[metricType];
     return typeof metricValue === 'number' ? metricValue : 0;
@@ -514,7 +526,7 @@ function calculateHealthStatus(metrics: any): { status: string; details: any } {
 
 function groupServicesHealth(metrics: any[]): any[] {
   const serviceMap = new Map<string, any>();
-  
+
   metrics.forEach(metric => {
     if (!serviceMap.has(metric.service_name)) {
       serviceMap.set(metric.service_name, metric);
@@ -524,7 +536,7 @@ function groupServicesHealth(metrics: any[]): any[] {
   return Array.from(serviceMap.values()).map(metric => ({
     serviceName: metric.service_name,
     health: this.calculateHealthStatus(metric.metrics),
-    lastUpdated: metric.timestamp
+    lastUpdated: metric.timestamp,
   }));
 }
 

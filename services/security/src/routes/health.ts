@@ -18,7 +18,7 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
       service: 'security-service',
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '1.0.0',
-      environment: process.env.NODE_ENV || 'development'
+      environment: process.env.NODE_ENV || 'development',
     };
 
     // Test database connection
@@ -33,7 +33,7 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
         ...healthCheck,
         status: 'unhealthy',
         database: 'disconnected',
-        error: dbError.message
+        error: dbError.message,
       });
       return;
     }
@@ -47,7 +47,7 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
         ...healthCheck,
         status: 'unhealthy',
         auth: 'disconnected',
-        error: authError.message
+        error: authError.message,
       });
       return;
     }
@@ -55,19 +55,18 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
     res.status(200).json({
       ...healthCheck,
       database: 'connected',
-      auth: 'connected'
+      auth: 'connected',
     });
-
   } catch (error) {
     logger.error('Health check error', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
 
     res.status(503).json({
       status: 'unhealthy',
       service: 'security-service',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
@@ -79,7 +78,7 @@ router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
       database: { status: 'unknown', responseTime: 0 },
       auth: { status: 'unknown', responseTime: 0 },
       memory: { status: 'unknown', usage: 0 },
-      uptime: { status: 'healthy', seconds: process.uptime() }
+      uptime: { status: 'healthy', seconds: process.uptime() },
     };
 
     // Database check
@@ -102,27 +101,28 @@ router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
     checks.memory.usage = Math.round(memUsage.heapUsed / 1024 / 1024); // MB
     checks.memory.status = checks.memory.usage > 500 ? 'warning' : 'healthy';
 
-    const overallStatus = Object.values(checks).every(check =>
-      check.status === 'healthy' || check.status === 'warning'
-    ) ? 'healthy' : 'unhealthy';
+    const overallStatus = Object.values(checks).every(
+      check => check.status === 'healthy' || check.status === 'warning'
+    )
+      ? 'healthy'
+      : 'unhealthy';
 
     res.status(overallStatus === 'healthy' ? 200 : 503).json({
       status: overallStatus,
       service: 'security-service',
       timestamp: new Date().toISOString(),
-      checks
+      checks,
     });
-
   } catch (error) {
     logger.error('Detailed health check error', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
 
     res.status(503).json({
       status: 'unhealthy',
       service: 'security-service',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });

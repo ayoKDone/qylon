@@ -10,7 +10,7 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
     message: {
       error: 'Too Many Requests',
       message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     },
     standardHeaders: true,
     legacyHeaders: false,
@@ -21,16 +21,16 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
         path: req.path,
         method: req.method,
         limit: max,
-        windowMs
+        windowMs,
       });
 
       res.status(429).json({
         error: 'Too Many Requests',
         message,
         timestamp: new Date().toISOString(),
-        retryAfter: Math.ceil(windowMs / 1000)
+        retryAfter: Math.ceil(windowMs / 1000),
       });
-    }
+    },
   });
 };
 
@@ -49,7 +49,11 @@ export const authRateLimiter = createRateLimiter(
 );
 
 // User-specific rate limiter
-export const userRateLimiter = (req: Request, res: Response, next: NextFunction): void => {
+export const userRateLimiter = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const userId = (req as any).user?.id;
 
   if (!userId) {

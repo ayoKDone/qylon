@@ -80,7 +80,7 @@ export class APIKeyManager {
           user_id: userId,
           permissions: request.permissions || [],
           expires_at: expiresAt?.toISOString(),
-          is_active: true
+          is_active: true,
         })
         .select()
         .single();
@@ -88,7 +88,7 @@ export class APIKeyManager {
       if (error) {
         logger.error('Failed to create API key', {
           userId,
-          error: error.message
+          error: error.message,
         });
         throw new Error('Failed to create API key');
       }
@@ -96,7 +96,7 @@ export class APIKeyManager {
       logger.info('API key created successfully', {
         userId,
         keyId: data.id,
-        name: request.name
+        name: request.name,
       });
 
       return {
@@ -105,13 +105,12 @@ export class APIKeyManager {
         key: key, // Only returned once
         permissions: data.permissions,
         expires_at: data.expires_at ? new Date(data.expires_at) : undefined,
-        created_at: new Date(data.created_at)
+        created_at: new Date(data.created_at),
       };
-
     } catch (error) {
       logger.error('API key creation error', {
         userId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -138,7 +137,7 @@ export class APIKeyManager {
 
       if (error || !data) {
         logger.warn('Invalid API key provided', {
-          error: error?.message
+          error: error?.message,
         });
         return { valid: false, error: 'Invalid API key' };
       }
@@ -147,7 +146,7 @@ export class APIKeyManager {
       if (data.expires_at && new Date(data.expires_at) < new Date()) {
         logger.warn('Expired API key used', {
           keyId: data.id,
-          userId: data.user_id
+          userId: data.user_id,
         });
         return { valid: false, error: 'API key has expired' };
       }
@@ -160,18 +159,17 @@ export class APIKeyManager {
 
       logger.info('API key validated successfully', {
         keyId: data.id,
-        userId: data.user_id
+        userId: data.user_id,
       });
 
       return {
         valid: true,
         userId: data.user_id,
-        permissions: data.permissions
+        permissions: data.permissions,
       };
-
     } catch (error) {
       logger.error('API key validation error', {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return { valid: false, error: 'Validation failed' };
     }
@@ -184,24 +182,25 @@ export class APIKeyManager {
     try {
       const { data, error } = await this.supabase
         .from('api_keys')
-        .select('id, name, user_id, permissions, expires_at, last_used_at, is_active, created_at, updated_at')
+        .select(
+          'id, name, user_id, permissions, expires_at, last_used_at, is_active, created_at, updated_at'
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
       if (error) {
         logger.error('Failed to list API keys', {
           userId,
-          error: error.message
+          error: error.message,
         });
         throw new Error('Failed to list API keys');
       }
 
       return data || [];
-
     } catch (error) {
       logger.error('API key listing error', {
         userId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -222,21 +221,20 @@ export class APIKeyManager {
         logger.error('Failed to revoke API key', {
           keyId,
           userId,
-          error: error.message
+          error: error.message,
         });
         throw new Error('Failed to revoke API key');
       }
 
       logger.info('API key revoked successfully', {
         keyId,
-        userId
+        userId,
       });
-
     } catch (error) {
       logger.error('API key revocation error', {
         keyId,
         userId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -263,7 +261,7 @@ export class APIKeyManager {
         logger.error('Failed to find API key for rotation', {
           keyId,
           userId,
-          error: fetchError?.message
+          error: fetchError?.message,
         });
         throw new Error('API key not found');
       }
@@ -275,7 +273,7 @@ export class APIKeyManager {
       const newKeyRequest: CreateAPIKeyRequest = {
         name: request.name || `${oldKey.name} (rotated)`,
         permissions: request.permissions || oldKey.permissions,
-        expires_in_days: request.expires_in_days
+        expires_in_days: request.expires_in_days,
       };
 
       const newKey = await this.createAPIKey(userId, newKeyRequest);
@@ -283,16 +281,15 @@ export class APIKeyManager {
       logger.info('API key rotated successfully', {
         oldKeyId: keyId,
         newKeyId: newKey.id,
-        userId
+        userId,
       });
 
       return newKey;
-
     } catch (error) {
       logger.error('API key rotation error', {
         keyId,
         userId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -312,7 +309,7 @@ export class APIKeyManager {
 
       if (error) {
         logger.error('Failed to cleanup expired API keys', {
-          error: error.message
+          error: error.message,
         });
         throw new Error('Failed to cleanup expired keys');
       }
@@ -321,15 +318,14 @@ export class APIKeyManager {
 
       if (cleanedCount > 0) {
         logger.info('Expired API keys cleaned up', {
-          count: cleanedCount
+          count: cleanedCount,
         });
       }
 
       return cleanedCount;
-
     } catch (error) {
       logger.error('API key cleanup error', {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }

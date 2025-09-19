@@ -83,7 +83,7 @@ export enum QylonEventTypes {
   // Analytics Events
   METRIC_RECORDED = 'metric.recorded',
   REPORT_GENERATED = 'report.generated',
-  DASHBOARD_UPDATED = 'dashboard.updated'
+  DASHBOARD_UPDATED = 'dashboard.updated',
 }
 
 // Aggregate types
@@ -95,5 +95,5 @@ export enum AggregateTypes {
   WORKFLOW = 'workflow',
   INTEGRATION = 'integration',
   NOTIFICATION = 'notification',
-  ANALYTICS = 'analytics'
+  ANALYTICS = 'analytics',
 }

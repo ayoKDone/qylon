@@ -15,7 +15,11 @@ declare global {
 /**
  * Request logging middleware
  */
-export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   // Generate unique request ID
   req.requestId = uuidv4();
   req.startTime = Date.now();
@@ -28,12 +32,12 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
     ip: req.ip,
     userAgent: req.get('User-Agent'),
     contentType: req.get('Content-Type'),
-    contentLength: req.get('Content-Length')
+    contentLength: req.get('Content-Length'),
   });
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any): any {
+  res.end = function (chunk?: any, encoding?: any): any {
     const duration = Date.now() - req.startTime;
 
     logger.info('Request completed', {
@@ -42,7 +46,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
       url: req.url,
       statusCode: res.statusCode,
       duration: `${duration}ms`,
-      contentLength: res.get('Content-Length')
+      contentLength: res.get('Content-Length'),
     });
 
     // Call original end method

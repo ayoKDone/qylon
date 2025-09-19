@@ -13,7 +13,7 @@ const supabase = createClient(
 const keyGenerator = (req: Request): string => {
   const userId = (req as any).user?.id;
   const ip = req.ip || req.connection.remoteAddress || 'unknown';
-  
+
   // For authenticated users, use user ID as key
   // For anonymous users, use IP address
   return userId ? `user:${userId}` : `ip:${ip}`;
@@ -25,13 +25,13 @@ const skip = (req: Request): boolean => {
   if (req.path === '/health') {
     return true;
   }
-  
+
   // Skip rate limiting for admin users
   const user = (req as any).user;
   if (user && user.role === 'admin') {
     return true;
   }
-  
+
   return false;
 };
 
@@ -39,7 +39,7 @@ const skip = (req: Request): boolean => {
 const handler = async (req: Request, res: Response) => {
   const userId = (req as any).user?.id;
   const ip = req.ip || req.connection.remoteAddress || 'unknown';
-  
+
   // Log security event
   logSecurity('Rate limit exceeded', req, {
     userId,
@@ -47,18 +47,16 @@ const handler = async (req: Request, res: Response) => {
     endpoint: req.path,
     method: req.method,
   });
-  
+
   // Store rate limit violation in database
   try {
-    await supabase
-      .from('api_rate_limits')
-      .insert({
-        user_id: userId || null,
-        ip_address: ip,
-        endpoint: req.path,
-        request_count: 1,
-        window_start: new Date().toISOString(),
-      });
+    await supabase.from('api_rate_limits').insert({
+      user_id: userId || null,
+      ip_address: ip,
+      endpoint: req.path,
+      request_count: 1,
+      window_start: new Date().toISOString(),
+    });
   } catch (error) {
     logger.error('Failed to log rate limit violation', {
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -66,12 +64,16 @@ const handler = async (req: Request, res: Response) => {
       ip,
     });
   }
-  
+
   res.status(429).json({
     error: 'Too Many Requests',
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
-    retryAfter: Math.round(req.rateLimit?.resetTime ? (req.rateLimit.resetTime - Date.now()) / 1000 : 60),
+    retryAfter: Math.round(
+      req.rateLimit?.resetTime
+        ? (req.rateLimit.resetTime - Date.now()) / 1000
+        : 60
+    ),
   });
 };
 

@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import {
-    ExecutionContext,
-    ExecutionError,
-    ExecutionStatus,
-    Workflow,
-    WorkflowError,
-    WorkflowExecution
+  ExecutionContext,
+  ExecutionError,
+  ExecutionStatus,
+  Workflow,
+  WorkflowError,
+  WorkflowExecution,
 } from '../types';
 import { logWorkflow, logger } from '../utils/logger';
 import { StateMachine } from './StateMachine';
@@ -34,7 +34,11 @@ export class WorkflowEngine {
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
       if (!workflow) {
-        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
+        throw new WorkflowError(
+          `Workflow not found: ${workflowId}`,
+          'WORKFLOW_NOT_FOUND',
+          404
+        );
       }
 
       // Create execution context
@@ -42,7 +46,7 @@ export class WorkflowEngine {
         variables: { ...context },
         input_data: inputData,
         state_history: [],
-        action_results: []
+        action_results: [],
       };
 
       // Create workflow execution record
@@ -54,11 +58,10 @@ export class WorkflowEngine {
       logWorkflow('workflow_execution_created', workflowId, execution.id);
 
       return execution;
-
     } catch (error) {
       logger.error('Workflow execution failed', {
         workflowId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -79,7 +82,7 @@ export class WorkflowEngine {
       if (error) {
         logger.error('Failed to fetch workflow', {
           workflowId,
-          error: error.message
+          error: error.message,
         });
         return null;
       }
@@ -94,13 +97,12 @@ export class WorkflowEngine {
         version: data.version,
         is_active: data.is_active,
         created_at: new Date(data.created_at),
-        updated_at: new Date(data.updated_at)
+        updated_at: new Date(data.updated_at),
       };
-
     } catch (error) {
       logger.error('Workflow fetch error', {
         workflowId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return null;
     }
@@ -121,7 +123,7 @@ export class WorkflowEngine {
           client_id: workflow.client_id,
           status: ExecutionStatus.PENDING,
           context: context,
-          started_at: new Date().toISOString()
+          started_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -141,15 +143,16 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
+        completed_at: data.completed_at
+          ? new Date(data.completed_at)
+          : undefined,
         error: data.error,
-        metadata: data.metadata
+        metadata: data.metadata,
       };
-
     } catch (error) {
       logger.error('Execution creation error', {
         workflowId: workflow.id,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -184,16 +187,15 @@ export class WorkflowEngine {
       // Update execution status to completed
       await this.updateExecutionStatus(executionId, ExecutionStatus.COMPLETED, {
         completed_at: new Date().toISOString(),
-        context: stateMachine.getContext()
+        context: stateMachine.getContext(),
       });
 
       logWorkflow('workflow_execution_completed', workflow.id, executionId);
-
     } catch (error) {
       logger.error('Workflow execution failed', {
         executionId,
         workflowId: workflow.id,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
 
       // Update execution status to failed
@@ -202,12 +204,12 @@ export class WorkflowEngine {
           type: 'ExecutionError',
           message: error instanceof Error ? error.message : 'Unknown error',
           timestamp: new Date(),
-          stack: error instanceof Error ? error.stack : undefined
-        }
+          stack: error instanceof Error ? error.stack : undefined,
+        },
       });
 
       logWorkflow('workflow_execution_failed', workflow.id, executionId, {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -223,7 +225,7 @@ export class WorkflowEngine {
     try {
       const updateData: any = {
         status,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       if (updates) {
@@ -239,15 +241,14 @@ export class WorkflowEngine {
         logger.error('Failed to update execution status', {
           executionId,
           status,
-          error: error.message
+          error: error.message,
         });
       }
-
     } catch (error) {
       logger.error('Execution status update error', {
         executionId,
         status,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }
@@ -266,7 +267,7 @@ export class WorkflowEngine {
       if (error) {
         logger.error('Failed to fetch execution', {
           executionId,
-          error: error.message
+          error: error.message,
         });
         return null;
       }
@@ -279,15 +280,16 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
+        completed_at: data.completed_at
+          ? new Date(data.completed_at)
+          : undefined,
         error: data.error,
-        metadata: data.metadata
+        metadata: data.metadata,
       };
-
     } catch (error) {
       logger.error('Execution fetch error', {
         executionId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return null;
     }
@@ -312,30 +314,32 @@ export class WorkflowEngine {
       if (error) {
         logger.error('Failed to fetch executions', {
           workflowId,
-          error: error.message
+          error: error.message,
         });
         return { executions: [], total: 0 };
       }
 
-      const executions = data?.map(exec => ({
-        id: exec.id,
-        workflow_id: exec.workflow_id,
-        client_id: exec.client_id,
-        status: exec.status,
-        current_state: exec.current_state,
-        context: exec.context,
-        started_at: new Date(exec.started_at),
-        completed_at: exec.completed_at ? new Date(exec.completed_at) : undefined,
-        error: exec.error,
-        metadata: exec.metadata
-      })) || [];
+      const executions =
+        data?.map(exec => ({
+          id: exec.id,
+          workflow_id: exec.workflow_id,
+          client_id: exec.client_id,
+          status: exec.status,
+          current_state: exec.current_state,
+          context: exec.context,
+          started_at: new Date(exec.started_at),
+          completed_at: exec.completed_at
+            ? new Date(exec.completed_at)
+            : undefined,
+          error: exec.error,
+          metadata: exec.metadata,
+        })) || [];
 
       return { executions, total: count || 0 };
-
     } catch (error) {
       logger.error('Executions fetch error', {
         workflowId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return { executions: [], total: 0 };
     }
@@ -349,11 +353,10 @@ export class WorkflowEngine {
       await this.updateExecutionStatus(executionId, ExecutionStatus.CANCELLED);
 
       logWorkflow('workflow_execution_cancelled', '', executionId);
-
     } catch (error) {
       logger.error('Execution cancellation error', {
         executionId,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -372,7 +375,7 @@ export class WorkflowEngine {
       return !error;
     } catch (error) {
       logger.error('Workflow engine health check failed', {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
       return false;
     }

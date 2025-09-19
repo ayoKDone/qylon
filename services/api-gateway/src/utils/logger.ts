@@ -4,21 +4,23 @@ import { LogEntry } from '@/types';
 // Custom log format
 const logFormat = winston.format.combine(
   winston.format.timestamp({
-    format: 'YYYY-MM-DD HH:mm:ss.SSS'
+    format: 'YYYY-MM-DD HH:mm:ss.SSS',
   }),
   winston.format.errors({ stack: true }),
   winston.format.json(),
-  winston.format.printf(({ timestamp, level, message, service, requestId, userId, ...meta }) => {
-    return JSON.stringify({
-      timestamp,
-      level,
-      message,
-      service: service || 'api-gateway',
-      requestId,
-      userId,
-      ...meta
-    });
-  })
+  winston.format.printf(
+    ({ timestamp, level, message, service, requestId, userId, ...meta }) => {
+      return JSON.stringify({
+        timestamp,
+        level,
+        message,
+        service: service || 'api-gateway',
+        requestId,
+        userId,
+        ...meta,
+      });
+    }
+  )
 );
 
 // Create logger instance
@@ -32,9 +34,9 @@ export const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
-      )
+      ),
     }),
-    
+
     // File transport for errors
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -42,7 +44,7 @@ export const logger = winston.createLogger({
       maxsize: 5242880, // 5MB
       maxFiles: 5,
     }),
-    
+
     // File transport for all logs
     new winston.transports.File({
       filename: 'logs/combined.log',
@@ -69,9 +71,9 @@ export const logRequest = (req: any, res: any, responseTime: number) => {
       userAgent: req.get('User-Agent'),
       ip: req.ip,
       contentLength: res.get('Content-Length'),
-    }
+    },
   };
-  
+
   logger.info(logEntry);
 };
 
@@ -93,15 +95,19 @@ export const logError = (error: Error, req?: any, additionalInfo?: any) => {
         url: req.originalUrl,
         userAgent: req.get('User-Agent'),
         ip: req.ip,
-      })
-    }
+      }),
+    },
   };
-  
+
   logger.error(logEntry);
 };
 
 // Add performance logging helper
-export const logPerformance = (operation: string, duration: number, metadata?: any) => {
+export const logPerformance = (
+  operation: string,
+  duration: number,
+  metadata?: any
+) => {
   const logEntry: LogEntry = {
     level: 'info',
     message: `Performance: ${operation} completed in ${duration}ms`,
@@ -110,10 +116,10 @@ export const logPerformance = (operation: string, duration: number, metadata?: a
     metadata: {
       operation,
       duration,
-      ...metadata
-    }
+      ...metadata,
+    },
   };
-  
+
   logger.info(logEntry);
 };
 
@@ -132,10 +138,10 @@ export const logSecurity = (event: string, req: any, metadata?: any) => {
       url: req.originalUrl,
       userAgent: req.get('User-Agent'),
       ip: req.ip,
-      ...metadata
-    }
+      ...metadata,
+    },
   };
-  
+
   logger.warn(logEntry);
 };
 
