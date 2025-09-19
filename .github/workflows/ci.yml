@@ -315,5 +315,6 @@ jobs:
         with:
           status: failure
           channel: '#qylon-dev'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
