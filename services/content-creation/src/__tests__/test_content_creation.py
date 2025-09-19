@@ -43,9 +43,7 @@ class TestContentCreation:
         return {
             "name": "Business Article Template",
             "content_type": "article",
-            "template_content": (
-                "Template content with {variable1} and {variable2}"
-            ),
+            "template_content": ("Template content with {variable1} and {variable2}"),
             "variables": ["variable1", "variable2"],
             "description": "Template for business articles",
             "client_id": "client-123",
@@ -267,10 +265,7 @@ class TestContentCreation:
         data = response.json()
         assert data["name"] == sample_template_request["name"]
         assert data["content_type"] == sample_template_request["content_type"]
-        assert (
-            data["template_content"]
-            == sample_template_request["template_content"]
-        )
+        assert data["template_content"] == sample_template_request["template_content"]
         assert data["variables"] == sample_template_request["variables"]
         assert data["client_id"] == sample_template_request["client_id"]
 
@@ -352,9 +347,7 @@ class TestContentCreation:
         assert data["detail"] == "Failed to create content"
 
     @patch("index.save_content")
-    def test_database_save_error(
-        self, mock_save, mock_auth, sample_content_request
-    ):
+    def test_database_save_error(self, mock_save, mock_auth, sample_content_request):
         """Test content creation when database save fails"""
         mock_save.side_effect = Exception("Database error")
 

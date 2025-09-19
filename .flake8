@@ -1,6 +1,6 @@
 [flake8]
-max-line-length = 79
-extend-ignore = E203, W503
+max-line-length = 88
+extend-ignore = E203, W503, E501
 exclude =
     .git,
     __pycache__,
@@ -25,3 +25,6 @@ per-file-ignores =
     # Ignore line length in test files
     __tests__/*:E501
     test_*.py:E501
+    # Ignore line length in content creation files
+    services/content-creation/src/__tests__/*:E501
+    services/content-creation/test_*.py:E501

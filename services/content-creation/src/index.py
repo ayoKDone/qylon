@@ -55,14 +55,10 @@ app.add_middleware(
 
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(
-        ..., regex="^(article|blog|social|email|report|summary)$"
-    )
+    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
-    tone: str = Field(
-        ..., regex="^(professional|casual|friendly|formal|creative)$"
-    )
+    tone: str = Field(..., regex="^(professional|casual|friendly|formal|creative)$")
     length: str = Field(..., regex="^(short|medium|long)$")
     keywords: Optional[List[str]] = Field(default=[], max_items=10)
     client_id: str = Field(..., min_length=1)
@@ -100,9 +96,7 @@ class ContentUpdateRequest(BaseModel):
 
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(
-        ..., regex="^(article|blog|social|email|report|summary)$"
-    )
+    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
     description: Optional[str] = None
@@ -201,9 +195,7 @@ async def create_content(
 
 
 @app.get("/content/{content_id}", response_model=ContentResponse)
-async def get_content(
-    content_id: str, current_user: dict = Depends(get_current_user)
-):
+async def get_content(content_id: str, current_user: dict = Depends(get_current_user)):
     """Get content by ID"""
     try:
         # Retrieve content from database
@@ -330,9 +322,7 @@ async def list_templates(
     """List templates with filters"""
     try:
         # Retrieve templates from database
-        templates = await list_templates_from_db(
-            client_id, content_type, current_user
-        )
+        templates = await list_templates_from_db(client_id, content_type, current_user)
 
         return templates
 
@@ -485,9 +475,7 @@ async def list_content_from_db(
     return []
 
 
-async def save_template(
-    template_request: TemplateRequest, current_user: dict
-) -> str:
+async def save_template(template_request: TemplateRequest, current_user: dict) -> str:
     """Save template to database"""
     # This would integrate with Supabase
     template_id = (
