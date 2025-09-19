@@ -17,7 +17,8 @@ load_dotenv()
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,8 @@ app.add_middleware(
 
 # Trusted host middleware
 app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["*"]  # Configure properly for production
+    TrustedHostMiddleware,
+    allowed_hosts=["*"],  # Configure properly for production
 )
 
 # Pydantic models
@@ -52,10 +54,14 @@ app.add_middleware(
 
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(
+        ..., regex="^(article|blog|social|email|report|summary)$"
+    )
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
-    tone: str = Field(..., regex="^(professional|casual|friendly|formal|creative)$")
+    tone: str = Field(
+        ..., regex="^(professional|casual|friendly|formal|creative)$"
+    )
     length: str = Field(..., regex="^(short|medium|long)$")
     keywords: Optional[List[str]] = Field(default=[], max_items=10)
     client_id: str = Field(..., min_length=1)
@@ -93,7 +99,9 @@ class ContentUpdateRequest(BaseModel):
 
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(
+        ..., regex="^(article|blog|social|email|report|summary)$"
+    )
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
     description: Optional[str] = None
@@ -148,7 +156,8 @@ async def health_check():
 # Content creation endpoints
 @app.post("/content", response_model=ContentResponse)
 async def create_content(
-    content_request: ContentRequest, current_user: dict = Depends(get_current_user)
+    content_request: ContentRequest,
+    current_user: dict = Depends(get_current_user),
 ):
     """Create new content using AI"""
     try:
@@ -191,7 +200,9 @@ async def create_content(
 
 
 @app.get("/content/{content_id}", response_model=ContentResponse)
-async def get_content(content_id: str, current_user: dict = Depends(get_current_user)):
+async def get_content(
+    content_id: str, current_user: dict = Depends(get_current_user)
+):
     """Get content by ID"""
     try:
         # Retrieve content from database
@@ -199,7 +210,8 @@ async def get_content(content_id: str, current_user: dict = Depends(get_current_
 
         if not content:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Content not found"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Content not found",
             )
 
         return content
@@ -229,7 +241,8 @@ async def update_content(
 
         if not updated_content:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Content not found"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Content not found",
             )
 
         return updated_content
@@ -273,7 +286,8 @@ async def list_content(
 # Template endpoints
 @app.post("/templates", response_model=TemplateResponse)
 async def create_template(
-    template_request: TemplateRequest, current_user: dict = Depends(get_current_user)
+    template_request: TemplateRequest,
+    current_user: dict = Depends(get_current_user),
 ):
     """Create new content template"""
     try:
@@ -315,7 +329,9 @@ async def list_templates(
     """List templates with filters"""
     try:
         # Retrieve templates from database
-        templates = await list_templates_from_db(client_id, content_type, current_user)
+        templates = await list_templates_from_db(
+            client_id, content_type, current_user
+        )
 
         return templates
 
@@ -369,7 +385,10 @@ async def generate_ai_content(
             4. Future trends and opportunities
 
             ## Conclusion
-            {content_request.topic} represents a significant opportunity for {content_request.target_audience}. By following the guidelines outlined in this article, you can achieve better results and drive meaningful impact.
+            {content_request.topic} represents a significant opportunity for
+            {content_request.target_audience}. By following the guidelines
+            outlined in this article, you can achieve better results and
+            drive meaningful impact.
             """
         elif content_request.content_type == "email":
             content = f"""
@@ -419,9 +438,7 @@ async def save_content(
 ) -> str:
     """Save content to database"""
     # This would integrate with Supabase
-    content_id = (
-        f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
-    )
+    content_id = f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
     logger.info(f"Content saved to database: {content_id}")
     return content_id
 
@@ -457,12 +474,12 @@ async def list_content_from_db(
     return []
 
 
-async def save_template(template_request: TemplateRequest, current_user: dict) -> str:
+async def save_template(
+    template_request: TemplateRequest, current_user: dict
+) -> str:
     """Save template to database"""
     # This would integrate with Supabase
-    template_id = (
-        f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
-    )
+    template_id = f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
     logger.info(f"Template saved to database: {template_id}")
     return template_id
 
