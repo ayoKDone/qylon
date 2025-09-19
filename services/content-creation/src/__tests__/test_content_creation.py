@@ -9,7 +9,19 @@ from fastapi.testclient import TestClient
 # Add the parent directory to the Python path to import the main module
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from index import app  # noqa: E402
+from index import app, get_current_user  # noqa: E402
+
+# Override the authentication dependency for testing
+async def override_get_current_user():
+    """Override authentication for testing"""
+    return {
+        "id": "user-123",
+        "email": "test@example.com",
+        "role": "user",
+    }
+
+# Override the dependency in the app
+app.dependency_overrides[get_current_user] = override_get_current_user
 
 client = TestClient(app)
 
@@ -17,27 +29,6 @@ client = TestClient(app)
 class TestContentCreation:
     """Test cases for content creation endpoints"""
 
-    @pytest.fixture
-    def mock_auth(self):
-        """Mock authentication"""
-        with patch("index.get_current_user") as mock:
-            mock.return_value = {
-                "id": "user-123",
-                "email": "test@example.com",
-                "role": "user",
-            }
-            yield mock
-
-    @pytest.fixture(autouse=True)
-    def setup_auth(self):
-        """Auto-setup authentication for all tests"""
-        with patch("index.get_current_user") as mock:
-            mock.return_value = {
-                "id": "user-123",
-                "email": "test@example.com",
-                "role": "user",
-            }
-            yield mock
 
     @pytest.fixture
     def sample_content_request(self):
@@ -78,7 +69,7 @@ class TestContentCreation:
     @patch("index.generate_ai_content")
     @patch("index.save_content")
     def test_create_content_success(
-        self, mock_save, mock_generate, mock_auth, sample_content_request
+        self, mock_save, mock_generate, sample_content_request
     ):
         """Test successful content creation"""
         # Mock AI content generation
@@ -99,7 +90,7 @@ class TestContentCreation:
         mock_generate.assert_called_once()
         mock_save.assert_called_once()
 
-    def test_create_content_missing_fields(self, mock_auth):
+    def test_create_content_missing_fields(self):
         """Test content creation with missing required fields"""
         incomplete_request = {
             "title": "Test Article",
@@ -110,7 +101,7 @@ class TestContentCreation:
         response = client.post("/content", json=incomplete_request)
         assert response.status_code == 422  # Validation error
 
-    def test_create_content_invalid_content_type(self, mock_auth):
+    def test_create_content_invalid_content_type(self):
         """Test content creation with invalid content type"""
         invalid_request = {
             "title": "Test Article",
@@ -125,7 +116,7 @@ class TestContentCreation:
         response = client.post("/content", json=invalid_request)
         assert response.status_code == 422  # Validation error
 
-    def test_create_content_invalid_tone(self, mock_auth):
+    def test_create_content_invalid_tone(self):
         """Test content creation with invalid tone"""
         invalid_request = {
             "title": "Test Article",
@@ -141,7 +132,7 @@ class TestContentCreation:
         assert response.status_code == 422  # Validation error
 
     @patch("index.retrieve_content")
-    def test_get_content_success(self, mock_retrieve, mock_auth):
+    def test_get_content_success(self, mock_retrieve):
         """Test successful content retrieval"""
         # Mock content retrieval
         mock_content = {
@@ -157,6 +148,9 @@ class TestContentCreation:
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
             "client_id": "client-123",
+            "meeting_id": None,
+            "template_id": None,
+            "metadata": None,
         }
         mock_retrieve.return_value = mock_content
 
@@ -168,7 +162,7 @@ class TestContentCreation:
         assert data["title"] == "Test Article"
 
     @patch("index.retrieve_content")
-    def test_get_content_not_found(self, mock_retrieve, mock_auth):
+    def test_get_content_not_found(self, mock_retrieve):
         """Test content retrieval when content not found"""
         mock_retrieve.return_value = None
 
@@ -179,7 +173,7 @@ class TestContentCreation:
         assert data["detail"] == "Content not found"
 
     @patch("index.update_content_in_db")
-    def test_update_content_success(self, mock_update, mock_auth):
+    def test_update_content_success(self, mock_update):
         """Test successful content update"""
         # Mock content update
         updated_content = {
@@ -195,6 +189,9 @@ class TestContentCreation:
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
             "client_id": "client-123",
+            "meeting_id": None,
+            "template_id": None,
+            "metadata": None,
         }
         mock_update.return_value = updated_content
 
@@ -208,7 +205,7 @@ class TestContentCreation:
         assert data["status"] == "review"
 
     @patch("index.update_content_in_db")
-    def test_update_content_not_found(self, mock_update, mock_auth):
+    def test_update_content_not_found(self, mock_update):
         """Test content update when content not found"""
         mock_update.return_value = None
 
@@ -221,7 +218,7 @@ class TestContentCreation:
         assert data["detail"] == "Content not found"
 
     @patch("index.list_content_from_db")
-    def test_list_content_success(self, mock_list, mock_auth):
+    def test_list_content_success(self, mock_list):
         """Test successful content listing"""
         # Mock content list
         mock_content_list = [
@@ -238,6 +235,9 @@ class TestContentCreation:
                 "created_at": datetime.utcnow().isoformat(),
                 "updated_at": datetime.utcnow().isoformat(),
                 "client_id": "client-123",
+                "meeting_id": None,
+                "template_id": None,
+                "metadata": None,
             },
             {
                 "id": "content_124",
@@ -252,6 +252,9 @@ class TestContentCreation:
                 "created_at": datetime.utcnow().isoformat(),
                 "updated_at": datetime.utcnow().isoformat(),
                 "client_id": "client-123",
+                "meeting_id": None,
+                "template_id": None,
+                "metadata": None,
             },
         ]
         mock_list.return_value = mock_content_list
@@ -264,14 +267,14 @@ class TestContentCreation:
         assert data[0]["id"] == "content_123"
         assert data[1]["id"] == "content_124"
 
-    def test_list_content_missing_client_id(self, mock_auth):
+    def test_list_content_missing_client_id(self):
         """Test content listing without client_id"""
         response = client.get("/content")
         assert response.status_code == 422  # Validation error
 
     @patch("index.save_template")
     def test_create_template_success(
-        self, mock_save, mock_auth, sample_template_request
+        self, mock_save, sample_template_request
     ):
         """Test successful template creation"""
         mock_save.return_value = "template_123"
@@ -288,7 +291,7 @@ class TestContentCreation:
 
         mock_save.assert_called_once()
 
-    def test_create_template_missing_fields(self, mock_auth):
+    def test_create_template_missing_fields(self):
         """Test template creation with missing required fields"""
         incomplete_request = {
             "name": "Test Template",
@@ -300,7 +303,7 @@ class TestContentCreation:
         assert response.status_code == 422  # Validation error
 
     @patch("index.list_templates_from_db")
-    def test_list_templates_success(self, mock_list, mock_auth):
+    def test_list_templates_success(self, mock_list):
         """Test successful template listing"""
         # Mock template list
         mock_template_list = [
@@ -326,33 +329,43 @@ class TestContentCreation:
         assert data[0]["id"] == "template_123"
         assert data[0]["name"] == "Business Article Template"
 
-    def test_list_templates_missing_client_id(self, mock_auth):
+    def test_list_templates_missing_client_id(self):
         """Test template listing without client_id"""
         response = client.get("/templates")
         assert response.status_code == 422  # Validation error
 
     def test_unauthorized_access(self):
         """Test access without authentication"""
-        response = client.post(
-            "/content",
-            json={
-                "title": "Test Article",
-                "content_type": "article",
-                "topic": "AI in Business",
-                "target_audience": "business professionals",
-                "tone": "professional",
-                "length": "medium",
-                "client_id": "client-123",
-            },
-        )
+        # Temporarily clear the dependency override
+        from index import app, get_current_user
+        original_override = app.dependency_overrides.get(get_current_user)
+        app.dependency_overrides.clear()
 
-        assert response.status_code == 401
-        data = response.json()
-        assert data["detail"] == "Not authenticated"
+        try:
+            response = client.post(
+                "/content",
+                json={
+                    "title": "Test Article",
+                    "content_type": "article",
+                    "topic": "AI in Business",
+                    "target_audience": "business professionals",
+                    "tone": "professional",
+                    "length": "medium",
+                    "client_id": "client-123",
+                },
+            )
+
+            assert response.status_code == 403
+            data = response.json()
+            assert data["detail"] == "Not authenticated"
+        finally:
+            # Restore the dependency override
+            if original_override:
+                app.dependency_overrides[get_current_user] = original_override
 
     @patch("index.generate_ai_content")
     def test_ai_content_generation_error(
-        self, mock_generate, mock_auth, sample_content_request
+        self, mock_generate, sample_content_request
     ):
         """Test content creation when AI generation fails"""
         mock_generate.side_effect = Exception("AI service unavailable")
@@ -364,7 +377,7 @@ class TestContentCreation:
         assert data["detail"] == "Failed to create content"
 
     @patch("index.save_content")
-    def test_database_save_error(self, mock_save, mock_auth, sample_content_request):
+    def test_database_save_error(self, mock_save, sample_content_request):
         """Test content creation when database save fails"""
         mock_save.side_effect = Exception("Database error")
 

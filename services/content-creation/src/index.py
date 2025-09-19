@@ -153,7 +153,7 @@ async def health_check():
 
 
 # Content creation endpoints
-@app.post("/content", response_model=ContentResponse)
+@app.post("/content", response_model=ContentResponse, status_code=status.HTTP_201_CREATED)
 async def create_content(
     content_request: ContentRequest,
     current_user: dict = Depends(get_current_user),
@@ -281,7 +281,7 @@ async def list_content(
 
 
 # Template endpoints
-@app.post("/templates", response_model=TemplateResponse)
+@app.post("/templates", response_model=TemplateResponse, status_code=status.HTTP_201_CREATED)
 async def create_template(
     template_request: TemplateRequest,
     current_user: dict = Depends(get_current_user),
