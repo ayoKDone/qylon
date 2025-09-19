@@ -28,6 +28,17 @@ class TestContentCreation:
             }
             yield mock
 
+    @pytest.fixture(autouse=True)
+    def setup_auth(self):
+        """Auto-setup authentication for all tests"""
+        with patch("index.get_current_user") as mock:
+            mock.return_value = {
+                "id": "user-123",
+                "email": "test@example.com",
+                "role": "user",
+            }
+            yield mock
+
     @pytest.fixture
     def sample_content_request(self):
         """Sample content request data"""

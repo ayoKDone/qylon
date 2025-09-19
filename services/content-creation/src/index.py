@@ -62,7 +62,7 @@ class ContentRequest(BaseModel):
     target_audience: str = Field(..., min_length=1, max_length=100)
     tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
     length: str = Field(..., pattern="^(short|medium|long)$")
-    keywords: Optional[List[str]] = Field(default=[], max_items=10)
+    keywords: Optional[List[str]] = Field(default=[], max_length=10)
     client_id: str = Field(..., min_length=1)
     meeting_id: Optional[str] = None
     template_id: Optional[str] = None
