@@ -412,7 +412,7 @@ function _parseTimeRange(timeRange: string): number {
 
   // TODO: Use this function when implementing time range parsing
   // Placeholder usage to avoid linting errors
-  const _ = timeRange;
+  void timeRange; // Suppress unused variable warning
   return timeRangeMap[timeRange] || timeRangeMap['1h'];
 }
 
@@ -448,7 +448,7 @@ function _aggregateMetrics(
 
   // TODO: Use this function when implementing metrics aggregation
   // Placeholder usage to avoid linting errors
-  const _ = { metrics, metricType, aggregation, granularity };
+  void { metrics, metricType, aggregation, granularity }; // Suppress unused variable warning
   return aggregatedMetrics.sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
@@ -461,7 +461,7 @@ function _getBucketKey(timestamp: Date, granularity: string): string {
   );
   // TODO: Use this function when implementing bucket key generation
   // Placeholder usage to avoid linting errors
-  const _ = { timestamp, granularity };
+  void { timestamp, granularity }; // Suppress unused variable warning
   return bucketTime.toISOString();
 }
 
@@ -487,7 +487,7 @@ function _calculateAggregation(
     default:
       // TODO: Use this function when implementing aggregation calculations
       // Placeholder usage to avoid linting errors
-      const _ = { metrics, metricType, aggregation };
+      void { metrics, metricType, aggregation }; // Suppress unused variable warning
       return values.reduce((sum, val) => sum + val, 0) / values.length;
   }
 }
@@ -538,7 +538,7 @@ function _calculateHealthStatus(metrics: any): {
 
   // TODO: Use this function when implementing health status calculations
   // Placeholder usage to avoid linting errors
-  const _ = metrics;
+  void metrics; // Suppress unused variable warning
   return { status, details };
 }
 
@@ -553,7 +553,7 @@ function _groupServicesHealth(metrics: any[]): any[] {
 
   // TODO: Use this function when implementing service health grouping
   // Placeholder usage to avoid linting errors
-  const _ = metrics;
+  void metrics; // Suppress unused variable warning
 
   return Array.from(serviceMap.values()).map(metric => ({
     serviceName: metric.service_name,
@@ -561,5 +561,15 @@ function _groupServicesHealth(metrics: any[]): any[] {
     lastUpdated: metric.timestamp,
   }));
 }
+
+// Export helper functions for future use (placeholder functions)
+export {
+  _parseTimeRange,
+  _aggregateMetrics,
+  _getBucketKey,
+  _calculateAggregation,
+  _calculateHealthStatus,
+  _groupServicesHealth,
+};
 
 export default router;

@@ -414,6 +414,7 @@ export class StateMachine {
 
     // Implementation would use file storage service
     // This is a placeholder
+    logger.debug('File upload placeholder', { _file, _destination, _options });
     return { status: 'success', fileUrl: 'file-uploaded' };
   }
 
@@ -489,6 +490,11 @@ export class StateMachine {
 
     // Implementation would call AI service
     // This is a placeholder
+    logger.debug('AI process placeholder', {
+      _process_type,
+      _input_data,
+      _model,
+    });
     return { status: 'success', result: 'ai-processed' };
   }
 
