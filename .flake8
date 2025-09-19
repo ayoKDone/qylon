@@ -25,6 +25,9 @@ per-file-ignores =
     # Ignore line length in test files
     __tests__/*:E501
     test_*.py:E501
+    # Ignore module level imports in test files (needed for sys.path setup)
+    __tests__/*:E402
+    test_*.py:E402
     # Ignore line length in content creation files
     services/content-creation/src/__tests__/*:E501
     services/content-creation/test_*.py:E501
