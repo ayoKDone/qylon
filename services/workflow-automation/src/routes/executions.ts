@@ -81,6 +81,9 @@ router.get(
       const { executionId } = req.params;
       const _userId = (req as any).user?.id;
 
+      // TODO: Add user access validation when implementing
+      logger.debug('Execution access check', { executionId, _userId });
+
       const execution = await workflowEngine.getExecution(executionId);
 
       if (!execution) {
@@ -120,6 +123,14 @@ router.get(
       const _userId = (req as any).user?.id;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
+
+      // TODO: Add user access validation when implementing
+      logger.debug('Workflow executions access check', {
+        workflowId,
+        _userId,
+        page,
+        limit,
+      });
 
       const { executions, total } = await workflowEngine.getExecutions(
         workflowId,

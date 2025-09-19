@@ -326,4 +326,4 @@ jobs:
           channel: '#qylon-dev'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
+        if: always() && env.SLACK_WEBHOOK_URL != ''

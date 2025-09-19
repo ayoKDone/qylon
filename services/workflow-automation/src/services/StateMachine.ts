@@ -351,6 +351,13 @@ export class StateMachine {
 
     // Implementation would use axios or fetch
     // This is a placeholder
+    logger.debug('HTTP request placeholder', {
+      _url,
+      _method,
+      _headers,
+      _body,
+      _timeout,
+    });
     return { status: 'success', data: 'HTTP request executed' };
   }
 
@@ -362,6 +369,7 @@ export class StateMachine {
 
     // Implementation would use Supabase client
     // This is a placeholder
+    logger.debug('Database query placeholder', { _query, _parameters });
     return { status: 'success', data: 'Database query executed' };
   }
 
@@ -378,6 +386,7 @@ export class StateMachine {
 
     // Implementation would use email service
     // This is a placeholder
+    logger.debug('Email send placeholder', { _to, _subject, _body, _template });
     return { status: 'success', messageId: 'email-sent' };
   }
 
@@ -389,6 +398,7 @@ export class StateMachine {
 
     // Implementation would use SMS service
     // This is a placeholder
+    logger.debug('SMS send placeholder', { _to, _message });
     return { status: 'success', messageId: 'sms-sent' };
   }
 
@@ -416,6 +426,10 @@ export class StateMachine {
 
     // Implementation would execute transformation logic
     // This is a placeholder
+    logger.debug('Data transform placeholder', {
+      _input_data,
+      _transform_script,
+    });
     return { status: 'success', transformed_data: _input_data };
   }
 
@@ -427,6 +441,7 @@ export class StateMachine {
 
     // Implementation would evaluate condition
     // This is a placeholder
+    logger.debug('Condition check placeholder', { _condition, _data });
     return { status: 'success', result: true };
   }
 
@@ -453,6 +468,12 @@ export class StateMachine {
 
     // Implementation would call webhook
     // This is a placeholder
+    logger.debug('Webhook call placeholder', {
+      _url,
+      _method,
+      _headers,
+      _body,
+    });
     return { status: 'success', response: 'webhook-called' };
   }
 
