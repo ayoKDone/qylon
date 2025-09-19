@@ -564,8 +564,12 @@ function _groupServicesHealth(metrics: any[]): any[] {
 
 // Export helper functions for future use (placeholder functions)
 export {
-  _aggregateMetrics, _calculateAggregation,
-  _calculateHealthStatus, _getBucketKey, _groupServicesHealth, _parseTimeRange
+  _aggregateMetrics,
+  _calculateAggregation,
+  _calculateHealthStatus,
+  _getBucketKey,
+  _groupServicesHealth,
+  _parseTimeRange,
 };
 
 export default router;
