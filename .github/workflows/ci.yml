@@ -238,7 +238,6 @@ jobs:
         with:
           args: --severity-threshold=high
         continue-on-error: true
-        if: ${{ secrets.SNYK_TOKEN != '' }}
 
   # Build and Test Docker Images
   build:
