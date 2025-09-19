@@ -353,13 +353,16 @@ async def generate_ai_content(
         # For now, we'll simulate content generation
 
         # prompt = f"""
-        # Create a {content_request.length} {content_request.content_type} about {content_request.topic}.
+        # Create a {content_request.length} {content_request.content_type}
+        # about {content_request.topic}.
         #
         # Target audience: {content_request.target_audience}
         # Tone: {content_request.tone}
-        # Keywords: {', '.join(content_request.keywords) if content_request.keywords else 'None'}
+        # Keywords: {', '.join(content_request.keywords)
+        # if content_request.keywords else 'None'}
         #
-        # Please write engaging, informative content that meets these requirements.
+        # Please write engaging, informative content that meets these
+        # requirements.
         # """
 
         # Simulate AI content generation
@@ -396,14 +399,17 @@ async def generate_ai_content(
 
             Dear {content_request.target_audience},
 
-            I hope this email finds you well. I wanted to share some insights about {content_request.topic} that I believe will be valuable for your organization.
+            I hope this email finds you well. I wanted to share some insights
+            about {content_request.topic} that I believe will be valuable for
+            your organization.
 
             Key highlights:
             • Important update regarding {content_request.topic}
             • Action items for your team
             • Next steps and timeline
 
-            Please let me know if you have any questions or need additional information.
+            Please let me know if you have any questions or need additional
+            information.
 
             Best regards,
             [Your Name]
@@ -412,9 +418,10 @@ async def generate_ai_content(
             content = f"""
             {content_request.title}
 
-            {content_request.topic} is a crucial topic for {content_request.target_audience}.
-            This {content_request.content_type} provides insights and recommendations
-            in a {content_request.tone} tone.
+            {content_request.topic} is a crucial topic for
+            {content_request.target_audience}.
+            This {content_request.content_type} provides insights and
+            recommendations in a {content_request.tone} tone.
 
             Key points to consider:
             - Understanding the current landscape
@@ -438,7 +445,10 @@ async def save_content(
 ) -> str:
     """Save content to database"""
     # This would integrate with Supabase
-    content_id = f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
+    content_id = (
+        f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_"
+        f"{current_user['id']}"
+    )
     logger.info(f"Content saved to database: {content_id}")
     return content_id
 
@@ -479,7 +489,10 @@ async def save_template(
 ) -> str:
     """Save template to database"""
     # This would integrate with Supabase
-    template_id = f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{current_user['id']}"
+    template_id = (
+        f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_"
+        f"{current_user['id']}"
+    )
     logger.info(f"Template saved to database: {template_id}")
     return template_id
 
