@@ -55,11 +55,11 @@ app.add_middleware(
 
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
-    tone: str = Field(..., regex="^(professional|casual|friendly|formal|creative)$")
-    length: str = Field(..., regex="^(short|medium|long)$")
+    tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
+    length: str = Field(..., pattern="^(short|medium|long)$")
     keywords: Optional[List[str]] = Field(default=[], max_items=10)
     client_id: str = Field(..., min_length=1)
     meeting_id: Optional[str] = None
@@ -89,14 +89,14 @@ class ContentUpdateRequest(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     content: Optional[str] = None
     status: Optional[str] = Field(
-        None, regex="^(draft|review|approved|published|archived)$"
+        None, pattern="^(draft|review|approved|published|archived)$"
     )
     metadata: Optional[Dict[str, Any]] = None
 
 
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(..., regex="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
     description: Optional[str] = None
