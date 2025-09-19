@@ -55,7 +55,9 @@ app.add_middleware(
 
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(
+        ..., pattern="^(article|blog|social|email|report|summary)$"
+    )
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
     tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
@@ -96,7 +98,9 @@ class ContentUpdateRequest(BaseModel):
 
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
+    content_type: str = Field(
+        ..., pattern="^(article|blog|social|email|report|summary)$"
+    )
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
     description: Optional[str] = None
