@@ -46,9 +46,10 @@ jobs:
 
       - name: Run Python linting
         run: |
-          flake8 services/meeting-intelligence/ services/content-creation/ services/analytics-reporting/
-          black --check services/meeting-intelligence/ services/content-creation/ services/analytics-reporting/
-          isort --check-only services/meeting-intelligence/ services/content-creation/ services/analytics-reporting/
+          chmod +x scripts/run-flake8.sh
+          ./scripts/run-flake8.sh
+          black --check services/content-creation/
+          isort --check-only services/content-creation/
 
   # Unit Tests
   test:

@@ -4,8 +4,8 @@ Basic test script for Content Creation Service
 Tests core functionality without external dependencies
 """
 
-import sys
 import os
+import sys
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
@@ -15,8 +15,8 @@ def test_imports():
     """Test that all modules can be imported"""
     try:
         # Test basic imports
-        import json  # noqa: F401
         import datetime  # noqa: F401
+        import json  # noqa: F401
 
         print("✅ Basic imports successful")
         return True
