@@ -1,28 +1,27 @@
 import pytest
-import asyncio
 from fastapi.testclient import TestClient
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 from datetime import datetime
-import json
 
-from index import app, ContentRequest, ContentUpdateRequest, TemplateRequest
+from index import app
 
 client = TestClient(app)
 
+
 class TestContentCreation:
     """Test cases for content creation endpoints"""
-    
+
     @pytest.fixture
     def mock_auth(self):
         """Mock authentication"""
-        with patch('index.get_current_user') as mock:
+        with patch("index.get_current_user") as mock:
             mock.return_value = {
                 "id": "user-123",
                 "email": "test@example.com",
-                "role": "user"
+                "role": "user",
             }
             yield mock
-    
+
     @pytest.fixture
     def sample_content_request(self):
         """Sample content request data"""
@@ -35,9 +34,9 @@ class TestContentCreation:
             "length": "medium",
             "keywords": ["AI", "business", "automation"],
             "client_id": "client-123",
-            "metadata": {"priority": "high"}
+            "metadata": {"priority": "high"},
         }
-    
+
     @pytest.fixture
     def sample_template_request(self):
         """Sample template request data"""
@@ -47,7 +46,7 @@ class TestContentCreation:
             "template_content": "Template content with {variable1} and {variable2}",
             "variables": ["variable1", "variable2"],
             "description": "Template for business articles",
-            "client_id": "client-123"
+            "client_id": "client-123",
         }
 
     def test_health_check(self):
@@ -59,16 +58,18 @@ class TestContentCreation:
         assert data["service"] == "content-creation-service"
         assert "timestamp" in data
 
-    @patch('index.generate_ai_content')
-    @patch('index.save_content')
-    def test_create_content_success(self, mock_save, mock_generate, mock_auth, sample_content_request):
+    @patch("index.generate_ai_content")
+    @patch("index.save_content")
+    def test_create_content_success(
+        self, mock_save, mock_generate, mock_auth, sample_content_request
+    ):
         """Test successful content creation"""
         # Mock AI content generation
         mock_generate.return_value = "Generated article content"
         mock_save.return_value = "content_123"
-        
+
         response = client.post("/content", json=sample_content_request)
-        
+
         assert response.status_code == 201
         data = response.json()
         assert data["title"] == sample_content_request["title"]
@@ -76,7 +77,7 @@ class TestContentCreation:
         assert data["content"] == "Generated article content"
         assert data["status"] == "draft"
         assert data["client_id"] == sample_content_request["client_id"]
-        
+
         # Verify mocks were called
         mock_generate.assert_called_once()
         mock_save.assert_called_once()
@@ -85,10 +86,10 @@ class TestContentCreation:
         """Test content creation with missing required fields"""
         incomplete_request = {
             "title": "Test Article",
-            "content_type": "article"
+            "content_type": "article",
             # Missing required fields
         }
-        
+
         response = client.post("/content", json=incomplete_request)
         assert response.status_code == 422  # Validation error
 
@@ -101,9 +102,9 @@ class TestContentCreation:
             "target_audience": "business professionals",
             "tone": "professional",
             "length": "medium",
-            "client_id": "client-123"
+            "client_id": "client-123",
         }
-        
+
         response = client.post("/content", json=invalid_request)
         assert response.status_code == 422  # Validation error
 
@@ -116,13 +117,13 @@ class TestContentCreation:
             "target_audience": "business professionals",
             "tone": "invalid_tone",
             "length": "medium",
-            "client_id": "client-123"
+            "client_id": "client-123",
         }
-        
+
         response = client.post("/content", json=invalid_request)
         assert response.status_code == 422  # Validation error
 
-    @patch('index.retrieve_content')
+    @patch("index.retrieve_content")
     def test_get_content_success(self, mock_retrieve, mock_auth):
         """Test successful content retrieval"""
         # Mock content retrieval
@@ -138,29 +139,29 @@ class TestContentCreation:
             "status": "draft",
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
-            "client_id": "client-123"
+            "client_id": "client-123",
         }
         mock_retrieve.return_value = mock_content
-        
+
         response = client.get("/content/content_123")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == "content_123"
         assert data["title"] == "Test Article"
 
-    @patch('index.retrieve_content')
+    @patch("index.retrieve_content")
     def test_get_content_not_found(self, mock_retrieve, mock_auth):
         """Test content retrieval when content not found"""
         mock_retrieve.return_value = None
-        
+
         response = client.get("/content/nonexistent")
-        
+
         assert response.status_code == 404
         data = response.json()
         assert data["detail"] == "Content not found"
 
-    @patch('index.update_content_in_db')
+    @patch("index.update_content_in_db")
     def test_update_content_success(self, mock_update, mock_auth):
         """Test successful content update"""
         # Mock content update
@@ -176,38 +177,33 @@ class TestContentCreation:
             "status": "review",
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
-            "client_id": "client-123"
+            "client_id": "client-123",
         }
         mock_update.return_value = updated_content
-        
-        update_request = {
-            "title": "Updated Article",
-            "status": "review"
-        }
-        
+
+        update_request = {"title": "Updated Article", "status": "review"}
+
         response = client.put("/content/content_123", json=update_request)
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["title"] == "Updated Article"
         assert data["status"] == "review"
 
-    @patch('index.update_content_in_db')
+    @patch("index.update_content_in_db")
     def test_update_content_not_found(self, mock_update, mock_auth):
         """Test content update when content not found"""
         mock_update.return_value = None
-        
-        update_request = {
-            "title": "Updated Article"
-        }
-        
+
+        update_request = {"title": "Updated Article"}
+
         response = client.put("/content/nonexistent", json=update_request)
-        
+
         assert response.status_code == 404
         data = response.json()
         assert data["detail"] == "Content not found"
 
-    @patch('index.list_content_from_db')
+    @patch("index.list_content_from_db")
     def test_list_content_success(self, mock_list, mock_auth):
         """Test successful content listing"""
         # Mock content list
@@ -224,7 +220,7 @@ class TestContentCreation:
                 "status": "draft",
                 "created_at": datetime.utcnow().isoformat(),
                 "updated_at": datetime.utcnow().isoformat(),
-                "client_id": "client-123"
+                "client_id": "client-123",
             },
             {
                 "id": "content_124",
@@ -238,13 +234,13 @@ class TestContentCreation:
                 "status": "published",
                 "created_at": datetime.utcnow().isoformat(),
                 "updated_at": datetime.utcnow().isoformat(),
-                "client_id": "client-123"
-            }
+                "client_id": "client-123",
+            },
         ]
         mock_list.return_value = mock_content_list
-        
+
         response = client.get("/content?client_id=client-123")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 2
@@ -256,13 +252,15 @@ class TestContentCreation:
         response = client.get("/content")
         assert response.status_code == 422  # Validation error
 
-    @patch('index.save_template')
-    def test_create_template_success(self, mock_save, mock_auth, sample_template_request):
+    @patch("index.save_template")
+    def test_create_template_success(
+        self, mock_save, mock_auth, sample_template_request
+    ):
         """Test successful template creation"""
         mock_save.return_value = "template_123"
-        
+
         response = client.post("/templates", json=sample_template_request)
-        
+
         assert response.status_code == 201
         data = response.json()
         assert data["name"] == sample_template_request["name"]
@@ -270,21 +268,21 @@ class TestContentCreation:
         assert data["template_content"] == sample_template_request["template_content"]
         assert data["variables"] == sample_template_request["variables"]
         assert data["client_id"] == sample_template_request["client_id"]
-        
+
         mock_save.assert_called_once()
 
     def test_create_template_missing_fields(self, mock_auth):
         """Test template creation with missing required fields"""
         incomplete_request = {
             "name": "Test Template",
-            "content_type": "article"
+            "content_type": "article",
             # Missing required fields
         }
-        
+
         response = client.post("/templates", json=incomplete_request)
         assert response.status_code == 422  # Validation error
 
-    @patch('index.list_templates_from_db')
+    @patch("index.list_templates_from_db")
     def test_list_templates_success(self, mock_list, mock_auth):
         """Test successful template listing"""
         # Mock template list
@@ -298,13 +296,13 @@ class TestContentCreation:
                 "description": "Template for business articles",
                 "created_at": datetime.utcnow().isoformat(),
                 "updated_at": datetime.utcnow().isoformat(),
-                "client_id": "client-123"
+                "client_id": "client-123",
             }
         ]
         mock_list.return_value = mock_template_list
-        
+
         response = client.get("/templates?client_id=client-123")
-        
+
         assert response.status_code == 200
         data = response.json()
         assert len(data) == 1
@@ -318,38 +316,43 @@ class TestContentCreation:
 
     def test_unauthorized_access(self):
         """Test access without authentication"""
-        response = client.post("/content", json={
-            "title": "Test Article",
-            "content_type": "article",
-            "topic": "AI in Business",
-            "target_audience": "business professionals",
-            "tone": "professional",
-            "length": "medium",
-            "client_id": "client-123"
-        })
-        
+        response = client.post(
+            "/content",
+            json={
+                "title": "Test Article",
+                "content_type": "article",
+                "topic": "AI in Business",
+                "target_audience": "business professionals",
+                "tone": "professional",
+                "length": "medium",
+                "client_id": "client-123",
+            },
+        )
+
         assert response.status_code == 401
         data = response.json()
         assert data["detail"] == "Not authenticated"
 
-    @patch('index.generate_ai_content')
-    def test_ai_content_generation_error(self, mock_generate, mock_auth, sample_content_request):
+    @patch("index.generate_ai_content")
+    def test_ai_content_generation_error(
+        self, mock_generate, mock_auth, sample_content_request
+    ):
         """Test content creation when AI generation fails"""
         mock_generate.side_effect = Exception("AI service unavailable")
-        
+
         response = client.post("/content", json=sample_content_request)
-        
+
         assert response.status_code == 500
         data = response.json()
         assert data["detail"] == "Failed to create content"
 
-    @patch('index.save_content')
+    @patch("index.save_content")
     def test_database_save_error(self, mock_save, mock_auth, sample_content_request):
         """Test content creation when database save fails"""
         mock_save.side_effect = Exception("Database error")
-        
+
         response = client.post("/content", json=sample_content_request)
-        
+
         assert response.status_code == 500
         data = response.json()
         assert data["detail"] == "Failed to create content"
