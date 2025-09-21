@@ -68,108 +68,206 @@ Before setting up Qylon locally, ensure you have the following installed:
 - **Git** ([Download](https://git-scm.com/downloads))
 - **PostgreSQL** >= 15 (for local development)
 - **Redis** >= 7 (for caching)
+- **MongoDB** >= 6 (for analytics)
 
 ### 1. Clone the Repository
 
 ```bash
+# Clone from your GitHub repository
+git clone https://github.com/Siwale/qylon.git
+cd qylon
+
+# Or clone from the original repository
 git clone https://github.com/KD-Squares/qylon.git
 cd qylon
 ```
 
-### 2. Environment Setup
+### 2. Automated Setup (Recommended)
 
-#### Create Environment Files
+We provide an automated setup script that handles everything for you:
 
 ```bash
-# Copy the example environment file
-cp env.example .env
+# Make the setup script executable
+chmod +x scripts/setup-local.sh
+
+# Run the automated setup
+./scripts/setup-local.sh
+```
+
+This script will:
+
+- ✅ Check all prerequisites
+- ✅ Create environment files
+- ✅ Set up databases
+- ✅ Install all dependencies
+- ✅ Configure services
+- ✅ Run database migrations
+- ✅ Verify port availability
+
+### 3. Manual Setup (Alternative)
+
+If you prefer manual setup or need to customize the configuration:
+
+#### Step 1: Environment Configuration
+
+```bash
+# Copy the comprehensive environment file
+cp env.local.example .env
 
 # Copy service-specific environment files
-cp services/api-gateway/.env.example services/api-gateway/.env
-cp services/security/.env.example services/security/.env
-cp services/meeting-intelligence/.env.example services/meeting-intelligence/.env
-cp services/workflow-automation/.env.example services/workflow-automation/.env
+cp env.services.example services/api-gateway/.env
+cp env.services.example services/user-management/.env
+cp env.services.example services/client-management/.env
+cp env.services.example services/meeting-intelligence/.env
+cp env.services.example services/content-creation/.env
+cp env.services.example services/workflow-automation/.env
+cp env.services.example services/integration-management/.env
+cp env.services.example services/notification-service/.env
+cp env.services.example services/analytics-reporting/.env
 ```
 
-#### Configure Environment Variables
+#### Step 2: Configure Environment Variables
 
-Edit `.env` file with your configuration:
+Edit `.env` file with your actual configuration values:
 
 ```bash
-# Database Configuration
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qylon_dev
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+# =============================================================================
+# DATABASE CONFIGURATION
+# =============================================================================
+DATABASE_URL=postgresql://postgres:password@localhost:5432/qylon_dev
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key-here
 
-# AI Services
-OPENAI_API_KEY=your-openai-api-key
-ANTHROPIC_API_KEY=your-anthropic-api-key
-RECALL_AI_API_KEY=your-recall-ai-api-key
+# =============================================================================
+# AI SERVICES CONFIGURATION
+# =============================================================================
+OPENAI_API_KEY=sk-your-openai-api-key-here
+ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key-here
+RECALL_AI_API_KEY=your-recall-ai-api-key-here
 
-# Authentication
+# =============================================================================
+# AUTHENTICATION & SECURITY
+# =============================================================================
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+ENCRYPTION_KEY=your-32-character-encryption-key-here
 
-# Redis Configuration
-REDIS_URL=redis://localhost:6379
+# =============================================================================
+# CLOUD STORAGE & CDN
+# =============================================================================
+DO_SPACES_KEY=your-spaces-access-key
+DO_SPACES_SECRET=your-spaces-secret-key
+DO_SPACES_ENDPOINT=https://nyc3.digitaloceanspaces.com
+DO_SPACES_BUCKET=qylon-storage
+
+# =============================================================================
+# EMAIL & NOTIFICATIONS
+# =============================================================================
+SENDGRID_API_KEY=SG.your-sendgrid-api-key-here
+TWILIO_ACCOUNT_SID=your-twilio-account-sid
+TWILIO_AUTH_TOKEN=your-twilio-auth-token
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
 
-### 3. Database Setup
+#### Step 3: Database Setup
 
-#### Option A: Local PostgreSQL (Recommended for Development)
+**Option A: Using Docker (Recommended)**
 
 ```bash
-# Start PostgreSQL and Redis using Docker
+# Start all required databases
 docker-compose up -d postgres redis mongodb
 
-# Run database migrations
-npm run db:migrate
+# Wait for databases to be ready
+sleep 10
 
-# Seed initial data
-npm run db:seed
+# Create databases
+createdb qylon_dev
+createdb qylon_test
 ```
 
-#### Option B: Portable Supabase Setup (For Testing)
-
-For a complete local Supabase setup, you can use Supabase CLI:
+**Option B: Local Installation**
 
 ```bash
-# Install Supabase CLI
-npm install -g supabase
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib redis-server mongodb
 
-# Initialize Supabase project
-supabase init
+# macOS
+brew install postgresql redis mongodb-community
 
-# Start local Supabase stack
-supabase start
-
-# This will start:
-# - PostgreSQL database
-# - Supabase Studio (dashboard)
-# - Auth service
-# - Storage service
-# - Edge Functions
+# Start services
+sudo systemctl start postgresql redis mongod  # Linux
+brew services start postgresql redis mongodb-community  # macOS
 ```
 
-The local Supabase will be available at:
-
-- **API URL**: `http://localhost:54321`
-- **Studio**: `http://localhost:54323`
-- **Database**: `postgresql://postgres:postgres@localhost:54322/postgres`
-
-### 4. Install Dependencies
+#### Step 4: Install Dependencies
 
 ```bash
 # Install root dependencies
 npm install
 
-# Install service dependencies
-npm run install:all
+# Create Python virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Install service-specific dependencies
+for service in services/*/; do
+    if [ -f "$service/package.json" ]; then
+        echo "Installing dependencies for $(basename "$service")..."
+        cd "$service" && npm install && cd - >/dev/null
+    fi
+    if [ -f "$service/requirements.txt" ]; then
+        echo "Installing Python dependencies for $(basename "$service")..."
+        pip install -r "$service/requirements.txt"
+    fi
+done
+
+deactivate
 ```
 
-### 5. Start Development Environment
+#### Step 5: Database Migrations
 
-#### Option A: Docker Compose (Recommended)
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Run database migrations
+for migration in database/migrations/*.sql; do
+    if [ -f "$migration" ]; then
+        echo "Running migration: $(basename "$migration")"
+        psql -d qylon_dev -f "$migration"
+    fi
+done
+
+# Seed initial data
+for seed in database/seeds/*.sql; do
+    if [ -f "$seed" ]; then
+        echo "Seeding data: $(basename "$seed")"
+        psql -d qylon_dev -f "$seed"
+    fi
+done
+
+deactivate
+```
+
+### 4. Start Development Environment
+
+#### Option A: Automated Service Management
+
+```bash
+# Start all services
+chmod +x scripts/start-services.sh
+./scripts/start-services.sh
+
+# Stop all services
+chmod +x scripts/stop-services.sh
+./scripts/stop-services.sh
+```
+
+#### Option B: Docker Compose (Recommended for Production-like Environment)
 
 ```bash
 # Build and start all services
@@ -182,27 +280,83 @@ docker-compose up -d --build
 docker-compose logs -f
 ```
 
-#### Option B: Local Development
+#### Option C: Manual Service Startup
 
 ```bash
-# Start all services locally
-npm run dev
+# Start services individually (in separate terminals)
 
-# Or start individual services
-npm run dev:api-gateway
-npm run dev:security
-npm run dev:meeting-intelligence
-npm run dev:workflow-automation
+# Terminal 1: API Gateway
+cd services/api-gateway && npm run dev
+
+# Terminal 2: User Management
+cd services/user-management && npm run dev
+
+# Terminal 3: Client Management
+cd services/client-management && npm run dev
+
+# Terminal 4: Meeting Intelligence
+cd services/meeting-intelligence && npm run dev
+
+# Terminal 5: Content Creation
+cd services/content-creation && source ../../venv/bin/activate && python src/index.py
+
+# Terminal 6: Workflow Automation
+cd services/workflow-automation && npm run dev
+
+# Terminal 7: Integration Management
+cd services/integration-management && npm run dev
+
+# Terminal 8: Notification Service
+cd services/notification-service && npm run dev
+
+# Terminal 9: Analytics Reporting
+cd services/analytics-reporting && npm run dev
 ```
 
-### 6. Verify Installation
+### 5. Verify Installation
 
 Visit the following endpoints to verify services are running:
 
 - **API Gateway**: http://localhost:3000/health
-- **Security Service**: http://localhost:3001/health
-- **Meeting Intelligence**: http://localhost:3004/health
-- **Workflow Automation**: http://localhost:3006/health
+- **User Management**: http://localhost:3001/health
+- **Client Management**: http://localhost:3002/health
+- **Meeting Intelligence**: http://localhost:3003/health
+- **Content Creation**: http://localhost:3004/health
+- **Workflow Automation**: http://localhost:3005/health
+- **Integration Management**: http://localhost:3006/health
+- **Notification Service**: http://localhost:3007/health
+- **Analytics Reporting**: http://localhost:3008/health
+
+### 6. Frontend Setup (When Available)
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp env.frontend.example .env.local
+
+# Configure frontend environment variables
+# Edit .env.local with your configuration
+
+# Start development server
+npm run dev
+```
+
+**Frontend Environment Variables:**
+
+```bash
+# .env.local
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key-here
+NEXT_PUBLIC_OPENAI_API_KEY=sk-your-openai-api-key-here
+NEXT_PUBLIC_ZOOM_CLIENT_ID=your-zoom-client-id
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+```
 
 ## 🛠️ Development Setup
 
@@ -541,43 +695,333 @@ All services use structured logging with Winston. Logs are available in:
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-#### Port Already in Use
+#### 1. Port Already in Use
+
+**Problem**: Service fails to start because port is already in use.
+
+**Solution**:
 
 ```bash
 # Find process using port
 lsof -i :3000
 
-# Kill process
+# Kill process by PID
 kill -9 <PID>
+
+# Or kill all processes on a port
+sudo fuser -k 3000/tcp
+
+# Check all Qylon ports
+for port in 3000 3001 3002 3003 3004 3005 3006 3007 3008; do
+    echo "Port $port:"
+    lsof -i :$port || echo "  Available"
+done
 ```
 
-#### Database Connection Issues
+#### 2. Database Connection Issues
+
+**Problem**: Services can't connect to databases.
+
+**Solution**:
 
 ```bash
 # Check if PostgreSQL is running
 docker-compose ps postgres
+# OR
+sudo systemctl status postgresql
+
+# Check PostgreSQL connection
+psql -h localhost -U postgres -d qylon_dev -c "SELECT 1;"
 
 # Restart database
 docker-compose restart postgres
+# OR
+sudo systemctl restart postgresql
+
+# Check Redis connection
+redis-cli ping
+
+# Check MongoDB connection
+mongosh --eval "db.runCommand('ping')"
 ```
 
-#### Service Not Starting
+#### 3. Service Not Starting
+
+**Problem**: Individual services fail to start.
+
+**Solution**:
 
 ```bash
 # Check service logs
 docker-compose logs <service-name>
 
+# Check local service logs
+cd services/<service-name>
+npm run dev  # Check for error messages
+
 # Rebuild service
 docker-compose build <service-name>
+
+# Check environment variables
+cd services/<service-name>
+cat .env  # Verify configuration
+```
+
+#### 4. Python Virtual Environment Issues
+
+**Problem**: Python services fail to start or import errors.
+
+**Solution**:
+
+```bash
+# Recreate virtual environment
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+
+# Reinstall dependencies
+pip install -r requirements.txt
+
+# Install service-specific dependencies
+for service in services/*/; do
+    if [ -f "$service/requirements.txt" ]; then
+        pip install -r "$service/requirements.txt"
+    fi
+done
+
+# Check Python path
+echo $PYTHONPATH
+```
+
+#### 5. Node.js Dependency Issues
+
+**Problem**: Node.js services fail to start or module not found errors.
+
+**Solution**:
+
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Delete node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# For individual services
+cd services/<service-name>
+rm -rf node_modules package-lock.json
+npm install
+```
+
+#### 6. Environment Variable Issues
+
+**Problem**: Services can't read environment variables.
+
+**Solution**:
+
+```bash
+# Check if .env file exists
+ls -la .env
+
+# Check environment variable loading
+cd services/<service-name>
+cat .env | grep -v '^#' | head -5
+
+# Test environment variable
+echo $DATABASE_URL
+
+# Reload environment
+source .env
+```
+
+#### 7. Database Migration Issues
+
+**Problem**: Database migrations fail or tables don't exist.
+
+**Solution**:
+
+```bash
+# Check database connection
+psql -d qylon_dev -c "\dt"
+
+# Run migrations manually
+source venv/bin/activate
+for migration in database/migrations/*.sql; do
+    echo "Running: $migration"
+    psql -d qylon_dev -f "$migration"
+done
+
+# Reset database
+dropdb qylon_dev
+createdb qylon_dev
+# Then run migrations again
+```
+
+#### 8. Docker Issues
+
+**Problem**: Docker containers fail to start or build.
+
+**Solution**:
+
+```bash
+# Check Docker status
+docker --version
+docker-compose --version
+
+# Clean up Docker
+docker system prune -a
+
+# Rebuild containers
+docker-compose down
+docker-compose build --no-cache
+docker-compose up
+
+# Check container logs
+docker-compose logs <service-name>
+```
+
+#### 9. Permission Issues
+
+**Problem**: Scripts are not executable or permission denied.
+
+**Solution**:
+
+```bash
+# Make scripts executable
+chmod +x scripts/*.sh
+
+# Fix file permissions
+sudo chown -R $USER:$USER .
+
+# Check script permissions
+ls -la scripts/
+```
+
+#### 10. Network Connectivity Issues
+
+**Problem**: Services can't communicate with each other.
+
+**Solution**:
+
+```bash
+# Check if services are listening
+netstat -tlnp | grep :300
+
+# Test service connectivity
+curl http://localhost:3000/health
+curl http://localhost:3001/health
+
+# Check firewall
+sudo ufw status
+```
+
+### Debugging Commands
+
+#### Service Health Checks
+
+```bash
+# Check all service health endpoints
+for port in 3000 3001 3002 3003 3004 3005 3006 3007 3008; do
+    echo "Testing port $port:"
+    curl -s http://localhost:$port/health || echo "  Service not responding"
+done
+```
+
+#### Database Status
+
+```bash
+# Check all database connections
+echo "PostgreSQL:"
+psql -d qylon_dev -c "SELECT version();" 2>/dev/null || echo "  Not connected"
+
+echo "Redis:"
+redis-cli ping 2>/dev/null || echo "  Not connected"
+
+echo "MongoDB:"
+mongosh --eval "db.runCommand('ping')" 2>/dev/null || echo "  Not connected"
+```
+
+#### Process Monitoring
+
+```bash
+# Monitor all Qylon processes
+ps aux | grep -E "(node|python)" | grep -v grep
+
+# Monitor port usage
+lsof -i :3000-3008
+```
+
+#### Log Analysis
+
+```bash
+# View recent logs
+tail -f logs/*.log
+
+# Search for errors
+grep -r "ERROR" logs/
+grep -r "error" services/*/logs/
+```
+
+### Performance Issues
+
+#### High Memory Usage
+
+```bash
+# Check memory usage
+free -h
+ps aux --sort=-%mem | head -10
+
+# Check Node.js memory
+node --max-old-space-size=4096 services/api-gateway/src/index.js
+```
+
+#### Slow Database Queries
+
+```bash
+# Enable PostgreSQL query logging
+echo "log_statement = 'all'" >> /etc/postgresql/*/main/postgresql.conf
+sudo systemctl restart postgresql
+
+# Monitor slow queries
+tail -f /var/log/postgresql/postgresql-*.log
 ```
 
 ### Getting Help
 
-1. Check the [Issues](https://github.com/KD-Squares/qylon/issues) page
-2. Review the documentation in the `docs/` directory
-3. Contact the development team
+1. **Check the Issues Page**: [GitHub Issues](https://github.com/Siwale/qylon/issues)
+2. **Review Documentation**: Check the `docs/` directory for detailed guides
+3. **Run Diagnostic Script**: `./scripts/diagnose.sh` (when available)
+4. **Contact the Team**: Reach out to the development team
+5. **Check Logs**: Always check service logs first for error messages
+
+### Emergency Reset
+
+If everything is broken and you need to start fresh:
+
+```bash
+# Stop all services
+./scripts/stop-services.sh
+
+# Clean up Docker
+docker-compose down -v
+docker system prune -a
+
+# Reset databases
+dropdb qylon_dev qylon_test 2>/dev/null || true
+createdb qylon_dev
+createdb qylon_test
+
+# Clean dependencies
+rm -rf node_modules package-lock.json
+rm -rf venv
+rm -rf services/*/node_modules
+rm -rf services/*/package-lock.json
+
+# Reinstall everything
+./scripts/setup-local.sh
+```
 
 ## 📚 Additional Resources
 
