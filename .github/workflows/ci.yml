@@ -355,12 +355,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check DigitalOcean credentials
+        run: |
+          if [ -z "${{ secrets.DO_ACCESS_TOKEN }}" ] || [ -z "${{ secrets.DO_APP_ID }}" ]; then
+            echo "⚠️ DigitalOcean deployment credentials not configured."
+            echo "To enable DigitalOcean App Platform deployment:"
+            echo "1. Create a DigitalOcean API token at https://cloud.digitalocean.com/account/api/tokens"
+            echo "2. Create a DigitalOcean App Platform app and get the App ID"
+            echo "3. Add DO_ACCESS_TOKEN and DO_APP_ID secrets to your GitHub repository settings"
+            echo "Skipping deployment..."
+            echo "DO_ACCESS_TOKEN_MISSING=true" >> $GITHUB_ENV
+            echo "DO_APP_ID_MISSING=true" >> $GITHUB_ENV
+          else
+            echo "✅ DigitalOcean deployment credentials found."
+            echo "DO_ACCESS_TOKEN_MISSING=false" >> $GITHUB_ENV
+            echo "DO_APP_ID_MISSING=false" >> $GITHUB_ENV
+          fi
+
       - name: Setup DigitalOcean CLI
+        if: env.DO_ACCESS_TOKEN_MISSING == 'false' && env.DO_APP_ID_MISSING == 'false'
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DO_ACCESS_TOKEN }}
 
       - name: Deploy to DigitalOcean App Platform
+        if: env.DO_ACCESS_TOKEN_MISSING == 'false' && env.DO_APP_ID_MISSING == 'false'
         run: |
           doctl apps create-deployment ${{ secrets.DO_APP_ID }} --force-rebuild
 
@@ -375,16 +394,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check DigitalOcean credentials
+        run: |
+          if [ -z "${{ secrets.DO_ACCESS_TOKEN }}" ] || [ -z "${{ secrets.DO_APP_ID }}" ]; then
+            echo "⚠️ DigitalOcean deployment credentials not configured."
+            echo "To enable DigitalOcean App Platform deployment:"
+            echo "1. Create a DigitalOcean API token at https://cloud.digitalocean.com/account/api/tokens"
+            echo "2. Create a DigitalOcean App Platform app and get the App ID"
+            echo "3. Add DO_ACCESS_TOKEN and DO_APP_ID secrets to your GitHub repository settings"
+            echo "Skipping deployment..."
+            echo "DO_ACCESS_TOKEN_MISSING=true" >> $GITHUB_ENV
+            echo "DO_APP_ID_MISSING=true" >> $GITHUB_ENV
+          else
+            echo "✅ DigitalOcean deployment credentials found."
+            echo "DO_ACCESS_TOKEN_MISSING=false" >> $GITHUB_ENV
+            echo "DO_APP_ID_MISSING=false" >> $GITHUB_ENV
+          fi
+
       - name: Setup DigitalOcean CLI
+        if: env.DO_ACCESS_TOKEN_MISSING == 'false' && env.DO_APP_ID_MISSING == 'false'
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DO_ACCESS_TOKEN }}
 
       - name: Deploy to DigitalOcean App Platform
+        if: env.DO_ACCESS_TOKEN_MISSING == 'false' && env.DO_APP_ID_MISSING == 'false'
         run: |
           doctl apps create-deployment ${{ secrets.DO_APP_ID }} --force-rebuild
 
       - name: Run smoke tests
+        if: env.DO_ACCESS_TOKEN_MISSING == 'false' && env.DO_APP_ID_MISSING == 'false'
         run: |
           # Add smoke tests here
           echo "Running smoke tests..."
