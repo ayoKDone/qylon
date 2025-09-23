@@ -79,33 +79,135 @@ Data Layer:
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 📋 Prerequisites
 
-Before setting up Qylon locally, ensure you have the following installed:
+Before setting up Qylon locally, ensure you have the following installed on your platform:
 
-- **Node.js** >= 20.0.0 ([Download](https://nodejs.org/))
-- **Python** >= 3.11 ([Download](https://www.python.org/downloads/))
-- **Docker** & **Docker Compose** ([Download](https://www.docker.com/products/docker-desktop/))
-- **Git** ([Download](https://git-scm.com/downloads))
-- **PostgreSQL** >= 15 (for local development)
-- **Redis** >= 7 (for caching)
-- **MongoDB** >= 6 (for analytics)
+#### 🖥️ Platform-Specific Installation
 
-### 1. Clone the Repository
+##### 🐧 Linux (Ubuntu/Debian)
+
+```bash
+# Update package manager
+sudo apt update && sudo apt upgrade -y
+
+# Install Node.js (using NodeSource repository for latest LTS)
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install Python and pip
+sudo apt install -y python3 python3-pip python3-venv python3-dev
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Install Docker Compose
+sudo apt install -y docker-compose-plugin
+
+# Install Git and other dependencies
+sudo apt install -y git build-essential
+
+# Install PostgreSQL client (optional, for direct database access)
+sudo apt install -y postgresql-client
+
+# Logout and login again to apply Docker group changes
+# Or run: newgrp docker
+```
+
+##### 🪟 Windows
+
+**Option 1: Using Chocolatey (Recommended)**
+
+```powershell
+# Install Chocolatey (run as Administrator)
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install dependencies
+choco install nodejs python docker-desktop git -y
+
+# Enable WSL2 (required for Docker Desktop)
+wsl --install
+```
+
+**Option 2: Manual Installation**
+
+1. **Node.js**: Download from [nodejs.org](https://nodejs.org/) (LTS version)
+2. **Python**: Download from [python.org](https://python.org/) (3.11+)
+3. **Docker Desktop**: Download from [docker.com](https://docker.com/)
+4. **Git**: Download from [git-scm.com](https://git-scm.com/)
+
+**Windows-specific setup:**
+
+```powershell
+# Set execution policy for PowerShell scripts
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Verify installations
+node --version
+python --version
+docker --version
+git --version
+```
+
+##### 🍎 macOS
+
+**Option 1: Using Homebrew (Recommended)**
+
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install dependencies
+brew install node python@3.11 docker docker-compose git
+
+# Start Docker Desktop
+open /Applications/Docker.app
+```
+
+**Option 2: Manual Installation**
+
+1. **Node.js**: Download from [nodejs.org](https://nodejs.org/)
+2. **Python**: Download from [python.org](https://python.org/) or use `brew install python@3.11`
+3. **Docker Desktop**: Download from [docker.com](https://docker.com/)
+4. **Git**: Usually pre-installed, or download from [git-scm.com](https://git-scm.com/)
+
+**macOS-specific setup:**
+
+```bash
+# Verify installations
+node --version
+python3 --version
+docker --version
+git --version
+
+# If Python is not found, create symlink
+sudo ln -s /usr/bin/python3 /usr/local/bin/python
+```
+
+#### 🔧 Minimum Requirements
+
+- **Node.js** >= 20.0.0
+- **Python** >= 3.11
+- **Docker** & **Docker Compose**
+- **Git**
+- **8GB RAM** (recommended)
+- **10GB free disk space**
+
+### 📥 Clone the Repository
 
 ```bash
 # Clone from the official repository
-git clone https://github.com/KD-Squares/KDS-Development.git
-cd KDS-Development
-
-# Or if you have access to the private repository
 git clone https://github.com/KD-Squares/qylon.git
 cd qylon
 ```
 
-### 2. Automated Setup (Recommended)
+### 🤖 Automated Setup (Recommended)
 
-We provide an automated setup script that handles everything for you:
+We provide platform-specific automated setup scripts:
+
+#### Linux/macOS
 
 ```bash
 # Make the setup script executable
@@ -115,7 +217,17 @@ chmod +x scripts/setup-local.sh
 ./scripts/setup-local.sh
 ```
 
-This script will:
+#### Windows (PowerShell)
+
+```powershell
+# Set execution policy (if not already set)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Run the automated setup
+.\scripts\setup-local.ps1
+```
+
+The automated setup script will:
 
 - ✅ Check all prerequisites
 - ✅ Create environment files
@@ -124,14 +236,17 @@ This script will:
 - ✅ Configure services
 - ✅ Run database migrations
 - ✅ Verify port availability
+- ✅ Start services
 
 **Note**: If the automated setup fails, follow the manual setup steps below.
 
-### 3. Manual Setup (Alternative)
+### 🔧 Manual Setup (Alternative)
 
 If you prefer manual setup or need to customize the configuration:
 
 #### Step 1: Environment Configuration
+
+**Linux/macOS:**
 
 ```bash
 # Copy the comprehensive environment file
@@ -147,7 +262,118 @@ cp env.services.example services/event-sourcing/.env
 cp env.services.example services/infrastructure-monitoring/.env
 ```
 
-#### Step 2: Configure Environment Variables
+**Windows:**
+
+```powershell
+# Copy the comprehensive environment file
+Copy-Item env.local.example .env
+
+# Copy service-specific environment files for existing services
+Copy-Item env.services.example services\api-gateway\.env
+Copy-Item env.services.example services\security\.env
+Copy-Item env.services.example services\meeting-intelligence\.env
+Copy-Item env.services.example services\content-creation\.env
+Copy-Item env.services.example services\workflow-automation\.env
+Copy-Item env.services.example services\event-sourcing\.env
+Copy-Item env.services.example services\infrastructure-monitoring\.env
+```
+
+#### Step 2: Install Dependencies
+
+**Root Dependencies:**
+
+```bash
+# Linux/macOS/Windows
+npm install
+```
+
+**Service-Specific Dependencies:**
+
+```bash
+# API Gateway
+cd services/api-gateway && npm install && cd ../..
+
+# Security Service
+cd services/security && npm install && cd ../..
+
+# Meeting Intelligence
+cd services/meeting-intelligence && npm install && cd ../..
+
+# Content Creation
+cd services/content-creation && npm install && cd ../..
+
+# Workflow Automation
+cd services/workflow-automation && npm install && cd ../..
+
+# Event Sourcing
+cd services/event-sourcing && npm install && cd ../..
+
+# Infrastructure Monitoring
+cd services/infrastructure-monitoring && npm install && cd ../..
+```
+
+#### Step 3: Set Up Python Environment
+
+**Linux/macOS:**
+
+```bash
+# Create virtual environment
+python3 -m venv test_env
+source test_env/bin/activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+**Windows:**
+
+```powershell
+# Create virtual environment
+python -m venv test_env
+test_env\Scripts\activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+#### Step 4: Start Databases
+
+```bash
+# Start all database services
+docker-compose up -d
+
+# Verify containers are running
+docker ps
+```
+
+#### Step 5: Run Database Migrations
+
+```bash
+# PostgreSQL migrations
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/001_initial_schema.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/002_rls_policies.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/003_api_keys_table.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/004_meeting_intelligence_schema.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/005_meeting_intelligence_rls.sql
+```
+
+#### Step 6: Start Services
+
+```bash
+# Start all services
+npm run dev
+
+# Or start individual services
+npm run dev:api-gateway
+npm run dev:security
+npm run dev:meeting-intelligence
+npm run dev:content-creation
+npm run dev:workflow-automation
+npm run dev:event-sourcing
+npm run dev:infrastructure-monitoring
+```
+
+#### Step 7: Configure Environment Variables
 
 **IMPORTANT**: You must configure these environment variables before starting the services.
 
@@ -1131,6 +1357,322 @@ rm -rf services/*/package-lock.json
 # Reinstall everything
 ./scripts/setup-local.sh
 ```
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 🐧 Linux-Specific Issues
+
+**Docker Permission Denied**
+
+```bash
+# Add user to docker group
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Or run with sudo (not recommended)
+sudo docker-compose up -d
+```
+
+**Node.js Version Issues**
+
+```bash
+# Install Node Version Manager (NVM)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+```
+
+**Python Virtual Environment Issues**
+
+```bash
+# Install python3-venv if missing
+sudo apt install python3-venv
+
+# Create virtual environment with specific Python version
+python3.11 -m venv test_env
+```
+
+**Port Already in Use**
+
+```bash
+# Find process using port
+sudo lsof -i :3000
+
+# Kill process
+sudo kill -9 <PID>
+
+# Or use different port
+export PORT=3001
+```
+
+#### 🪟 Windows-Specific Issues
+
+**PowerShell Execution Policy**
+
+```powershell
+# Set execution policy
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Or run PowerShell as Administrator
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+```
+
+**Docker Desktop Not Starting**
+
+```powershell
+# Enable WSL2
+wsl --install
+wsl --set-default-version 2
+
+# Restart Docker Desktop
+# Check Windows Features: Hyper-V, Windows Subsystem for Linux
+```
+
+**Node.js Path Issues**
+
+```powershell
+# Add Node.js to PATH
+$env:PATH += ";C:\Program Files\nodejs"
+
+# Or reinstall Node.js with "Add to PATH" option
+```
+
+**Python Not Found**
+
+```powershell
+# Add Python to PATH
+$env:PATH += ";C:\Users\$env:USERNAME\AppData\Local\Programs\Python\Python311"
+
+# Or use py launcher
+py -m venv test_env
+py -m pip install -r requirements.txt
+```
+
+#### 🍎 macOS-Specific Issues
+
+**Homebrew Installation Issues**
+
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Add to PATH (Apple Silicon)
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+**Docker Desktop Issues**
+
+```bash
+# Start Docker Desktop
+open /Applications/Docker.app
+
+# Check Docker status
+docker info
+
+# Reset Docker Desktop if needed
+# Docker Desktop > Troubleshoot > Reset to factory defaults
+```
+
+**Python Version Conflicts**
+
+```bash
+# Use specific Python version
+python3.11 -m venv test_env
+source test_env/bin/activate
+
+# Or use pyenv
+brew install pyenv
+pyenv install 3.11.0
+pyenv local 3.11.0
+```
+
+### Service-Specific Issues
+
+#### API Gateway Issues
+
+**TypeScript Path Mapping Errors**
+
+```bash
+# Install tsconfig-paths
+cd services/api-gateway
+npm install --save-dev tsconfig-paths
+
+# Update package.json dev script
+# "dev": "nodemon -r tsconfig-paths/register src/index.ts"
+```
+
+**Supabase Connection Issues**
+
+```bash
+# Check environment variables
+cat .env | grep SUPABASE
+
+# Use local Supabase setup
+docker-compose -f docker-compose.supabase-local.yml up -d
+```
+
+#### Database Issues
+
+**PostgreSQL Connection Failed**
+
+```bash
+# Check if container is running
+docker ps | grep postgres
+
+# Restart PostgreSQL container
+docker restart qylon-postgres
+
+# Check logs
+docker logs qylon-postgres
+```
+
+**Migration Failures**
+
+```bash
+# Connect to database directly
+docker exec -it qylon-postgres psql -U postgres -d qylon_dev
+
+# Check if tables exist
+\dt
+
+# Run migrations manually
+\i database/migrations/001_initial_schema.sql
+```
+
+#### Docker Issues
+
+**Container Won't Start**
+
+```bash
+# Check Docker daemon
+docker info
+
+# Restart Docker service
+sudo systemctl restart docker  # Linux
+# Or restart Docker Desktop on Windows/macOS
+
+# Clean up containers
+docker system prune -f
+```
+
+**Port Conflicts**
+
+```bash
+# Check what's using ports
+netstat -tulpn | grep :3000  # Linux
+netstat -an | findstr :3000  # Windows
+lsof -i :3000                # macOS
+
+# Stop conflicting services
+sudo systemctl stop <service-name>  # Linux
+```
+
+### Performance Issues
+
+**High Memory Usage**
+
+```bash
+# Check memory usage
+docker stats
+
+# Limit container memory
+docker run -m 512m <container-name>
+
+# Or in docker-compose.yml
+services:
+  api-gateway:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+```
+
+**Slow Startup**
+
+```bash
+# Use Docker BuildKit
+export DOCKER_BUILDKIT=1
+
+# Build with cache
+docker-compose build --parallel
+
+# Use .dockerignore to exclude unnecessary files
+```
+
+### Network Issues
+
+**Services Can't Communicate**
+
+```bash
+# Check Docker network
+docker network ls
+docker network inspect qylon_default
+
+# Restart network
+docker-compose down
+docker-compose up -d
+```
+
+**CORS Issues**
+
+```bash
+# Check CORS configuration in services
+# Update CORS_ORIGIN in .env files
+CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+```
+
+### Quick Setup Verification
+
+Run this script to verify your setup:
+
+```bash
+#!/bin/bash
+echo "🔍 Qylon Setup Verification"
+echo "=========================="
+
+# Check prerequisites
+echo "📋 Prerequisites:"
+node --version && echo "✅ Node.js" || echo "❌ Node.js"
+python3 --version && echo "✅ Python" || echo "❌ Python"
+docker --version && echo "✅ Docker" || echo "❌ Docker"
+git --version && echo "✅ Git" || echo "❌ Git"
+
+# Check services
+echo ""
+echo "🚀 Services:"
+curl -s http://localhost:3000/health | jq .status && echo "✅ API Gateway" || echo "❌ API Gateway"
+curl -s http://localhost:3001/health | jq .status && echo "✅ Security" || echo "❌ Security"
+
+# Check databases
+echo ""
+echo "🗄️  Databases:"
+docker ps | grep postgres && echo "✅ PostgreSQL" || echo "❌ PostgreSQL"
+docker ps | grep redis && echo "✅ Redis" || echo "❌ Redis"
+docker ps | grep mongodb && echo "✅ MongoDB" || echo "❌ MongoDB"
+
+echo ""
+echo "🎉 Verification complete!"
+```
+
+### Getting Help
+
+If you're still experiencing issues:
+
+1. **Check the logs**: `docker logs <container-name>`
+2. **Verify environment variables**: `cat .env`
+3. **Test individual services**: `npm run dev:api-gateway`
+4. **Check port availability**: `netstat -tulpn | grep :3000`
+5. **Restart everything**: `docker-compose down && docker-compose up -d`
+
+For additional support, please:
+
+- Check the [GitHub Issues](https://github.com/KD-Squares/qylon/issues)
+- Review the [API Documentation](docs/api/)
+- Contact the development team
 
 ## 📚 Additional Resources
 
