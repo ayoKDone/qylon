@@ -149,6 +149,7 @@ docs/
 !docs/architecture/
 !docs/api/
 !docs/deployment/
+!docs/TECHNICAL_ONBOARDING.md
 *.md
 !README.md
 !Qylon Technical Design Doc.md
