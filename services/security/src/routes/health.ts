@@ -4,11 +4,26 @@ import logger from '../utils/logger';
 
 const router = Router();
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client (optional for local development)
+let supabase: any = null;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    logger.info('Supabase client initialized successfully in health routes');
+  } else {
+    logger.warn(
+      'Supabase not configured in health routes - running in local development mode'
+    );
+  }
+} catch (error) {
+  logger.warn(
+    'Failed to initialize Supabase client in health routes - running in local development mode',
+    { error: error instanceof Error ? error.message : String(error) }
+  );
+}
 
 // Health check endpoint
 router.get('/', async (_req: Request, res: Response): Promise<void> => {

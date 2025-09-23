@@ -1,64 +1,92 @@
 {
-  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "deno.lint": true,
+  "deno.unstable": [
+    "bare-node-builtins",
+    "byonm",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "http",
+    "net"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.suggest.autoImports": false,
-  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.formatOnSave": true,
+  "editor.rulers": [
+    80,
+    120
+  ],
+  "editor.wordWrap": "wordWrapColumn",
+  "editor.wordWrapColumn": 120,
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
   "eslint.validate": [
     "javascript",
     "typescript",
     "javascriptreact",
     "typescriptreact"
   ],
-  "python.defaultInterpreterPath": "./venv/bin/python",
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true,
-  "python.formatting.provider": "black",
-  "python.sortImports.args": ["--profile", "black"],
+  "files.associations": {
+    "*.env.*": "dotenv",
+    "*.env.example": "dotenv"
+  },
   "files.exclude": {
-    "**/node_modules": true,
-    "**/__pycache__": true,
-    "**/.pytest_cache": true,
-    "**/coverage": true,
-    "**/logs": true,
+    "!**/.env.example": true,
     "**/.env": true,
     "**/.env.*": true,
-    "!**/.env.example": true
-  },
-  "search.exclude": {
-    "**/node_modules": true,
+    "**/.pytest_cache": true,
     "**/__pycache__": true,
     "**/coverage": true,
     "**/logs": true,
-    "**/dist": true,
-    "**/build": true
+    "**/node_modules": true
   },
-  "emmet.includeLanguages": {
-    "typescript": "html",
-    "typescriptreact": "html"
-  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
   "git.ignoreLimitWarning": true,
-  "files.associations": {
-    "*.env.example": "dotenv",
-    "*.env.*": "dotenv"
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.formatting.provider": "black",
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.sortImports.args": [
+    "--profile",
+    "black"
+  ],
+  "search.exclude": {
+    "**/__pycache__": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/dist": true,
+    "**/logs": true,
+    "**/node_modules": true
   },
   "terminal.integrated.env.linux": {
     "NODE_ENV": "development"
   },
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
   "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#7c3aed",
-    "titleBar.activeForeground": "#ffffff",
     "activityBar.background": "#7c3aed",
-    "activityBar.foreground": "#ffffff"
-  },
-  "editor.rulers": [80, 120],
-  "editor.wordWrap": "wordWrapColumn",
-  "editor.wordWrapColumn": 120,
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "files.trimFinalNewlines": true
+    "activityBar.foreground": "#ffffff",
+    "titleBar.activeBackground": "#7c3aed",
+    "titleBar.activeForeground": "#ffffff"
+  }
 }

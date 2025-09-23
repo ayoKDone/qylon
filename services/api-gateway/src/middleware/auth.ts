@@ -4,11 +4,26 @@ import { createClient } from '@supabase/supabase-js';
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client (optional for local development)
+let supabase: any = null;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    logger.info('Supabase client initialized successfully in auth middleware');
+  } else {
+    logger.warn(
+      'Supabase not configured in auth middleware - running in local development mode'
+    );
+  }
+} catch (error) {
+  logger.warn(
+    'Failed to initialize Supabase client in auth middleware - running in local development mode',
+    { error: error instanceof Error ? error.message : String(error) }
+  );
+}
 
 /**
  * Authentication middleware that validates JWT tokens
