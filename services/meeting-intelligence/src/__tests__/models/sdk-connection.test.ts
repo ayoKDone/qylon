@@ -4,9 +4,9 @@
  */
 
 import {
-    SDKConnection,
-    SDKConnectionStatus,
-    SDKPlatform,
+  SDKConnection,
+  SDKConnectionStatus,
+  SDKPlatform,
 } from '../../models/sdk-connection';
 
 describe('SDKConnection', () => {
