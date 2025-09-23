@@ -6,7 +6,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED.svg)](https://www.docker.com/)
 
 **Chief Architect:** Bill (siwale)
-**Repository:** [https://github.com/KD-Squares/qylon](https://github.com/KD-Squares/qylon)
+**Repository:** [https://github.com/KD-Squares/KDS-Development](https://github.com/KD-Squares/KDS-Development)
 **Status:** Development Phase 1 - Foundation
 
 ## 🎯 Project Overview
@@ -18,14 +18,16 @@ Qylon is an advanced AI automation platform that transforms manual business proc
 - **Meeting Intelligence**: Real-time transcription, speaker diarization, and action item extraction
 - **Workflow Automation**: State machine-based workflow execution with compensation logic
 - **Security Framework**: Comprehensive authentication, authorization, and API key management
-- **Microservices Architecture**: 8 independent services with clear boundaries
+- **Microservices Architecture**: 7 core services with clear boundaries
 - **AI Integration**: OpenAI GPT-4, Anthropic Claude 3, and Recall.ai integration
+- **Event Sourcing**: Distributed event handling and saga pattern implementation
+- **Infrastructure Monitoring**: Comprehensive system health and performance monitoring
 
 ## 🏗️ Architecture Overview
 
 ### Technology Stack
 
-- **Frontend:** React 18.2+ with Next.js 14+ and TypeScript 5.0+
+- **Frontend:** React 18.2+ with Next.js 14+ and TypeScript 5.0+ (Coming Soon)
 - **Backend:** Node.js 20+ with Express.js and Python 3.11+ with FastAPI
 - **Databases:** Supabase PostgreSQL (relational) and MongoDB (analytics)
 - **Cloud:** DigitalOcean App Platform with Supabase Backend-as-a-Service
@@ -35,20 +37,17 @@ Qylon is an advanced AI automation platform that transforms manual business proc
 ### Microservices Architecture
 
 ```
-Frontend (React/Next.js)
+Frontend (React/Next.js) ← 🚧 COMING SOON
     ↓
 API Gateway (Port 3000) ← ✅ COMPLETE
     ↓
 Microservices Layer:
-├── Security Service (3001) ← ✅ COMPLETE
-├── User Management (3002) ← 🚧 PENDING (Wilson)
-├── Client Management (3003) ← 🚧 PENDING (Wilson)
-├── Meeting Intelligence (3004) ← ✅ COMPLETE (Bill)
-├── Content Creation (3005) ← 🚧 PENDING (Bill)
-├── Workflow Automation (3006) ← ✅ COMPLETE (Bill)
-├── Integration Management (3007) ← 🚧 PENDING (Ayo)
-├── Notification Service (3008) ← 🚧 PENDING (John)
-└── Analytics & Reporting (3009) ← 🚧 PENDING (John)
+├── Security Service (Port 3001) ← ✅ COMPLETE
+├── Meeting Intelligence (Port 3003) ← ✅ COMPLETE (Bill)
+├── Content Creation (Port 3004) ← ✅ COMPLETE (Bill)
+├── Workflow Automation (Port 3005) ← ✅ COMPLETE (Bill)
+├── Event Sourcing (Port 3006) ← ✅ COMPLETE (Bill)
+└── Infrastructure Monitoring (Port 3007) ← ✅ COMPLETE (Bill)
     ↓
 Data Layer:
 ├── Supabase PostgreSQL ← ✅ SCHEMA COMPLETE
@@ -56,35 +55,159 @@ Data Layer:
 └── Redis Cache ← ✅ CONFIGURED
 ```
 
+### Service Status
+
+| Service                   | Port | Status      | Owner | Description                             |
+| ------------------------- | ---- | ----------- | ----- | --------------------------------------- |
+| API Gateway               | 3000 | ✅ Complete | Bill  | Routes requests to microservices        |
+| Security                  | 3001 | ✅ Complete | Bill  | Authentication, authorization, API keys |
+| Meeting Intelligence      | 3003 | ✅ Complete | Bill  | AI-powered meeting analysis             |
+| Content Creation          | 3004 | ✅ Complete | Bill  | AI content generation                   |
+| Workflow Automation       | 3005 | ✅ Complete | Bill  | Business process automation             |
+| Event Sourcing            | 3006 | ✅ Complete | Bill  | Event handling and sagas                |
+| Infrastructure Monitoring | 3007 | ✅ Complete | Bill  | System health monitoring                |
+
+### Planned Services (Future Development)
+
+| Service                | Port | Status     | Owner  | Description                         |
+| ---------------------- | ---- | ---------- | ------ | ----------------------------------- |
+| User Management        | 3002 | 🚧 Planned | Wilson | User registration and management    |
+| Client Management      | 3008 | 🚧 Planned | Wilson | Client onboarding and management    |
+| Integration Management | 3009 | 🚧 Planned | Ayo    | Third-party integrations            |
+| Notification Service   | 3010 | 🚧 Planned | John   | Email, SMS, push notifications      |
+| Analytics & Reporting  | 3011 | 🚧 Planned | John   | Business intelligence and reporting |
+
 ## 🚀 Quick Start
 
-### Prerequisites
+### 📋 Prerequisites
 
-Before setting up Qylon locally, ensure you have the following installed:
+Before setting up Qylon locally, ensure you have the following installed on your platform:
 
-- **Node.js** >= 20.0.0 ([Download](https://nodejs.org/))
-- **Python** >= 3.11 ([Download](https://www.python.org/downloads/))
-- **Docker** & **Docker Compose** ([Download](https://www.docker.com/products/docker-desktop/))
-- **Git** ([Download](https://git-scm.com/downloads))
-- **PostgreSQL** >= 15 (for local development)
-- **Redis** >= 7 (for caching)
-- **MongoDB** >= 6 (for analytics)
+#### 🖥️ Platform-Specific Installation
 
-### 1. Clone the Repository
+##### 🐧 Linux (Ubuntu/Debian)
 
 ```bash
-# Clone from your GitHub repository
-git clone https://github.com/Siwale/qylon.git
-cd qylon
+# Update package manager
+sudo apt update && sudo apt upgrade -y
 
-# Or clone from the original repository
+# Install Node.js (using NodeSource repository for latest LTS)
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install Python and pip
+sudo apt install -y python3 python3-pip python3-venv python3-dev
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+
+# Install Docker Compose
+sudo apt install -y docker-compose-plugin
+
+# Install Git and other dependencies
+sudo apt install -y git build-essential
+
+# Install PostgreSQL client (optional, for direct database access)
+sudo apt install -y postgresql-client
+
+# Logout and login again to apply Docker group changes
+# Or run: newgrp docker
+```
+
+##### 🪟 Windows
+
+**Option 1: Using Chocolatey (Recommended)**
+
+```powershell
+# Install Chocolatey (run as Administrator)
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install dependencies
+choco install nodejs python docker-desktop git -y
+
+# Enable WSL2 (required for Docker Desktop)
+wsl --install
+```
+
+**Option 2: Manual Installation**
+
+1. **Node.js**: Download from [nodejs.org](https://nodejs.org/) (LTS version)
+2. **Python**: Download from [python.org](https://python.org/) (3.11+)
+3. **Docker Desktop**: Download from [docker.com](https://docker.com/)
+4. **Git**: Download from [git-scm.com](https://git-scm.com/)
+
+**Windows-specific setup:**
+
+```powershell
+# Set execution policy for PowerShell scripts
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Verify installations
+node --version
+python --version
+docker --version
+git --version
+```
+
+##### 🍎 macOS
+
+**Option 1: Using Homebrew (Recommended)**
+
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install dependencies
+brew install node python@3.11 docker docker-compose git
+
+# Start Docker Desktop
+open /Applications/Docker.app
+```
+
+**Option 2: Manual Installation**
+
+1. **Node.js**: Download from [nodejs.org](https://nodejs.org/)
+2. **Python**: Download from [python.org](https://python.org/) or use `brew install python@3.11`
+3. **Docker Desktop**: Download from [docker.com](https://docker.com/)
+4. **Git**: Usually pre-installed, or download from [git-scm.com](https://git-scm.com/)
+
+**macOS-specific setup:**
+
+```bash
+# Verify installations
+node --version
+python3 --version
+docker --version
+git --version
+
+# If Python is not found, create symlink
+sudo ln -s /usr/bin/python3 /usr/local/bin/python
+```
+
+#### 🔧 Minimum Requirements
+
+- **Node.js** >= 20.0.0
+- **Python** >= 3.11
+- **Docker** & **Docker Compose**
+- **Git**
+- **8GB RAM** (recommended)
+- **10GB free disk space**
+
+### 📥 Clone the Repository
+
+```bash
+# Clone from the official repository
 git clone https://github.com/KD-Squares/qylon.git
 cd qylon
 ```
 
-### 2. Automated Setup (Recommended)
+### 🤖 Automated Setup (Recommended)
 
-We provide an automated setup script that handles everything for you:
+We provide platform-specific automated setup scripts:
+
+#### Linux/macOS
 
 ```bash
 # Make the setup script executable
@@ -94,7 +217,17 @@ chmod +x scripts/setup-local.sh
 ./scripts/setup-local.sh
 ```
 
-This script will:
+#### Windows (PowerShell)
+
+```powershell
+# Set execution policy (if not already set)
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Run the automated setup
+.\scripts\setup-local.ps1
+```
+
+The automated setup script will:
 
 - ✅ Check all prerequisites
 - ✅ Create environment files
@@ -103,71 +236,195 @@ This script will:
 - ✅ Configure services
 - ✅ Run database migrations
 - ✅ Verify port availability
+- ✅ Start services
 
-### 3. Manual Setup (Alternative)
+**Note**: If the automated setup fails, follow the manual setup steps below.
+
+### 🔧 Manual Setup (Alternative)
 
 If you prefer manual setup or need to customize the configuration:
 
 #### Step 1: Environment Configuration
 
+**Linux/macOS:**
+
 ```bash
 # Copy the comprehensive environment file
 cp env.local.example .env
 
-# Copy service-specific environment files
+# Copy service-specific environment files for existing services
 cp env.services.example services/api-gateway/.env
-cp env.services.example services/user-management/.env
-cp env.services.example services/client-management/.env
+cp env.services.example services/security/.env
 cp env.services.example services/meeting-intelligence/.env
 cp env.services.example services/content-creation/.env
 cp env.services.example services/workflow-automation/.env
-cp env.services.example services/integration-management/.env
-cp env.services.example services/notification-service/.env
-cp env.services.example services/analytics-reporting/.env
+cp env.services.example services/event-sourcing/.env
+cp env.services.example services/infrastructure-monitoring/.env
 ```
 
-#### Step 2: Configure Environment Variables
+**Windows:**
+
+```powershell
+# Copy the comprehensive environment file
+Copy-Item env.local.example .env
+
+# Copy service-specific environment files for existing services
+Copy-Item env.services.example services\api-gateway\.env
+Copy-Item env.services.example services\security\.env
+Copy-Item env.services.example services\meeting-intelligence\.env
+Copy-Item env.services.example services\content-creation\.env
+Copy-Item env.services.example services\workflow-automation\.env
+Copy-Item env.services.example services\event-sourcing\.env
+Copy-Item env.services.example services\infrastructure-monitoring\.env
+```
+
+#### Step 2: Install Dependencies
+
+**Root Dependencies:**
+
+```bash
+# Linux/macOS/Windows
+npm install
+```
+
+**Service-Specific Dependencies:**
+
+```bash
+# API Gateway
+cd services/api-gateway && npm install && cd ../..
+
+# Security Service
+cd services/security && npm install && cd ../..
+
+# Meeting Intelligence
+cd services/meeting-intelligence && npm install && cd ../..
+
+# Content Creation
+cd services/content-creation && npm install && cd ../..
+
+# Workflow Automation
+cd services/workflow-automation && npm install && cd ../..
+
+# Event Sourcing
+cd services/event-sourcing && npm install && cd ../..
+
+# Infrastructure Monitoring
+cd services/infrastructure-monitoring && npm install && cd ../..
+```
+
+#### Step 3: Set Up Python Environment
+
+**Linux/macOS:**
+
+```bash
+# Create virtual environment
+python3 -m venv test_env
+source test_env/bin/activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+**Windows:**
+
+```powershell
+# Create virtual environment
+python -m venv test_env
+test_env\Scripts\activate
+
+# Install Python dependencies
+pip install -r requirements.txt
+```
+
+#### Step 4: Start Databases
+
+```bash
+# Start all database services
+docker-compose up -d
+
+# Verify containers are running
+docker ps
+```
+
+#### Step 5: Run Database Migrations
+
+```bash
+# PostgreSQL migrations
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/001_initial_schema.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/002_rls_policies.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/003_api_keys_table.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/004_meeting_intelligence_schema.sql
+docker exec -i qylon-postgres psql -U postgres -d qylon_dev < database/migrations/005_meeting_intelligence_rls.sql
+```
+
+#### Step 6: Start Services
+
+```bash
+# Start all services
+npm run dev
+
+# Or start individual services
+npm run dev:api-gateway
+npm run dev:security
+npm run dev:meeting-intelligence
+npm run dev:content-creation
+npm run dev:workflow-automation
+npm run dev:event-sourcing
+npm run dev:infrastructure-monitoring
+```
+
+#### Step 7: Configure Environment Variables
+
+**IMPORTANT**: You must configure these environment variables before starting the services.
 
 Edit `.env` file with your actual configuration values:
 
 ```bash
 # =============================================================================
-# DATABASE CONFIGURATION
+# MINIMUM REQUIRED CONFIGURATION FOR LOCAL DEVELOPMENT
 # =============================================================================
+
+# Database Configuration (Required)
 DATABASE_URL=postgresql://postgres:password@localhost:5432/qylon_dev
 SUPABASE_URL=https://your-project-id.supabase.co
 SUPABASE_ANON_KEY=your-supabase-anon-key-here
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key-here
 
-# =============================================================================
-# AI SERVICES CONFIGURATION
-# =============================================================================
+# AI Services Configuration (Required for AI features)
 OPENAI_API_KEY=sk-your-openai-api-key-here
 ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key-here
 RECALL_AI_API_KEY=your-recall-ai-api-key-here
 
-# =============================================================================
-# AUTHENTICATION & SECURITY
-# =============================================================================
+# Authentication & Security (Required)
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 ENCRYPTION_KEY=your-32-character-encryption-key-here
 
+# Redis Configuration (Required)
+REDIS_URL=redis://localhost:6379
+
 # =============================================================================
-# CLOUD STORAGE & CDN
+# OPTIONAL CONFIGURATION (Can be left as defaults for local development)
 # =============================================================================
+
+# Cloud Storage & CDN (Optional - for file uploads)
 DO_SPACES_KEY=your-spaces-access-key
 DO_SPACES_SECRET=your-spaces-secret-key
 DO_SPACES_ENDPOINT=https://nyc3.digitaloceanspaces.com
 DO_SPACES_BUCKET=qylon-storage
 
-# =============================================================================
-# EMAIL & NOTIFICATIONS
-# =============================================================================
+# Email & Notifications (Optional - for notifications)
 SENDGRID_API_KEY=SG.your-sendgrid-api-key-here
 TWILIO_ACCOUNT_SID=your-twilio-account-sid
 TWILIO_AUTH_TOKEN=your-twilio-auth-token
 SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
 ```
+
+**Quick Start Configuration**: For immediate local development, you only need to set:
+
+1. `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (get from Supabase dashboard)
+2. `OPENAI_API_KEY` (get from OpenAI dashboard)
+3. `JWT_SECRET` (generate a random string)
+4. `ENCRYPTION_KEY` (generate a 32-character random string)
 
 #### Step 3: Database Setup
 
@@ -288,29 +545,23 @@ docker-compose logs -f
 # Terminal 1: API Gateway
 cd services/api-gateway && npm run dev
 
-# Terminal 2: User Management
-cd services/user-management && npm run dev
+# Terminal 2: Security Service
+cd services/security && npm run dev
 
-# Terminal 3: Client Management
-cd services/client-management && npm run dev
-
-# Terminal 4: Meeting Intelligence
+# Terminal 3: Meeting Intelligence
 cd services/meeting-intelligence && npm run dev
 
-# Terminal 5: Content Creation
+# Terminal 4: Content Creation
 cd services/content-creation && source ../../venv/bin/activate && python src/index.py
 
-# Terminal 6: Workflow Automation
+# Terminal 5: Workflow Automation
 cd services/workflow-automation && npm run dev
 
-# Terminal 7: Integration Management
-cd services/integration-management && npm run dev
+# Terminal 6: Event Sourcing
+cd services/event-sourcing && npm run dev
 
-# Terminal 8: Notification Service
-cd services/notification-service && npm run dev
-
-# Terminal 9: Analytics Reporting
-cd services/analytics-reporting && npm run dev
+# Terminal 7: Infrastructure Monitoring
+cd services/infrastructure-monitoring && npm run dev
 ```
 
 ### 5. Verify Installation
@@ -318,14 +569,19 @@ cd services/analytics-reporting && npm run dev
 Visit the following endpoints to verify services are running:
 
 - **API Gateway**: http://localhost:3000/health
-- **User Management**: http://localhost:3001/health
-- **Client Management**: http://localhost:3002/health
+- **Security Service**: http://localhost:3001/health
 - **Meeting Intelligence**: http://localhost:3003/health
 - **Content Creation**: http://localhost:3004/health
 - **Workflow Automation**: http://localhost:3005/health
-- **Integration Management**: http://localhost:3006/health
-- **Notification Service**: http://localhost:3007/health
-- **Analytics Reporting**: http://localhost:3008/health
+- **Event Sourcing**: http://localhost:3006/health
+- **Infrastructure Monitoring**: http://localhost:3007/health
+
+You can also run the health check script:
+
+```bash
+# Check all service health endpoints
+npm run health:check
+```
 
 ### 6. Frontend Setup (When Available)
 
@@ -407,7 +663,7 @@ npm install
 npm run dev
 ```
 
-#### Meeting Intelligence Service (Port 3004)
+#### Meeting Intelligence Service (Port 3003)
 
 ```bash
 cd services/meeting-intelligence
@@ -415,10 +671,35 @@ npm install
 npm run dev
 ```
 
-#### Workflow Automation Service (Port 3006)
+#### Content Creation Service (Port 3004)
+
+```bash
+cd services/content-creation
+source ../../venv/bin/activate
+pip install -r requirements.txt
+python src/index.py
+```
+
+#### Workflow Automation Service (Port 3005)
 
 ```bash
 cd services/workflow-automation
+npm install
+npm run dev
+```
+
+#### Event Sourcing Service (Port 3006)
+
+```bash
+cd services/event-sourcing
+npm install
+npm run dev
+```
+
+#### Infrastructure Monitoring Service (Port 3007)
+
+```bash
+cd services/infrastructure-monitoring
 npm install
 npm run dev
 ```
@@ -552,6 +833,9 @@ npm run docker:up            # Start Docker containers
 npm run docker:down          # Stop Docker containers
 npm run docker:logs          # View Docker logs
 
+# Health Checks
+npm run health:check         # Check all service health endpoints
+
 # Code Quality
 npm run lint                 # Run ESLint
 npm run lint:fix             # Fix ESLint issues
@@ -565,26 +849,31 @@ qylon/
 ├── services/                    # Microservices
 │   ├── api-gateway/            # API Gateway (Port 3000)
 │   ├── security/               # Security Service (Port 3001)
-│   ├── user-management/        # User Management (Port 3002)
-│   ├── client-management/      # Client Management (Port 3003)
-│   ├── meeting-intelligence/   # Meeting Intelligence (Port 3004)
-│   ├── content-creation/       # Content Creation (Port 3005)
-│   ├── workflow-automation/    # Workflow Automation (Port 3006)
-│   ├── integration-management/ # Integration Management (Port 3007)
-│   ├── notification-service/   # Notification Service (Port 3008)
-│   └── analytics-reporting/    # Analytics & Reporting (Port 3009)
+│   ├── meeting-intelligence/   # Meeting Intelligence (Port 3003)
+│   ├── content-creation/       # Content Creation (Port 3004)
+│   ├── workflow-automation/    # Workflow Automation (Port 3005)
+│   ├── event-sourcing/         # Event Sourcing (Port 3006)
+│   └── infrastructure-monitoring/ # Infrastructure Monitoring (Port 3007)
 ├── database/                   # Database files
 │   ├── migrations/            # Database migrations
 │   ├── schemas/               # Database schemas
 │   └── seeds/                 # Seed data
 ├── infrastructure/            # Infrastructure as Code
-│   ├── terraform/             # Terraform configurations
-│   └── docker/                # Docker configurations
+│   └── terraform/             # Terraform configurations
 ├── docs/                      # Documentation
 ├── tests/                     # Test files
+│   ├── unit/                  # Unit tests
+│   └── integration/           # Integration tests
 ├── scripts/                   # Utility scripts
+│   ├── setup-local.sh         # Local development setup
+│   ├── start-services.sh      # Start all services
+│   ├── stop-services.sh       # Stop all services
+│   └── db-migrate.sh          # Database migration script
 ├── docker-compose.yml         # Docker Compose configuration
 ├── package.json               # Root package.json
+├── requirements.txt           # Python dependencies
+├── env.local.example          # Environment configuration template
+├── env.services.example       # Service environment template
 └── README.md                  # This file
 ```
 
@@ -683,7 +972,10 @@ All services provide health check endpoints:
 - **API Gateway**: `GET /health`
 - **Security Service**: `GET /health`
 - **Meeting Intelligence**: `GET /health`
+- **Content Creation**: `GET /health`
 - **Workflow Automation**: `GET /health`
+- **Event Sourcing**: `GET /health`
+- **Infrastructure Monitoring**: `GET /health`
 
 ### Logging
 
@@ -694,6 +986,49 @@ All services use structured logging with Winston. Logs are available in:
 - **Production**: Centralized logging system
 
 ## 🐛 Troubleshooting
+
+### Quick Setup Verification
+
+Before diving into specific issues, run this quick verification script:
+
+```bash
+# Quick system check
+echo "=== QYLON SETUP VERIFICATION ==="
+echo "Node.js version: $(node --version)"
+echo "Python version: $(python3 --version)"
+echo "Docker version: $(docker --version)"
+echo "Docker Compose version: $(docker-compose --version)"
+echo ""
+
+echo "=== CHECKING SERVICES ==="
+for port in 3000 3001 3003 3004 3005 3006 3007; do
+    if curl -s http://localhost:$port/health >/dev/null 2>&1; then
+        echo "✅ Port $port: Service is running"
+    else
+        echo "❌ Port $port: Service is not responding"
+    fi
+done
+echo ""
+
+echo "=== CHECKING DATABASES ==="
+if docker-compose ps postgres | grep -q "Up"; then
+    echo "✅ PostgreSQL: Running"
+else
+    echo "❌ PostgreSQL: Not running"
+fi
+
+if docker-compose ps redis | grep -q "Up"; then
+    echo "✅ Redis: Running"
+else
+    echo "❌ Redis: Not running"
+fi
+
+if docker-compose ps mongodb | grep -q "Up"; then
+    echo "✅ MongoDB: Running"
+else
+    echo "❌ MongoDB: Not running"
+fi
+```
 
 ### Common Issues and Solutions
 
@@ -714,7 +1049,7 @@ kill -9 <PID>
 sudo fuser -k 3000/tcp
 
 # Check all Qylon ports
-for port in 3000 3001 3002 3003 3004 3005 3006 3007 3008; do
+for port in 3000 3001 3003 3004 3005 3006 3007; do
     echo "Port $port:"
     lsof -i :$port || echo "  Available"
 done
@@ -923,7 +1258,7 @@ sudo ufw status
 
 ```bash
 # Check all service health endpoints
-for port in 3000 3001 3002 3003 3004 3005 3006 3007 3008; do
+for port in 3000 3001 3003 3004 3005 3006 3007; do
     echo "Testing port $port:"
     curl -s http://localhost:$port/health || echo "  Service not responding"
 done
@@ -950,7 +1285,7 @@ mongosh --eval "db.runCommand('ping')" 2>/dev/null || echo "  Not connected"
 ps aux | grep -E "(node|python)" | grep -v grep
 
 # Monitor port usage
-lsof -i :3000-3008
+lsof -i :3000-3007
 ```
 
 #### Log Analysis
@@ -1023,6 +1358,322 @@ rm -rf services/*/package-lock.json
 ./scripts/setup-local.sh
 ```
 
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### 🐧 Linux-Specific Issues
+
+**Docker Permission Denied**
+
+```bash
+# Add user to docker group
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Or run with sudo (not recommended)
+sudo docker-compose up -d
+```
+
+**Node.js Version Issues**
+
+```bash
+# Install Node Version Manager (NVM)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+```
+
+**Python Virtual Environment Issues**
+
+```bash
+# Install python3-venv if missing
+sudo apt install python3-venv
+
+# Create virtual environment with specific Python version
+python3.11 -m venv test_env
+```
+
+**Port Already in Use**
+
+```bash
+# Find process using port
+sudo lsof -i :3000
+
+# Kill process
+sudo kill -9 <PID>
+
+# Or use different port
+export PORT=3001
+```
+
+#### 🪟 Windows-Specific Issues
+
+**PowerShell Execution Policy**
+
+```powershell
+# Set execution policy
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Or run PowerShell as Administrator
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+```
+
+**Docker Desktop Not Starting**
+
+```powershell
+# Enable WSL2
+wsl --install
+wsl --set-default-version 2
+
+# Restart Docker Desktop
+# Check Windows Features: Hyper-V, Windows Subsystem for Linux
+```
+
+**Node.js Path Issues**
+
+```powershell
+# Add Node.js to PATH
+$env:PATH += ";C:\Program Files\nodejs"
+
+# Or reinstall Node.js with "Add to PATH" option
+```
+
+**Python Not Found**
+
+```powershell
+# Add Python to PATH
+$env:PATH += ";C:\Users\$env:USERNAME\AppData\Local\Programs\Python\Python311"
+
+# Or use py launcher
+py -m venv test_env
+py -m pip install -r requirements.txt
+```
+
+#### 🍎 macOS-Specific Issues
+
+**Homebrew Installation Issues**
+
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Add to PATH (Apple Silicon)
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+**Docker Desktop Issues**
+
+```bash
+# Start Docker Desktop
+open /Applications/Docker.app
+
+# Check Docker status
+docker info
+
+# Reset Docker Desktop if needed
+# Docker Desktop > Troubleshoot > Reset to factory defaults
+```
+
+**Python Version Conflicts**
+
+```bash
+# Use specific Python version
+python3.11 -m venv test_env
+source test_env/bin/activate
+
+# Or use pyenv
+brew install pyenv
+pyenv install 3.11.0
+pyenv local 3.11.0
+```
+
+### Service-Specific Issues
+
+#### API Gateway Issues
+
+**TypeScript Path Mapping Errors**
+
+```bash
+# Install tsconfig-paths
+cd services/api-gateway
+npm install --save-dev tsconfig-paths
+
+# Update package.json dev script
+# "dev": "nodemon -r tsconfig-paths/register src/index.ts"
+```
+
+**Supabase Connection Issues**
+
+```bash
+# Check environment variables
+cat .env | grep SUPABASE
+
+# Use local Supabase setup
+docker-compose -f docker-compose.supabase-local.yml up -d
+```
+
+#### Database Issues
+
+**PostgreSQL Connection Failed**
+
+```bash
+# Check if container is running
+docker ps | grep postgres
+
+# Restart PostgreSQL container
+docker restart qylon-postgres
+
+# Check logs
+docker logs qylon-postgres
+```
+
+**Migration Failures**
+
+```bash
+# Connect to database directly
+docker exec -it qylon-postgres psql -U postgres -d qylon_dev
+
+# Check if tables exist
+\dt
+
+# Run migrations manually
+\i database/migrations/001_initial_schema.sql
+```
+
+#### Docker Issues
+
+**Container Won't Start**
+
+```bash
+# Check Docker daemon
+docker info
+
+# Restart Docker service
+sudo systemctl restart docker  # Linux
+# Or restart Docker Desktop on Windows/macOS
+
+# Clean up containers
+docker system prune -f
+```
+
+**Port Conflicts**
+
+```bash
+# Check what's using ports
+netstat -tulpn | grep :3000  # Linux
+netstat -an | findstr :3000  # Windows
+lsof -i :3000                # macOS
+
+# Stop conflicting services
+sudo systemctl stop <service-name>  # Linux
+```
+
+### Performance Issues
+
+**High Memory Usage**
+
+```bash
+# Check memory usage
+docker stats
+
+# Limit container memory
+docker run -m 512m <container-name>
+
+# Or in docker-compose.yml
+services:
+  api-gateway:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+```
+
+**Slow Startup**
+
+```bash
+# Use Docker BuildKit
+export DOCKER_BUILDKIT=1
+
+# Build with cache
+docker-compose build --parallel
+
+# Use .dockerignore to exclude unnecessary files
+```
+
+### Network Issues
+
+**Services Can't Communicate**
+
+```bash
+# Check Docker network
+docker network ls
+docker network inspect qylon_default
+
+# Restart network
+docker-compose down
+docker-compose up -d
+```
+
+**CORS Issues**
+
+```bash
+# Check CORS configuration in services
+# Update CORS_ORIGIN in .env files
+CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+```
+
+### Quick Setup Verification
+
+Run this script to verify your setup:
+
+```bash
+#!/bin/bash
+echo "🔍 Qylon Setup Verification"
+echo "=========================="
+
+# Check prerequisites
+echo "📋 Prerequisites:"
+node --version && echo "✅ Node.js" || echo "❌ Node.js"
+python3 --version && echo "✅ Python" || echo "❌ Python"
+docker --version && echo "✅ Docker" || echo "❌ Docker"
+git --version && echo "✅ Git" || echo "❌ Git"
+
+# Check services
+echo ""
+echo "🚀 Services:"
+curl -s http://localhost:3000/health | jq .status && echo "✅ API Gateway" || echo "❌ API Gateway"
+curl -s http://localhost:3001/health | jq .status && echo "✅ Security" || echo "❌ Security"
+
+# Check databases
+echo ""
+echo "🗄️  Databases:"
+docker ps | grep postgres && echo "✅ PostgreSQL" || echo "❌ PostgreSQL"
+docker ps | grep redis && echo "✅ Redis" || echo "❌ Redis"
+docker ps | grep mongodb && echo "✅ MongoDB" || echo "❌ MongoDB"
+
+echo ""
+echo "🎉 Verification complete!"
+```
+
+### Getting Help
+
+If you're still experiencing issues:
+
+1. **Check the logs**: `docker logs <container-name>`
+2. **Verify environment variables**: `cat .env`
+3. **Test individual services**: `npm run dev:api-gateway`
+4. **Check port availability**: `netstat -tulpn | grep :3000`
+5. **Restart everything**: `docker-compose down && docker-compose up -d`
+
+For additional support, please:
+
+- Check the [GitHub Issues](https://github.com/KD-Squares/qylon/issues)
+- Review the [API Documentation](docs/api/)
+- Contact the development team
+
 ## 📚 Additional Resources
 
 - [System Architecture Documentation](docs/architecture/)
@@ -1039,6 +1690,62 @@ This project is proprietary software owned by KD Squares. All rights reserved.
 ## 🤝 Contributing
 
 This is a private project. Only authorized team members can contribute. Please follow the development workflow and coding standards outlined in this README and the `.cursorrules` file.
+
+---
+
+## 🎯 Getting Started Checklist
+
+### For New Developers
+
+1. **✅ Prerequisites Installed**
+   - Node.js >= 20.0.0
+   - Python >= 3.11
+   - Docker & Docker Compose
+   - Git
+
+2. **✅ Repository Cloned**
+
+   ```bash
+   git clone https://github.com/KD-Squares/KDS-Development.git
+   cd KDS-Development
+   ```
+
+3. **✅ Environment Configured**
+   - Copy `env.local.example` to `.env`
+   - Set required environment variables (see Step 2 above)
+
+4. **✅ Services Started**
+
+   ```bash
+   # Option 1: Automated setup
+   chmod +x scripts/setup-local.sh
+   ./scripts/setup-local.sh
+
+   # Option 2: Docker Compose
+   docker-compose up -d
+
+   # Option 3: Manual startup
+   npm run dev
+   ```
+
+5. **✅ Verification Complete**
+   - All health endpoints responding
+   - Databases running
+   - No port conflicts
+
+### Common First-Time Issues
+
+- **Port conflicts**: Use `lsof -i :PORT` to check port usage
+- **Missing environment variables**: Ensure `.env` file is properly configured
+- **Database connection issues**: Verify Docker containers are running
+- **Permission issues**: Make scripts executable with `chmod +x scripts/*.sh`
+
+### Need Help?
+
+1. **Check the troubleshooting section** below for common issues
+2. **Run the verification script** to identify problems
+3. **Check service logs** with `docker-compose logs -f <service-name>`
+4. **Contact the team** for assistance
 
 ---
 

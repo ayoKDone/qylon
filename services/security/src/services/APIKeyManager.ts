@@ -31,13 +31,31 @@ interface APIKeyResponse {
 }
 
 export class APIKeyManager {
-  private supabase;
+  private supabase: any;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    try {
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        this.supabase = createClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_ROLE_KEY
+        );
+        logger.info(
+          'Supabase client initialized successfully in APIKeyManager'
+        );
+      } else {
+        logger.warn(
+          'Supabase not configured in APIKeyManager - running in local development mode'
+        );
+        this.supabase = null;
+      }
+    } catch (error) {
+      logger.warn(
+        'Failed to initialize Supabase client in APIKeyManager - running in local development mode',
+        { error: error instanceof Error ? error.message : String(error) }
+      );
+      this.supabase = null;
+    }
   }
 
   /**
