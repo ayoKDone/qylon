@@ -70,7 +70,7 @@ app.use(requestLogger);
 app.use('/health', healthCheck);
 
 // Authentication middleware for protected routes
-app.use('/api/v1', authMiddleware);
+app.use('/api/v1', authMiddleware as any);
 
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);
