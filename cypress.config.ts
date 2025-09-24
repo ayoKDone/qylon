@@ -68,15 +68,18 @@ export default defineConfig({
       on('task', {
         // Database tasks
         'db:seed': () => {
-          // Seed test database
+          // Seed test database - placeholder for now
+          console.log('Database seeding (placeholder)');
           return null;
         },
         'db:clean': () => {
-          // Clean test database
+          // Clean test database - placeholder for now
+          console.log('Database cleaning (placeholder)');
           return null;
         },
         'db:reset': () => {
-          // Reset test database
+          // Reset test database - placeholder for now
+          console.log('Database reset (placeholder)');
           return null;
         },
 
