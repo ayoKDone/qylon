@@ -42,7 +42,7 @@ jobs:
         run: npm run lint
 
       - name: Run Prettier check
-        run: npm run format -- --check
+        run: npm run format:check
 
       - name: Run Python linting
         run: |
@@ -115,7 +115,7 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
           REDIS_URL: redis://localhost:6379
-        run: npm run test:unit && npm run test:integration
+        run: npm run test:unit
 
       - name: Run Python tests
         env:

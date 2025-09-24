@@ -44,6 +44,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Test results and reports
+tests/performance/results/
+security/results/
+coverage/
+*.lcov
+
 # Runtime data
 pids/
 *.pid
