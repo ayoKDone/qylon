@@ -86,7 +86,6 @@ run_test() {
         --env TEST_TYPE="$test_name" \
         --out json="$output_file.json" \
         --out csv="$output_file.csv" \
-        --out influxdb="$output_file.influxdb" \
         "$test_file"
 
     if [ $? -eq 0 ]; then
@@ -121,11 +120,9 @@ Timestamp: $TIMESTAMP
 Output Files:
 - JSON: $output_file.json
 - CSV: $output_file.csv
-- InfluxDB: $output_file.influxdb
 
 To view detailed results, use:
 - K6 Cloud: Upload $output_file.json to K6 Cloud
-- Grafana: Import $output_file.influxdb to InfluxDB and visualize in Grafana
 - Excel: Open $output_file.csv in Excel for analysis
 EOF
 
