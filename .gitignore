@@ -183,6 +183,15 @@ scripts/
 !scripts/setup/
 !scripts/deployment/
 !scripts/run-flake8.sh
+!scripts/security-test.sh
+!scripts/performance-test.sh
+!scripts/performance-test-enhanced.sh
+!scripts/coverage-monitor.sh
+!scripts/start-e2e-server.sh
+!scripts/db-migrate.sh
+!scripts/start-services.sh
+!scripts/stop-services.sh
+!scripts/test-docker-compose.sh
 
 # Logs and temporary files
 logs/
