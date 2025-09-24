@@ -1,4 +1,4 @@
-import { ProxyConfig, ServiceRegistry } from '@/types';
+import { ProxyConfig, ServiceEndpoint, ServiceRegistry } from '@/types';
 import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response, Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -141,7 +141,9 @@ const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
   // Find matching service
   let targetService: string | null = null;
 
-  for (const [serviceName, serviceConfig] of Object.entries(serviceRegistry)) {
+  for (const [serviceName, serviceConfig] of Object.entries(
+    serviceRegistry
+  ) as [string, ServiceEndpoint][]) {
     for (const route of serviceConfig.routes) {
       if (path.startsWith(`/api/v1${route}`)) {
         targetService = serviceName;
@@ -226,14 +228,16 @@ router.use(routeDiscovery);
 router.use(serviceHealthCheck);
 
 // Create proxy routes for each service
-Object.entries(serviceRegistry).forEach(([serviceName, serviceConfig]) => {
-  const proxy = createServiceProxy(serviceName, serviceConfig);
+Object.entries(serviceRegistry).forEach(
+  ([serviceName, serviceConfig]: [string, ServiceEndpoint]) => {
+    const proxy = createServiceProxy(serviceName, serviceConfig);
 
-  // Create route for each service route
-  serviceConfig.routes.forEach(route => {
-    router.use(`/api/v1${route}`, proxy);
-  });
-});
+    // Create route for each service route
+    serviceConfig.routes.forEach((route: string) => {
+      router.use(`/api/v1${route}`, proxy);
+    });
+  }
+);
 
 /**
  * Service discovery endpoint
@@ -261,7 +265,7 @@ router.get('/services/status', async (req: Request, _res: Response) => {
   const axios = require('axios');
   const serviceStatuses = await Promise.allSettled(
     Object.entries(serviceRegistry).map(
-      async ([serviceName, serviceConfig]) => {
+      async ([serviceName, serviceConfig]: [string, ServiceEndpoint]) => {
         try {
           const response = await axios.get(
             `${serviceConfig.url}${serviceConfig.healthCheck}`,

@@ -8,9 +8,6 @@
 import { defineConfig } from 'cypress';
 
 export default defineConfig({
-  typescript: {
-    configFile: 'tsconfig.cypress.json',
-  },
   e2e: {
     baseUrl: 'http://localhost:3000',
     viewportWidth: 1280,

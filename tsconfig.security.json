@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "**/tests/**",
+    "cypress.config.ts",
+    "services/api-gateway/**",
+    "services/event-sourcing/**"
+  ]
+}

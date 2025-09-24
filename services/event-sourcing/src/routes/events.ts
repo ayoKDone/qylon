@@ -1,8 +1,8 @@
-import { Router, Request, Response } from 'express';
-import { SupabaseEventStore, EventBuilder } from '../services/EventStore';
-import { QylonEventTypes, AggregateTypes } from '../models/Event';
+import { Request, Response, Router } from 'express';
 import { logger } from '../../utils/logger';
 import { asyncHandler } from '../middleware/errorHandler';
+import { AggregateTypes, QylonEventTypes } from '../models/Event';
+import { EventBuilder, SupabaseEventStore } from '../services/EventStore';
 
 const router = Router();
 const eventStore = new SupabaseEventStore();
@@ -45,7 +45,9 @@ router.post(
       }
 
       // Validate event type
-      if (!Object.values(QylonEventTypes).includes(eventType)) {
+      if (
+        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
+      ) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',
@@ -186,7 +188,9 @@ router.get(
       }
 
       // Validate event type
-      if (!Object.values(QylonEventTypes).includes(eventType)) {
+      if (
+        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
+      ) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',

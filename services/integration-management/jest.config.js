@@ -8,19 +8,7 @@ module.exports = {
     '^.+\\.ts$': [
       'ts-jest',
       {
-        tsconfig: {
-          module: 'commonjs',
-          target: 'ES2020',
-          esModuleInterop: true,
-          allowSyntheticDefaultImports: true,
-          moduleResolution: 'node',
-          isolatedModules: true,
-          skipLibCheck: true,
-          forceConsistentCasingInFileNames: true,
-          resolveJsonModule: true,
-          noImplicitAny: false,
-          strict: false,
-        },
+        tsconfig: 'tsconfig.test.json',
       },
     ],
   },

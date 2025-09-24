@@ -11,6 +11,7 @@ export interface SagaStep {
   failedAt?: Date;
   error?: string;
   result?: any;
+  dependsOn?: string[];
 }
 
 export interface RetryPolicy {
