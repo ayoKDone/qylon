@@ -544,7 +544,7 @@ describe('Service Communication Integration Tests', () => {
               source: 'primary',
               timestamp: TestDataGenerator.generateTimestamp(),
             };
-          } catch (error) {
+          } catch {
             // Fallback to secondary API
             try {
               const fallbackResponse = await mockedAxios.post(
@@ -560,7 +560,7 @@ describe('Service Communication Integration Tests', () => {
                 source: 'fallback',
                 timestamp: TestDataGenerator.generateTimestamp(),
               };
-            } catch (fallbackError) {
+            } catch {
               return {
                 success: false,
                 error: 'All external services unavailable',
