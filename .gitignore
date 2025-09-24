@@ -197,6 +197,7 @@ scripts/
 !scripts/start-services.sh
 !scripts/stop-services.sh
 !scripts/test-docker-compose.sh
+!scripts/clear-jest-cache.sh
 
 # Logs and temporary files
 logs/
