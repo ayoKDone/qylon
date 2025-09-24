@@ -41,7 +41,8 @@ check_database_connection() {
     log_info "Checking database connection..."
 
     if command -v psql >/dev/null 2>&1; then
-        if PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "SELECT 1;" >/dev/null 2>&1; then
+        # First check if we can connect to PostgreSQL at all (using 'postgres' database)
+        if PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "SELECT 1;" >/dev/null 2>&1; then
             log_success "Database connection successful"
             return 0
         fi
@@ -88,10 +89,10 @@ run_migration() {
         local output
         output=$(PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$migration_file" 2>&1)
         local exit_code=$?
-        
+
         # Always log success for migrations (PostgreSQL errors are often just warnings about existing objects)
         log_success "Migration $migration_name completed"
-        
+
         # Only return error if it's a critical failure (not just PostgreSQL warnings)
         if [ $exit_code -ne 0 ] && echo "$output" | grep -q "FATAL\|connection\|authentication"; then
             log_error "Migration $migration_name failed with critical error"
@@ -103,10 +104,10 @@ run_migration() {
         local output
         output=$(docker-compose exec -T postgres psql -U postgres -d "$DB_NAME" < "$migration_file" 2>&1)
         local exit_code=$?
-        
+
         # Always log success for migrations
         log_success "Migration $migration_name completed (via Docker)"
-        
+
         # Only return error if it's a critical failure
         if [ $exit_code -ne 0 ] && echo "$output" | grep -q "FATAL\|connection\|authentication"; then
             log_error "Migration $migration_name failed with critical error (via Docker)"
@@ -175,10 +176,10 @@ run_seeds() {
             local output
             output=$(PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$seed" 2>&1)
             local exit_code=$?
-            
+
             # Always log success for seeds (PostgreSQL errors are often just warnings about existing data)
             log_success "Seed $seed_name completed"
-            
+
             # Only return error if it's a critical failure
             if [ $exit_code -ne 0 ] && echo "$output" | grep -q "FATAL\|connection\|authentication"; then
                 log_error "Seed $seed_name failed with critical error"
@@ -190,10 +191,10 @@ run_seeds() {
             local output
             output=$(docker-compose exec -T postgres psql -U postgres -d "$DB_NAME" < "$seed" 2>&1)
             local exit_code=$?
-            
+
             # Always log success for seeds
             log_success "Seed $seed_name completed (via Docker)"
-            
+
             # Only return error if it's a critical failure
             if [ $exit_code -ne 0 ] && echo "$output" | grep -q "FATAL\|connection\|authentication"; then
                 log_error "Seed $seed_name failed with critical error (via Docker)"
