@@ -209,14 +209,6 @@ jobs:
             fi
           done
 
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        continue-on-error: true
-        with:
-          files: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
 
   # Integration Tests
   integration-test:
