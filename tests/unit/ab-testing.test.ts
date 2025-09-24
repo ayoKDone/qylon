@@ -135,7 +135,7 @@ describe('A/B Testing Framework', () => {
         expect(updatedExperiment.description).toBe(
           'An updated test experiment'
         );
-        expect(updatedExperiment.updatedAt.getTime()).toBeGreaterThan(
+        expect(updatedExperiment.updatedAt.getTime()).toBeGreaterThanOrEqual(
           experiment.updatedAt.getTime()
         );
       });

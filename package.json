@@ -64,6 +64,7 @@
   "author": "KD Squares Development Team",
   "license": "PROPRIETARY",
   "devDependencies": {
+    "@types/cypress": "^0.1.6",
     "@types/express": "^5.0.3",
     "@types/jest": "^29.5.5",
     "@types/node": "^20.6.0",
