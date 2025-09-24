@@ -1,10 +1,10 @@
 import { Request, Response, Router } from 'express';
-import { logger } from '../../utils/logger';
 import { asyncHandler } from '../middleware/errorHandler';
 import { AggregateTypes, QylonEventTypes } from '../models/Event';
 import { EventBuilder, SupabaseEventStore } from '../services/EventStore';
+import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 const eventStore = new SupabaseEventStore();
 
 // Create event

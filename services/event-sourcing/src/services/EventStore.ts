@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import { Event, EventStore as IEventStore } from '../models/Event';
-import { logger } from '../../utils/logger';
 import { v4 as uuidv4 } from 'uuid';
+import { Event, EventStore as IEventStore } from '../models/Event';
+import { logger } from '../utils/logger';
 
 export class SupabaseEventStore implements IEventStore {
   private supabase;

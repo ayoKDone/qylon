@@ -92,7 +92,7 @@ export const asyncHandler = (fn: Function) => {
  * Custom error classes
  */
 export class ValidationError extends Error {
-  public override statusCode: number = 400;
+  public statusCode: number = 400;
   public override name: string = 'ValidationError';
 
   constructor(
@@ -104,7 +104,7 @@ export class ValidationError extends Error {
 }
 
 export class UnauthorizedError extends Error {
-  public override statusCode: number = 401;
+  public statusCode: number = 401;
   public override name: string = 'UnauthorizedError';
 
   constructor(message: string = 'Unauthorized') {
@@ -113,7 +113,7 @@ export class UnauthorizedError extends Error {
 }
 
 export class ForbiddenError extends Error {
-  public override statusCode: number = 403;
+  public statusCode: number = 403;
   public override name: string = 'ForbiddenError';
 
   constructor(message: string = 'Forbidden') {
@@ -122,7 +122,7 @@ export class ForbiddenError extends Error {
 }
 
 export class NotFoundError extends Error {
-  public override statusCode: number = 404;
+  public statusCode: number = 404;
   public override name: string = 'NotFoundError';
 
   constructor(message: string = 'Not Found') {
@@ -131,7 +131,7 @@ export class NotFoundError extends Error {
 }
 
 export class ConflictError extends Error {
-  public override statusCode: number = 409;
+  public statusCode: number = 409;
   public override name: string = 'ConflictError';
 
   constructor(message: string = 'Conflict') {
@@ -140,7 +140,7 @@ export class ConflictError extends Error {
 }
 
 export class TooManyRequestsError extends Error {
-  public override statusCode: number = 429;
+  public statusCode: number = 429;
   public override name: string = 'TooManyRequestsError';
 
   constructor(message: string = 'Too Many Requests') {
@@ -149,7 +149,7 @@ export class TooManyRequestsError extends Error {
 }
 
 export class ServiceUnavailableError extends Error {
-  public override statusCode: number = 503;
+  public statusCode: number = 503;
   public override name: string = 'ServiceUnavailableError';
 
   constructor(message: string = 'Service Unavailable') {

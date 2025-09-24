@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { logger } from '../utils/logger';
 import { authenticateToken } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { rateLimiter } from './middleware/rateLimiter';
@@ -8,10 +7,11 @@ import { requestLogger } from './middleware/requestLogger';
 import eventRoutes from './routes/events';
 import healthRoutes from './routes/health';
 import sagaRoutes from './routes/sagas';
+import { logger } from './utils/logger';
 
 dotenv.config();
 
-const app = express();
+const app: express.Application = express();
 const PORT = process.env.PORT || 3009;
 
 // Initialize Supabase client
