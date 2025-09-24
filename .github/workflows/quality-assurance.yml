@@ -45,11 +45,16 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run SonarJS analysis
+        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
         run: npx sonar-scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
+
+      - name: Skip SonarJS analysis (no credentials)
+        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
+        run: echo "Skipping SonarQube analysis - credentials not configured"
 
   # Security Analysis
   security-analysis:
@@ -381,11 +386,16 @@ jobs:
         run: npm run test:coverage:html
 
       - name: Upload coverage to SonarQube
+        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
         run: npm run sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
+
+      - name: Skip SonarQube upload (no credentials)
+        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
+        run: echo "Skipping SonarQube upload - credentials not configured"
 
   # Quality Gate
   quality-gate:
