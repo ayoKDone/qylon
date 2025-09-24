@@ -1,5 +1,5 @@
 /**
- * Metrics routes for Infrastructure Monitoring Service
+ * Health check routes for Infrastructure Monitoring Service
  */
 
 import { Router } from 'express';
@@ -8,8 +8,10 @@ const router = Router();
 
 router.get('/', (req, res) => {
   res.json({
-    message: 'Metrics endpoint - coming soon',
+    status: 'healthy',
+    service: 'infrastructure-monitoring',
     timestamp: new Date().toISOString(),
+    version: '1.0.0',
   });
 });
 
