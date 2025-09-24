@@ -3,7 +3,10 @@
   "compilerOptions": {
     "types": ["jest", "node"],
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false
   },
-  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/__tests__/**/*"]
+  "include": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/**/__tests__/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.cy.ts", "**/*.e2e.ts"]
 }

@@ -92,8 +92,8 @@ export const asyncHandler = (fn: Function) => {
  * Custom error classes
  */
 export class ValidationError extends Error {
-  public statusCode: number = 400;
-  public name: string = 'ValidationError';
+  public override statusCode: number = 400;
+  public override name: string = 'ValidationError';
 
   constructor(
     message: string,
@@ -104,8 +104,8 @@ export class ValidationError extends Error {
 }
 
 export class UnauthorizedError extends Error {
-  public statusCode: number = 401;
-  public name: string = 'UnauthorizedError';
+  public override statusCode: number = 401;
+  public override name: string = 'UnauthorizedError';
 
   constructor(message: string = 'Unauthorized') {
     super(message);
@@ -113,8 +113,8 @@ export class UnauthorizedError extends Error {
 }
 
 export class ForbiddenError extends Error {
-  public statusCode: number = 403;
-  public name: string = 'ForbiddenError';
+  public override statusCode: number = 403;
+  public override name: string = 'ForbiddenError';
 
   constructor(message: string = 'Forbidden') {
     super(message);
@@ -122,8 +122,8 @@ export class ForbiddenError extends Error {
 }
 
 export class NotFoundError extends Error {
-  public statusCode: number = 404;
-  public name: string = 'NotFoundError';
+  public override statusCode: number = 404;
+  public override name: string = 'NotFoundError';
 
   constructor(message: string = 'Not Found') {
     super(message);
@@ -131,8 +131,8 @@ export class NotFoundError extends Error {
 }
 
 export class ConflictError extends Error {
-  public statusCode: number = 409;
-  public name: string = 'ConflictError';
+  public override statusCode: number = 409;
+  public override name: string = 'ConflictError';
 
   constructor(message: string = 'Conflict') {
     super(message);
@@ -140,8 +140,8 @@ export class ConflictError extends Error {
 }
 
 export class TooManyRequestsError extends Error {
-  public statusCode: number = 429;
-  public name: string = 'TooManyRequestsError';
+  public override statusCode: number = 429;
+  public override name: string = 'TooManyRequestsError';
 
   constructor(message: string = 'Too Many Requests') {
     super(message);
@@ -149,8 +149,8 @@ export class TooManyRequestsError extends Error {
 }
 
 export class ServiceUnavailableError extends Error {
-  public statusCode: number = 503;
-  public name: string = 'ServiceUnavailableError';
+  public override statusCode: number = 503;
+  public override name: string = 'ServiceUnavailableError';
 
   constructor(message: string = 'Service Unavailable') {
     super(message);

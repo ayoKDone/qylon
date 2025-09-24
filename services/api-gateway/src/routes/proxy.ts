@@ -243,13 +243,15 @@ Object.entries(serviceRegistry).forEach(
  * Service discovery endpoint
  */
 router.get('/services', (req: Request, _res: Response) => {
-  const services = Object.values(serviceRegistry).map(service => ({
-    name: service.name,
-    url: service.url,
-    port: service.port,
-    routes: service.routes,
-    healthCheck: service.healthCheck,
-  }));
+  const services = Object.values(serviceRegistry).map(
+    (service: ServiceEndpoint) => ({
+      name: service.name,
+      url: service.url,
+      port: service.port,
+      routes: service.routes,
+      healthCheck: service.healthCheck,
+    })
+  );
 
   _res.json({
     services,
