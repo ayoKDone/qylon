@@ -172,6 +172,7 @@ docs/
 !tests/**/*.spec.js
 !tests/setup.ts
 !tests/jest.config.js
+!tests/utils/test-helpers.ts
 test-results/
 coverage/
 # *.test.js
