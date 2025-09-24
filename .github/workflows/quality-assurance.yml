@@ -32,6 +32,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install service dependencies
+        run: npm run install:services
+
       - name: Run ESLint
         run: npm run lint
 
@@ -60,6 +63,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install service dependencies
+        run: npm run install:services
 
       - name: Run npm audit
         run: npm audit --audit-level moderate
@@ -129,6 +135,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install service dependencies
+        run: npm run install:services
+
       - name: Setup test environment
         run: |
           cp .env.example .env
@@ -196,6 +205,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install service dependencies
+        run: npm run install:services
 
       - name: Setup environment
         run: |
@@ -286,6 +298,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install service dependencies
+        run: npm run install:services
+
       - name: Setup environment
         run: |
           cp .env.example .env
@@ -348,6 +363,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install service dependencies
+        run: npm run install:services
 
       - name: Download coverage reports
         uses: actions/download-artifact@v3
