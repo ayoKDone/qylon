@@ -166,14 +166,6 @@ jobs:
       - name: Generate coverage report
         run: npm run test:coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
-
   # End-to-End Tests
   e2e-tests:
     name: End-to-End Tests
