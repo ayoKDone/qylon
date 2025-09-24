@@ -73,12 +73,12 @@ export default defineConfig({
     // Setup and teardown
     setupNodeEvents(on, config) {
       // Custom tasks
-    on('task', {
-      // Simple tasks that don't cause ServiceWorker issues
-      'log': (message) => {
-        console.log(message);
-        return null;
-      },
+      on('task', {
+        // Simple tasks that don't cause ServiceWorker issues
+        log: message => {
+          console.log(message);
+          return null;
+        },
 
         // User tasks
         'user:create': userData => {

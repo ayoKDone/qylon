@@ -21,8 +21,8 @@ describe('API Health Tests', () => {
       cy.request({
         method: 'GET',
         url: '/health',
-        failOnStatusCode: false
-      }).then((response) => {
+        failOnStatusCode: false,
+      }).then(response => {
         // API Gateway is running but microservices are not (expected for E2E)
         expect([200, 503]).to.include(response.status);
         expect(response.body).to.have.property('status');
@@ -39,12 +39,14 @@ describe('API Health Tests', () => {
         method: 'GET',
         url: '/health',
         headers: {
-          'Origin': 'http://localhost:3000'
+          Origin: 'http://localhost:3000',
         },
-        failOnStatusCode: false
-      }).then((response) => {
+        failOnStatusCode: false,
+      }).then(response => {
         expect([200, 503]).to.include(response.status);
-        expect(response.headers).to.have.property('access-control-allow-origin');
+        expect(response.headers).to.have.property(
+          'access-control-allow-origin'
+        );
       });
     });
 
@@ -52,8 +54,8 @@ describe('API Health Tests', () => {
       cy.request({
         method: 'GET',
         url: '/non-existent-endpoint',
-        failOnStatusCode: false
-      }).then((response) => {
+        failOnStatusCode: false,
+      }).then(response => {
         expect(response.status).to.eq(404);
       });
     });
@@ -65,8 +67,8 @@ describe('API Health Tests', () => {
       cy.request({
         method: 'GET',
         url: '/api/v1/security/health',
-        failOnStatusCode: false
-      }).then((response) => {
+        failOnStatusCode: false,
+      }).then(response => {
         // The service might not be running, but the proxy should handle it gracefully
         expect([200, 401, 404, 503]).to.include(response.status);
       });
@@ -80,8 +82,8 @@ describe('API Health Tests', () => {
       cy.request({
         method: 'GET',
         url: '/health',
-        failOnStatusCode: false
-      }).then((response) => {
+        failOnStatusCode: false,
+      }).then(response => {
         expect([200, 503]).to.include(response.status);
         expect(response.body).to.have.property('services');
         if (response.status === 503) {
