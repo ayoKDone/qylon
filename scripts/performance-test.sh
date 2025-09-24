@@ -53,7 +53,7 @@ check_k6() {
 check_services() {
     print_status "Checking if services are running..."
 
-    # Check API Gateway - allow 503 status for E2E testing
+    # Check API Gateway - allow 503 status for partial deployment
     local response_code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/health")
     if [[ "$response_code" != "200" && "$response_code" != "503" ]]; then
         print_error "API Gateway is not running at $BASE_URL (HTTP $response_code)"
@@ -62,9 +62,10 @@ check_services() {
     fi
 
     if [[ "$response_code" == "503" ]]; then
-        print_warning "API Gateway is running but microservices are unhealthy (expected for E2E testing)"
+        print_warning "API Gateway is running but some microservices are unhealthy (acceptable for testing)"
+        print_status "This is expected when not all services are deployed"
     else
-        print_success "Services are running at $BASE_URL"
+        print_success "All services are running at $BASE_URL"
     fi
 }
 
@@ -152,6 +153,24 @@ run_all_tests() {
 
 # Function to run specific test
 run_specific_test() {
+    # Use CI-specific test if in CI environment
+    if [[ "$ENVIRONMENT" == "ci" || "$CI" == "true" ]]; then
+        print_status "Running in CI environment, using CI-specific tests"
+        case $TEST_TYPE in
+            "load")
+                run_test "load" "tests/performance/ci-load-test.js"
+                generate_report "load"
+                ;;
+            *)
+                print_warning "Only load tests are supported in CI environment"
+                run_test "load" "tests/performance/ci-load-test.js"
+                generate_report "load"
+                ;;
+        esac
+        return
+    fi
+
+    # Regular tests for non-CI environments
     case $TEST_TYPE in
         "load")
             run_test "load" "tests/performance/load-test.js"

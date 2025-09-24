@@ -34,7 +34,7 @@ DB_HOST=${DB_HOST:-localhost}
 DB_PORT=${DB_PORT:-5432}
 DB_NAME=${DB_NAME:-qylon_dev}
 DB_USER=${DB_USER:-postgres}
-DB_PASSWORD=${DB_PASSWORD:-password}
+DB_PASSWORD=${DB_PASSWORD:-postgres}
 
 # Check if PostgreSQL is accessible
 check_database_connection() {

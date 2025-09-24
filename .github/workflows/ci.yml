@@ -103,19 +103,48 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Setup CI environment
+        run: |
+          chmod +x scripts/ci-setup.sh
+          source scripts/ci-setup.sh
+
       - name: Run database migrations
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: qylon_test
+          DB_USER: postgres
+          DB_PASSWORD: postgres
         run: |
-          # Add database migration commands here
           echo "Running database migrations..."
+          npm run db:migrate
 
       - name: Run Node.js tests
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
           REDIS_URL: redis://localhost:6379
+          JWT_SECRET: ci-test-jwt-secret-key-for-testing-only
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
         run: npm run test:unit && npm run test:integration
+
+      - name: Install K6 for performance testing
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Run performance tests
+        env:
+          CI: true
+          ENVIRONMENT: ci
+          BASE_URL: http://localhost:3000
+        run: |
+          chmod +x scripts/performance-test.sh
+          ./scripts/performance-test.sh --test-type load
 
       - name: Run Python tests
         env:
