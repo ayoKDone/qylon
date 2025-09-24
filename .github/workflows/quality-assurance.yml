@@ -166,6 +166,12 @@ jobs:
       - name: Generate coverage report
         run: npm run test:coverage
 
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: coverage/
+
   # End-to-End Tests
   e2e-tests:
     name: End-to-End Tests
@@ -252,7 +258,10 @@ jobs:
           sleep 30
 
       - name: Run load tests
-        run: npm run test:performance:load
+        run: |
+          export CI=true
+          export ENVIRONMENT=ci
+          npm run test:performance:load
 
       - name: Run stress tests
         run: npm run test:performance:stress
