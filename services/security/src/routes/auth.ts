@@ -3,7 +3,7 @@ import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
 import logger from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 // Initialize Supabase client (optional for local development)
 let supabase: any = null;

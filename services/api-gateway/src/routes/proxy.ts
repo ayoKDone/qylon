@@ -3,7 +3,7 @@ import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response, Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-const router = Router();
+const router: Router = Router();
 
 // Service registry with endpoint configurations
 const serviceRegistry: ServiceRegistry = {

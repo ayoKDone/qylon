@@ -8,7 +8,7 @@ import {
 } from '../types';
 import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 const workflowEngine = new WorkflowEngine();
 
 /**
