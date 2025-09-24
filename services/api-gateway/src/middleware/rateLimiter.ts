@@ -84,7 +84,7 @@ const handler = async (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     retryAfter: Math.round(
       req.rateLimit?.resetTime
-        ? (req.rateLimit.resetTime - Date.now()) / 1000
+        ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000
         : 60
     ),
   });

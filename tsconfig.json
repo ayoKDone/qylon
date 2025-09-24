@@ -33,7 +33,7 @@
     },
     "types": ["node"]
   },
-  "include": ["services/**/*", "scripts/**/*", "*.ts", "*.js"],
+  "include": ["scripts/**/*", "*.ts", "*.js", "tests/**/*", "shared/**/*"],
   "exclude": [
     "node_modules",
     "dist",
@@ -43,7 +43,12 @@
     "**/*.d.ts",
     "cypress/**/*",
     "**/*.cy.ts",
-    "**/*.cy.tsx"
+    "**/*.cy.tsx",
+    "**/__tests__/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
   ],
   "ts-node": {
     "esm": true
