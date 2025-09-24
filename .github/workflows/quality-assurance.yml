@@ -9,7 +9,7 @@ on:
     - cron: '0 2 * * *' # Daily at 2 AM
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -42,7 +42,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run SonarJS analysis
-        run: npm run sonar:local
+        run: npx sonar-scanner
 
   # Security Analysis
   security-analysis:
