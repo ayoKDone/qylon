@@ -86,6 +86,6 @@ module.exports = {
     '^@shared/(.*)$': '<rootDir>/shared/$1',
     '^@services/(.*)$': '<rootDir>/services/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^../utils/test-helpers$': '<rootDir>/tests/utils/test-helpers',
+    '^../utils/test-helpers$': '<rootDir>/tests/utils/test-helpers.ts',
   },
 };
