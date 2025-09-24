@@ -427,8 +427,18 @@ describe('API Gateway Comprehensive Unit Tests', () => {
       const res = mockResponse();
 
       const errorHandler = jest.fn((err, req, res, _next) => {
-        // eslint-disable-next-line no-console
-        console.error('Unhandled error:', err);
+        // Mock logger instead of console.error to avoid test noise
+        const mockLogger = {
+          error: jest.fn(),
+        };
+        mockLogger.error('API Gateway Error', {
+          error: err.message,
+          stack: err.stack,
+          requestId: req.headers['x-request-id'] || 'unknown',
+          path: req.path,
+          method: req.method,
+          userAgent: req.headers['user-agent'],
+        });
         res.status(500).json({
           error: 'Internal server error',
           requestId: req.headers['x-request-id'] || 'unknown',
