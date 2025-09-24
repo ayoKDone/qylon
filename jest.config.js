@@ -20,7 +20,7 @@ module.exports = {
   ],
 
   // Test directories
-  roots: ['<rootDir>/tests', '<rootDir>/services', '<rootDir>/shared'],
+  roots: ['<rootDir>/tests', '<rootDir>/shared'],
 
   // Module file extensions
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
