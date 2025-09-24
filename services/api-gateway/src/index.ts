@@ -1,13 +1,13 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
 import compression from 'compression';
-import morgan from 'morgan';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import express from 'express';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
+import { authMiddleware } from '@/middleware/auth';
 import { errorHandler } from '@/middleware/errorHandler';
 import { rateLimiter } from '@/middleware/rateLimiter';
-import { authMiddleware } from '@/middleware/auth';
 import { requestLogger } from '@/middleware/requestLogger';
 import { healthCheck } from '@/routes/health';
 import { proxyRoutes } from '@/routes/proxy';
@@ -16,7 +16,7 @@ import { logger } from '@/utils/logger';
 // Load environment variables
 dotenv.config();
 
-const app = express();
+const app: express.Application = express();
 const PORT = process.env.API_GATEWAY_PORT || 3000;
 
 // Security middleware
@@ -70,7 +70,7 @@ app.use(requestLogger);
 app.use('/health', healthCheck);
 
 // Authentication middleware for protected routes
-app.use('/api/v1', authMiddleware);
+app.use('/api/v1', authMiddleware as any);
 
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);

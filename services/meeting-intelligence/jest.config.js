@@ -5,7 +5,7 @@ module.exports = {
   // Test file patterns
   testMatch: [
     '**/__tests__/**/*.(js|jsx|ts|tsx)',
-    '**/*.(test|spec).(js|jsx|ts|tsx)'
+    '**/*.(test|spec).(js|jsx|ts|tsx)',
   ],
 
   // Test directories
@@ -16,8 +16,14 @@ module.exports = {
 
   // Transform files
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|jsx)$': 'babel-jest'
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.test.json',
+        isolatedModules: true,
+      },
+    ],
+    '^.+\\.(js|jsx)$': 'babel-jest',
   },
 
   // TypeScript configuration
@@ -30,7 +36,7 @@ module.exports = {
     '!src/**/node_modules/**',
     '!src/**/dist/**',
     '!src/**/build/**',
-    '!src/**/__tests__/**'
+    '!src/**/__tests__/**',
   ],
 
   // Coverage thresholds
@@ -39,8 +45,8 @@ module.exports = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
+      statements: 80,
+    },
   },
 
   // Setup files
@@ -57,5 +63,4 @@ module.exports = {
 
   // Restore mocks after each test
   restoreMocks: true,
-
 };

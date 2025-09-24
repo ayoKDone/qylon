@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./*"],
+      "@shared/*": ["./shared/*"],
+      "@services/*": ["./services/*"],
+      "@tests/*": ["./tests/*"],
+      "@/middleware/*": ["./services/api-gateway/src/middleware/*"],
+      "@/routes/*": ["./services/api-gateway/src/routes/*"],
+      "@/services/*": ["./services/api-gateway/src/services/*"],
+      "@/types": ["./services/api-gateway/src/types"],
+      "@/types/*": ["./services/api-gateway/src/types/*"],
+      "@/utils/*": ["./services/api-gateway/src/utils/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "**/tests/**",
+    "cypress.config.ts"
+  ]
+}

@@ -49,7 +49,7 @@ export interface JWTPayload {
 export interface AuthenticatedRequest extends Request {
   user?: User;
   token?: string;
-  requestId?: string;
+  requestId: string;
 }
 
 // Service endpoints

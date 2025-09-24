@@ -44,6 +44,12 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Test results and reports
+tests/performance/results/
+security/results/
+coverage/
+*.lcov
+
 # Runtime data
 pids/
 *.pid
@@ -166,6 +172,7 @@ docs/
 !tests/**/*.spec.js
 !tests/setup.ts
 !tests/jest.config.js
+!tests/utils/test-helpers.ts
 test-results/
 coverage/
 # *.test.js

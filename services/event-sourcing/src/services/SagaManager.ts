@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
-import { logger } from '../../utils/logger';
 import {
   SagaManager as ISagaManager,
   Saga,
@@ -9,6 +8,7 @@ import {
   SagaStep,
   SagaStepStatus,
 } from '../models/Saga';
+import { logger } from '../utils/logger';
 
 export class SupabaseSagaManager implements ISagaManager {
   private supabase;

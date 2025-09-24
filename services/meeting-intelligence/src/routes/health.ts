@@ -4,7 +4,7 @@ import { OpenAIService } from '../services/OpenAIService';
 import { RecallAIService } from '../services/RecallAIService';
 import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 // Initialize services for health checks
 const supabase = createClient(
@@ -65,7 +65,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
         status: error ? 'unhealthy' : 'healthy',
         responseTime: Date.now() - dbStartTime,
       };
-    } catch (error) {
+    } catch {
       healthChecks.dependencies.database = {
         status: 'unhealthy',
         responseTime: Date.now() - dbStartTime,
@@ -80,7 +80,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
         status: isHealthy ? 'healthy' : 'unhealthy',
         responseTime: Date.now() - recallStartTime,
       };
-    } catch (error) {
+    } catch {
       healthChecks.dependencies.recallAI = {
         status: 'unhealthy',
         responseTime: Date.now() - recallStartTime,
@@ -95,7 +95,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
         status: isHealthy ? 'healthy' : 'unhealthy',
         responseTime: Date.now() - openAIStartTime,
       };
-    } catch (error) {
+    } catch {
       healthChecks.dependencies.openAI = {
         status: 'unhealthy',
         responseTime: Date.now() - openAIStartTime,

@@ -26,6 +26,11 @@ process.env.LOG_LEVEL = 'error'; // Reduce log noise during tests
       json: jest.fn().mockReturnThis(),
       send: jest.fn().mockReturnThis(),
       end: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      cookie: jest.fn().mockReturnThis(),
+      clearCookie: jest.fn().mockReturnThis(),
+      redirect: jest.fn().mockReturnThis(),
+      locals: {},
     };
     return res;
   },
