@@ -144,7 +144,9 @@ jobs:
           JWT_SECRET: ci-test-jwt-secret-key-for-testing-only
           SUPABASE_URL: https://placeholder.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
-        run: npm run test:unit && npm run test:integration
+        run: |
+          chmod +x scripts/clear-jest-cache.sh && ./scripts/clear-jest-cache.sh
+          npm run test:unit && npm run test:integration
 
       - name: Install K6 for performance testing
         run: |
