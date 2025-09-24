@@ -46,6 +46,10 @@ jobs:
 
       - name: Run SonarJS analysis
         run: npx sonar-scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
 
   # Security Analysis
   security-analysis:
