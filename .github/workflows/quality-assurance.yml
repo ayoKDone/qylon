@@ -42,7 +42,15 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run SonarJS analysis
-        run: npx sonar-scanner
+        run: |
+          if [ -n "$SONAR_HOST_URL" ] && [ -n "$SONAR_TOKEN" ]; then
+            npx sonar-scanner
+          else
+            echo "⚠️ SonarQube analysis skipped - SONAR_HOST_URL and SONAR_TOKEN not configured"
+          fi
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # Security Analysis
   security-analysis:
@@ -212,6 +220,11 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
           sudo apt-get update
           sudo apt-get install k6
+
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
       - name: Start services for performance testing
         run: |
