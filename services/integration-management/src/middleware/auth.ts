@@ -3,11 +3,22 @@ import { NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { logSecurityEvent, logger } from '../utils/logger';
 
-// Supabase client for authentication
-const supabase = createClient(
-  process.env['SUPABASE_URL']!,
-  process.env['SUPABASE_SERVICE_ROLE_KEY']!
-);
+// Supabase client for authentication (lazy-loaded)
+let supabase: any = null;
+
+const getSupabaseClient = () => {
+  if (!supabase) {
+    const url = process.env['SUPABASE_URL'];
+    const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
+
+    if (!url || !key) {
+      throw new Error('Supabase configuration is missing');
+    }
+
+    supabase = createClient(url, key);
+  }
+  return supabase;
+};
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -46,7 +57,7 @@ export const authenticateToken = async (
     const decoded = jwt.verify(token, process.env['JWT_SECRET']!) as any;
 
     // Get user from Supabase
-    const { data: user, error } = await supabase.auth.getUser(token);
+    const { data: user, error } = await getSupabaseClient().auth.getUser(token);
 
     if (error || !user.user) {
       logSecurityEvent('invalid_token', decoded.sub || 'unknown', {
@@ -63,7 +74,7 @@ export const authenticateToken = async (
     }
 
     // Get user profile and client information
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile, error: profileError } = await getSupabaseClient()
       .from('user_profiles')
       .select(
         `
@@ -196,7 +207,7 @@ export const requireClientAccess = async (
     }
 
     // Check if user has access to the client
-    const { data: clientAccess, error } = await supabase
+    const { data: clientAccess, error } = await getSupabaseClient()
       .from('clients')
       .select('id, user_id')
       .eq('id', clientId)
@@ -251,7 +262,7 @@ export const validateApiKey = async (
     }
 
     // Validate API key against database
-    const { data: keyData, error } = await supabase
+    const { data: keyData, error } = await getSupabaseClient()
       .from('api_keys')
       .select('id, name, permissions, is_active, expires_at')
       .eq('key_hash', apiKey)

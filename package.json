@@ -24,6 +24,7 @@
     "lint": "eslint . --ext .js,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.ts,.tsx --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "setup": "./scripts/setup.sh",
     "setup:env": "cp env.example .env && cp services/api-gateway/.env.example services/api-gateway/.env && cp services/security/.env.example services/security/.env && cp services/meeting-intelligence/.env.example services/meeting-intelligence/.env && cp services/workflow-automation/.env.example services/workflow-automation/.env",
     "db:migrate": "./scripts/db-migrate.sh",
