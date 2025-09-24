@@ -12,11 +12,7 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false
   },
-  "include": [
-    "shared/**/*",
-    "scripts/**/*",
-    "tests/**/*"
-  ],
+  "include": ["shared/**/*", "scripts/**/*", "tests/**/*"],
   "exclude": [
     "node_modules",
     "dist",

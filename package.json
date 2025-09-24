@@ -50,7 +50,7 @@
     "test:coverage:upload": "./scripts/coverage-monitor.sh --upload",
     "test:coverage:html": "jest --coverage --coverageReporters=html",
     "sonar": "npx sonar-scanner",
-    "security:scan": "./scripts/security-test.sh",
+    "security:scan": "bash scripts/security-test.sh",
     "security:scan:npm": "./scripts/security-test.sh --npm-audit",
     "security:scan:snyk": "./scripts/security-test.sh --snyk",
     "security:scan:retire": "./scripts/security-test.sh --retire",

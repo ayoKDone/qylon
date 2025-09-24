@@ -184,6 +184,24 @@ jobs:
       - name: Install Cypress
         run: npx cypress install
 
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Start services for E2E testing
+        run: |
+          docker-compose -f docker-compose.test.yml up -d
+          sleep 30
+
+      - name: Start API Gateway for E2E testing
+        run: |
+          cd services/api-gateway
+          npm install
+          npm run build
+          npm start &
+          sleep 10
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:
@@ -228,7 +246,7 @@ jobs:
 
       - name: Start services for performance testing
         run: |
-          docker-compose up -d postgres redis mongodb
+          docker-compose -f docker-compose.test.yml up -d
           sleep 30
 
       - name: Run load tests
