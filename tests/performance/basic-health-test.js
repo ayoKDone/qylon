@@ -24,16 +24,16 @@ export default function () {
   const healthResponse = http.get('http://localhost:3000/health');
 
   check(healthResponse, {
-    'health endpoint responds': (r) => r.status === 200 || r.status === 503,
-    'health response time is acceptable': (r) => r.timings.duration < 2000,
+    'health endpoint responds': r => r.status === 200 || r.status === 503,
+    'health response time is acceptable': r => r.timings.duration < 2000,
   });
 
   // Test integration management service directly
   const integrationResponse = http.get('http://localhost:3006/health');
 
   check(integrationResponse, {
-    'integration service is healthy': (r) => r.status === 200,
-    'integration response time is acceptable': (r) => r.timings.duration < 1000,
+    'integration service is healthy': r => r.status === 200,
+    'integration response time is acceptable': r => r.timings.duration < 1000,
   });
 
   sleep(1);
