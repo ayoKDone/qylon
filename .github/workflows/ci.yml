@@ -115,7 +115,7 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
           REDIS_URL: redis://localhost:6379
-        run: npm test
+        run: npm run test:unit && npm run test:integration
 
       - name: Run Python tests
         env:
