@@ -87,4 +87,7 @@ module.exports = {
     '^@services/(.*)$': '<rootDir>/services/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
   },
+
+  // Transform ignore patterns - Allow transformation of specific node_modules
+  transformIgnorePatterns: ['node_modules/(?!(uuid|jsonwebtoken)/)'],
 };
