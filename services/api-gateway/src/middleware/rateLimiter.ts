@@ -3,6 +3,20 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 
+// Extend Request interface to include rateLimit property
+declare global {
+  namespace Express {
+    interface Request {
+      rateLimit?: {
+        limit: number;
+        current: number;
+        remaining: number;
+        resetTime: number;
+      };
+    }
+  }
+}
+
 // Initialize Supabase client (optional for local development)
 let supabase: any = null;
 try {
