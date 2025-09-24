@@ -28,7 +28,7 @@
     "format:check": "prettier --check .",
     "setup": "./scripts/setup.sh",
     "setup:env": "cp env.example .env && cp services/api-gateway/.env.example services/api-gateway/.env && cp services/security/.env.example services/security/.env && cp services/meeting-intelligence/.env.example services/meeting-intelligence/.env && cp services/workflow-automation/.env.example services/workflow-automation/.env",
-    "db:migrate": "docker-compose -f docker-compose.test.yml up -d postgres && sleep 10 && ./scripts/db-migrate.sh",
+    "db:migrate": "./scripts/db-migrate.sh",
     "db:seed": "PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d qylon_dev -f database/seeds/01_subscription_plans.sql",
     "db:reset": "docker-compose down -v && docker-compose up -d postgres redis mongodb && sleep 10 && npm run db:migrate && npm run db:seed",
     "deploy:staging": "node scripts/deployment/deploy-staging.js",

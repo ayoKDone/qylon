@@ -137,12 +137,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
       - name: Setup test environment
         run: |
           cp .env.example .env
           echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qylon_test" >> .env
           echo "REDIS_URL=redis://localhost:6379" >> .env
           echo "MONGODB_URL=mongodb://root:password@localhost:27017/qylon_test" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_NAME=qylon_test" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
 
       - name: Run database migrations
         run: npm run db:migrate
