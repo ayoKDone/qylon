@@ -108,6 +108,22 @@ jobs:
           chmod +x scripts/ci-setup.sh
           source scripts/ci-setup.sh
 
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "PostgreSQL is unavailable - sleeping"
+            sleep 2
+          done
+          echo "PostgreSQL is ready!"
+
+          echo "Waiting for Redis to be ready..."
+          until redis-cli -h localhost -p 6379 ping; do
+            echo "Redis is unavailable - sleeping"
+            sleep 2
+          done
+          echo "Redis is ready!"
+
       - name: Run database migrations
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
