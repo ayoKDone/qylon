@@ -145,7 +145,14 @@ jobs:
           SUPABASE_URL: https://placeholder.supabase.co
           SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
         run: |
-          chmod +x scripts/clear-jest-cache.sh && ./scripts/clear-jest-cache.sh
+          # Clear Jest cache to prevent module resolution issues
+          if [ -f "scripts/clear-jest-cache.sh" ]; then
+            chmod +x scripts/clear-jest-cache.sh && ./scripts/clear-jest-cache.sh
+          else
+            echo "Jest cache clearing script not found, using fallback method"
+            npx jest --clearCache || true
+            npm cache clean --force || true
+          fi
           npm run test:unit && npm run test:integration
 
       - name: Install K6 for performance testing
