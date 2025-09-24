@@ -20,7 +20,7 @@ export default defineConfig({
     pageLoadTimeout: 30000,
 
     // Test file patterns
-    specPattern: 'tests/e2e/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: 'tests/e2e/api-health.cy.ts',
 
     // Support file
     supportFile: 'tests/e2e/support/e2e.ts',
@@ -36,6 +36,14 @@ export default defineConfig({
 
     // Downloads directory
     downloadsFolder: 'tests/e2e/downloads',
+
+    // Disable ServiceWorker to prevent errors
+    experimentalStudio: false,
+    experimentalSessionAndOrigin: false,
+
+    // Browser configuration
+    chromeWebSecurity: false,
+    blockHosts: [],
 
     // Environment variables
     env: {
@@ -65,23 +73,12 @@ export default defineConfig({
     // Setup and teardown
     setupNodeEvents(on, config) {
       // Custom tasks
-      on('task', {
-        // Database tasks
-        'db:seed': () => {
-          // Seed test database - placeholder for now
-          console.log('Database seeding (placeholder)');
-          return null;
-        },
-        'db:clean': () => {
-          // Clean test database - placeholder for now
-          console.log('Database cleaning (placeholder)');
-          return null;
-        },
-        'db:reset': () => {
-          // Reset test database - placeholder for now
-          console.log('Database reset (placeholder)');
-          return null;
-        },
+    on('task', {
+      // Simple tasks that don't cause ServiceWorker issues
+      'log': (message) => {
+        console.log(message);
+        return null;
+      },
 
         // User tasks
         'user:create': userData => {

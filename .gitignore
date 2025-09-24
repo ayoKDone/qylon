@@ -140,6 +140,11 @@ out/
 test-results/
 coverage/
 
+# Performance test results
+tests/performance/results/*.csv
+tests/performance/results/*.json
+tests/performance/results/*.html
+
 # Local development
 .local/
 local/
