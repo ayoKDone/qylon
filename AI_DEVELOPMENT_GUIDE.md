@@ -13,6 +13,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 ### 1. AI Code Generation Pitfalls
 
 #### ❌ NEVER Generate:
+
 - Placeholder code or TODO comments without implementation
 - Mock data or fake implementations in production code
 - Functions without proper error handling
@@ -23,6 +24,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 - Functions without input validation
 
 #### ✅ ALWAYS Generate:
+
 - Complete, production-ready implementations
 - Proper error handling with try-catch blocks
 - Input validation and sanitization
@@ -35,6 +37,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 ### 2. Code Editor Anti-Patterns
 
 #### ❌ NEVER Allow:
+
 - Auto-import of unused dependencies
 - Code generation without TypeScript types
 - Files without proper exports
@@ -44,6 +47,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 - Code without testing considerations
 
 #### ✅ ALWAYS Ensure:
+
 - All imports are used and necessary
 - Complete TypeScript type coverage
 - Proper module exports and imports
@@ -55,6 +59,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 ### 3. Architecture Violations
 
 #### ❌ NEVER Create:
+
 - Direct database connections from frontend
 - Bypass of the API Gateway
 - Circular dependencies between services
@@ -65,6 +70,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 - Code without security headers
 
 #### ✅ ALWAYS Follow:
+
 - Microservices architecture boundaries
 - API Gateway routing patterns
 - Service communication protocols
@@ -77,22 +83,27 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 ## 🔒 Security Requirements
 
 ### Authentication & Authorization
+
 ```typescript
 // ✅ CORRECT: Always validate JWT tokens
-export const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       return res.status(401).json({ error: 'Token required' });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
     const user = await getUserById(decoded.userId);
-    
+
     if (!user || user.status !== 'active') {
       return res.status(401).json({ error: 'Invalid user' });
     }
-    
+
     req.user = user;
     next();
   } catch (error) {
@@ -109,6 +120,7 @@ export const unprotectedEndpoint = (req: Request, res: Response) => {
 ```
 
 ### Input Validation
+
 ```typescript
 // ✅ CORRECT: Always validate input
 import Joi from 'joi';
@@ -117,7 +129,7 @@ const createMeetingSchema = Joi.object({
   title: Joi.string().min(3).max(255).required(),
   clientId: Joi.string().uuid().required(),
   startTime: Joi.date().iso().required(),
-  duration: Joi.number().min(1).max(480).required()
+  duration: Joi.number().min(1).max(480).required(),
 });
 
 export const createMeeting = async (req: Request, res: Response) => {
@@ -125,7 +137,7 @@ export const createMeeting = async (req: Request, res: Response) => {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-  
+
   // Process validated data
   const meeting = await meetingService.create(value);
   res.status(201).json(meeting);
@@ -140,12 +152,13 @@ export const createMeeting = async (req: Request, res: Response) => {
 ```
 
 ### Database Security
+
 ```sql
 -- ✅ CORRECT: Always use RLS policies
 CREATE POLICY "Users can view own meetings" ON meetings
     FOR SELECT USING (
         EXISTS (
-            SELECT 1 FROM clients 
+            SELECT 1 FROM clients
             WHERE id = meetings.client_id AND user_id = auth.uid()
         )
     );
@@ -157,30 +170,33 @@ SELECT * FROM meetings WHERE client_id = 'some-id';
 ## 📊 Code Quality Standards
 
 ### Error Handling
+
 ```typescript
 // ✅ CORRECT: Comprehensive error handling
-export const processMeeting = async (meetingId: string): Promise<MeetingResult> => {
+export const processMeeting = async (
+  meetingId: string
+): Promise<MeetingResult> => {
   try {
     logger.info('Processing meeting started', { meetingId });
-    
+
     const meeting = await getMeetingById(meetingId);
     if (!meeting) {
       throw new NotFoundError('Meeting not found');
     }
-    
+
     const result = await meetingService.process(meeting);
-    
-    logger.info('Meeting processed successfully', { 
-      meetingId, 
-      processingTime: result.duration 
+
+    logger.info('Meeting processed successfully', {
+      meetingId,
+      processingTime: result.duration,
     });
-    
+
     return result;
   } catch (error) {
-    logger.error('Meeting processing failed', { 
-      meetingId, 
+    logger.error('Meeting processing failed', {
+      meetingId,
       error: error.message,
-      stack: error.stack 
+      stack: error.stack,
     });
     throw error;
   }
@@ -194,6 +210,7 @@ export const processMeeting = async (meetingId: string) => {
 ```
 
 ### Logging Standards
+
 ```typescript
 // ✅ CORRECT: Structured logging with context
 logger.info('User action completed', {
@@ -203,7 +220,7 @@ logger.info('User action completed', {
   clientId: meeting.client_id,
   duration: processingTime,
   timestamp: new Date().toISOString(),
-  requestId: req.requestId
+  requestId: req.requestId,
 });
 
 // ❌ WRONG: Unstructured logging
@@ -211,6 +228,7 @@ console.log('User created meeting');
 ```
 
 ### TypeScript Usage
+
 ```typescript
 // ✅ CORRECT: Complete type definitions
 interface MeetingRequest {
@@ -245,6 +263,7 @@ export const createMeeting = async (request: any, user: any) => {
 ## 🧪 Testing Requirements
 
 ### Unit Tests
+
 ```typescript
 // ✅ CORRECT: Comprehensive unit tests
 describe('MeetingService', () => {
@@ -255,34 +274,34 @@ describe('MeetingService', () => {
         title: 'Test Meeting',
         clientId: 'client-1',
         startTime: new Date(),
-        duration: 60
+        duration: 60,
       };
-      
+
       const result = await meetingService.createMeeting(mockRequest, mockUser);
-      
+
       expect(result).toBeDefined();
       expect(result.title).toBe(mockRequest.title);
       expect(result.status).toBe('scheduled');
     });
-    
+
     it('should throw error for invalid client', async () => {
       const mockUser = { id: 'user-1', role: 'user' };
       const mockRequest = {
         title: 'Test Meeting',
         clientId: 'invalid-client',
         startTime: new Date(),
-        duration: 60
+        duration: 60,
       };
-      
+
       await expect(
         meetingService.createMeeting(mockRequest, mockUser)
       ).rejects.toThrow('Access denied to client');
     });
-    
+
     it('should handle database errors gracefully', async () => {
       // Mock database error
       jest.spyOn(db, 'create').mockRejectedValue(new Error('Database error'));
-      
+
       await expect(
         meetingService.createMeeting(validRequest, validUser)
       ).rejects.toThrow('Database error');
@@ -301,6 +320,7 @@ describe('MeetingService', () => {
 ## 🚀 Deployment Standards
 
 ### Environment Variables
+
 ```typescript
 // ✅ CORRECT: Environment variable validation
 import { config } from 'dotenv';
@@ -309,7 +329,9 @@ import Joi from 'joi';
 config();
 
 const envSchema = Joi.object({
-  NODE_ENV: Joi.string().valid('development', 'staging', 'production').required(),
+  NODE_ENV: Joi.string()
+    .valid('development', 'staging', 'production')
+    .required(),
   PORT: Joi.number().default(3000),
   DATABASE_URL: Joi.string().required(),
   JWT_SECRET: Joi.string().min(32).required(),
@@ -329,11 +351,12 @@ export const config = env;
 export const config = {
   port: process.env.PORT || 3000,
   databaseUrl: process.env.DATABASE_URL,
-  jwtSecret: process.env.JWT_SECRET
+  jwtSecret: process.env.JWT_SECRET,
 };
 ```
 
 ### Docker Configuration
+
 ```dockerfile
 # ✅ CORRECT: Multi-stage build with security
 FROM node:20-alpine AS base
@@ -374,21 +397,22 @@ CMD ["npm", "start"]
 ## 🔄 API Design Patterns
 
 ### RESTful APIs
+
 ```typescript
 // ✅ CORRECT: Proper REST API design
 interface MeetingAPI {
   // GET /api/v1/meetings - List meetings
   listMeetings(filters?: MeetingFilters): Promise<Meeting[]>;
-  
+
   // GET /api/v1/meetings/:id - Get specific meeting
   getMeeting(id: string): Promise<Meeting>;
-  
+
   // POST /api/v1/meetings - Create meeting
   createMeeting(meeting: CreateMeetingRequest): Promise<Meeting>;
-  
+
   // PUT /api/v1/meetings/:id - Update meeting
   updateMeeting(id: string, updates: UpdateMeetingRequest): Promise<Meeting>;
-  
+
   // DELETE /api/v1/meetings/:id - Delete meeting
   deleteMeeting(id: string): Promise<void>;
 }
@@ -404,6 +428,7 @@ interface BadAPI {
 ```
 
 ### Error Responses
+
 ```typescript
 // ✅ CORRECT: Consistent error response format
 interface ErrorResponse {
@@ -419,7 +444,10 @@ const errorResponses = {
   401: { error: 'Unauthorized', message: 'Authentication required' },
   403: { error: 'Forbidden', message: 'Insufficient permissions' },
   404: { error: 'Not Found', message: 'Resource not found' },
-  500: { error: 'Internal Server Error', message: 'An unexpected error occurred' }
+  500: {
+    error: 'Internal Server Error',
+    message: 'An unexpected error occurred',
+  },
 };
 
 // ❌ WRONG: Inconsistent error responses
@@ -428,13 +456,14 @@ const badErrorResponses = {
   401: { message: 'Not authorized' },
   403: { error: 'Forbidden', code: 403 },
   404: 'Not found',
-  500: { error: 'Server error', details: 'Something went wrong' }
+  500: { error: 'Server error', details: 'Something went wrong' },
 };
 ```
 
 ## 🎨 Frontend Patterns
 
 ### React Components
+
 ```typescript
 // ✅ CORRECT: Proper React component with error handling
 interface MeetingCardProps {
@@ -443,10 +472,10 @@ interface MeetingCardProps {
   onDelete: (meetingId: string) => void;
 }
 
-export const MeetingCard: React.FC<MeetingCardProps> = ({ 
-  meeting, 
-  onEdit, 
-  onDelete 
+export const MeetingCard: React.FC<MeetingCardProps> = ({
+  meeting,
+  onEdit,
+  onDelete
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -481,9 +510,9 @@ export const MeetingCard: React.FC<MeetingCardProps> = ({
         <Button onClick={() => onEdit(meeting)} disabled={isLoading}>
           Edit
         </Button>
-        <Button 
-          variant="destructive" 
-          onClick={handleDelete} 
+        <Button
+          variant="destructive"
+          onClick={handleDelete}
           disabled={isLoading}
         >
           {isLoading ? 'Deleting...' : 'Delete'}
@@ -494,10 +523,10 @@ export const MeetingCard: React.FC<MeetingCardProps> = ({
 };
 
 // ❌ WRONG: No error handling, no loading states
-export const BadMeetingCard: React.FC<MeetingCardProps> = ({ 
-  meeting, 
-  onEdit, 
-  onDelete 
+export const BadMeetingCard: React.FC<MeetingCardProps> = ({
+  meeting,
+  onEdit,
+  onDelete
 }) => {
   return (
     <div>
@@ -512,6 +541,7 @@ export const BadMeetingCard: React.FC<MeetingCardProps> = ({
 ## 🔧 Development Workflow
 
 ### Git Workflow
+
 ```bash
 # ✅ CORRECT: Proper git workflow
 git checkout -b feature/meeting-intelligence-service
@@ -536,6 +566,7 @@ git push
 ```
 
 ### Code Review Checklist
+
 - [ ] Security vulnerabilities checked
 - [ ] Error handling implemented
 - [ ] Input validation added

@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "jest", "@types/jest"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "isolatedModules": true
+  },
+  "include": ["tests/**/*", "services/**/*", "shared/**/*", "*.ts", "*.js"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "cypress",
+    "**/*.cy.ts",
+    "**/*.cy.tsx"
+  ]
+}

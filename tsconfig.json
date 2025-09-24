@@ -30,22 +30,11 @@
       "@/*": ["*"],
       "@/services/*": ["services/*"],
       "@/tests/*": ["tests/*"]
-    }
+    },
+    "types": ["node", "jest", "@types/jest"]
   },
-  "include": [
-    "services/**/*",
-    "tests/**/*",
-    "scripts/**/*",
-    "*.ts",
-    "*.js"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    "coverage",
-    "**/*.d.ts"
-  ],
+  "include": ["services/**/*", "tests/**/*", "scripts/**/*", "*.ts", "*.js"],
+  "exclude": ["node_modules", "dist", "build", "coverage", "**/*.d.ts"],
   "ts-node": {
     "esm": true
   }

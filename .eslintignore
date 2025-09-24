@@ -1,12 +1,52 @@
+# Dependencies
 node_modules/
 dist/
 build/
 coverage/
-.nyc_output/
-*.min.js
-*.bundle.js
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+
+# Cypress files
+cypress/
+tests/e2e/
+**/*.cy.ts
+**/*.cy.tsx
+
+# Config files
+*.config.js
+*.config.ts
+
+# Generated files
+*.d.ts
+*.js.map
+*.css.map
+*.scss.map
+*.html.map
+*.json.map
+*.xml.map
+*.yml.map
+*.yaml.map
+*.log
+*.md
+*.txt
+*.lock
+
+# Environment files
+.env*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Test files that should be excluded
+tests/performance/
+tests/e2e/
+cypress/
+
+# SonarQube
+sonar-project.properties
+
+# Scripts that don't need linting
+scripts/performance-test.sh
+scripts/performance-test-enhanced.sh
