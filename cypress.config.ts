@@ -39,7 +39,6 @@ export default defineConfig({
 
     // Disable ServiceWorker to prevent errors
     experimentalStudio: false,
-    experimentalSessionAndOrigin: false,
 
     // Browser configuration
     chromeWebSecurity: false,
@@ -108,12 +107,6 @@ export default defineConfig({
         'client:delete': clientId => {
           // Delete test client
           return clientId;
-        },
-
-        // Log tasks
-        log: message => {
-          console.log(message);
-          return null;
         },
       });
 
