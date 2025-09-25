@@ -1,7 +1,12 @@
+// Deno global type declaration
+declare const Deno: {
+  serve: (handler: (req: Request) => Response | Promise<Response>) => void;
+};
+
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
 interface EmailRequest {
@@ -11,7 +16,7 @@ interface EmailRequest {
 
 Deno.serve(async (req: Request) => {
   // Handle CORS preflight
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, {
       status: 200,
       headers: corsHeaders,
@@ -22,13 +27,10 @@ Deno.serve(async (req: Request) => {
     const { email, source }: EmailRequest = await req.json();
 
     if (!email) {
-      return new Response(
-        JSON.stringify({ error: "Email is required" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Email is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Email HTML template
@@ -234,28 +236,27 @@ The Qylon Team
       return new Response(
         JSON.stringify({
           success: true,
-          message: "Welcome email sent successfully!"
+          message: 'Welcome email sent successfully!',
         }),
         {
           status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         }
       );
     } else {
-      throw new Error("Failed to send email");
+      throw new Error('Failed to send email');
     }
-
   } catch (error) {
-    console.error("Error sending welcome email:", error);
+    console.error('Error sending welcome email:', error);
 
     return new Response(
       JSON.stringify({
-        error: "Failed to send welcome email",
-        details: error.message
+        error: 'Failed to send welcome email',
+        details: error.message,
       }),
       {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   }

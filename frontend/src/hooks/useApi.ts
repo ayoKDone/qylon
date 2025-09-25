@@ -70,36 +70,40 @@ export function useApiMutation<T, P = unknown>(
     error: null,
   });
 
-  const mutate = useCallback(async (params: P) => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+  const mutate = useCallback(
+    async (params: P) => {
+      setState(prev => ({ ...prev, loading: true, error: null }));
 
-    try {
-      const response = await apiCall(params);
-      if (response.success && response.data) {
-        setState({
-          data: response.data,
-          loading: false,
-          error: null,
-        });
-        return response.data;
-      } else {
+      try {
+        const response = await apiCall(params);
+        if (response.success && response.data) {
+          setState({
+            data: response.data,
+            loading: false,
+            error: null,
+          });
+          return response.data;
+        } else {
+          setState({
+            data: null,
+            loading: false,
+            error: response.error || 'An error occurred',
+          });
+          throw new Error(response.error || 'An error occurred');
+        }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'An error occurred';
         setState({
           data: null,
           loading: false,
-          error: response.error || 'An error occurred',
+          error: errorMessage,
         });
-        throw new Error(response.error || 'An error occurred');
+        throw error;
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
-      setState({
-        data: null,
-        loading: false,
-        error: errorMessage,
-      });
-      throw error;
-    }
-  }, [apiCall]);
+    },
+    [apiCall]
+  );
 
   return {
     ...state,

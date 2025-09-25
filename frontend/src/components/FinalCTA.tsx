@@ -17,32 +17,36 @@ const FinalCTA: React.FC = () => {
     try {
       const { error } = await supabase
         .from('waitlist')
-        .insert([
-          { email: email.toLowerCase().trim(), source: 'final-cta' }
-        ]);
+        .insert([{ email: email.toLowerCase().trim(), source: 'final-cta' }]);
 
       if (error) {
-        if (error.code === '23505') { // Unique constraint violation
+        if (error.code === '23505') {
+          // Unique constraint violation
           setSubmitMessage('This email is already on our waitlist!');
         } else {
           throw error;
         }
       } else {
-        setSubmitMessage('🚀 You\'re in! Welcome to our priority waitlist. You\'ll receive exclusive early access when we launch!');
+        setSubmitMessage(
+          "🚀 You're in! Welcome to our priority waitlist. You'll receive exclusive early access when we launch!"
+        );
 
         // Send welcome email
         try {
-          const emailResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              email: email.toLowerCase().trim(),
-              source: 'final-cta'
-            }),
-          });
+          const emailResponse = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({
+                email: email.toLowerCase().trim(),
+                source: 'final-cta',
+              }),
+            }
+          );
 
           if (emailResponse.ok) {
             console.log('Welcome email sent successfully');
@@ -56,7 +60,9 @@ const FinalCTA: React.FC = () => {
       setEmail('');
     } catch (error) {
       console.error('Error submitting to waitlist:', error);
-      setSubmitMessage('Something went wrong. Please try again or contact us directly.');
+      setSubmitMessage(
+        'Something went wrong. Please try again or contact us directly.'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -75,7 +81,7 @@ const FinalCTA: React.FC = () => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            animation: 'liquidPulse 15s ease-in-out infinite'
+            animation: 'liquidPulse 15s ease-in-out infinite',
           }}
         ></div>
         <div
@@ -83,7 +89,7 @@ const FinalCTA: React.FC = () => {
           style={{
             top: '10%',
             right: '10%',
-            animation: 'liquidDrift 20s linear infinite'
+            animation: 'liquidDrift 20s linear infinite',
           }}
         ></div>
         <div
@@ -91,7 +97,7 @@ const FinalCTA: React.FC = () => {
           style={{
             bottom: '10%',
             left: '10%',
-            animation: 'liquidFlow 22s ease-in-out infinite reverse'
+            animation: 'liquidFlow 22s ease-in-out infinite reverse',
           }}
         ></div>
       </div>
@@ -116,8 +122,9 @@ const FinalCTA: React.FC = () => {
             </h2>
 
             <p className="text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed px-4 text-white/80 drop-shadow-sm">
-              Join <span className="text-cyan-300 font-semibold">50+</span> forward-thinking professionals
-              who are already transforming their productivity with AI-powered meeting automation.
+              Join <span className="text-cyan-300 font-semibold">50+</span>{' '}
+              forward-thinking professionals who are already transforming their
+              productivity with AI-powered meeting automation.
             </p>
           </div>
 
@@ -132,8 +139,12 @@ const FinalCTA: React.FC = () => {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={window.innerWidth < 640 ? "Enter email" : "Enter your email for priority access"}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder={
+                        window.innerWidth < 640
+                          ? 'Enter email'
+                          : 'Enter your email for priority access'
+                      }
                       disabled={isSubmitting}
                       className={`w-full pl-12 pr-4 py-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/30 text-base text-white placeholder-white/60 ${
                         isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
@@ -145,11 +156,19 @@ const FinalCTA: React.FC = () => {
                     type="submit"
                     disabled={isSubmitting}
                     className={`px-6 md:px-8 py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group whitespace-nowrap text-base shadow-lg ${
-                      isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                      isSubmitting
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:scale-105'
                     }`}
                   >
-                    {isSubmitting ? 'JOINING...' : window.innerWidth < 640 ? 'JOIN' : 'GET EARLY ACCESS'}
-                    {!isSubmitting && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />}
+                    {isSubmitting
+                      ? 'JOINING...'
+                      : window.innerWidth < 640
+                        ? 'JOIN'
+                        : 'GET EARLY ACCESS'}
+                    {!isSubmitting && (
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -157,13 +176,15 @@ const FinalCTA: React.FC = () => {
 
             {/* Submit Message */}
             {submitMessage && (
-              <div className={`mt-6 p-4 rounded-xl text-center ${
-                submitMessage.includes('🚀')
-                  ? 'glass-heavy text-emerald-200 border-emerald-300/30'
-                  : submitMessage.includes('already')
-                  ? 'glass-heavy text-amber-200 border-amber-300/30'
-                  : 'glass-heavy text-red-200 border-red-300/30'
-              }`}>
+              <div
+                className={`mt-6 p-4 rounded-xl text-center ${
+                  submitMessage.includes('🚀')
+                    ? 'glass-heavy text-emerald-200 border-emerald-300/30'
+                    : submitMessage.includes('already')
+                      ? 'glass-heavy text-amber-200 border-amber-300/30'
+                      : 'glass-heavy text-red-200 border-red-300/30'
+                }`}
+              >
                 {submitMessage}
               </div>
             )}
@@ -174,14 +195,16 @@ const FinalCTA: React.FC = () => {
             {[
               { icon: '⚡', text: 'Instant AI Processing' },
               { icon: '🔒', text: 'Enterprise Security' },
-              { icon: '🚀', text: 'Priority Support' }
+              { icon: '🚀', text: 'Priority Support' },
             ].map((benefit, index) => (
               <div
                 key={index}
                 className="flex items-center justify-center space-x-3 p-4 glass rounded-2xl transition-all duration-300 hover:scale-105"
               >
                 <span className="text-xl md:text-2xl">{benefit.icon}</span>
-                <span className="font-medium text-sm md:text-base text-white/90">{benefit.text}</span>
+                <span className="font-medium text-sm md:text-base text-white/90">
+                  {benefit.text}
+                </span>
               </div>
             ))}
           </div>

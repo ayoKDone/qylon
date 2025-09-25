@@ -18,9 +18,7 @@ const Header: React.FC = () => {
   return (
     <header
       className={`fixed w-full top-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? 'glass-heavy border-b border-white/20'
-          : 'bg-transparent'
+        isScrolled ? 'glass-heavy border-b border-white/20' : 'bg-transparent'
       }`}
     >
       <nav className="container mx-auto px-6 py-6">
@@ -68,7 +66,10 @@ const Header: React.FC = () => {
             >
               How it works
             </a>
-            <a href="#waitlist" className="px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 inline-block text-center shadow-lg">
+            <a
+              href="#waitlist"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 inline-block text-center shadow-lg"
+            >
               Join waitlist
             </a>
           </div>
@@ -78,7 +79,11 @@ const Header: React.FC = () => {
             className="md:hidden transition-colors duration-200 text-white/80 hover:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
 

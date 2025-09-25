@@ -2,38 +2,43 @@ import { Brain, Clock, Mic, Shield, Target, Zap } from 'lucide-react';
 import React from 'react';
 
 const Features: React.FC = () => {
-
   const features = [
     {
       icon: Mic,
       title: 'Universal Recording',
-      description: 'Capture conversations from any platform - Zoom, Teams, Google Meet, or record directly from desktop and mobile.'
+      description:
+        'Capture conversations from any platform - Zoom, Teams, Google Meet, or record directly from desktop and mobile.',
     },
     {
       icon: Brain,
       title: 'AI-Powered Extraction',
-      description: 'Advanced neural networks identify action items, assignees, due dates, and priorities with 95% accuracy.'
+      description:
+        'Advanced neural networks identify action items, assignees, due dates, and priorities with 95% accuracy.',
     },
     {
       icon: Zap,
       title: 'Instant Integration',
-      description: 'Tasks automatically sync to your project management tools within seconds. Zero manual input required.'
+      description:
+        'Tasks automatically sync to your project management tools within seconds. Zero manual input required.',
     },
     {
       icon: Target,
       title: 'Smart Prioritization',
-      description: 'AI analyzes context and urgency to automatically assign priority levels and suggest optimal deadlines.'
+      description:
+        'AI analyzes context and urgency to automatically assign priority levels and suggest optimal deadlines.',
     },
     {
       icon: Clock,
       title: 'Real-time Processing',
-      description: 'Live transcription and task extraction during meetings. See action items appear as they are discussed.'
+      description:
+        'Live transcription and task extraction during meetings. See action items appear as they are discussed.',
     },
     {
       icon: Shield,
       title: 'Enterprise Security',
-      description: 'Bank-level encryption, SOC 2 compliance, and GDPR adherence. Your data remains completely private.'
-    }
+      description:
+        'Bank-level encryption, SOC 2 compliance, and GDPR adherence. Your data remains completely private.',
+    },
   ];
 
   return (
@@ -48,7 +53,7 @@ const Features: React.FC = () => {
           style={{
             top: '20%',
             left: '80%',
-            animation: 'liquidDrift 30s linear infinite reverse'
+            animation: 'liquidDrift 30s linear infinite reverse',
           }}
         ></div>
         <div
@@ -56,7 +61,7 @@ const Features: React.FC = () => {
           style={{
             bottom: '30%',
             left: '5%',
-            animation: 'liquidPulse 20s ease-in-out infinite'
+            animation: 'liquidPulse 20s ease-in-out infinite',
           }}
         ></div>
       </div>
@@ -73,7 +78,8 @@ const Features: React.FC = () => {
             </span>
           </h2>
           <p className="text-lg sm:text-xl max-w-3xl mx-auto px-4 text-white/80 drop-shadow-sm">
-            Qylon transforms every conversation into actionable tasks with precision and intelligence.
+            Qylon transforms every conversation into actionable tasks with
+            precision and intelligence.
           </p>
         </div>
 

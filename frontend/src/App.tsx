@@ -24,21 +24,26 @@ const AppContent: React.FC = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/app" element={<AppUI />} />
         <Route path="/demo" element={<ProductDemo />} />
-        <Route path="/" element={
-          <div className={`min-h-screen transition-colors duration-300 ${
-            isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-          }`}>
-            <Header />
-            <Hero />
-            <Features />
-            <ProblemsVsSolutions />
-            <HowItWorks />
-            <FAQ />
-            <ROI />
-            <FinalCTA />
-            <Footer />
-          </div>
-        } />
+        <Route
+          path="/"
+          element={
+            <div
+              className={`min-h-screen transition-colors duration-300 ${
+                isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
+              }`}
+            >
+              <Header />
+              <Hero />
+              <Features />
+              <ProblemsVsSolutions />
+              <HowItWorks />
+              <FAQ />
+              <ROI />
+              <FinalCTA />
+              <Footer />
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );

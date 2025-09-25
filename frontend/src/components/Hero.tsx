@@ -17,32 +17,36 @@ const Hero: React.FC = () => {
     try {
       const { error } = await supabase
         .from('waitlist')
-        .insert([
-          { email: email.toLowerCase().trim(), source: 'hero' }
-        ]);
+        .insert([{ email: email.toLowerCase().trim(), source: 'hero' }]);
 
       if (error) {
-        if (error.code === '23505') { // Unique constraint violation
+        if (error.code === '23505') {
+          // Unique constraint violation
           setSubmitMessage('This email is already on our waitlist!');
         } else {
           throw error;
         }
       } else {
-        setSubmitMessage('🎉 Welcome to the future! You\'ll be among the first to experience AI-powered meeting automation.');
+        setSubmitMessage(
+          "🎉 Welcome to the future! You'll be among the first to experience AI-powered meeting automation."
+        );
 
         // Send welcome email
         try {
-          const emailResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              email: email.toLowerCase().trim(),
-              source: 'hero'
-            }),
-          });
+          const emailResponse = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+              body: JSON.stringify({
+                email: email.toLowerCase().trim(),
+                source: 'hero',
+              }),
+            }
+          );
 
           if (emailResponse.ok) {
             console.log('Welcome email sent successfully');
@@ -56,7 +60,9 @@ const Hero: React.FC = () => {
       setEmail('');
     } catch (error) {
       console.error('Error submitting to waitlist:', error);
-      setSubmitMessage('Something went wrong. Please try again or contact us directly.');
+      setSubmitMessage(
+        'Something went wrong. Please try again or contact us directly.'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -74,7 +80,7 @@ const Hero: React.FC = () => {
           style={{
             top: '10%',
             left: '10%',
-            animation: 'liquidFlow 20s ease-in-out infinite'
+            animation: 'liquidFlow 20s ease-in-out infinite',
           }}
         ></div>
         <div
@@ -82,7 +88,7 @@ const Hero: React.FC = () => {
           style={{
             top: '60%',
             right: '10%',
-            animation: 'liquidPulse 15s ease-in-out infinite reverse'
+            animation: 'liquidPulse 15s ease-in-out infinite reverse',
           }}
         ></div>
         <div
@@ -90,7 +96,7 @@ const Hero: React.FC = () => {
           style={{
             bottom: '20%',
             left: '50%',
-            animation: 'liquidDrift 25s linear infinite'
+            animation: 'liquidDrift 25s linear infinite',
           }}
         ></div>
         <div
@@ -98,7 +104,7 @@ const Hero: React.FC = () => {
           style={{
             top: '30%',
             right: '40%',
-            animation: 'liquidFlow 18s ease-in-out infinite reverse'
+            animation: 'liquidFlow 18s ease-in-out infinite reverse',
           }}
         ></div>
       </div>
@@ -123,7 +129,8 @@ const Hero: React.FC = () => {
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed text-white/80 drop-shadow-sm">
-            The era of meeting bots is over. Qylon captures every conversation and delivers action items straight into{' '}
+            The era of meeting bots is over. Qylon captures every conversation
+            and delivers action items straight into{' '}
             <span className="text-cyan-300 font-semibold">ClickUp</span>,{' '}
             <span className="text-cyan-300 font-semibold">Asana</span>, or{' '}
             <span className="text-cyan-300 font-semibold">Monday</span>.
@@ -131,13 +138,16 @@ const Hero: React.FC = () => {
 
           {/* Waitlist Form */}
           <div id="waitlist" className="max-w-md mx-auto mb-8 md:mb-12 px-4">
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-4"
+            >
               <div className="relative flex-1">
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   disabled={isSubmitting}
                   className="w-full pl-12 pr-4 py-3 md:py-4 glass rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-white placeholder-white/60 bg-white/10"
@@ -148,23 +158,29 @@ const Hero: React.FC = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className={`px-6 sm:px-8 py-3 md:py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group text-base shadow-lg ${
-                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                  isSubmitting
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:scale-105'
                 }`}
               >
                 {isSubmitting ? 'Joining...' : 'Join waitlist'}
-                {!isSubmitting && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />}
+                {!isSubmitting && (
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                )}
               </button>
             </form>
 
             {/* Submit Message */}
             {submitMessage && (
-              <div className={`mt-4 p-3 rounded-lg text-center text-sm ${
-                submitMessage.includes('🎉')
-                  ? 'glass-heavy text-emerald-200 border-emerald-300/30'
-                  : submitMessage.includes('already')
-                  ? 'glass-heavy text-amber-200 border-amber-300/30'
-                  : 'glass-heavy text-red-200 border-red-300/30'
-              }`}>
+              <div
+                className={`mt-4 p-3 rounded-lg text-center text-sm ${
+                  submitMessage.includes('🎉')
+                    ? 'glass-heavy text-emerald-200 border-emerald-300/30'
+                    : submitMessage.includes('already')
+                      ? 'glass-heavy text-amber-200 border-amber-300/30'
+                      : 'glass-heavy text-red-200 border-red-300/30'
+                }`}
+              >
                 {submitMessage}
               </div>
             )}
@@ -174,15 +190,19 @@ const Hero: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-white/70">
             <div className="flex items-center space-x-2">
               <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-pink-500 rounded-full border-2 border-white/20"></div>
+                {[1, 2, 3, 4].map(i => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-pink-500 rounded-full border-2 border-white/20"
+                  ></div>
                 ))}
               </div>
               <span className="text-sm">50+ early adopters</span>
             </div>
             <div className="hidden sm:block h-4 w-px bg-white/30"></div>
             <div className="text-sm">
-              <span className="text-cyan-300 font-semibold">95%+ accuracy</span> in task extraction
+              <span className="text-cyan-300 font-semibold">95%+ accuracy</span>{' '}
+              in task extraction
             </div>
           </div>
         </div>

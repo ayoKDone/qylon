@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
-    buildQueryString,
-    capitalizeFirst,
-    cn,
-    formatDate,
-    formatDateTime,
-    formatTime,
-    getErrorMessage,
-    getStatusColor,
-    isValidEmail,
-    isValidUrl,
-    slugify,
-    truncateText,
+  buildQueryString,
+  capitalizeFirst,
+  cn,
+  formatDate,
+  formatDateTime,
+  formatTime,
+  getErrorMessage,
+  getStatusColor,
+  isValidEmail,
+  isValidUrl,
+  slugify,
+  truncateText,
 } from '../index';
 
 describe('Date utilities', () => {
@@ -93,7 +93,9 @@ describe('Status utilities', () => {
 describe('API utilities', () => {
   it('builds query string correctly', () => {
     expect(buildQueryString({ page: 1, limit: 10 })).toBe('page=1&limit=10');
-    expect(buildQueryString({ search: 'test', filter: undefined })).toBe('search=test');
+    expect(buildQueryString({ search: 'test', filter: undefined })).toBe(
+      'search=test'
+    );
     expect(buildQueryString({})).toBe('');
   });
 });

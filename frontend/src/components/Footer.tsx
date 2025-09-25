@@ -2,13 +2,12 @@ import { FileText, Mail, Shield, Zap } from 'lucide-react';
 import React from 'react';
 
 const Footer: React.FC = () => {
-
   return (
     <footer className="relative overflow-hidden">
       {/* Liquid Background */}
-      <div className={`absolute inset-0 bg-gradient-to-t to-transparent ${
-        'from-indigo-900/50 via-purple-900/30'
-      }`}></div>
+      <div
+        className={`absolute inset-0 bg-gradient-to-t to-transparent ${'from-indigo-900/50 via-purple-900/30'}`}
+      ></div>
 
       <div className="absolute inset-0 bg-gradient-to-br from-violet-900/50 to-indigo-900/50"></div>
 

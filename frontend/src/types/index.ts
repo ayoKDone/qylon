@@ -89,6 +89,8 @@ export interface ThemeContextType {
   toggleTheme: () => void;
 }
 
+import React from 'react';
+
 export interface ComponentProps {
   className?: string;
   children?: React.ReactNode;
@@ -126,7 +128,7 @@ export interface AppError {
 export interface NavItem {
   label: string;
   href: string;
-  icon?: React.ComponentType;
+  icon?: React.ComponentType<any>;
   children?: NavItem[];
 }
 

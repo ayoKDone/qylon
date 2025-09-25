@@ -18,12 +18,16 @@ const ThemeToggle: React.FC = () => {
       <div className="relative w-6 h-6">
         <Sun
           className={`absolute inset-0 w-6 h-6 transition-all duration-300 ${
-            isDark ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
+            isDark
+              ? 'opacity-0 rotate-90 scale-0'
+              : 'opacity-100 rotate-0 scale-100'
           }`}
         />
         <Moon
           className={`absolute inset-0 w-6 h-6 transition-all duration-300 ${
-            isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
+            isDark
+              ? 'opacity-100 rotate-0 scale-100'
+              : 'opacity-0 -rotate-90 scale-0'
           }`}
         />
       </div>

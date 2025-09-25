@@ -1,6 +1,16 @@
 import { ApiResponse, PaginatedResponse } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+// Type definitions for fetch API
+type HeadersInit = Headers | string[][] | Record<string, string>;
+type BodyInit = Blob | FormData | URLSearchParams | string;
+type FetchRequestInit = {
+  method?: string;
+  headers?: HeadersInit;
+  body?: BodyInit | null;
+};
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 class ApiError extends Error {
   constructor(
@@ -26,10 +36,10 @@ class ApiService {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: FetchRequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
-    const config: RequestInit = {
+    const config: FetchRequestInit = {
       ...options,
       headers: {
         ...this.defaultHeaders,
@@ -54,11 +64,7 @@ class ApiService {
       if (error instanceof ApiError) {
         throw error;
       }
-      throw new ApiError(
-        'Network error occurred',
-        0,
-        'NETWORK_ERROR'
-      );
+      throw new ApiError('Network error occurred', 0, 'NETWORK_ERROR');
     }
   }
 
@@ -109,7 +115,10 @@ class ApiService {
   // Remove authentication token
   clearAuthToken() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Authorization, ...headers } = this.defaultHeaders as Record<string, string>;
+    const { Authorization, ...headers } = this.defaultHeaders as Record<
+      string,
+      string
+    >;
     this.defaultHeaders = headers;
   }
 }
