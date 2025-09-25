@@ -1,10 +1,8 @@
+import { ArrowRight, Mail, Sparkles } from 'lucide-react';
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles, Mail } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabase';
 
 const FinalCTA: React.FC = () => {
-  const { isDark } = useTheme();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
@@ -31,7 +29,7 @@ const FinalCTA: React.FC = () => {
         }
       } else {
         setSubmitMessage('🚀 You\'re in! Welcome to our priority waitlist. You\'ll receive exclusive early access when we launch!');
-        
+
         // Send welcome email
         try {
           const emailResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`, {
@@ -45,7 +43,7 @@ const FinalCTA: React.FC = () => {
               source: 'final-cta'
             }),
           });
-          
+
           if (emailResponse.ok) {
             console.log('Welcome email sent successfully');
           } else {
@@ -69,9 +67,9 @@ const FinalCTA: React.FC = () => {
       {/* Liquid Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-pink-900 to-orange-900"></div>
-        
+
         {/* Animated liquid orbs */}
-        <div 
+        <div
           className="liquid-orb w-[600px] h-[600px] bg-gradient-to-r from-cyan-400 to-blue-600"
           style={{
             top: '50%',
@@ -80,7 +78,7 @@ const FinalCTA: React.FC = () => {
             animation: 'liquidPulse 15s ease-in-out infinite'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-80 h-80 bg-gradient-to-r from-pink-500 to-violet-600"
           style={{
             top: '10%',
@@ -88,7 +86,7 @@ const FinalCTA: React.FC = () => {
             animation: 'liquidDrift 20s linear infinite'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-72 h-72 bg-gradient-to-r from-orange-400 to-pink-500"
           style={{
             bottom: '10%',
@@ -118,7 +116,7 @@ const FinalCTA: React.FC = () => {
             </h2>
 
             <p className="text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed px-4 text-white/80 drop-shadow-sm">
-              Join <span className="text-cyan-300 font-semibold">50+</span> forward-thinking professionals 
+              Join <span className="text-cyan-300 font-semibold">50+</span> forward-thinking professionals
               who are already transforming their productivity with AI-powered meeting automation.
             </p>
           </div>
@@ -156,7 +154,7 @@ const FinalCTA: React.FC = () => {
                 </div>
               </div>
             </form>
-            
+
             {/* Submit Message */}
             {submitMessage && (
               <div className={`mt-6 p-4 rounded-xl text-center ${

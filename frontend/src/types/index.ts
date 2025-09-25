@@ -60,7 +60,7 @@ export interface WorkflowStep {
   id: string;
   workflow_id: string;
   step_type: 'send_email' | 'create_task' | 'update_crm' | 'notify_user';
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   order: number;
 }
 
@@ -119,7 +119,7 @@ export interface MeetingForm {
 export interface AppError {
   code: string;
   message: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 // Navigation Types

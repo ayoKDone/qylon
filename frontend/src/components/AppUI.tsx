@@ -1,54 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Mic, 
-  MicOff, 
-  Users, 
-  Calendar, 
-  Settings,
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  Brain,
+  Calendar,
   CheckCircle2,
   Clock,
-  Brain,
-  Zap,
-  Activity,
-  Video,
+  Download,
+  Headphones,
+  Menu,
   Monitor,
-  Smartphone,
-  BarChart3,
-  MessageSquare,
-  Bell,
-  ArrowRight,
+  Pause,
+  Play,
   Plus,
   Search,
-  Filter,
-  MoreVertical,
+  Settings,
+  Smartphone,
+  Target,
+  TrendingUp,
+  Upload,
+  Video,
   Volume2,
   VolumeX,
-  Download,
-  Upload,
-  RefreshCw,
-  Star,
-  Trash2,
-  Edit3,
-  Eye,
-  TrendingUp,
-  TrendingDown,
-  PieChart,
-  Target,
-  Award,
-  Bookmark,
-  Share2,
-  Link2,
-  FileText,
   X,
-  ChevronRight,
-  Globe,
-  Shield,
-  Layers,
-  Headphones,
-  Menu
+  Zap
 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import ThemeToggle from './ThemeToggle';
 
@@ -59,7 +36,7 @@ const AppUI: React.FC = () => {
   const [meetingTime, setMeetingTime] = useState(0);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
-  const [processingTasks, setProcessingTasks] = useState(3);
+  const [processingTasks] = useState(3);
 
   // Animate meeting timer
   useEffect(() => {
@@ -81,14 +58,14 @@ const AppUI: React.FC = () => {
 
   // Glass panel base classes
   const glassPanel = `backdrop-blur-xl border transition-all duration-300 ${
-    isDark 
-      ? 'bg-slate-900/30 border-slate-700/40' 
+    isDark
+      ? 'bg-slate-900/30 border-slate-700/40'
       : 'bg-white/80 border-slate-200/50'
   }`;
 
   const glassCard = `backdrop-blur-lg border transition-all duration-300 ${
-    isDark 
-      ? 'bg-slate-800/50 border-slate-600/50' 
+    isDark
+      ? 'bg-slate-800/50 border-slate-600/50'
       : 'bg-white/60 border-slate-300/50'
   }`;
 
@@ -136,7 +113,7 @@ const AppUI: React.FC = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="space-y-3 lg:space-y-4">
             {[
               { text: "Sarah to review budget proposal by Friday", status: "extracting", color: "amber" },
@@ -266,17 +243,17 @@ const AppUI: React.FC = () => {
   // Render current view
   const renderCurrentView = () => {
     switch (activeTab) {
-      case 'meetings': 
+      case 'meetings':
         return <SimpleView title="Live Meetings" description="Monitor and control all live conversations" />;
-      case 'tasks': 
+      case 'tasks':
         return <SimpleView title="Action Items" description="Manage all extracted action items" />;
-      case 'analytics': 
+      case 'analytics':
         return <SimpleView title="Analytics" description="Track your meeting efficiency metrics" />;
-      case 'calendar': 
+      case 'calendar':
         return <SimpleView title="Calendar" description="Schedule and manage your meetings" />;
-      case 'settings': 
+      case 'settings':
         return <SimpleView title="Settings" description="Configure your AI assistant" />;
-      default: 
+      default:
         return <DashboardView />;
     }
   };
@@ -285,32 +262,32 @@ const AppUI: React.FC = () => {
     <div className="relative">
       {/* Mobile Menu Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
-      
+
       <div className={`min-h-screen transition-all duration-300 ${
-        isDark 
-          ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950' 
+        isDark
+          ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'
           : 'bg-gradient-to-br from-slate-100 via-white to-slate-200'
       }`}>
         {/* Ambient Background Effects */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className={`absolute -top-1/2 -right-1/2 w-full h-full rounded-full transition-all duration-[3000ms] ${
-            isDark 
-              ? 'bg-gradient-radial from-blue-500/10 via-cyan-500/5 to-transparent' 
+            isDark
+              ? 'bg-gradient-radial from-blue-500/10 via-cyan-500/5 to-transparent'
               : 'bg-gradient-radial from-blue-300/30 via-cyan-300/15 to-transparent'
-          }`} style={{ 
+          }`} style={{
             transform: 'rotate(45deg)',
             filter: 'blur(40px)'
           }}></div>
           <div className={`absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full transition-all duration-[4000ms] ${
-            isDark 
-              ? 'bg-gradient-radial from-purple-600/8 via-slate-700/10 to-transparent' 
+            isDark
+              ? 'bg-gradient-radial from-purple-600/8 via-slate-700/10 to-transparent'
               : 'bg-gradient-radial from-purple-400/25 via-slate-400/10 to-transparent'
-          }`} style={{ 
+          }`} style={{
             transform: 'rotate(-45deg)',
             filter: 'blur(50px)'
           }}></div>
@@ -320,11 +297,11 @@ const AppUI: React.FC = () => {
         <div className="relative z-10 flex h-screen overflow-hidden">
           {/* Sidebar */}
           <div className={`fixed lg:relative inset-y-0 left-0 z-50 w-80 p-4 lg:p-8 backdrop-blur-3xl border-r transition-all duration-500 ${
-            isDark 
-              ? 'bg-slate-900/30 border-slate-700/40' 
+            isDark
+              ? 'bg-slate-900/30 border-slate-700/40'
               : 'bg-white/80 border-slate-200/50'
           } ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-            
+
             {/* Logo */}
             <div className="flex items-center justify-between lg:justify-start space-x-4 mb-8 lg:mb-12">
               <button
@@ -333,13 +310,13 @@ const AppUI: React.FC = () => {
               >
                 <X className="w-6 h-6" />
               </button>
-              
+
               <div className="relative group">
                 <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
               </div>
-              
+
               <div>
                 <span className={`text-2xl font-bold ${
                   isDark ? 'text-white' : 'text-slate-900'
@@ -381,8 +358,8 @@ const AppUI: React.FC = () => {
 
             {/* Recording Status Card */}
             <div className={`p-6 rounded-3xl backdrop-blur-2xl border transition-all duration-500 ${
-              isDark 
-                ? 'bg-slate-800/40 border-slate-600/50' 
+              isDark
+                ? 'bg-slate-800/40 border-slate-600/50'
                 : 'bg-white/60 border-slate-300/50'
             }`}>
               <div className="flex items-center justify-between mb-4">
@@ -393,7 +370,7 @@ const AppUI: React.FC = () => {
                   isRecording ? 'bg-red-500 animate-pulse' : 'bg-slate-400'
                 }`}></div>
               </div>
-              
+
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -403,7 +380,7 @@ const AppUI: React.FC = () => {
                     {isRecording ? 'Recording active' : 'Ready to record'}
                   </div>
                 </div>
-                
+
                 <button
                   onClick={() => {
                     setIsRecording(!isRecording);
@@ -423,8 +400,8 @@ const AppUI: React.FC = () => {
                 onClick={() => setIsAudioEnabled(!isAudioEnabled)}
                 className={`w-full flex items-center justify-center space-x-2 py-3 rounded-xl ${glassCard} hover:scale-[1.02] transition-all`}
               >
-                {isAudioEnabled ? 
-                  <Volume2 className="w-4 h-4 text-emerald-500" /> : 
+                {isAudioEnabled ?
+                  <Volume2 className="w-4 h-4 text-emerald-500" /> :
                   <VolumeX className="w-4 h-4 text-red-500" />
                 }
                 <span className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
@@ -446,7 +423,7 @@ const AppUI: React.FC = () => {
                   >
                     <Menu className="w-6 h-6" />
                   </button>
-                  
+
                   <div>
                     <h1 className={`text-xl lg:text-3xl font-bold ${
                       isDark ? 'text-white' : 'text-slate-900'
@@ -468,7 +445,7 @@ const AppUI: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 lg:space-x-4">
                   <ThemeToggle />
                   <button className={`p-2 lg:p-3 rounded-lg lg:rounded-2xl ${glassCard} hover:scale-110 transition-transform`}>

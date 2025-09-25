@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
 import { ArrowRight, Mail } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 const Hero: React.FC = () => {
-  const { isDark } = useTheme();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
@@ -31,7 +29,7 @@ const Hero: React.FC = () => {
         }
       } else {
         setSubmitMessage('🎉 Welcome to the future! You\'ll be among the first to experience AI-powered meeting automation.');
-        
+
         // Send welcome email
         try {
           const emailResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-welcome-email`, {
@@ -45,7 +43,7 @@ const Hero: React.FC = () => {
               source: 'hero'
             }),
           });
-          
+
           if (emailResponse.ok) {
             console.log('Welcome email sent successfully');
           } else {
@@ -69,9 +67,9 @@ const Hero: React.FC = () => {
       {/* Liquid Background */}
       <div className="liquid-bg">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-800 to-indigo-900"></div>
-        
+
         {/* Animated liquid orbs */}
-        <div 
+        <div
           className="liquid-orb w-96 h-96 bg-gradient-to-r from-pink-500 to-violet-600"
           style={{
             top: '10%',
@@ -79,7 +77,7 @@ const Hero: React.FC = () => {
             animation: 'liquidFlow 20s ease-in-out infinite'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-80 h-80 bg-gradient-to-r from-cyan-400 to-blue-500"
           style={{
             top: '60%',
@@ -87,7 +85,7 @@ const Hero: React.FC = () => {
             animation: 'liquidPulse 15s ease-in-out infinite reverse'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-64 h-64 bg-gradient-to-r from-orange-400 to-pink-500"
           style={{
             bottom: '20%',
@@ -95,7 +93,7 @@ const Hero: React.FC = () => {
             animation: 'liquidDrift 25s linear infinite'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-72 h-72 bg-gradient-to-r from-purple-500 to-indigo-600"
           style={{
             top: '30%',
@@ -157,7 +155,7 @@ const Hero: React.FC = () => {
                 {!isSubmitting && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />}
               </button>
             </form>
-            
+
             {/* Submit Message */}
             {submitMessage && (
               <div className={`mt-4 p-3 rounded-lg text-center text-sm ${

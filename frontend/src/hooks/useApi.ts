@@ -61,7 +61,7 @@ export function useApi<T>(
   };
 }
 
-export function useApiMutation<T, P = any>(
+export function useApiMutation<T, P = unknown>(
   apiCall: (params: P) => Promise<ApiResponse<T>>
 ) {
   const [state, setState] = useState<UseApiState<T>>({

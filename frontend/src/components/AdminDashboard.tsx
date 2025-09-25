@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Download, Users, TrendingUp, Mail } from 'lucide-react';
-import { supabase, WaitlistEntry } from '../lib/supabase';
+import { Download, Mail, TrendingUp, Users } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { WaitlistEntry, supabase } from '../lib/supabase';
 
 const AdminDashboard: React.FC = () => {
   const { isDark } = useTheme();
@@ -22,8 +22,8 @@ const AdminDashboard: React.FC = () => {
 
       if (error) throw error;
       setEntries(data || []);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,7 @@ const AdminDashboard: React.FC = () => {
     total: entries.length,
     hero: entries.filter(e => e.source === 'hero').length,
     finalCta: entries.filter(e => e.source === 'final-cta').length,
-    today: entries.filter(e => 
+    today: entries.filter(e =>
       new Date(e.created_at).toDateString() === new Date().toDateString()
     ).length
   };
@@ -152,7 +152,7 @@ const AdminDashboard: React.FC = () => {
           <div className="p-4 md:p-6 border-b border-gray-800">
             <h2 className="text-lg md:text-xl font-bold">Waitlist Entries</h2>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className={isDark ? 'bg-gray-800' : 'bg-gray-50'}>
@@ -185,7 +185,7 @@ const AdminDashboard: React.FC = () => {
                 ))}
               </tbody>
             </table>
-            
+
             {entries.length === 0 && (
               <div className="p-12 text-center">
                 <div className={`text-6xl mb-4 ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>📧</div>

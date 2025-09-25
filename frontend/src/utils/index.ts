@@ -102,7 +102,7 @@ export const isValidUrl = (url: string): boolean => {
 };
 
 // Debounce utility
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
@@ -114,7 +114,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 };
 
 // Throttle utility
-export const throttle = <T extends (...args: any[]) => any>(
+export const throttle = <T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): ((...args: Parameters<T>) => void) => {
@@ -156,7 +156,7 @@ export const getStatusColor = (status: string): string => {
 };
 
 // API utilities
-export const buildQueryString = (params: Record<string, any>): string => {
+export const buildQueryString = (params: Record<string, unknown>): string => {
   const searchParams = new URLSearchParams();
 
   Object.entries(params).forEach(([key, value]) => {

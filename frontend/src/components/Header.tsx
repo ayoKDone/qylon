@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
 import { Menu, X, Zap } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useEffect, useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 
 const Header: React.FC = () => {
-  const { isDark } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 

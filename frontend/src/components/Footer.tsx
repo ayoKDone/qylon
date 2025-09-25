@@ -1,9 +1,7 @@
+import { FileText, Mail, Shield, Zap } from 'lucide-react';
 import React from 'react';
-import { Zap, Mail, Shield, FileText } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
 
 const Footer: React.FC = () => {
-  const { isDark } = useTheme();
 
   return (
     <footer className="relative overflow-hidden">
@@ -11,9 +9,9 @@ const Footer: React.FC = () => {
       <div className={`absolute inset-0 bg-gradient-to-t to-transparent ${
         'from-indigo-900/50 via-purple-900/30'
       }`}></div>
-      
+
       <div className="absolute inset-0 bg-gradient-to-br from-violet-900/50 to-indigo-900/50"></div>
-      
+
       <div className="container mx-auto px-6 py-12 relative z-10 glass-heavy border-t border-white/20">
         <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
           {/* Logo */}

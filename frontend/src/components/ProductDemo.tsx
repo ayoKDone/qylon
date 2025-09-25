@@ -1,28 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Play, 
-  Upload, 
-  Brain, 
-  CheckCircle2, 
-  Clock, 
-  Users, 
-  TrendingUp, 
-  FileText,
+import {
+  ArrowRight,
+  BarChart3,
+  Brain,
+  CheckCircle2,
   ExternalLink,
-  Download,
+  FileText,
   Filter,
   Search,
-  Star,
-  AlertCircle,
-  Calendar,
-  BarChart3,
-  Zap,
-  ArrowRight,
-  Mic,
-  MicOff,
   Settings,
-  Share2
+  Star,
+  Upload,
+  Users,
+  Zap
 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 
 // Sample conversation data
@@ -119,7 +110,7 @@ const ProductDemo: React.FC = () => {
   const [processStep, setProcessStep] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [selectedTab, setSelectedTab] = useState('overview');
-  const [isRecording, setIsRecording] = useState(false);
+  // const [isRecording] = useState(false); // TODO: Implement recording functionality
 
   const processSteps = [
     'Analyzing conversation...',
@@ -146,7 +137,7 @@ const ProductDemo: React.FC = () => {
       }, 800);
       return () => clearInterval(interval);
     }
-  }, [isProcessing]);
+  }, [isProcessing, processSteps.length]);
 
   const startDemo = (conversationId: string) => {
     setSelectedConversation(conversationId);
@@ -168,38 +159,38 @@ const ProductDemo: React.FC = () => {
   const currentConversation = selectedConversation ? sampleConversations[selectedConversation as keyof typeof sampleConversations] : null;
 
   const glassPanel = `backdrop-blur-xl border transition-all duration-300 ${
-    isDark 
-      ? 'bg-slate-900/40 border-slate-700/50' 
+    isDark
+      ? 'bg-slate-900/40 border-slate-700/50'
       : 'bg-white/80 border-slate-200/50'
   }`;
 
   const glassCard = `backdrop-blur-lg border transition-all duration-300 ${
-    isDark 
-      ? 'bg-slate-800/60 border-slate-600/60' 
+    isDark
+      ? 'bg-slate-800/60 border-slate-600/60'
       : 'bg-white/70 border-slate-300/60'
   }`;
 
   return (
     <div className={`min-h-screen transition-all duration-300 ${
-      isDark 
-        ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950' 
+      isDark
+        ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950'
         : 'bg-gradient-to-br from-slate-100 via-blue-50 to-purple-50'
     }`}>
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute -top-1/2 -right-1/2 w-full h-full rounded-full transition-all duration-[3000ms] ${
-          isDark 
-            ? 'bg-gradient-radial from-blue-500/20 via-cyan-500/10 to-transparent' 
+          isDark
+            ? 'bg-gradient-radial from-blue-500/20 via-cyan-500/10 to-transparent'
             : 'bg-gradient-radial from-blue-300/40 via-cyan-300/20 to-transparent'
-        }`} style={{ 
+        }`} style={{
           transform: 'rotate(45deg)',
           filter: 'blur(60px)'
         }}></div>
         <div className={`absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full transition-all duration-[4000ms] ${
-          isDark 
-            ? 'bg-gradient-radial from-purple-600/15 via-pink-500/8 to-transparent' 
+          isDark
+            ? 'bg-gradient-radial from-purple-600/15 via-pink-500/8 to-transparent'
             : 'bg-gradient-radial from-purple-400/30 via-pink-400/15 to-transparent'
-        }`} style={{ 
+        }`} style={{
           transform: 'rotate(-45deg)',
           filter: 'blur(80px)'
         }}></div>
@@ -212,7 +203,7 @@ const ProductDemo: React.FC = () => {
             <Zap className="w-4 h-4 mr-2" />
             INTERACTIVE PRODUCT DEMO
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
               Turn Client Conversations Into
@@ -222,11 +213,11 @@ const ProductDemo: React.FC = () => {
               Completed Deliverables
             </span>
           </h1>
-          
+
           <p className={`text-xl max-w-3xl mx-auto leading-relaxed ${
             isDark ? 'text-slate-300' : 'text-slate-700'
           }`}>
-            Agencies, consultants, and MSPs can't afford dropped tasks. See how Qylon captures every client interaction 
+            Agencies, consultants, and MSPs can't afford dropped tasks. See how Qylon captures every client interaction
             and delivers action items straight into ClickUp, Asana, or Monday.
           </p>
         </div>
@@ -239,7 +230,7 @@ const ProductDemo: React.FC = () => {
               <h2 className={`text-2xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Step 1: Choose a Sample Conversation
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {Object.entries(sampleConversations).map(([key, conversation]) => (
                   <div
@@ -262,17 +253,17 @@ const ProductDemo: React.FC = () => {
                         {conversation.duration}
                       </span>
                     </div>
-                    
+
                     <h3 className={`font-bold mb-2 group-hover:text-blue-400 transition-colors ${
                       isDark ? 'text-white' : 'text-gray-900'
                     }`}>
                       {conversation.title}
                     </h3>
-                    
+
                     <div className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                       {conversation.participants.length} participants • {conversation.actionItems.length} action items
                     </div>
-                    
+
                     <div className="flex items-center text-sm">
                       <Star className="w-4 h-4 text-yellow-400 mr-1" />
                       <span className={isDark ? 'text-slate-300' : 'text-slate-700'}>
@@ -291,15 +282,15 @@ const ProductDemo: React.FC = () => {
               }`}>
                 <Upload className={`w-8 h-8 ${isDark ? 'text-slate-400' : 'text-slate-600'}`} />
               </div>
-              
+
               <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Or Upload Your Own
               </h3>
-              
+
               <p className={`mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Drag and drop audio files, or connect to Zoom, Teams, Google Meet
               </p>
-              
+
               <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:scale-105 transition-transform duration-200">
                 Upload File (Demo Mode)
               </button>
@@ -314,24 +305,24 @@ const ProductDemo: React.FC = () => {
               <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Brain className="w-10 h-10 text-white animate-pulse" />
               </div>
-              
+
               <h2 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 AI Processing Your Conversation
               </h2>
-              
+
               <div className="mb-8">
                 <div className={`h-2 rounded-full mb-4 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
-                  <div 
+                  <div
                     className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-800"
                     style={{ width: `${((processStep + 1) / processSteps.length) * 100}%` }}
                   ></div>
                 </div>
-                
+
                 <p className={`text-lg font-medium ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
                   {processSteps[processStep]}
                 </p>
               </div>
-              
+
               <div className="text-left max-w-md mx-auto space-y-2">
                 {processSteps.slice(0, processStep + 1).map((step, index) => (
                   <div key={index} className="flex items-center">
@@ -368,9 +359,9 @@ const ProductDemo: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
-                  <button 
+                  <button
                     onClick={resetDemo}
                     className="px-4 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors"
                   >
@@ -435,7 +426,7 @@ const ProductDemo: React.FC = () => {
                     <h3 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       Conversation Overview
                     </h3>
-                    
+
                     {/* Key Decisions */}
                     <div className="mb-8">
                       <h4 className={`font-semibold mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -485,26 +476,26 @@ const ProductDemo: React.FC = () => {
                         </button>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-4">
                       {currentConversation.actionItems.map((item) => (
                         <div key={item.id} className={`p-4 rounded-xl ${glassCard} flex items-center justify-between`}>
                           <div className="flex items-start flex-1">
                             <div className={`w-5 h-5 rounded border-2 mr-3 mt-0.5 flex-shrink-0 ${
-                              item.completed 
-                                ? 'bg-green-500 border-green-500' 
+                              item.completed
+                                ? 'bg-green-500 border-green-500'
                                 : 'border-slate-400'
                             }`}>
                               {item.completed && <CheckCircle2 className="w-5 h-5 text-white" />}
                             </div>
-                            
+
                             <div className="flex-1">
                               <div className={`font-medium mb-1 ${
                                 item.completed ? 'line-through text-slate-500' : isDark ? 'text-white' : 'text-gray-900'
                               }`}>
                                 {item.task}
                               </div>
-                              
+
                               <div className="flex items-center gap-4 text-sm">
                                 <span className={isDark ? 'text-slate-400' : 'text-slate-600'}>
                                   Assigned: {item.assignee}
@@ -533,7 +524,7 @@ const ProductDemo: React.FC = () => {
                     <h3 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       Conversation Transcript
                     </h3>
-                    
+
                     <div className={`p-6 rounded-xl font-mono text-sm leading-relaxed ${
                       isDark ? 'bg-slate-800/50 text-slate-300' : 'bg-slate-100/50 text-slate-700'
                     }`} style={{ whiteSpace: 'pre-line' }}>
@@ -547,7 +538,7 @@ const ProductDemo: React.FC = () => {
                     <h3 className={`text-xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                       Project Management Integrations
                     </h3>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {[
                         { name: 'Asana', color: 'from-pink-500 to-red-500', tasks: 6 },
@@ -559,18 +550,18 @@ const ProductDemo: React.FC = () => {
                           <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${integration.color} flex items-center justify-center mb-4`}>
                             <ExternalLink className="w-6 h-6 text-white" />
                           </div>
-                          
+
                           <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             {integration.name}
                           </h4>
-                          
+
                           <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                            {integration.name === 'Slack' 
+                            {integration.name === 'Slack'
                               ? `${integration.notifications} notifications sent`
                               : `${integration.tasks} tasks created`
                             }
                           </p>
-                          
+
                           <button className="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:scale-105 transition-transform">
                             View in {integration.name}
                           </button>
@@ -588,7 +579,7 @@ const ProductDemo: React.FC = () => {
                   <h4 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     This Month
                   </h4>
-                  
+
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -598,7 +589,7 @@ const ProductDemo: React.FC = () => {
                         127
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         Tasks Created
@@ -607,14 +598,14 @@ const ProductDemo: React.FC = () => {
                         342
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         Completion Rate
                       </span>
                       <span className="font-semibold text-green-400">89%</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                         Time Saved
@@ -629,7 +620,7 @@ const ProductDemo: React.FC = () => {
                   <h4 className={`font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     Team Performance
                   </h4>
-                  
+
                   <div className="space-y-3">
                     {[
                       { name: 'David', completion: 95, color: 'bg-green-400' },
@@ -656,15 +647,15 @@ const ProductDemo: React.FC = () => {
                   <h4 className={`font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                     Ready to get started?
                   </h4>
-                  
+
                   <p className={`text-sm mb-4 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                     Join 40+ agencies already using Qylon to capture every client interaction.
                   </p>
-                  
+
                   <button className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:scale-105 transition-transform mb-2">
                     Start Free Trial
                   </button>
-                  
+
                   <button className={`w-full py-2 border border-blue-500/50 text-blue-400 rounded-xl text-sm font-medium hover:bg-blue-500/10 transition-colors`}>
                     Schedule Demo
                   </button>
@@ -681,17 +672,17 @@ const ProductDemo: React.FC = () => {
               <h3 className={`text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                 Experience the Full Platform
               </h3>
-              
+
               <p className={`mb-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 This demo shows just a glimpse of Qylon's capabilities. See how it transforms your entire client communication workflow.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:scale-105 transition-transform flex items-center">
                   Start Free Trial
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </button>
-                
+
                 <button className={`px-8 py-4 border border-blue-500/50 text-blue-400 rounded-xl font-semibold hover:bg-blue-500/10 transition-colors`}>
                   Schedule Personal Demo
                 </button>

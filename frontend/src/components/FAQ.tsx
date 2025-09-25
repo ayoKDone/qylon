@@ -1,9 +1,7 @@
+import { Calendar, ChevronDown, ChevronUp, Monitor, Smartphone, FolderSync as Sync } from 'lucide-react';
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, FolderSync as Sync, Monitor, Smartphone, Calendar } from 'lucide-react'
-import { useTheme } from '../contexts/ThemeContext';
 
 const FAQ: React.FC = () => {
-  const { isDark } = useTheme();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqs = [
@@ -32,7 +30,7 @@ const FAQ: React.FC = () => {
   const captureMethods = [
     {
       number: "1",
-      icon: Monitor, 
+      icon: Monitor,
       title: "Silent Desktop Recording",
       description: "System-level audio capture from your computer. No visible bots, no announcements. Works with any app—Zoom, Teams, phone calls, even local recordings.",
       highlight: true
@@ -40,7 +38,7 @@ const FAQ: React.FC = () => {
     {
       number: "2",
       icon: Smartphone,
-      title: "Mobile Conversations", 
+      title: "Mobile Conversations",
       description: "Capture in-person meetings, brainstorming sessions, client calls, and networking events with our mobile app. High-quality audio with offline processing."
     },
     {
@@ -50,7 +48,7 @@ const FAQ: React.FC = () => {
       description: "Automatically detect meetings from your calendar and set up recording. Pre-meeting preparation and post-meeting intelligence extraction."
     },
     {
-      number: "4", 
+      number: "4",
       icon: Sync,
       title: "Optional Meeting Bots",
       description: "For teams that prefer traditional bots, we support all major platforms. But unlike other tools, you're not limited to just this method."
@@ -66,9 +64,9 @@ const FAQ: React.FC = () => {
       {/* Liquid Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900"></div>
-        
+
         {/* Animated liquid orbs */}
-        <div 
+        <div
           className="liquid-orb w-96 h-96 bg-gradient-to-r from-pink-500 to-orange-500"
           style={{
             top: '10%',
@@ -76,7 +74,7 @@ const FAQ: React.FC = () => {
             animation: 'liquidFlow 25s ease-in-out infinite'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-72 h-72 bg-gradient-to-r from-cyan-400 to-purple-500"
           style={{
             bottom: '20%',
@@ -120,12 +118,12 @@ const FAQ: React.FC = () => {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Number Badge */}
                 <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg">
                   {method.number}
                 </div>
-                
+
                 <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
                   <method.icon className="w-5 md:w-6 h-5 md:h-6 text-white" />
                 </div>
@@ -174,7 +172,7 @@ const FAQ: React.FC = () => {
                     <ChevronDown className="w-5 h-5 flex-shrink-0 text-white/60" />
                   )}
                 </button>
-                
+
                 {openIndex === index && (
                   <div className="px-4 md:px-6 pb-4 md:pb-6">
                     <div className="h-px bg-gradient-to-r from-cyan-300/30 to-purple-300/30 mb-4"></div>

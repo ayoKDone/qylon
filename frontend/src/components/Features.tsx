@@ -1,9 +1,7 @@
+import { Brain, Clock, Mic, Shield, Target, Zap } from 'lucide-react';
 import React from 'react';
-import { Mic, Brain, Zap, Target, Clock, Shield } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
 
 const Features: React.FC = () => {
-  const { isDark } = useTheme();
 
   const features = [
     {
@@ -43,9 +41,9 @@ const Features: React.FC = () => {
       {/* Liquid Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"></div>
-        
+
         {/* Animated liquid orbs */}
-        <div 
+        <div
           className="liquid-orb w-80 h-80 bg-gradient-to-r from-blue-400 to-cyan-500"
           style={{
             top: '20%',
@@ -53,7 +51,7 @@ const Features: React.FC = () => {
             animation: 'liquidDrift 30s linear infinite reverse'
           }}
         ></div>
-        <div 
+        <div
           className="liquid-orb w-64 h-64 bg-gradient-to-r from-violet-500 to-purple-600"
           style={{
             bottom: '30%',
@@ -62,7 +60,7 @@ const Features: React.FC = () => {
           }}
         ></div>
       </div>
-      
+
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-6 py-3 glass rounded-full text-white text-sm font-medium tracking-wide mb-6">

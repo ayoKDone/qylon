@@ -24,8 +24,8 @@ Deno.serve(async (req: Request) => {
     if (!email) {
       return new Response(
         JSON.stringify({ error: "Email is required" }),
-        { 
-          status: 400, 
+        {
+          status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         }
       );
@@ -130,21 +130,21 @@ Deno.serve(async (req: Request) => {
             <div class="logo">⚡ Qylon</div>
             <div class="tagline">(Pronounced as KEE-LON)</div>
         </div>
-        
+
         <div class="content">
             <div class="welcome">Welcome to the Future of Meetings! 🚀</div>
-            
+
             <p>Hi there!</p>
-            
+
             <p>Thank you for joining our exclusive waitlist! You're now part of a select group of forward-thinking professionals who will be among the first to experience the power of AI-driven meeting automation.</p>
-            
+
             <div class="social-proof">
                 <strong>🎉 You're in excellent company!</strong><br>
                 You've joined 50+ innovative professionals who are ready to revolutionize their productivity.
             </div>
-            
+
             <h3>What happens next?</h3>
-            
+
             <div class="feature">
                 <span class="feature-icon">⏰</span>
                 <div>
@@ -152,7 +152,7 @@ Deno.serve(async (req: Request) => {
                     We're putting the finishing touches on Qylon and will launch in Q4 2025.
                 </div>
             </div>
-            
+
             <div class="feature">
                 <span class="feature-icon">🎯</span>
                 <div>
@@ -160,7 +160,7 @@ Deno.serve(async (req: Request) => {
                     You'll receive priority access before our public launch.
                 </div>
             </div>
-            
+
             <div class="feature">
                 <span class="feature-icon">💰</span>
                 <div>
@@ -168,7 +168,7 @@ Deno.serve(async (req: Request) => {
                     Special discounted rates for our waitlist members.
                 </div>
             </div>
-            
+
             <div class="feature">
                 <span class="feature-icon">🔔</span>
                 <div>
@@ -176,20 +176,20 @@ Deno.serve(async (req: Request) => {
                     Regular updates on our progress and exclusive previews.
                 </div>
             </div>
-            
+
             <p>In the meantime, feel free to:</p>
             <ul>
                 <li>Visit our website: <a href="https://www.qylon.io" style="color: #06b6d4;">www.qylon.io</a></li>
                 <li>Follow our progress and connect with us</li>
                 <li>Share Qylon with your colleagues who struggle with meeting follow-ups</li>
             </ul>
-            
+
             <p>Questions? Simply reply to this email - we read and respond to every message!</p>
-            
+
             <p>Looking forward to transforming your meetings,<br>
             <strong>The Qylon Team</strong></p>
         </div>
-        
+
         <div class="footer">
             <p>© 2025 Qylon. All rights reserved.</p>
             <p>You're receiving this email because you signed up for our waitlist. We'll never spam you, and you can unsubscribe anytime.</p>
@@ -198,7 +198,7 @@ Deno.serve(async (req: Request) => {
 </body>
 </html>`;
 
-    const textContent = `
+    /* const _textContent = `
 Welcome to Qylon!
 
 Thank you for joining our exclusive waitlist! You're now part of a select group of forward-thinking professionals who will be among the first to experience AI-driven meeting automation.
@@ -207,7 +207,7 @@ What happens next?
 
 ⏰ Q2 2025 Launch - We're launching in Q2 2025
 ⏰ Q4 2025 Launch - We're launching in Q4 2025
-🎯 Exclusive Early Access - Priority access before public launch  
+🎯 Exclusive Early Access - Priority access before public launch
 💰 Early Bird Pricing - Special discounted rates for waitlist members
 🔔 Product Updates - Regular progress updates and exclusive previews
 
@@ -218,26 +218,26 @@ Looking forward to transforming your meetings,
 The Qylon Team
 
 © 2025 Qylon. All rights reserved.
-`;
+`; */
 
     // In a real implementation, you would use a service like Resend, SendGrid, or Mailgun
     // For now, we'll simulate the email sending
     console.log(`Sending welcome email to: ${email}`);
     console.log(`Source: ${source}`);
     console.log(`HTML Content: ${htmlContent.substring(0, 100)}...`);
-    
+
     // Simulate email sending success
     // Replace this with actual email service integration
     const emailSent = true;
 
     if (emailSent) {
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          message: "Welcome email sent successfully!" 
+        JSON.stringify({
+          success: true,
+          message: "Welcome email sent successfully!"
         }),
-        { 
-          status: 200, 
+        {
+          status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         }
       );
@@ -247,14 +247,14 @@ The Qylon Team
 
   } catch (error) {
     console.error("Error sending welcome email:", error);
-    
+
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: "Failed to send welcome email",
-        details: error.message 
+        details: error.message
       }),
-      { 
-        status: 500, 
+      {
+        status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       }
     );

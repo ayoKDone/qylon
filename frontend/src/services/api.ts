@@ -67,14 +67,14 @@ class ApiService {
     return this.request<T>(endpoint, { method: 'GET' });
   }
 
-  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
@@ -108,7 +108,8 @@ class ApiService {
 
   // Remove authentication token
   clearAuthToken() {
-    const { Authorization, ...headers } = this.defaultHeaders as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { Authorization, ...headers } = this.defaultHeaders as Record<string, string>;
     this.defaultHeaders = headers;
   }
 }
