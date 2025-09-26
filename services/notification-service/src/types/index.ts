@@ -29,7 +29,13 @@ export interface HealthData {
   timestamp: string;
   version: string;
   uptime: number;
-  memory: NodeJS.MemoryUsage;
+  memory: {
+    rss: number;
+    heapTotal: number;
+    heapUsed: number;
+    external: number;
+    arrayBuffers: number;
+  };
   environment: string;
   channels: {
     email: string;
