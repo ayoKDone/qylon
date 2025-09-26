@@ -172,28 +172,6 @@ services:
     networks:
       - qylon-network
 
-  # Analytics & Reporting Service
-  analytics-reporting:
-    build:
-      context: ./services/analytics-reporting
-      dockerfile: Dockerfile
-    ports:
-      - '3008:3008'
-    environment:
-      - NODE_ENV=development
-      - PORT=3008
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=redis://redis:6379
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./services/analytics-reporting:/app
-    networks:
-      - qylon-network
-
   # PostgreSQL Database
   postgres:
     image: postgres:15
