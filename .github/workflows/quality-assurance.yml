@@ -254,6 +254,8 @@ jobs:
 
       - name: Start services for performance testing
         run: |
+          echo "Starting services for performance testing..."
+
           # Set required environment variables for CI
           export SUPABASE_URL=http://localhost:54321
           export SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
@@ -266,24 +268,38 @@ jobs:
           export ANTHROPIC_API_KEY=mock-anthropic-api-key
           export SENDGRID_API_KEY=mock-sendgrid-api-key
 
-          # Build and start all services using main docker-compose file
-          docker-compose build api-gateway security integration-management meeting-intelligence
+          # Start databases first
+          echo "Starting databases..."
           docker-compose up -d postgres redis mongodb
-          sleep 10
-          docker-compose up -d api-gateway security integration-management meeting-intelligence
-          sleep 60
+          sleep 15
 
-          # Verify services are running with retries
-          for i in {1..5}; do
-            echo "Health check attempt $i/5..."
+          # Start API Gateway only for performance testing
+          echo "Starting API Gateway..."
+          cd services/api-gateway
+          npm install
+          npm run build
+          PORT=3000 npm start &
+          API_GATEWAY_PID=$!
+          cd ../..
+
+          # Wait for API Gateway to start
+          sleep 30
+
+          # Verify API Gateway is running
+          echo "Checking API Gateway health..."
+          for i in {1..10}; do
+            echo "Health check attempt $i/10..."
             if curl -f http://localhost:3000/health; then
               echo "API Gateway is healthy"
               break
             else
-              echo "API Gateway health check failed, waiting 10 seconds..."
-              sleep 10
+              echo "API Gateway health check failed, waiting 5 seconds..."
+              sleep 5
             fi
           done
+
+          # Store PID for cleanup
+          echo "API_GATEWAY_PID=$API_GATEWAY_PID" >> $GITHUB_ENV
 
       - name: Run load tests
         run: |
@@ -303,6 +319,16 @@ jobs:
         with:
           name: performance-results
           path: tests/performance/results/
+
+      - name: Cleanup services
+        if: always()
+        run: |
+          echo "Cleaning up services..."
+          if [ ! -z "$API_GATEWAY_PID" ]; then
+            echo "Stopping API Gateway (PID: $API_GATEWAY_PID)"
+            kill $API_GATEWAY_PID || true
+          fi
+          docker-compose down || true
 
   # Code Coverage Analysis
   coverage-analysis:
