@@ -56,13 +56,6 @@ const serviceRegistry: ServiceRegistry = {
     healthCheck: '/health',
     routes: ['/analytics', '/reports'],
   },
-  security: {
-    name: 'security',
-    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
-    port: 3001,
-    healthCheck: '/health',
-    routes: ['/auth', '/rls', '/api-keys'],
-  },
 };
 
 /**
