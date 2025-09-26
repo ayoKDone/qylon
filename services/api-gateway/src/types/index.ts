@@ -4,12 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 declare global {
   namespace Express {
     interface Request {
-      rateLimit?: {
-        limit: number;
-        current: number;
-        remaining: number;
-        resetTime: number;
-      };
+      requestId?: string;
     }
   }
 }
@@ -49,7 +44,6 @@ export interface JWTPayload {
 export interface AuthenticatedRequest extends Request {
   user?: User;
   token?: string;
-  requestId?: string;
 }
 
 // Service endpoints

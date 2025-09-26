@@ -2,10 +2,28 @@ import { createClient } from '@supabase/supabase-js';
 import { NextFunction, Request, Response } from 'express';
 import logger from '../utils/logger';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client (optional for local development)
+let supabase: any = null;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    logger.info(
+      'Supabase client initialized successfully in security auth middleware'
+    );
+  } else {
+    logger.warn(
+      'Supabase not configured in security auth middleware - running in local development mode'
+    );
+  }
+} catch (error) {
+  logger.warn(
+    'Failed to initialize Supabase client in security auth middleware - running in local development mode',
+    { error: error instanceof Error ? error.message : String(error) }
+  );
+}
 
 // JWTPayload interface removed as it's not used in this implementation
 

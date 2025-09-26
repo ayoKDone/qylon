@@ -62,7 +62,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
         status: error ? 'unhealthy' : 'healthy',
         responseTime: Date.now() - dbStartTime,
       };
-    } catch (error) {
+    } catch {
       healthChecks.dependencies.database = {
         status: 'unhealthy',
         responseTime: Date.now() - dbStartTime,
@@ -77,7 +77,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
         status: isHealthy ? 'healthy' : 'unhealthy',
         responseTime: Date.now() - engineStartTime,
       };
-    } catch (error) {
+    } catch {
       healthChecks.dependencies.workflowEngine = {
         status: 'unhealthy',
         responseTime: Date.now() - engineStartTime,

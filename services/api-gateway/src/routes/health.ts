@@ -1,20 +1,15 @@
-import { Router, Request, Response } from 'express';
 import { HealthCheckResponse, ServiceHealth } from '@/types';
 import { logger } from '@/utils/logger';
 import axios from 'axios';
+import { Request, Response, Router } from 'express';
 
 const router = Router();
 
 // Service endpoints configuration
 const services = [
   {
-    name: 'user-management',
-    url: process.env.USER_MANAGEMENT_URL || 'http://localhost:3001',
-    healthCheck: '/health',
-  },
-  {
-    name: 'client-management',
-    url: process.env.CLIENT_MANAGEMENT_URL || 'http://localhost:3002',
+    name: 'security',
+    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
     healthCheck: '/health',
   },
   {

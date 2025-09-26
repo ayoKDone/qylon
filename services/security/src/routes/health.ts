@@ -4,11 +4,26 @@ import logger from '../utils/logger';
 
 const router = Router();
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Initialize Supabase client (optional for local development)
+let supabase: any = null;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    logger.info('Supabase client initialized successfully in health routes');
+  } else {
+    logger.warn(
+      'Supabase not configured in health routes - running in local development mode'
+    );
+  }
+} catch (error) {
+  logger.warn(
+    'Failed to initialize Supabase client in health routes - running in local development mode',
+    { error: error instanceof Error ? error.message : String(error) }
+  );
+}
 
 // Health check endpoint
 router.get('/', async (_req: Request, res: Response): Promise<void> => {
@@ -21,42 +36,54 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
       environment: process.env.NODE_ENV || 'development',
     };
 
-    // Test database connection
-    const { error: dbError } = await supabase
-      .from('users')
-      .select('id')
-      .limit(1);
+    // Test database connection (only if Supabase is configured)
+    if (supabase) {
+      const { error: dbError } = await supabase
+        .from('users')
+        .select('id')
+        .limit(1);
 
-    if (dbError) {
-      logger.error('Database health check failed', { error: dbError.message });
-      res.status(503).json({
+      if (dbError) {
+        logger.error('Database health check failed', {
+          error: dbError.message,
+        });
+        res.status(503).json({
+          ...healthCheck,
+          status: 'unhealthy',
+          database: 'disconnected',
+          error: dbError.message,
+        });
+        return;
+      }
+
+      // Test Supabase Auth
+      const { error: authError } = await supabase.auth.getSession();
+
+      if (authError) {
+        logger.error('Auth health check failed', { error: authError.message });
+        res.status(503).json({
+          ...healthCheck,
+          status: 'unhealthy',
+          auth: 'disconnected',
+          error: authError.message,
+        });
+        return;
+      }
+
+      res.status(200).json({
         ...healthCheck,
-        status: 'unhealthy',
-        database: 'disconnected',
-        error: dbError.message,
+        database: 'connected',
+        auth: 'connected',
       });
-      return;
-    }
-
-    // Test Supabase Auth
-    const { error: authError } = await supabase.auth.getSession();
-
-    if (authError) {
-      logger.error('Auth health check failed', { error: authError.message });
-      res.status(503).json({
+    } else {
+      // Supabase not configured - return healthy status for local development
+      res.status(200).json({
         ...healthCheck,
-        status: 'unhealthy',
-        auth: 'disconnected',
-        error: authError.message,
+        database: 'not_configured',
+        auth: 'not_configured',
+        message: 'Running in local development mode without Supabase',
       });
-      return;
     }
-
-    res.status(200).json({
-      ...healthCheck,
-      database: 'connected',
-      auth: 'connected',
-    });
   } catch (error) {
     logger.error('Health check error', {
       error: error instanceof Error ? error.message : 'Unknown error',

@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   # API Gateway
@@ -7,7 +7,7 @@ services:
       context: ./services/api-gateway
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=development
       - PORT=3000
@@ -25,49 +25,26 @@ services:
     networks:
       - qylon-network
 
-  # User Management Service
-  user-management:
+  # Security Service (Port 3001)
+  security:
     build:
-      context: ./services/user-management
+      context: ./services/security
       dockerfile: Dockerfile
     ports:
-      - "3001:3001"
+      - '3001:3001'
     environment:
       - NODE_ENV=development
       - PORT=3001
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=your-jwt-secret-key
+      - JWT_SECRET=${JWT_SECRET}
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
     depends_on:
       - postgres
       - redis
     volumes:
-      - ./services/user-management:/app
-      - /app/node_modules
-    networks:
-      - qylon-network
-
-  # Client Management Service
-  client-management:
-    build:
-      context: ./services/client-management
-      dockerfile: Dockerfile
-    ports:
-      - "3002:3002"
-    environment:
-      - NODE_ENV=development
-      - PORT=3002
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=redis://redis:6379
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./services/client-management:/app
+      - ./services/security:/app
       - /app/node_modules
     networks:
       - qylon-network
@@ -78,7 +55,7 @@ services:
       context: ./services/meeting-intelligence
       dockerfile: Dockerfile
     ports:
-      - "3003:3003"
+      - '3003:3003'
     environment:
       - NODE_ENV=development
       - PORT=3003
@@ -105,7 +82,7 @@ services:
       context: ./services/content-creation
       dockerfile: Dockerfile
     ports:
-      - "3004:3004"
+      - '3004:3004'
     environment:
       - NODE_ENV=development
       - PORT=3004
@@ -129,7 +106,7 @@ services:
       context: ./services/workflow-automation
       dockerfile: Dockerfile
     ports:
-      - "3005:3005"
+      - '3005:3005'
     environment:
       - NODE_ENV=development
       - PORT=3005
@@ -153,7 +130,7 @@ services:
       context: ./services/integration-management
       dockerfile: Dockerfile
     ports:
-      - "3006:3006"
+      - '3006:3006'
     environment:
       - NODE_ENV=development
       - PORT=3006
@@ -161,6 +138,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       - postgres
       - redis
@@ -176,7 +154,7 @@ services:
       context: ./services/notification-service
       dockerfile: Dockerfile
     ports:
-      - "3007:3007"
+      - '3007:3007'
     environment:
       - NODE_ENV=development
       - PORT=3007
@@ -194,49 +172,6 @@ services:
     networks:
       - qylon-network
 
-  # Analytics & Reporting Service
-  analytics-reporting:
-    build:
-      context: ./services/analytics-reporting
-      dockerfile: Dockerfile
-    ports:
-      - "3008:3008"
-    environment:
-      - NODE_ENV=development
-      - PORT=3008
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=redis://redis:6379
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-    depends_on:
-      - postgres
-      - redis
-    volumes:
-      - ./services/analytics-reporting:/app
-    networks:
-      - qylon-network
-
-  # Security Service
-  security:
-    build:
-      context: ./services/security
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
-    environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - JWT_SECRET=${JWT_SECRET}
-    depends_on:
-      - postgres
-    volumes:
-      - ./services/security:/app
-      - /app/node_modules
-    networks:
-      - qylon-network
-
   # PostgreSQL Database
   postgres:
     image: postgres:15
@@ -245,7 +180,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./database/migrations:/docker-entrypoint-initdb.d
@@ -256,7 +191,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     networks:
@@ -270,7 +205,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=password
       - MONGO_INITDB_DATABASE=qylon_analytics
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - mongodb_data:/data/db
     networks:

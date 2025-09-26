@@ -1,13 +1,39 @@
-import rateLimit from 'express-rate-limit';
-import { Request, Response } from 'express';
-import { logger, logSecurity } from '@/utils/logger';
+import { logSecurity, logger } from '@/utils/logger';
 import { createClient } from '@supabase/supabase-js';
+import { Request, Response } from 'express';
+import rateLimit from 'express-rate-limit';
 
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Extend Express Request interface to include rateLimit property
+declare module 'express-serve-static-core' {
+  interface Request {
+    rateLimit?: {
+      limit: number;
+      used: number;
+      remaining: number;
+      resetTime: Date | undefined;
+      key: string;
+    };
+  }
+}
+
+// Initialize Supabase client (optional for local development)
+let supabase: any = null;
+try {
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+    logger.info('Supabase client initialized successfully');
+  } else {
+    logger.warn('Supabase not configured - running in local development mode');
+  }
+} catch (error) {
+  logger.warn(
+    'Failed to initialize Supabase client - running in local development mode',
+    { error: error instanceof Error ? error.message : String(error) }
+  );
+}
 
 // Custom key generator that includes user ID for authenticated requests
 const keyGenerator = (req: Request): string => {
@@ -71,7 +97,7 @@ const handler = async (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     retryAfter: Math.round(
       req.rateLimit?.resetTime
-        ? (req.rateLimit.resetTime - Date.now()) / 1000
+        ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000
         : 60
     ),
   });

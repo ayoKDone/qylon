@@ -56,15 +56,13 @@ app.add_middleware(
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     content_type: str = Field(
-        ..., regex="^(article|blog|social|email|report|summary)$"
+        ..., pattern="^(article|blog|social|email|report|summary)$"
     )
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
-    tone: str = Field(
-        ..., regex="^(professional|casual|friendly|formal|creative)$"
-    )
-    length: str = Field(..., regex="^(short|medium|long)$")
-    keywords: Optional[List[str]] = Field(default=[], max_items=10)
+    tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
+    length: str = Field(..., pattern="^(short|medium|long)$")
+    keywords: Optional[List[str]] = Field(default=[], max_length=10)
     client_id: str = Field(..., min_length=1)
     meeting_id: Optional[str] = None
     template_id: Optional[str] = None
@@ -93,7 +91,7 @@ class ContentUpdateRequest(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     content: Optional[str] = None
     status: Optional[str] = Field(
-        None, regex="^(draft|review|approved|published|archived)$"
+        None, pattern="^(draft|review|approved|published|archived)$"
     )
     metadata: Optional[Dict[str, Any]] = None
 
@@ -101,7 +99,7 @@ class ContentUpdateRequest(BaseModel):
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     content_type: str = Field(
-        ..., regex="^(article|blog|social|email|report|summary)$"
+        ..., pattern="^(article|blog|social|email|report|summary)$"
     )
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
@@ -155,7 +153,9 @@ async def health_check():
 
 
 # Content creation endpoints
-@app.post("/content", response_model=ContentResponse)
+@app.post(
+    "/content", response_model=ContentResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_content(
     content_request: ContentRequest,
     current_user: dict = Depends(get_current_user),
@@ -201,9 +201,7 @@ async def create_content(
 
 
 @app.get("/content/{content_id}", response_model=ContentResponse)
-async def get_content(
-    content_id: str, current_user: dict = Depends(get_current_user)
-):
+async def get_content(content_id: str, current_user: dict = Depends(get_current_user)):
     """Get content by ID"""
     try:
         # Retrieve content from database
@@ -285,7 +283,9 @@ async def list_content(
 
 
 # Template endpoints
-@app.post("/templates", response_model=TemplateResponse)
+@app.post(
+    "/templates", response_model=TemplateResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_template(
     template_request: TemplateRequest,
     current_user: dict = Depends(get_current_user),
@@ -330,9 +330,7 @@ async def list_templates(
     """List templates with filters"""
     try:
         # Retrieve templates from database
-        templates = await list_templates_from_db(
-            client_id, content_type, current_user
-        )
+        templates = await list_templates_from_db(client_id, content_type, current_user)
 
         return templates
 
@@ -485,9 +483,7 @@ async def list_content_from_db(
     return []
 
 
-async def save_template(
-    template_request: TemplateRequest, current_user: dict
-) -> str:
+async def save_template(template_request: TemplateRequest, current_user: dict) -> str:
     """Save template to database"""
     # This would integrate with Supabase
     template_id = (

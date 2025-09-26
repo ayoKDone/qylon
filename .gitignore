@@ -140,6 +140,11 @@ out/
 test-results/
 coverage/
 
+# Performance test results
+tests/performance/results/*.csv
+tests/performance/results/*.json
+tests/performance/results/*.html
+
 # Local development
 .local/
 local/
@@ -149,6 +154,7 @@ docs/
 !docs/architecture/
 !docs/api/
 !docs/deployment/
+!docs/TECHNICAL_ONBOARDING.md
 *.md
 !README.md
 !Qylon Technical Design Doc.md
@@ -157,12 +163,19 @@ docs/
 !AI_DEVELOPMENT_GUIDE.md
 
 # Test files and scripts - Keep local only
-tests/
+# tests/
+!tests/
+!tests/**/*.test.ts
+!tests/**/*.test.js
+!tests/**/*.spec.ts
+!tests/**/*.spec.js
+!tests/setup.ts
+!tests/jest.config.js
 test-results/
 coverage/
-*.test.js
-*.test.ts
-*.test.py
+# *.test.js
+# *.test.ts
+# *.test.py
 *.spec.js
 *.spec.ts
 *.spec.py
@@ -175,6 +188,17 @@ scripts/
 !scripts/setup/
 !scripts/deployment/
 !scripts/run-flake8.sh
+!scripts/security-test.sh
+!scripts/performance-test.sh
+!scripts/performance-test-enhanced.sh
+!scripts/coverage-monitor.sh
+!scripts/start-e2e-server.sh
+!scripts/db-migrate.sh
+!scripts/start-services.sh
+!scripts/stop-services.sh
+!scripts/test-docker-compose.sh
+!scripts/clear-jest-cache.sh
+!tests/utils/test-helpers.ts
 
 # Logs and temporary files
 logs/

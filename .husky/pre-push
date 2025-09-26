@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Pre-push hook for Qylon Platform
+# Runs comprehensive quality checks before allowing pushes
+
+echo "🚀 Running pre-push quality checks..."
+
+# Run full test suite
+echo "🧪 Running full test suite..."
+npm run test:ci
+
+# Run E2E tests
+echo "🎭 Running E2E tests..."
+npm run test:e2e
+
+# Run performance tests
+echo "⚡ Running performance tests..."
+npm run test:performance:load
+
+# Run security scan
+echo "🔒 Running security scan..."
+npm run security:scan
+
+# Run SonarQube analysis
+echo "📊 Running SonarQube analysis..."
+npm run sonar
+
+echo "✅ Pre-push checks passed!"

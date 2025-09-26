@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "cypress", "@types/cypress"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noImplicitAny": false
+  },
+  "include": ["tests/e2e/**/*", "cypress/**/*", "**/*.cy.ts", "**/*.cy.tsx"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "tests/unit/**/*",
+    "tests/integration/**/*",
+    "tests/setup.ts",
+    "tests/utils/**/*"
+  ]
+}

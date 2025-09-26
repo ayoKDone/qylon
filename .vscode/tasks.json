@@ -178,7 +178,11 @@
       "label": "Database Migration",
       "type": "shell",
       "command": "psql",
-      "args": ["${env:DATABASE_URL}", "-f", "database/migrations/001_initial_schema.sql"],
+      "args": [
+        "${env:DATABASE_URL}",
+        "-f",
+        "database/migrations/001_initial_schema.sql"
+      ],
       "group": "build",
       "presentation": {
         "echo": true,
