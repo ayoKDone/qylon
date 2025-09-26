@@ -277,8 +277,7 @@ jobs:
           echo "Starting API Gateway..."
           cd services/api-gateway
           npm install
-          npm run build
-          PORT=3000 npm start &
+          PORT=3000 npm run dev &
           API_GATEWAY_PID=$!
           cd ../..
 
