@@ -8,13 +8,8 @@ const router = Router();
 // Service endpoints configuration
 const services = [
   {
-    name: 'user-management',
-    url: process.env.USER_MANAGEMENT_URL || 'http://localhost:3001',
-    healthCheck: '/health',
-  },
-  {
-    name: 'client-management',
-    url: process.env.CLIENT_MANAGEMENT_URL || 'http://localhost:3002',
+    name: 'security',
+    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
     healthCheck: '/health',
   },
   {

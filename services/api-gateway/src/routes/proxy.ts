@@ -7,19 +7,12 @@ const router = Router();
 
 // Service registry with endpoint configurations
 const serviceRegistry: ServiceRegistry = {
-  'user-management': {
-    name: 'user-management',
-    url: process.env.USER_MANAGEMENT_URL || 'http://localhost:3001',
+  security: {
+    name: 'security',
+    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
     port: 3001,
     healthCheck: '/health',
-    routes: ['/users', '/auth', '/profile'],
-  },
-  'client-management': {
-    name: 'client-management',
-    url: process.env.CLIENT_MANAGEMENT_URL || 'http://localhost:3002',
-    port: 3002,
-    healthCheck: '/health',
-    routes: ['/clients', '/teams'],
+    routes: ['/auth', '/rls', '/api-keys'],
   },
   'meeting-intelligence': {
     name: 'meeting-intelligence',
