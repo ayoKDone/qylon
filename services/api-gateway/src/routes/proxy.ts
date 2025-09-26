@@ -9,71 +9,63 @@ const router = Router();
 const serviceRegistry: ServiceRegistry = {
   'user-management': {
     name: 'user-management',
-    url: process.env.USER_MANAGEMENT_URL || 'http://user-management:3001',
+    url: process.env.USER_MANAGEMENT_URL || 'http://localhost:3001',
     port: 3001,
     healthCheck: '/health',
     routes: ['/users', '/auth', '/profile'],
   },
   'client-management': {
     name: 'client-management',
-    url: process.env.CLIENT_MANAGEMENT_URL || 'http://client-management:3002',
+    url: process.env.CLIENT_MANAGEMENT_URL || 'http://localhost:3002',
     port: 3002,
     healthCheck: '/health',
     routes: ['/clients', '/teams'],
   },
   'meeting-intelligence': {
     name: 'meeting-intelligence',
-    url:
-      process.env.MEETING_INTELLIGENCE_URL ||
-      'http://meeting-intelligence:3003',
+    url: process.env.MEETING_INTELLIGENCE_URL || 'http://localhost:3003',
     port: 3003,
     healthCheck: '/health',
     routes: ['/meetings', '/transcriptions', '/action-items'],
   },
   'content-creation': {
     name: 'content-creation',
-    url: process.env.CONTENT_CREATION_URL || 'http://content-creation:3004',
+    url: process.env.CONTENT_CREATION_URL || 'http://localhost:3004',
     port: 3004,
     healthCheck: '/health',
     routes: ['/content', '/brand-voice'],
   },
   'workflow-automation': {
     name: 'workflow-automation',
-    url:
-      process.env.WORKFLOW_AUTOMATION_URL || 'http://workflow-automation:3005',
+    url: process.env.WORKFLOW_AUTOMATION_URL || 'http://localhost:3005',
     port: 3005,
     healthCheck: '/health',
     routes: ['/workflows', '/automations'],
   },
   'integration-management': {
     name: 'integration-management',
-    url:
-      process.env.INTEGRATION_MANAGEMENT_URL ||
-      'http://integration-management:3006',
+    url: process.env.INTEGRATION_MANAGEMENT_URL || 'http://localhost:3006',
     port: 3006,
     healthCheck: '/health',
     routes: ['/integrations', '/webhooks'],
   },
   'notification-service': {
     name: 'notification-service',
-    url:
-      process.env.NOTIFICATION_SERVICE_URL ||
-      'http://notification-service:3007',
+    url: process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:3007',
     port: 3007,
     healthCheck: '/health',
     routes: ['/notifications', '/templates'],
   },
   'analytics-reporting': {
     name: 'analytics-reporting',
-    url:
-      process.env.ANALYTICS_REPORTING_URL || 'http://analytics-reporting:3008',
+    url: process.env.ANALYTICS_REPORTING_URL || 'http://localhost:3008',
     port: 3008,
     healthCheck: '/health',
     routes: ['/analytics', '/reports'],
   },
   security: {
     name: 'security',
-    url: process.env.SECURITY_SERVICE_URL || 'http://security:3001',
+    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
     port: 3001,
     healthCheck: '/health',
     routes: ['/auth', '/rls', '/api-keys'],

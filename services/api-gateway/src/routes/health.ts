@@ -9,50 +9,42 @@ const router = Router();
 const services = [
   {
     name: 'user-management',
-    url: process.env.USER_MANAGEMENT_URL || 'http://user-management:3001',
+    url: process.env.USER_MANAGEMENT_URL || 'http://localhost:3001',
     healthCheck: '/health',
   },
   {
     name: 'client-management',
-    url: process.env.CLIENT_MANAGEMENT_URL || 'http://client-management:3002',
+    url: process.env.CLIENT_MANAGEMENT_URL || 'http://localhost:3002',
     healthCheck: '/health',
   },
   {
     name: 'meeting-intelligence',
-    url:
-      process.env.MEETING_INTELLIGENCE_URL ||
-      'http://meeting-intelligence:3003',
+    url: process.env.MEETING_INTELLIGENCE_URL || 'http://localhost:3003',
     healthCheck: '/health',
   },
   {
     name: 'content-creation',
-    url: process.env.CONTENT_CREATION_URL || 'http://content-creation:3004',
+    url: process.env.CONTENT_CREATION_URL || 'http://localhost:3004',
     healthCheck: '/health',
   },
   {
     name: 'workflow-automation',
-    url:
-      process.env.WORKFLOW_AUTOMATION_URL || 'http://workflow-automation:3005',
+    url: process.env.WORKFLOW_AUTOMATION_URL || 'http://localhost:3005',
     healthCheck: '/health',
   },
   {
     name: 'integration-management',
-    url:
-      process.env.INTEGRATION_MANAGEMENT_URL ||
-      'http://integration-management:3006',
+    url: process.env.INTEGRATION_MANAGEMENT_URL || 'http://localhost:3006',
     healthCheck: '/health',
   },
   {
     name: 'notification-service',
-    url:
-      process.env.NOTIFICATION_SERVICE_URL ||
-      'http://notification-service:3007',
+    url: process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:3007',
     healthCheck: '/health',
   },
   {
     name: 'analytics-reporting',
-    url:
-      process.env.ANALYTICS_REPORTING_URL || 'http://analytics-reporting:3008',
+    url: process.env.ANALYTICS_REPORTING_URL || 'http://localhost:3008',
     healthCheck: '/health',
   },
 ];
