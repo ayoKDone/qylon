@@ -266,12 +266,24 @@ jobs:
           export ANTHROPIC_API_KEY=mock-anthropic-api-key
           export SENDGRID_API_KEY=mock-sendgrid-api-key
 
-          # Start all services using main docker-compose file
-          docker-compose up -d postgres redis mongodb api-gateway security integration-management meeting-intelligence
-          sleep 30
+          # Build and start all services using main docker-compose file
+          docker-compose build api-gateway security integration-management meeting-intelligence
+          docker-compose up -d postgres redis mongodb
+          sleep 10
+          docker-compose up -d api-gateway security integration-management meeting-intelligence
+          sleep 60
 
-          # Verify services are running
-          curl -f http://localhost:3000/health || echo "API Gateway health check failed"
+          # Verify services are running with retries
+          for i in {1..5}; do
+            echo "Health check attempt $i/5..."
+            if curl -f http://localhost:3000/health; then
+              echo "API Gateway is healthy"
+              break
+            else
+              echo "API Gateway health check failed, waiting 10 seconds..."
+              sleep 10
+            fi
+          done
 
       - name: Run load tests
         run: |
