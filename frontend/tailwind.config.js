@@ -10,10 +10,10 @@ export default {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       animation: {
-        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
-        'spin': 'spin 1s linear infinite',
-        'float': 'float 6s ease-in-out infinite',
+        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+        spin: 'spin 1s linear infinite',
+        float: 'float 6s ease-in-out infinite',
       },
       keyframes: {
         float: {
@@ -22,7 +22,7 @@ export default {
         },
       },
       screens: {
-        'xs': '475px',
+        xs: '475px',
       },
       colors: {
         cyan: {

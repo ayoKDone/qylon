@@ -254,8 +254,16 @@ jobs:
 
       - name: Start services for performance testing
         run: |
+          # Start databases first
           docker-compose -f docker-compose.test.yml up -d
+          sleep 10
+
+          # Start application services
+          docker-compose up -d api-gateway security integration-management
           sleep 30
+
+          # Verify services are running
+          curl -f http://localhost:3000/health || echo "API Gateway health check failed"
 
       - name: Run load tests
         run: |
@@ -304,7 +312,12 @@ jobs:
         run: npm run test:coverage:html
 
       - name: Upload coverage to SonarQube
-        run: npm run sonar
+        run: |
+          if [ -n "$SONAR_HOST_URL" ] && [ -n "$SONAR_TOKEN" ]; then
+            npm run sonar
+          else
+            echo "⚠️ SonarQube analysis skipped - SONAR_HOST_URL and SONAR_TOKEN not configured"
+          fi
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
