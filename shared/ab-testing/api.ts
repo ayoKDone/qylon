@@ -408,7 +408,7 @@ export class ABTestingAPI {
       // const { userId } = req.params; // TODO: Use userId to fetch user assignments
 
       // TODO: Implement user assignment retrieval
-      const assignments = [];
+      const assignments: any[] = [];
 
       res.status(200).json({
         success: true,

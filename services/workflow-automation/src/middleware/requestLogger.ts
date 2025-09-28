@@ -6,7 +6,7 @@ import { logger } from '../utils/logger';
 declare global {
   namespace Express {
     interface Request {
-      requestId: string;
+      requestId?: string;
       startTime: number;
     }
   }

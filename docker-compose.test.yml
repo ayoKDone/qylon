@@ -1,118 +1,48 @@
-services:
-  # Test PostgreSQL Database
-  postgres-test:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=qylon_test
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - '5433:5432'
-    volumes:
-      - ./database/migrations:/docker-entrypoint-initdb.d
-    networks:
-      - qylon-test-network
+version: '3.8'
 
-  # Test Redis Cache
-  redis-test:
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: qylon_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qylon-network
+
+  # Redis Cache
+  redis:
     image: redis:7-alpine
     ports:
-      - '6380:6379'
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
     networks:
-      - qylon-test-network
+      - qylon-network
 
-  # Test MongoDB
-  mongodb-test:
+  # MongoDB for Analytics
+  mongodb:
     image: mongo:7
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=password
-      - MONGO_INITDB_DATABASE=qylon_test
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
     ports:
-      - '27018:27017'
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
     networks:
-      - qylon-test-network
+      - qylon-network
 
-  # API Gateway Test
-  api-gateway-test:
-    build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=test
-      - PORT=3000
-      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
-      - REDIS_URL=redis://redis-test:6379
-      - JWT_SECRET=test-jwt-secret
-      - SUPABASE_URL=https://test-project.supabase.co
-      - SUPABASE_ANON_KEY=test-anon-key
-      - SUPABASE_SERVICE_ROLE_KEY=test-service-role-key
-    depends_on:
-      - postgres-test
-      - redis-test
-    networks:
-      - qylon-test-network
-
-  # Meeting Intelligence Test
-  meeting-intelligence-test:
-    build:
-      context: ./services/meeting-intelligence
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=test
-      - PORT=3003
-      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
-      - REDIS_URL=redis://redis-test:6379
-      - OPENAI_API_KEY=test-openai-key
-      - RECALL_AI_API_KEY=test-recall-key
-      - SUPABASE_URL=https://test-project.supabase.co
-      - SUPABASE_SERVICE_ROLE_KEY=test-service-role-key
-      - JWT_SECRET=test-jwt-secret
-    depends_on:
-      - postgres-test
-      - redis-test
-    networks:
-      - qylon-test-network
-
-  # Content Creation Test
-  content-creation-test:
-    build:
-      context: ./services/content-creation
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=test
-      - PORT=3004
-      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
-      - REDIS_URL=redis://redis-test:6379
-      - OPENAI_API_KEY=test-openai-key
-      - ANTHROPIC_API_KEY=test-anthropic-key
-      - SUPABASE_URL=https://test-project.supabase.co
-      - SUPABASE_SERVICE_ROLE_KEY=test-service-role-key
-    depends_on:
-      - postgres-test
-      - redis-test
-    networks:
-      - qylon-test-network
-
-  # Workflow Automation Test
-  workflow-automation-test:
-    build:
-      context: ./services/workflow-automation
-      dockerfile: Dockerfile
-    environment:
-      - NODE_ENV=test
-      - PORT=3005
-      - DATABASE_URL=postgresql://postgres:postgres@postgres-test:5432/qylon_test
-      - REDIS_URL=redis://redis-test:6379
-      - SUPABASE_URL=https://test-project.supabase.co
-      - SUPABASE_SERVICE_ROLE_KEY=test-service-role-key
-      - JWT_SECRET=test-jwt-secret
-    depends_on:
-      - postgres-test
-      - redis-test
-    networks:
-      - qylon-test-network
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
 
 networks:
-  qylon-test-network:
+  qylon-network:
     driver: bridge

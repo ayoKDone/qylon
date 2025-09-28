@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install service dependencies
-        run: npm run install:services
-
       - name: Run ESLint
         run: npm run lint
 
@@ -45,16 +42,15 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Run SonarJS analysis
-        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
-        run: npx sonar-scanner
+        run: |
+          if [ -n "$SONAR_HOST_URL" ] && [ -n "$SONAR_TOKEN" ]; then
+            npx sonar-scanner
+          else
+            echo "⚠️ SonarQube analysis skipped - SONAR_HOST_URL and SONAR_TOKEN not configured"
+          fi
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        continue-on-error: true
-
-      - name: Skip SonarJS analysis (no credentials)
-        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
-        run: echo "Skipping SonarQube analysis - credentials not configured"
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # Security Analysis
   security-analysis:
@@ -72,9 +68,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install service dependencies
-        run: npm run install:services
 
       - name: Run npm audit
         run: npm audit --audit-level moderate
@@ -144,8 +137,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install service dependencies
-        run: npm run install:services
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
 
       - name: Setup test environment
         run: |
@@ -153,6 +148,11 @@ jobs:
           echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qylon_test" >> .env
           echo "REDIS_URL=redis://localhost:6379" >> .env
           echo "MONGODB_URL=mongodb://root:password@localhost:27017/qylon_test" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_NAME=qylon_test" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=postgres" >> .env
 
       - name: Run database migrations
         run: npm run db:migrate
@@ -166,42 +166,16 @@ jobs:
       - name: Generate coverage report
         run: npm run test:coverage
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
         with:
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true
+          name: coverage-reports
+          path: coverage/
 
   # End-to-End Tests
   e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: qylon_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      redis:
-        image: redis:7
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -215,27 +189,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install service dependencies
-        run: npm run install:services
-
-      - name: Setup environment
-        run: |
-          cp .env.example .env
-          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qylon_test" >> .env
-          echo "REDIS_URL=redis://localhost:6379" >> .env
-          npm run setup:env
-
-      - name: Build services
-        run: npm run build
-
       - name: Install Cypress
         run: npx cypress install
 
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Start services for E2E testing
         run: |
-          npm run docker:up
+          docker-compose -f docker-compose.test.yml up -d
           sleep 30
-          npm run health:check || echo "Services starting up..."
+
+      - name: Start API Gateway for E2E testing
+        run: |
+          cd services/api-gateway
+          npm install
+          npm run build
+          npm start &
+          sleep 10
 
       - name: Run E2E tests
         run: npm run test:e2e
@@ -249,51 +222,10 @@ jobs:
           name: cypress-results
           path: cypress/screenshots
 
-      - name: Stop services
-        if: always()
-        run: npm run docker:down
-
   # Performance Tests
   performance-tests:
     name: Performance Tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: qylon_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      redis:
-        image: redis:7
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
-      mongodb:
-        image: mongo:7
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: password
-        options: >-
-          --health-cmd "mongosh --eval 'db.runCommand(\"ping\").ok'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 27017:27017
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -307,20 +239,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install service dependencies
-        run: npm run install:services
-
-      - name: Setup environment
-        run: |
-          cp .env.example .env
-          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/qylon_test" >> .env
-          echo "REDIS_URL=redis://localhost:6379" >> .env
-          echo "MONGODB_URL=mongodb://root:password@localhost:27017/qylon_test" >> .env
-          npm run setup:env
-
-      - name: Build services
-        run: npm run build
-
       - name: Install K6
         run: |
           sudo gpg -k
@@ -329,14 +247,64 @@ jobs:
           sudo apt-get update
           sudo apt-get install k6
 
+      - name: Setup Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
       - name: Start services for performance testing
         run: |
-          npm run docker:up
+          echo "Starting services for performance testing..."
+
+          # Set required environment variables for CI
+          export SUPABASE_URL=http://localhost:54321
+          export SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+          export SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
+          export JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+          export DATABASE_URL=postgresql://postgres:password@localhost:5432/qylon_dev
+          export OPENAI_API_KEY=mock-openai-api-key
+          export RECALL_AI_API_KEY=mock-recall-ai-api-key
+          export RECALL_AI_BASE_URL=https://us-east-1.recall.ai
+          export ANTHROPIC_API_KEY=mock-anthropic-api-key
+          export SENDGRID_API_KEY=mock-sendgrid-api-key
+
+          # Start databases first
+          echo "Starting databases..."
+          docker-compose up -d postgres redis mongodb
+          sleep 15
+
+          # Start API Gateway only for performance testing
+          echo "Starting API Gateway..."
+          cd services/api-gateway
+          npm install
+          PORT=3000 npm run dev &
+          API_GATEWAY_PID=$!
+          cd ../..
+
+          # Wait for API Gateway to start
           sleep 30
-          npm run health:check || echo "Services starting up..."
+
+          # Verify API Gateway is running
+          echo "Checking API Gateway health..."
+          for i in {1..10}; do
+            echo "Health check attempt $i/10..."
+            if curl -f http://localhost:3000/health; then
+              echo "API Gateway is healthy"
+              break
+            else
+              echo "API Gateway health check failed, waiting 5 seconds..."
+              sleep 5
+            fi
+          done
+
+          # Store PID for cleanup
+          echo "API_GATEWAY_PID=$API_GATEWAY_PID" >> $GITHUB_ENV
 
       - name: Run load tests
-        run: npm run test:performance:load
+        run: |
+          export CI=true
+          export ENVIRONMENT=ci
+          npm run test:performance:load
 
       - name: Run stress tests
         run: npm run test:performance:stress
@@ -351,9 +319,15 @@ jobs:
           name: performance-results
           path: tests/performance/results/
 
-      - name: Stop services
+      - name: Cleanup services
         if: always()
-        run: npm run docker:down
+        run: |
+          echo "Cleaning up services..."
+          if [ ! -z "$API_GATEWAY_PID" ]; then
+            echo "Stopping API Gateway (PID: $API_GATEWAY_PID)"
+            kill $API_GATEWAY_PID || true
+          fi
+          docker-compose down || true
 
   # Code Coverage Analysis
   coverage-analysis:
@@ -373,11 +347,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install service dependencies
-        run: npm run install:services
-
       - name: Download coverage reports
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-reports
           path: coverage/
@@ -386,16 +357,15 @@ jobs:
         run: npm run test:coverage:html
 
       - name: Upload coverage to SonarQube
-        if: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_HOST_URL != '' }}
-        run: npm run sonar
+        run: |
+          if [ -n "$SONAR_HOST_URL" ] && [ -n "$SONAR_TOKEN" ]; then
+            npm run sonar
+          else
+            echo "⚠️ SonarQube analysis skipped - SONAR_HOST_URL and SONAR_TOKEN not configured"
+          fi
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        continue-on-error: true
-
-      - name: Skip SonarQube upload (no credentials)
-        if: ${{ secrets.SONAR_TOKEN == '' || secrets.SONAR_HOST_URL == '' }}
-        run: echo "Skipping SonarQube upload - credentials not configured"
 
   # Quality Gate
   quality-gate:

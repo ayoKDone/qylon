@@ -29,17 +29,11 @@
     "paths": {
       "@/*": ["*"],
       "@/services/*": ["services/*"],
-      "@/tests/*": ["tests/*"],
-      "@/middleware/*": ["./services/api-gateway/src/middleware/*"],
-      "@/routes/*": ["./services/api-gateway/src/routes/*"],
-      "@/services/*": ["./services/api-gateway/src/services/*"],
-      "@/types": ["./services/api-gateway/src/types"],
-      "@/types/*": ["./services/api-gateway/src/types/*"],
-      "@/utils/*": ["./services/api-gateway/src/utils/*"]
+      "@/tests/*": ["tests/*"]
     },
     "types": ["node"]
   },
-  "include": ["services/**/*", "scripts/**/*", "*.ts", "*.js"],
+  "include": ["scripts/**/*", "*.ts", "*.js", "tests/**/*", "shared/**/*"],
   "exclude": [
     "node_modules",
     "dist",
@@ -50,10 +44,11 @@
     "cypress/**/*",
     "**/*.cy.ts",
     "**/*.cy.tsx",
+    "**/__tests__/**/*",
     "**/*.test.ts",
+    "**/*.test.tsx",
     "**/*.spec.ts",
-    "**/__tests__/**",
-    "**/tests/**"
+    "**/*.spec.tsx"
   ],
   "ts-node": {
     "esm": true

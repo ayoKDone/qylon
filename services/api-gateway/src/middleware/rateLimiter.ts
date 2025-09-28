@@ -3,6 +3,19 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 
+// Extend Express Request interface to include rateLimit property
+declare module 'express-serve-static-core' {
+  interface Request {
+    rateLimit?: {
+      limit: number;
+      used: number;
+      remaining: number;
+      resetTime: Date | undefined;
+      key: string;
+    };
+  }
+}
+
 // Initialize Supabase client (optional for local development)
 let supabase: any = null;
 try {
@@ -84,7 +97,7 @@ const handler = async (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     retryAfter: Math.round(
       req.rateLimit?.resetTime
-        ? (req.rateLimit.resetTime - Date.now()) / 1000
+        ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000
         : 60
     ),
   });

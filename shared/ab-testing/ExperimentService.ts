@@ -350,7 +350,7 @@ export class ExperimentService {
     return {
       experimentId,
       name: experiment.name,
-      status: experiment.status,
+      status: experiment.status === 'draft' ? 'paused' : experiment.status,
       startDate: experiment.startDate,
       endDate: experiment.endDate,
       variants: variantReports,
@@ -479,7 +479,7 @@ export class ExperimentService {
       statisticalSignificance: analytics.some(a => a.statisticalSignificance),
       confidence: Math.max(...analytics.map(a => a.confidence)),
       duration,
-      status: experiment.status,
+      status: experiment.status === 'draft' ? 'paused' : experiment.status,
     };
   }
 

@@ -58,9 +58,9 @@ module.exports = {
   // Coverage thresholds - Realistic targets for current development phase
   coverageThreshold: {
     global: {
-      branches: 25,
-      functions: 55,
-      lines: 55,
+      branches: 30,
+      functions: 60,
+      lines: 60,
       statements: 55,
     },
   },
@@ -86,7 +86,8 @@ module.exports = {
     '^@shared/(.*)$': '<rootDir>/shared/$1',
     '^@services/(.*)$': '<rootDir>/services/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^../utils/test-helpers$': '<rootDir>/tests/utils/test-helpers',
-    '^../utils/test-helpers\\.ts$': '<rootDir>/tests/utils/test-helpers',
   },
+
+  // Transform ignore patterns - Allow transformation of specific node_modules
+  transformIgnorePatterns: ['node_modules/(?!(uuid|jsonwebtoken)/)'],
 };

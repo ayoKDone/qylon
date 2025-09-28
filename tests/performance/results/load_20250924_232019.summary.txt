@@ -1,0 +1,13 @@
+Performance Test Summary
+=======================
+Test Name: load
+Environment: ci
+Base URL: http://localhost:3000
+Timestamp: 20250924_232019
+Output Files:
+- JSON: tests/performance/results/load_20250924_232019.json
+- CSV: tests/performance/results/load_20250924_232019.csv
+
+To view detailed results, use:
+- K6 Cloud: Upload tests/performance/results/load_20250924_232019.json to K6 Cloud
+- Excel: Open tests/performance/results/load_20250924_232019.csv in Excel for analysis
