@@ -601,6 +601,7 @@ npm install
 # Set up environment variables
 cp env.example .env.local
 
+# Edit .env.local with your configuration (see below)
 # Start development server
 npm run dev
 ```
@@ -613,6 +614,80 @@ The frontend will be available at `http://localhost:3002`
 - **npm** or **yarn**
 - **Git** for version control
 - **IDE** with TypeScript support (VS Code recommended)
+
+#### 🔧 Frontend Environment Configuration
+
+**Required Environment Variables:**
+
+```bash
+# .env.local - MINIMUM REQUIRED CONFIGURATION
+VITE_API_BASE_URL=http://localhost:3000
+VITE_API_GATEWAY_URL=http://localhost:3000
+VITE_SUPABASE_URL=https://your-project-id.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key-here
+```
+
+**Optional Environment Variables:**
+
+```bash
+# .env.local - OPTIONAL CONFIGURATION
+VITE_OPENAI_API_KEY=sk-your-openai-api-key-here
+VITE_ZOOM_CLIENT_ID=your-zoom-client-id
+VITE_GOOGLE_CLIENT_ID=your-google-client-id
+VITE_ENABLE_DEBUG_MODE=true
+VITE_ENABLE_DEV_TOOLS=true
+```
+
+#### 🪟 Windows Developer Setup
+
+For Windows developers, we provide detailed setup instructions:
+
+```powershell
+# Install Chocolatey (run as Administrator)
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install required software
+choco install nodejs python git vscode -y
+
+# Verify installations
+node --version    # Should be >= 20.0.0
+python --version  # Should be >= 3.11
+git --version
+```
+
+#### 📚 Comprehensive Frontend Guides
+
+For detailed frontend setup instructions, including Windows-specific troubleshooting, see:
+
+- **`FRONTEND_DEVELOPER_SETUP.md`** - Complete setup guide for frontend developers
+- **`FRONTEND_SETUP_SUMMARY.md`** - Quick reference and troubleshooting guide
+- **`frontend/README.md`** - Frontend-specific documentation
+- **`frontend/DEVELOPMENT.md`** - Development workflow and best practices
+
+#### 🚀 Automated Setup Scripts
+
+We provide automated setup scripts for all platforms:
+
+**Windows:**
+
+```powershell
+# Run from Qylon root directory
+.\scripts\setup-frontend-windows.ps1
+```
+
+**Linux/macOS:**
+
+```bash
+# Run from Qylon root directory
+./scripts/setup-frontend.sh
+```
+
+**Verification:**
+
+```bash
+# Verify your setup is working
+./scripts/verify-frontend-setup.sh
+```
 
 #### 🏗️ Frontend Architecture
 
