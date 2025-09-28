@@ -656,6 +656,7 @@ git --version
 ```
 
 **Having Windows setup issues?** See our comprehensive troubleshooting guide:
+
 - **`WINDOWS_SETUP_TROUBLESHOOTING.md`** - Quick fixes for common Windows issues
 
 #### 📚 Comprehensive Frontend Guides

@@ -9,6 +9,7 @@
 **Error:** `execution of scripts is disabled on this system`
 
 **Solution:**
+
 ```powershell
 # Run PowerShell as Administrator
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
@@ -22,6 +23,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 **Error:** `'node' is not recognized as an internal or external command`
 
 **Solution:**
+
 ```powershell
 # Check if Node.js is installed
 node --version
@@ -38,6 +40,7 @@ $env:PATH += ";C:\Program Files\nodejs"
 **Error:** Various npm installation errors
 
 **Solution:**
+
 ```powershell
 # Clear npm cache
 npm cache clean --force
@@ -57,6 +60,7 @@ npm install --registry https://registry.npmjs.org/
 **Error:** `Error: listen EADDRINUSE: address already in use :::3002`
 
 **Solution:**
+
 ```powershell
 # Find process using port 3002
 netstat -ano | findstr :3002
@@ -73,6 +77,7 @@ npm run dev -- --port 3003
 **Error:** `Path too long` or similar errors
 
 **Solution:**
+
 ```powershell
 # Enable long path support (Windows 10+)
 # Run as Administrator
@@ -86,6 +91,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name
 **Error:** `'git' is not recognized as an internal or external command`
 
 **Solution:**
+
 ```powershell
 # Install Git using Chocolatey
 choco install git -y
@@ -99,6 +105,7 @@ choco install git -y
 **Error:** `'python' is not recognized as an internal or external command`
 
 **Solution:**
+
 ```powershell
 # Install Python using Chocolatey
 choco install python -y
@@ -182,6 +189,7 @@ npm run dev
 ## 🔍 Verification Steps
 
 ### Check Prerequisites
+
 ```powershell
 # Check Node.js
 node --version    # Should be >= 20.0.0
@@ -197,6 +205,7 @@ python --version  # Should be >= 3.11
 ```
 
 ### Check Frontend Setup
+
 ```powershell
 # Navigate to frontend directory
 cd frontend
@@ -217,6 +226,7 @@ npm run dev
 ## 🐛 Advanced Troubleshooting
 
 ### Clear All Caches
+
 ```powershell
 # Clear npm cache
 npm cache clean --force
@@ -229,6 +239,7 @@ del /q /f /s %temp%\*
 ```
 
 ### Reset Node.js Installation
+
 ```powershell
 # Uninstall Node.js
 # Go to Control Panel > Programs > Uninstall Node.js
@@ -241,6 +252,7 @@ npm cache clean --force
 ```
 
 ### Fix PATH Issues
+
 ```powershell
 # Check current PATH
 echo $env:PATH
@@ -256,6 +268,7 @@ $env:PATH += ";C:\Users\$env:USERNAME\AppData\Local\Programs\Python\Python311"
 ```
 
 ### Network Issues
+
 ```powershell
 # If npm install fails due to network issues
 npm config set registry https://registry.npmjs.org/
