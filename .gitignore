@@ -168,6 +168,13 @@ docs/
 !DEVELOPMENT_STATUS.md
 !AI_DEVELOPMENT_GUIDE.md
 
+# Frontend Documentation - Keep local only
+FRONTEND_DEVELOPER_SETUP.md
+FRONTEND_SETUP_SUMMARY.md
+WINDOWS_SETUP_TROUBLESHOOTING.md
+FRONTEND_DEVELOPERS_READY.md
+FRONTEND_TEAM_READY.md
+
 # Test files and scripts - Keep local only
 # tests/
 !tests/
