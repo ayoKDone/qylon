@@ -8,7 +8,7 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' 'tests/**/*.ts' --fix",
-    "format": "prettier 'src/**/*.ts' 'tests/**/*.ts' --write"
+    "format": "prettier '**/*.{ts,js,json,css,md}' --write"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.58.0",

@@ -68,14 +68,4 @@ describe('Auth Routes (Supabase)', () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('message', 'Protected content');
   });
-
-  // LOGOUT
-  // it('should logout user', async () => {
-  //   const res = await request(app)
-  //     .post('/auth/logout')
-  //     .set('Authorization', `Bearer ${supabaseSession}`);
-
-  //   expect(res.status).toBe(200);
-  //   expect(res.body).toHaveProperty('message', 'Logged out successfully');
-  // });
 });
