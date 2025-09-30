@@ -8,4 +8,4 @@ const __dirname = path.dirname(__filename);
 
 // Point to the root .env
 const envPath = path.resolve(__dirname, '../../../.env'); // adjust if needed
-const result = dotenv.config({ path: envPath });
+dotenv.config({ path: envPath });
