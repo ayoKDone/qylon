@@ -16,6 +16,7 @@ import Hero from "./components/Hero";
 import HowItWorks from "./components/HowItWorks";
 import ProblemsVsSolutions from "./components/ProblemsVsSolutions";
 import ROI from "./components/ROI";
+import GetStarted from "./components/GetStarted";
 
 // New placeholder imports (to be implemented)
 import Login from "@/components/auth/Login";
@@ -49,6 +50,7 @@ const AppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/get-started" element={<GetStarted />} />
 
         {/* Landing page */}
         <Route
