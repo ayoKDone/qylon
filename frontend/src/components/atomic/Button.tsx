@@ -4,7 +4,13 @@ interface ButtonProps {
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: 'button' | 'submit' | 'reset';
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'outline' | 'ghost';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'danger'
+    | 'success'
+    | 'outline'
+    | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
@@ -27,15 +33,22 @@ const Button: React.FC<ButtonProps> = ({
   iconPosition = 'left',
   className = '',
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const baseStyles =
+    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const variantStyles = {
-    primary: 'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:from-[#5558E3] hover:to-[#7C4DE7] focus:ring-[#6366F1] disabled:from-gray-300 disabled:to-gray-400 shadow-md hover:shadow-lg',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 disabled:bg-gray-300',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
-    success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 disabled:bg-green-300',
-    outline: 'bg-transparent border-2 border-[#6366F1] text-[#6366F1] hover:bg-gradient-to-r hover:from-[#6366F1] hover:to-[#8B5CF6] hover:text-white hover:border-transparent focus:ring-[#6366F1] disabled:border-gray-300 disabled:text-gray-300',
-    ghost: 'bg-transparent text-[#6366F1] hover:bg-gradient-to-r hover:from-[#6366F1]/10 hover:to-[#8B5CF6]/10 focus:ring-[#6366F1] disabled:text-gray-300',
+    primary:
+      'bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] text-white hover:from-[#5558E3] hover:to-[#7C4DE7] focus:ring-[#6366F1] disabled:from-gray-300 disabled:to-gray-400 shadow-md hover:shadow-lg',
+    secondary:
+      'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 disabled:bg-gray-300',
+    danger:
+      'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
+    success:
+      'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 disabled:bg-green-300',
+    outline:
+      'bg-transparent border-2 border-[#6366F1] text-[#6366F1] hover:bg-gradient-to-r hover:from-[#6366F1] hover:to-[#8B5CF6] hover:text-white hover:border-transparent focus:ring-[#6366F1] disabled:border-gray-300 disabled:text-gray-300',
+    ghost:
+      'bg-transparent text-[#6366F1] hover:bg-gradient-to-r hover:from-[#6366F1]/10 hover:to-[#8B5CF6]/10 focus:ring-[#6366F1] disabled:text-gray-300',
   };
 
   const sizeStyles = {

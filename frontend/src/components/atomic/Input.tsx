@@ -28,12 +28,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const baseStyles = 'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
+    const baseStyles =
+      'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
 
     const variantStyles = {
-      default: 'border border-gray-300 bg-white focus:ring-[#6366F1] focus:border-[#6366F1]',
+      default:
+        'border border-gray-300 bg-white focus:ring-[#6366F1] focus:border-[#6366F1]',
       filled: 'border-0 bg-gray-100 focus:ring-[#6366F1] focus:bg-white',
-      outlined: 'border-2 border-gray-300 bg-transparent focus:ring-[#6366F1] focus:border-[#6366F1]',
+      outlined:
+        'border-2 border-gray-300 bg-transparent focus:ring-[#6366F1] focus:border-[#6366F1]',
     };
 
     const sizeStyles = {
@@ -91,9 +94,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
+        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
 
         {helperText && !error && (
           <p className="mt-1 text-sm text-gray-500">{helperText}</p>
