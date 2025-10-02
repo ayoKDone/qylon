@@ -1,9 +1,8 @@
 import { useState } from "react"
-import { SocialLogin } from "../UI/SocialLogin"
-import { Divider } from "../UI/Divider"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useForm } from "react-hook-form"
-import { FaSpinner } from "react-icons/fa"
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa"
+import { Divider } from "../UI/Divider"
+import { SocialLogin } from "../UI/SocialLogin"
 
 type LoginFormInputs = {
   email: string
@@ -82,9 +81,12 @@ export default function Login() {
 
         {/* Remember + Forgot */}
         <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-font-sz-small">
-          <label className="xui-d-flex xui-font-sz-small xui-flex-ai-center">
-            <input type="checkbox" /> Remember me
-          </label>
+          <div className="xui-d-inline-flex xui-font-sz-small xui-flex-ai-center">
+            <div className="xui-d-inline-flex">
+              <input className="xui-form-input" type="checkbox" />
+            </div>
+            <span className="">Remember me</span>
+          </div>
           <a href="/forgot-password" className="text-purple-600 underline">
             Forgot password?
           </a>
