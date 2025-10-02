@@ -8,7 +8,11 @@ type AuthLayoutProps = {
   currentStep?: number;
 };
 
-export function AuthLayout({ children, steps, currentStep = 0 }: AuthLayoutProps) {
+export function AuthLayout({
+  children,
+  steps,
+  currentStep = 0,
+}: AuthLayoutProps) {
   return (
     <div className='flex min-h-screen'>
       {/* Sidebar */}
@@ -32,7 +36,7 @@ export function AuthLayout({ children, steps, currentStep = 0 }: AuthLayoutProps
               <p className='text-xs text-gray-500 mb-2'>Progress</p>
               <div className='w-full bg-gray-200 rounded-full h-2'>
                 <div
-                  className='bg-purple-600 h-2 rounded-full transition-all'
+                  className="bg-purple-600 h-2 rounded-full transition-all"
                   style={{
                     width: `${((currentStep + 1) / steps.length) * 100}%`,
                   }}

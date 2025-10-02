@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -76,7 +77,6 @@ export default function Signup() {
               />
               {errors.email && <span className='message'>{errors.email.message}</span>}
             </div>
-
             {/* Password */}
             <div className='xui-form-box' xui-error={errors.password ? 'true' : 'false'}>
               <label>Password</label>

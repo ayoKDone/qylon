@@ -1,12 +1,12 @@
 // src/components/dashboard/layout/Navigator.tsx
-import { FaRegCircleCheck } from 'react-icons/fa6';
 import { FiActivity, FiBarChart2, FiSettings } from 'react-icons/fi';
-import { GoWorkflow } from 'react-icons/go';
 import { GrHistory } from 'react-icons/gr';
-import { HiOutlineLink } from 'react-icons/hi';
+import { FaRegCircleCheck } from 'react-icons/fa6';
+import { Link, useLocation } from 'react-router-dom';
+import { GoWorkflow } from 'react-icons/go';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { LuBuilding2 } from 'react-icons/lu';
-import { Link, useLocation } from 'react-router-dom';
+import { HiOutlineLink } from 'react-icons/hi';
 import RecordingStatus from './RecordingStatus';
 
 export default function Navigator() {
@@ -30,10 +30,10 @@ export default function Navigator() {
       icon: <FaRegCircleCheck />,
     },
     { to: '/dashboard/analytics', label: 'Analytics', icon: <FiBarChart2 /> },
-    { to: '/dashboard/team', label: 'Workflow', icon: <GoWorkflow /> },
-    { to: '/dashboard/clients', label: 'Clients', icon: <LuBuilding2 /> },
+    { to: '/dashboard/workflow', label: 'Workflow', icon: <GoWorkflow /> },
+    { to: '/dashboard/contents', label: 'Contents', icon: <LuBuilding2 /> },
     {
-      to: '/dashboard/calendar',
+      to: '/dashboard/integration',
       label: 'Integration',
       icon: <HiOutlineLink />,
     },
@@ -41,16 +41,16 @@ export default function Navigator() {
   ];
 
   return (
-    <div className='navigator'>
-      <div className='brand'>
+    <div className="navigator">
+      <div className="brand">
         <img
-          src='/src/assets/images/qylon-logo.png'
-          alt='Qylon Logo'
-          className='xui-img-100 xui-h-auto'
+          src="/src/assets/images/qylon-logo.png"
+          alt="Qylon Logo"
+          className="xui-img-100 xui-h-auto"
         />
       </div>
 
-      <div className='links'>
+      <div className="links">
         {links.map(({ to, label, icon }) => {
           const isActive = location.pathname === to;
           return (
@@ -63,13 +63,13 @@ export default function Navigator() {
                   : 'text-gray-600'
               }`}
             >
-              <div className='icon text-lg'>{icon}</div>
-              <span className='text'>{label}</span>
+              <div className="icon text-lg">{icon}</div>
+              <span className="text">{label}</span>
             </Link>
           );
         })}
         {/* Recording Card Below */}
-        <div className='bottom-fixed'>
+        <div className="bottom-fixed">
           <RecordingStatus />
         </div>
       </div>

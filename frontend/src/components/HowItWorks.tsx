@@ -1,6 +1,6 @@
 import React from 'react';
 import { Play, Cpu, FolderSync as Sync, CheckCircle } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import  { useTheme } from '../contexts/ThemeContext';
 
 const HowItWorks: React.FC = () => {
   const { isDark } = useTheme();

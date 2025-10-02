@@ -1,6 +1,6 @@
 import { Download, Mail, TrendingUp, Users } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import useTheme from '../contexts/useTheme';
 import { WaitlistEntry, supabase } from '../lib/supabase';
 
 const AdminDashboard: React.FC = () => {

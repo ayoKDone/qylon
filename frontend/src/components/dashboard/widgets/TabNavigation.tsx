@@ -14,7 +14,11 @@ interface TabNavigationProps {
   onTabChange?: (tabId: string) => void;
 }
 
-export default function TabNavigation({ tabs, defaultTab, onTabChange }: TabNavigationProps) {
+export default function TabNavigation({
+  tabs,
+  defaultTab,
+  onTabChange,
+}: TabNavigationProps) {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id);
 
   const handleTabClick = (tabId: string) => {
@@ -23,7 +27,7 @@ export default function TabNavigation({ tabs, defaultTab, onTabChange }: TabNavi
   };
 
   return (
-    <div className='xui-d-flex xui-flex-ai-center gap-2'>
+    <div className="xui-d-flex xui-flex-ai-center gap-2">
       {tabs.map(tab => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -38,7 +42,7 @@ export default function TabNavigation({ tabs, defaultTab, onTabChange }: TabNavi
                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg'
             }`}
           >
-            <Icon className='w-5 h-5' />
+            <Icon className="w-5 h-5" />
             {tab.label}
           </button>
         );

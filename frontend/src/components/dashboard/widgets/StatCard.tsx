@@ -46,22 +46,22 @@ export default function StatCard({
         isUpdating ? 'ring-2 ring-blue-400 ' : ''
       }`}
     >
-      <div className='xui-d-flex xui-flex-ai-flex-end xui-flex-jc-space-between mb-4'>
+      <div className="xui-d-flex xui-flex-ai-flex-end xui-flex-jc-space-between mb-4">
         <div className={`${isAnimating ? 'animate-pulse' : ''}`}>
           <Icon className={`w-8 h-8 ${iconColor}`} />
         </div>
         {trendIcon && (
           <svg
-            className='w-5 h-5 text-green-500 animate-bounce'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke='currentColor'
+            className="w-5 h-5 text-green-500 animate-bounce"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
             <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
+              strokeLinecap="round"
+              strokeLinejoin="round"
               strokeWidth={2}
-              d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
             />
           </svg>
         )}
@@ -74,7 +74,7 @@ export default function StatCard({
       >
         {displayValue}
       </div>
-      <div className='text-sm text-gray-600 mb-2'>{label}</div>
+      <div className="text-sm text-gray-600 mb-2">{label}</div>
       <div className={`text-xs font-medium ${subtitleColor}`}>{subtitle}</div>
     </div>
   );

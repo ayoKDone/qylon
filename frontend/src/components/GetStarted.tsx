@@ -25,7 +25,6 @@ export default function GetStarted() {
             <MdRocketLaunch className='text-white mt-1' />
             Get Started Free
           </button>
-
           <p className='text-sm text-gray-500 mt-4'>
             Already have an account?{' '}
             <a href='/login' className='text-purple-600 font-medium'>

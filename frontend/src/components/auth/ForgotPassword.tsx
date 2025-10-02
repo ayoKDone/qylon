@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 import { supabase } from '../../lib/supabase';
 import type { ForgotPasswordInputs } from '../../types/auth';
-
 export default function ForgotPassword() {
   const {
     register,
@@ -54,7 +53,6 @@ export default function ForgotPassword() {
           <p className='xui-font-sz-small text-gray-500 mb-6'>
             Enter your email and we’ll send you a reset link
           </p>
-
           {/* Email */}
           <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
             <label>Email</label>
