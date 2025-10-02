@@ -26,6 +26,10 @@ import ResetPassword from "@/components/auth/ResetPassword";
 import ProfileSetup from "@/components/auth/ProfileSetup";
 import ProtectedRoute from "@/components/layouts/ProtectedRoute";
 
+// Dashboard imports
+import DashboardPage from "@/pages/Dashboard";
+
+
 const AppContent: React.FC = () => {
   const { isDark } = useTheme();
 
@@ -76,6 +80,9 @@ const AppContent: React.FC = () => {
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
+        {/* Dashboard routes */}
+        <Route path="/dashboard/*" element={<DashboardPage />} />
       </Routes>
     </Router>
   );
