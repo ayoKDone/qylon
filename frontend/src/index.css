@@ -136,3 +136,15 @@
   background: rgba(139, 92, 246, 0.3);
   color: white;
 }
+
+.xui-dashboard .navigator .links .link-box:hover {
+    background-color: transparent;
+    border-color: var(--gray-300);
+    border-width: 1px;
+    border-radius: 10px;
+}
+
+.xui-dashboard .navigator .links .link-box{
+    color: var(--black);
+    border-radius: 10px;
+}
