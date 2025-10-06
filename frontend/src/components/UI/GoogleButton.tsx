@@ -41,7 +41,7 @@ export function GoogleButton() {
         39.205,44,34,44,24C44,22.659,43.862,
         21.35,43.611,20.083z"></path>
       </svg>
-      Continue with Google
+      <span className="xui-font-sz-[14px]">Log in with Google</span>
     </button>
   )
 }

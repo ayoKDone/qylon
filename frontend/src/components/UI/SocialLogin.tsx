@@ -5,7 +5,7 @@ import { GoogleButton } from "./GoogleButton"
 export function SocialLogin() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="xui-d-grid xui-grid-col-2 xui-grid-gap-1">
         <GoogleButton />
 
         <button
@@ -18,7 +18,7 @@ export function SocialLogin() {
             <path fill="#ffc107" d="M26 26H42V42H26z"></path>
             <path fill="#03a9f4" d="M6 26H22V42H6z"></path>
           </svg>
-          Continue with Microsoft
+          <span className="xui-font-sz-[14px]">Log in with Microsoft</span>
         </button>
       </div>
     </GoogleOAuthProvider>

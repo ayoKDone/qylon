@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useForm } from "react-hook-form"
-import { FaSpinner } from "react-icons/fa"
+import { FaEye, FaEyeSlash, FaSpinner } from "react-icons/fa"
 
 type ResetPasswordInputs = {
   newPassword: string
@@ -25,7 +24,17 @@ export default function ResetPassword() {
   }
 
   return (
-    <div className="flex-1 xui-flex-ai-center xui-flex-jc-center p-12">
+    <>
+    <nav className="xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
+      <img src="/static/images/logo-full.png" alt="Qylon Logo" className="xui-img-100" width={118} height={45} />
+      <p className="text-sm text-gray-500">
+        Don’t have an account?{" "}
+        <a href="/signup" className="text-purple-600 font-medium xui-text-dc-underline">
+          Create one
+        </a>
+      </p>
+    </nav>
+    <div className="flex-1 xui-flex-ai-center xui-flex-jc-center xui-py-2 xui-md-py-4">
       <form className="xui-form xui-max-w-500 xui-mx-auto" onSubmit={handleSubmit(onSubmit)}>
         <h2 className="xui-font-sz-x-large font-bold mb-2">Set a new password</h2>
         <p className="xui-font-sz-small text-gray-500 mb-6">
@@ -90,13 +99,7 @@ export default function ResetPassword() {
           {isSubmitting ? <FaSpinner className="animate-spin h-6 w-6" /> : "Reset Password"}
         </button>
       </form>
-
-      <p className="text-sm text-gray-500 mt-4 text-center">
-        Remember your password?{" "}
-        <a href="/login" className="text-purple-600 font-medium">
-          Sign in
-        </a>
-      </p>
     </div>
+    </>
   )
 }

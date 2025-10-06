@@ -18,9 +18,19 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="flex-1 xui-flex-ai-center xui-flex-jc-center p-12">
+    <>
+    <nav className="xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
+      <img src="/static/images/logo-full.png" alt="Qylon Logo" className="xui-img-100" width={118} height={45} />
+      <p className="text-sm text-gray-500">
+        Don’t have an account?{" "}
+        <a href="/signup" className="text-purple-600 font-medium xui-text-dc-underline">
+          Create one
+        </a>
+      </p>
+    </nav>
+    <div className="flex-1 xui-flex-ai-center xui-flex-jc-center xui-py-2 xui-md-py-4">
       <form className="xui-form xui-max-w-500 xui-mx-auto" onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="xui-font-sz-x-large font-bold mb-2">Reset your password</h2>
+        <h2 className="xui-font-sz-x-large font-bold mb-2">Forgot password?</h2>
         <p className="xui-font-sz-small text-gray-500 mb-6">
           Enter your email and we’ll send you a reset link
         </p>
@@ -60,5 +70,6 @@ export default function ForgotPassword() {
         </a>
       </p>
     </div>
+    </>
   )
 }
