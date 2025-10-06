@@ -1,7 +1,12 @@
 // src/pages/DashboardOverview.tsx
+import { Download, Headphones, Monitor, Plus, Smartphone, Upload } from "lucide-react";
 import { useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Headphones, MessageSquare, Smartphone } from "lucide-react";
+import AIProcessingLive from "../widgets/AIProcessingLive";
+import type { Action } from "../widgets/QuickActions";
+import QuickActions from "../widgets/QuickActions";
+import RecentActivity from "../widgets/RecentActivity";
+import StatsGrid from "../widgets/StatsGrid";
 import StatsHeader from "../widgets/StatsHeader";
 
 type NavbarContext = {
@@ -10,6 +15,27 @@ type NavbarContext = {
 export default function DashboardOverview() {
     const { setNavbar } = useOutletContext<NavbarContext>();
 
+    const dashboardActions: Action[] = [
+        {
+            icon: Plus,
+            label: "New Meeting",
+            iconColor: "text-blue-500",
+            onClick: () => console.log("New Meeting clicked"),
+        },
+        {
+            icon: Upload,
+            label: "Upload Audio",
+            iconColor: "text-teal-500",
+            onClick: () => console.log("Upload Audio clicked"),
+        },
+        {
+            icon: Download,
+            label: "Export Tasks",
+            iconColor: "text-amber-500",
+            onClick: () => console.log("Export Tasks clicked"),
+        },
+    ];
+
     useEffect(() => {
         setNavbar({
             title: "Good afternoon, Esther",
@@ -17,19 +43,40 @@ export default function DashboardOverview() {
         });
     }, [setNavbar]);
     return (
-        <div>
-            <StatsHeader 
-            title="AI Command Center" 
-                rightContent={
-                    <>
-                    <MessageSquare className="w-5 h-5 text-gray-600" />
-                    <Smartphone className="w-5 h-5 text-gray-600" />
-                    <Headphones className="w-5 h-5 text-gray-600" />
-                    </>
-                }
-            >
-                <p className="text-gray-600">Monitor and manage all your AI interactions in one place.</p>
-            </StatsHeader>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-8">
+                <StatsHeader
+                    title="AI Command Center"
+                    rightContent={
+                        <div className="flex items-center gap-3">
+                            <Monitor className="w-5 h-5 text-gray-600" />
+                            <Smartphone className="w-5 h-5 text-gray-600" />
+                            <Headphones className="w-5 h-5 text-gray-600" />
+                        </div>
+                    }
+                >
+                    <div className="mb-8">
+                        <AIProcessingLive />
+                    </div>
+                    <div>
+                        <StatsGrid />
+                    </div>
+                </StatsHeader>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col gap-4">
+                <StatsHeader
+                    title="Quick Actions"
+                >
+                    <QuickActions actions={dashboardActions} />
+                </StatsHeader>
+                <StatsHeader
+                    title="Recent Activity"
+                >
+                    {/* Recent activity content goes here */}
+                    <RecentActivity />
+                </StatsHeader>
+            </div>
         </div>
     );
 }
