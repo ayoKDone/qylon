@@ -189,8 +189,9 @@ jobs:
           sleep 30
 
           # Start API Gateway and Integration Management for performance testing
+          # Use the CI-specific services compose file to avoid port conflicts
           export JWT_SECRET=ci-test-jwt-secret-key-for-testing-only
-          docker-compose up -d api-gateway integration-management
+          docker-compose -f docker-compose.ci-services.yml up -d
           sleep 30
 
       - name: Run performance tests
