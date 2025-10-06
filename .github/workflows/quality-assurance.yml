@@ -145,10 +145,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install PostgreSQL client
+      - name: Install PostgreSQL and Redis clients
         run: |
           sudo apt-get update
-          sudo apt-get install -y postgresql-client
+          sudo apt-get install -y postgresql-client redis-tools
 
       - name: Setup test environment
         run: |
