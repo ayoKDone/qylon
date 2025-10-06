@@ -203,11 +203,13 @@ jobs:
       - name: Setup Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
+          sudo apt-get install -y curl
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Start services for E2E testing
         run: |
-          docker compose -f docker-compose.test.yml up -d
+          docker-compose -f docker-compose.test.yml up -d
           sleep 30
 
       - name: Start API Gateway for E2E testing
@@ -258,7 +260,9 @@ jobs:
       - name: Setup Docker
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose-plugin
+          sudo apt-get install -y curl
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
 
       - name: Start services for performance testing
         run: |
@@ -278,7 +282,7 @@ jobs:
 
           # Start databases first
           echo "Starting databases..."
-          docker compose up -d postgres redis mongodb
+          docker-compose up -d postgres redis mongodb
           sleep 15
 
           # Start API Gateway only for performance testing
@@ -335,7 +339,7 @@ jobs:
             echo "Stopping API Gateway (PID: $API_GATEWAY_PID)"
             kill $API_GATEWAY_PID || true
           fi
-          docker compose down || true
+          docker-compose down || true
 
   # Code Coverage Analysis
   coverage-analysis:
