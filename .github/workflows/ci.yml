@@ -175,15 +175,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install k6
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin
+
       - name: Start services for performance testing
         run: |
           # Start databases first
-          docker-compose -f docker-compose.test.yml up -d
+          docker compose -f docker-compose.test.yml up -d
           sleep 30
 
           # Start API Gateway and Integration Management for performance testing
           export JWT_SECRET=ci-test-jwt-secret-key-for-testing-only
-          docker-compose up -d api-gateway integration-management
+          docker compose up -d api-gateway integration-management
           sleep 30
 
       - name: Run performance tests
