@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database - using different ports to avoid conflicts with GitHub Actions services
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: qylon_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '15432:5432'  # Use port 15432 instead of 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qylon-network
+
+  # Redis Cache - using different ports to avoid conflicts with GitHub Actions services
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '16379:6379'  # Use port 16379 instead of 6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - qylon-network
+
+  # MongoDB for Analytics - using different ports to avoid conflicts with GitHub Actions services
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - '17017:27017'  # Use port 17017 instead of 27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - qylon-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+
+networks:
+  qylon-network:
+    driver: bridge

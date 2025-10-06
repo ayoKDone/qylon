@@ -184,8 +184,8 @@ jobs:
 
       - name: Start services for performance testing
         run: |
-          # Start databases first
-          docker-compose -f docker-compose.test.yml up -d
+          # Start databases first with different ports to avoid conflicts with GitHub Actions services
+          docker-compose -f docker-compose.ci.yml up -d
           sleep 30
 
           # Start API Gateway and Integration Management for performance testing
