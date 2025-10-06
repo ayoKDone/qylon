@@ -8,6 +8,14 @@ on:
   schedule:
     - cron: '0 2 * * *' # Daily at 2 AM
 
+# Set permissions for the entire workflow
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: write
+  checks: write
+
 env:
   NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
