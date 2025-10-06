@@ -82,38 +82,41 @@ cd frontend && npm run dev
 <details>
   <summary><b>Linux (Ubuntu/Debian)</b></summary>
 
-  ```bash
-  # Automated installation
-  sudo bash install-docker.sh
+```bash
+# Automated installation
+sudo bash install-docker.sh
 
-  # Or manual installation
-  wget -O get-docker.sh https://get.docker.com
-  sudo sh get-docker.sh
-  sudo systemctl start docker
-  sudo systemctl enable docker
-  sudo usermod -aG docker $USER
-  # Log out and back in for group changes to take effect
-  ```
+# Or manual installation
+wget -O get-docker.sh https://get.docker.com
+sudo sh get-docker.sh
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+# Log out and back in for group changes to take effect
+```
+
 </details>
 
 <details>
   <summary><b>macOS</b></summary>
 
-  ```bash
-  # Install Docker Desktop from https://www.docker.com/products/docker-desktop
-  # Or via Homebrew
-  brew install --cask docker
-  ```
+```bash
+# Install Docker Desktop from https://www.docker.com/products/docker-desktop
+# Or via Homebrew
+brew install --cask docker
+```
+
 </details>
 
 <details>
   <summary><b>Windows</b></summary>
 
-  ```powershell
-  # Install Docker Desktop from https://www.docker.com/products/docker-desktop
-  # Or via Chocolatey
-  choco install docker-desktop
-  ```
+```powershell
+# Install Docker Desktop from https://www.docker.com/products/docker-desktop
+# Or via Chocolatey
+choco install docker-desktop
+```
+
 </details>
 
 ### Install Supabase CLI
@@ -121,54 +124,57 @@ cd frontend && npm run dev
 <details>
   <summary><b>Linux</b></summary>
 
-  ```bash
-  # Download binary directly (recommended)
-  wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz
-  tar -xzf supabase_linux_amd64.tar.gz
-  chmod +x supabase
-  sudo mv supabase /usr/local/bin/
+```bash
+# Download binary directly (recommended)
+wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz
+tar -xzf supabase_linux_amd64.tar.gz
+chmod +x supabase
+sudo mv supabase /usr/local/bin/
 
-  # Or via package manager
-  # Ubuntu/Debian
-  wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.deb
-  sudo dpkg -i supabase_linux_amd64.deb
+# Or via package manager
+# Ubuntu/Debian
+wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.deb
+sudo dpkg -i supabase_linux_amd64.deb
 
-  # Or via Homebrew (if installed)
-  brew install supabase/tap/supabase
-  ```
+# Or via Homebrew (if installed)
+brew install supabase/tap/supabase
+```
+
 </details>
 
 <details>
   <summary><b>macOS</b></summary>
 
-  ```bash
-  # Via Homebrew (recommended)
-  brew install supabase/tap/supabase
+```bash
+# Via Homebrew (recommended)
+brew install supabase/tap/supabase
 
-  # Or download binary
-  wget https://github.com/supabase/cli/releases/latest/download/supabase_darwin_amd64.tar.gz
-  tar -xzf supabase_darwin_amd64.tar.gz
-  chmod +x supabase
-  sudo mv supabase /usr/local/bin/
-  ```
+# Or download binary
+wget https://github.com/supabase/cli/releases/latest/download/supabase_darwin_amd64.tar.gz
+tar -xzf supabase_darwin_amd64.tar.gz
+chmod +x supabase
+sudo mv supabase /usr/local/bin/
+```
+
 </details>
 
 <details>
   <summary><b>Windows</b></summary>
 
-  ```powershell
-  # Via Scoop (recommended)
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
+```powershell
+# Via Scoop (recommended)
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
 
-  # Or via Chocolatey
-  choco install supabase
+# Or via Chocolatey
+choco install supabase
 
-  # Or download binary
-  Invoke-WebRequest -Uri "https://github.com/supabase/cli/releases/latest/download/supabase_windows_amd64.zip" -OutFile "supabase.zip"
-  Expand-Archive -Path "supabase.zip" -DestinationPath "C:\supabase"
-  # Add C:\supabase to your PATH
-  ```
+# Or download binary
+Invoke-WebRequest -Uri "https://github.com/supabase/cli/releases/latest/download/supabase_windows_amd64.zip" -OutFile "supabase.zip"
+Expand-Archive -Path "supabase.zip" -DestinationPath "C:\supabase"
+# Add C:\supabase to your PATH
+```
+
 </details>
 
 ### Start Supabase Local Development
@@ -199,6 +205,7 @@ supabase migration up
 ## 🌐 Service URLs
 
 ### Development Services
+
 - **Frontend**: http://localhost:3002
 - **API Gateway**: http://localhost:3000
 - **Security Service**: http://localhost:3001
@@ -209,6 +216,7 @@ supabase migration up
 - **Notification Service**: http://localhost:3007
 
 ### Supabase Services (Local)
+
 - **Supabase Studio**: http://localhost:54323
 - **API Gateway**: http://localhost:54321
 - **PostgreSQL**: localhost:54322
