@@ -6,6 +6,14 @@ on:
   pull_request:
     branches: [main, develop]
 
+# Set permissions for the entire workflow
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: write
+  checks: write
+
 env:
   NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
@@ -108,6 +116,11 @@ jobs:
           chmod +x scripts/ci-setup.sh
           source scripts/ci-setup.sh
 
+      - name: Install Redis client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-tools
+
       - name: Wait for services to be ready
         run: |
           echo "Waiting for PostgreSQL to be ready..."
@@ -162,15 +175,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install k6
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
       - name: Start services for performance testing
         run: |
-          # Start databases first
-          docker-compose -f docker-compose.test.yml up -d
+          # Start databases first with different ports to avoid conflicts with GitHub Actions services
+          docker-compose -f docker-compose.ci.yml up -d
           sleep 30
 
           # Start API Gateway and Integration Management for performance testing
+          # Use the CI-specific services compose file to avoid port conflicts
           export JWT_SECRET=ci-test-jwt-secret-key-for-testing-only
-          docker-compose up -d api-gateway integration-management
+          docker-compose -f docker-compose.ci-services.yml up -d
           sleep 30
 
       - name: Run performance tests
