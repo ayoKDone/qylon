@@ -55,13 +55,13 @@ module.exports = {
     '!**/cypress/**',
   ],
 
-  // Coverage thresholds - Realistic targets for current development phase
+  // Coverage thresholds - Enforced for pre-commit/push
   coverageThreshold: {
     global: {
-      branches: 30,
-      functions: 60,
-      lines: 60,
-      statements: 55,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
 
