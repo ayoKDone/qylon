@@ -1,13 +1,13 @@
 // src/components/dashboard/layout/RecordingStatus.tsx
-import { useState, useEffect } from 'react';
-import { FiPlay, FiStopCircle, FiMic } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FiMic, FiPlay, FiStopCircle } from 'react-icons/fi';
 
 export default function RecordingStatus() {
   const [isRecording, setIsRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     if (isRecording) {
       interval = setInterval(() => {
