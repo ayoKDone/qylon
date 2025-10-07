@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { ApiResponse } from '../types';
 import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 // Health check endpoint
 router.get('/', async (_req: Request, res: Response): Promise<void> => {

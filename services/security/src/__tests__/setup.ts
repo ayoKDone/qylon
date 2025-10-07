@@ -1,4 +1,6 @@
 // Test setup file
+import '@jest/globals';
+import { jest } from '@jest/globals';
 import dotenv from 'dotenv';
 
 // Load test environment variables

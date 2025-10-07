@@ -28,7 +28,7 @@ if (missingEnvVars.length > 0) {
 }
 
 // Create Express app
-const app = express();
+const app: express.Application = express();
 const PORT = process.env['PORT'] || 3006;
 
 // Security middleware

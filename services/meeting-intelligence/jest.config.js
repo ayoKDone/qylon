@@ -16,7 +16,13 @@ module.exports = {
 
   // Transform files
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.test.json',
+        isolatedModules: true,
+      },
+    ],
     '^.+\\.(js|jsx)$': 'babel-jest',
   },
 

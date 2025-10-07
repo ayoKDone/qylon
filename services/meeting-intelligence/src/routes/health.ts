@@ -4,7 +4,7 @@ import { OpenAIService } from '../services/OpenAIService';
 import { RecallAIService } from '../services/RecallAIService';
 import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 // Initialize services for health checks
 const supabase = createClient(

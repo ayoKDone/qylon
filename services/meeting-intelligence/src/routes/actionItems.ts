@@ -4,7 +4,7 @@ import { asyncHandler } from '../middleware/errorHandler';
 import { ApiResponse, PaginatedResponse } from '../types';
 import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!

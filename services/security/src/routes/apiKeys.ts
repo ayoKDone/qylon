@@ -4,7 +4,7 @@ import { asyncHandler } from '../middleware/errorHandler';
 import { APIKeyManager } from '../services/APIKeyManager';
 import logger from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 const apiKeyManager = new APIKeyManager();
 
 // Validation schemas

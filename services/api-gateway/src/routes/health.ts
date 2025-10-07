@@ -3,7 +3,7 @@ import { logger } from '@/utils/logger';
 import axios from 'axios';
 import { Request, Response, Router } from 'express';
 
-const router = Router();
+const router: Router = Router();
 
 // Service endpoints configuration
 const services = [

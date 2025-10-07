@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { Request, Response, Router } from 'express';
 import logger from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 // Initialize Supabase client (optional for local development)
 let supabase: any = null;
