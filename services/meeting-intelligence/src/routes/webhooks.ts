@@ -23,7 +23,7 @@ router.post(
         eventType: event.event_type,
         botId: event.bot_id,
         meetingId: event.meeting_id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // Verify webhook signature if configured
@@ -32,7 +32,7 @@ router.post(
         if (!verifyWebhookSignature(rawBody, req.headers)) {
           logger.warn('Invalid webhook signature', {
             headers: req.headers,
-            hasSecret: !!process.env.RECALL_AI_WEBHOOK_SECRET
+            hasSecret: !!process.env.RECALL_AI_WEBHOOK_SECRET,
           });
           res.status(401).json({ error: 'Invalid signature' });
           return;
@@ -99,14 +99,16 @@ router.post(
           await handleTranscriptionCompleted(event);
           break;
         default:
-          logger.info('Unhandled webhook event type', { eventType: event.event_type });
+          logger.info('Unhandled webhook event type', {
+            eventType: event.event_type,
+          });
       }
 
       res.status(200).json({ success: true });
     } catch (error: any) {
       logger.error('Failed to process Recall.ai webhook', {
         error: error.message,
-        body: req.body
+        body: req.body,
       });
       res.status(500).json({ error: 'Webhook processing failed' });
     }
@@ -116,6 +118,7 @@ router.post(
 /**
  * Handle bot joined call event
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleBotJoinedCall(event: any): Promise<void> {
   try {
     const { bot_id, meeting_id, meeting_url } = event;
@@ -125,7 +128,7 @@ async function handleBotJoinedCall(event: any): Promise<void> {
       .from('meetings')
       .update({
         status: 'recording',
-        processing_started_at: new Date().toISOString()
+        processing_started_at: new Date().toISOString(),
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
@@ -136,12 +139,12 @@ async function handleBotJoinedCall(event: any): Promise<void> {
     logger.info('Bot joined call - meeting status updated', {
       botId: bot_id,
       meetingId: meeting_id,
-      meetingUrl: meeting_url
+      meetingUrl: meeting_url,
     });
   } catch (error: any) {
     logger.error('Failed to handle bot joined call event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -149,6 +152,7 @@ async function handleBotJoinedCall(event: any): Promise<void> {
 /**
  * Handle bot left call event
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleBotLeftCall(event: any): Promise<void> {
   try {
     const { bot_id, meeting_id } = event;
@@ -158,7 +162,7 @@ async function handleBotLeftCall(event: any): Promise<void> {
       .from('meetings')
       .update({
         status: 'processing',
-        end_time: new Date().toISOString()
+        end_time: new Date().toISOString(),
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
@@ -168,12 +172,12 @@ async function handleBotLeftCall(event: any): Promise<void> {
 
     logger.info('Bot left call - meeting status updated', {
       botId: bot_id,
-      meetingId: meeting_id
+      meetingId: meeting_id,
     });
   } catch (error: any) {
     logger.error('Failed to handle bot left call event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -192,23 +196,25 @@ async function handleRecordingStarted(event: any): Promise<void> {
         metadata: {
           recall_bot_id: bot_id,
           recall_recording_id: recording_id,
-          recording_started_at: new Date().toISOString()
-        }
+          recording_started_at: new Date().toISOString(),
+        },
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(`Failed to update meeting with recording info: ${error.message}`);
+      throw new Error(
+        `Failed to update meeting with recording info: ${error.message}`
+      );
     }
 
     logger.info('Recording started - meeting updated', {
       botId: bot_id,
-      recordingId: recording_id
+      recordingId: recording_id,
     });
   } catch (error: any) {
     logger.error('Failed to handle recording started event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -228,24 +234,26 @@ async function handleRecordingStopped(event: any): Promise<void> {
         metadata: {
           recall_bot_id: bot_id,
           recall_recording_id: recording_id,
-          recording_stopped_at: new Date().toISOString()
-        }
+          recording_stopped_at: new Date().toISOString(),
+        },
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(`Failed to update meeting with recording URL: ${error.message}`);
+      throw new Error(
+        `Failed to update meeting with recording URL: ${error.message}`
+      );
     }
 
     logger.info('Recording stopped - meeting updated', {
       botId: bot_id,
       recordingId: recording_id,
-      recordingUrl: recording_url
+      recordingUrl: recording_url,
     });
   } catch (error: any) {
     logger.error('Failed to handle recording stopped event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -265,7 +273,9 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       .single();
 
     if (meetingError || !meeting) {
-      throw new Error(`Failed to get meeting for bot ${bot_id}: ${meetingError?.message}`);
+      throw new Error(
+        `Failed to get meeting for bot ${bot_id}: ${meetingError?.message}`
+      );
     }
 
     // Update meeting with transcription information
@@ -278,13 +288,15 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
           recall_bot_id: bot_id,
           recall_recording_id: recording_id,
           transcript_url: transcript_url,
-          transcription_completed_at: new Date().toISOString()
-        }
+          transcription_completed_at: new Date().toISOString(),
+        },
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(`Failed to update meeting with transcription: ${error.message}`);
+      throw new Error(
+        `Failed to update meeting with transcription: ${error.message}`
+      );
     }
 
     // Publish meeting completed event to Event Bus
@@ -298,7 +310,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
         recording_id: recording_id,
         transcript_url: transcript_url,
         meeting_data: meeting,
-        completed_at: new Date().toISOString()
+        completed_at: new Date().toISOString(),
       },
       meeting.client_id, // Using client_id as userId for now
       `meeting_${meeting.id}`,
@@ -314,23 +326,26 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
         meeting_id: meeting.id,
         bot_id: bot_id,
         transcript_url: transcript_url,
-        completed_at: new Date().toISOString()
+        completed_at: new Date().toISOString(),
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
       `transcription_${recording_id}`
     );
 
-    logger.info('Transcription completed - meeting updated and events published', {
-      botId: bot_id,
-      recordingId: recording_id,
-      transcriptUrl: transcript_url,
-      meetingId: meeting.id
-    });
+    logger.info(
+      'Transcription completed - meeting updated and events published',
+      {
+        botId: bot_id,
+        recordingId: recording_id,
+        transcriptUrl: transcript_url,
+        meetingId: meeting.id,
+      }
+    );
   } catch (error: any) {
     logger.error('Failed to handle transcription completed event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -338,12 +353,15 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
 /**
  * Handle bot error event with detailed troubleshooting
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleBotError(event: any): Promise<void> {
   try {
     const { bot_id, error_message, error_code, sub_code } = event;
 
     // Get detailed bot status for troubleshooting
-    const recallService = new (await import('../services/RecallAIService')).RecallAIService();
+    const recallService = new (
+      await import('../services/RecallAIService')
+    ).RecallAIService();
     let diagnosis = null;
 
     try {
@@ -351,7 +369,7 @@ async function handleBotError(event: any): Promise<void> {
     } catch (diagError: any) {
       logger.warn('Failed to get bot diagnosis', {
         botId: bot_id,
-        error: diagError.message
+        error: diagError.message,
       });
     }
 
@@ -367,8 +385,8 @@ async function handleBotError(event: any): Promise<void> {
           bot_error_occurred_at: new Date().toISOString(),
           error_sub_code: sub_code,
           bot_diagnosis: diagnosis,
-          troubleshooting_url: diagnosis?.explorerUrl
-        }
+          troubleshooting_url: diagnosis?.explorerUrl,
+        },
       })
       .eq('metadata->>recall_bot_id', bot_id);
 
@@ -378,21 +396,30 @@ async function handleBotError(event: any): Promise<void> {
 
     // Send alert to monitoring system if fatal error
     if (sub_code && isFatalError(sub_code)) {
-      await sendFatalErrorAlert(bot_id, error_message, error_code, sub_code, diagnosis);
+      await sendFatalErrorAlert(
+        bot_id,
+        error_message,
+        error_code,
+        sub_code,
+        diagnosis
+      );
     }
 
-    logger.error('Bot error occurred - meeting updated with troubleshooting info', {
-      botId: bot_id,
-      errorMessage: error_message,
-      errorCode: error_code,
-      subCode: sub_code,
-      hasDiagnosis: !!diagnosis,
-      explorerUrl: diagnosis?.explorerUrl
-    });
+    logger.error(
+      'Bot error occurred - meeting updated with troubleshooting info',
+      {
+        botId: bot_id,
+        errorMessage: error_message,
+        errorCode: error_code,
+        subCode: sub_code,
+        hasDiagnosis: !!diagnosis,
+        explorerUrl: diagnosis?.explorerUrl,
+      }
+    );
   } catch (error: any) {
     logger.error('Failed to handle bot error event', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -405,7 +432,7 @@ async function handleBotJoiningCall(event: any): Promise<void> {
 
   logger.info('Bot is joining call', {
     botId: bot_id,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -422,7 +449,7 @@ async function handleBotInWaitingRoom(event: any): Promise<void> {
   logger.warn('Bot is in waiting room', {
     botId: bot_id,
     subCode: sub_code,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -442,7 +469,7 @@ async function handleBotInCallNotRecording(event: any): Promise<void> {
   logger.info('Bot is in call but not recording', {
     botId: bot_id,
     subCode: sub_code,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -457,7 +484,7 @@ async function handleRecordingPermissionAllowed(event: any): Promise<void> {
 
   logger.info('Recording permission allowed', {
     botId: bot_id,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -474,7 +501,7 @@ async function handleRecordingPermissionDenied(event: any): Promise<void> {
   logger.error('Recording permission denied', {
     botId: bot_id,
     subCode: sub_code,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -492,7 +519,7 @@ async function handleBotInCallRecording(event: any): Promise<void> {
 
   logger.info('Bot is recording', {
     botId: bot_id,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -509,7 +536,7 @@ async function handleBotCallEnded(event: any): Promise<void> {
   logger.info('Bot call ended', {
     botId: bot_id,
     subCode: sub_code,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -524,7 +551,7 @@ async function handleBotDone(event: any): Promise<void> {
 
   logger.info('Bot processing completed', {
     botId: bot_id,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
@@ -540,7 +567,7 @@ async function handleBotDone(event: any): Promise<void> {
   if (meetingError || !meeting) {
     logger.warn('Could not find meeting for bot done event', {
       botId: bot_id,
-      error: meetingError?.message
+      error: meetingError?.message,
     });
     return;
   }
@@ -554,7 +581,7 @@ async function handleBotDone(event: any): Promise<void> {
       meeting_id: meeting.id,
       client_id: meeting.client_id,
       processing_completed_at: new Date().toISOString(),
-      meeting_data: meeting
+      meeting_data: meeting,
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
@@ -570,7 +597,7 @@ async function handleBotDone(event: any): Promise<void> {
       client_id: meeting.client_id,
       bot_id: bot_id,
       ended_at: new Date().toISOString(),
-      meeting_data: meeting
+      meeting_data: meeting,
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
@@ -588,14 +615,16 @@ async function handleBotFatal(event: any): Promise<void> {
   logger.error('Bot encountered fatal error', {
     botId: bot_id,
     subCode: sub_code,
-    eventType: event.event_type
+    eventType: event.event_type,
   });
 
   // Update bot status in database
   await updateBotStatus(bot_id, 'fatal', sub_code);
 
   // Get detailed bot status for troubleshooting
-  const recallService = new (await import('../services/RecallAIService')).RecallAIService();
+  const recallService = new (
+    await import('../services/RecallAIService')
+  ).RecallAIService();
   let diagnosis = null;
 
   try {
@@ -603,7 +632,7 @@ async function handleBotFatal(event: any): Promise<void> {
   } catch (diagError: any) {
     logger.warn('Failed to get bot diagnosis', {
       botId: bot_id,
-      error: diagError.message
+      error: diagError.message,
     });
   }
 
@@ -616,15 +645,15 @@ async function handleBotFatal(event: any): Promise<void> {
         recall_bot_error_code: sub_code,
         recall_bot_error_timestamp: new Date().toISOString(),
         recall_bot_diagnosis: diagnosis,
-        recall_bot_troubleshooting_url: diagnosis?.explorerUrl
-      }
+        recall_bot_troubleshooting_url: diagnosis?.explorerUrl,
+      },
     })
     .eq('metadata->recall_bot_id', bot_id);
 
   if (error) {
     logger.error('Failed to update meeting with bot error', {
       botId: bot_id,
-      error: error.message
+      error: error.message,
     });
   }
 
@@ -635,6 +664,7 @@ async function handleBotFatal(event: any): Promise<void> {
 /**
  * Handle bot status change events for monitoring
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleBotStatusChange(event: any): Promise<void> {
   try {
     const { bot_id, status_change } = event;
@@ -642,7 +672,7 @@ async function handleBotStatusChange(event: any): Promise<void> {
     // Log status change for monitoring
     logger.info('Bot status change detected', {
       botId: bot_id,
-      statusChange: status_change
+      statusChange: status_change,
     });
 
     // Update bot tracking table with status change
@@ -652,15 +682,15 @@ async function handleBotStatusChange(event: any): Promise<void> {
         last_activity_at: new Date().toISOString(),
         metadata: {
           last_status_change: status_change,
-          status_change_at: new Date().toISOString()
-        }
+          status_change_at: new Date().toISOString(),
+        },
       })
       .eq('recall_bot_id', bot_id);
 
     if (error) {
       logger.warn('Failed to update bot tracking with status change', {
         botId: bot_id,
-        error: error.message
+        error: error.message,
       });
     }
 
@@ -673,7 +703,7 @@ async function handleBotStatusChange(event: any): Promise<void> {
   } catch (error: any) {
     logger.error('Failed to handle bot status change', {
       event,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -681,7 +711,10 @@ async function handleBotStatusChange(event: any): Promise<void> {
 /**
  * Handle fatal status changes
  */
-async function handleFatalStatusChange(botId: string, statusChange: any): Promise<void> {
+async function handleFatalStatusChange(
+  botId: string,
+  statusChange: any
+): Promise<void> {
   try {
     // Get meeting information
     const { data: meeting, error } = await supabase
@@ -693,7 +726,7 @@ async function handleFatalStatusChange(botId: string, statusChange: any): Promis
     if (error || !meeting) {
       logger.warn('Could not find meeting for fatal bot status', {
         botId,
-        error: error?.message
+        error: error?.message,
       });
       return;
     }
@@ -708,8 +741,8 @@ async function handleFatalStatusChange(botId: string, statusChange: any): Promis
         metadata: {
           ...meeting.metadata,
           fatal_error_sub_code: statusChange.sub_code,
-          fatal_error_at: new Date().toISOString()
-        }
+          fatal_error_at: new Date().toISOString(),
+        },
       })
       .eq('id', meeting.id);
 
@@ -720,7 +753,7 @@ async function handleFatalStatusChange(botId: string, statusChange: any): Promis
       botId,
       errorCode: statusChange.code,
       subCode: statusChange.sub_code,
-      message: statusChange.message
+      message: statusChange.message,
     });
 
     logger.error('Fatal bot status change handled', {
@@ -728,13 +761,13 @@ async function handleFatalStatusChange(botId: string, statusChange: any): Promis
       meetingId: meeting.id,
       clientId: meeting.client_id,
       errorCode: statusChange.code,
-      subCode: statusChange.sub_code
+      subCode: statusChange.sub_code,
     });
   } catch (error: any) {
     logger.error('Failed to handle fatal status change', {
       botId,
       statusChange,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -742,7 +775,10 @@ async function handleFatalStatusChange(botId: string, statusChange: any): Promis
 /**
  * Handle waiting room status
  */
-async function handleWaitingRoomStatus(botId: string, statusChange: any): Promise<void> {
+async function handleWaitingRoomStatus(
+  botId: string,
+  statusChange: any
+): Promise<void> {
   try {
     // Get meeting information
     const { data: meeting, error } = await supabase
@@ -760,19 +796,20 @@ async function handleWaitingRoomStatus(botId: string, statusChange: any): Promis
       type: 'bot_in_waiting_room',
       meetingId: meeting.id,
       botId,
-      message: 'Bot is waiting to be admitted to the meeting. Please admit the bot from the waiting room.'
+      message:
+        'Bot is waiting to be admitted to the meeting. Please admit the bot from the waiting room.',
     });
 
     logger.info('Bot waiting room status handled', {
       botId,
       meetingId: meeting.id,
-      clientId: meeting.client_id
+      clientId: meeting.client_id,
     });
   } catch (error: any) {
     logger.error('Failed to handle waiting room status', {
       botId,
       statusChange,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -789,7 +826,7 @@ function isFatalError(subCode: string): boolean {
     'network_error',
     'platform_error',
     'bot_crashed',
-    'timeout'
+    'timeout',
   ];
   return fatalErrors.includes(subCode);
 }
@@ -813,28 +850,31 @@ async function sendFatalErrorAlert(
       errorCode,
       subCode,
       diagnosis,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Call notification service
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/alerts/fatal-error`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify(alertPayload)
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/alerts/fatal-error`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify(alertPayload),
+      }
+    );
 
     logger.info('Fatal error alert sent', {
       botId,
       errorCode,
-      subCode
+      subCode,
     });
   } catch (error: any) {
     logger.error('Failed to send fatal error alert', {
       botId,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -844,23 +884,26 @@ async function sendFatalErrorAlert(
  */
 async function sendClientAlert(clientId: string, alert: any): Promise<void> {
   try {
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-alert`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify({
-        clientId,
-        alert,
-        timestamp: new Date().toISOString()
-      })
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-alert`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify({
+          clientId,
+          alert,
+          timestamp: new Date().toISOString(),
+        }),
+      }
+    );
   } catch (error: any) {
     logger.error('Failed to send client alert', {
       clientId,
       alert,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -868,25 +911,31 @@ async function sendClientAlert(clientId: string, alert: any): Promise<void> {
 /**
  * Send client notification
  */
-async function sendClientNotification(clientId: string, notification: any): Promise<void> {
+async function sendClientNotification(
+  clientId: string,
+  notification: any
+): Promise<void> {
   try {
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-notification`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify({
-        clientId,
-        notification,
-        timestamp: new Date().toISOString()
-      })
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-notification`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify({
+          clientId,
+          notification,
+          timestamp: new Date().toISOString(),
+        }),
+      }
+    );
   } catch (error: any) {
     logger.error('Failed to send client notification', {
       clientId,
       notification,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -896,7 +945,11 @@ async function sendClientNotification(clientId: string, notification: any): Prom
 /**
  * Update bot status in database
  */
-async function updateBotStatus(botId: string, status: string, subCode?: string): Promise<void> {
+async function updateBotStatus(
+  botId: string,
+  status: string,
+  subCode?: string
+): Promise<void> {
   try {
     const { error } = await supabase
       .from('meetings')
@@ -904,8 +957,8 @@ async function updateBotStatus(botId: string, status: string, subCode?: string):
         metadata: {
           recall_bot_status: status,
           recall_bot_sub_code: subCode,
-          recall_bot_status_updated_at: new Date().toISOString()
-        }
+          recall_bot_status_updated_at: new Date().toISOString(),
+        },
       })
       .eq('metadata->recall_bot_id', botId);
 
@@ -914,7 +967,7 @@ async function updateBotStatus(botId: string, status: string, subCode?: string):
         botId,
         status,
         subCode,
-        error: error.message
+        error: error.message,
       });
     }
   } catch (error: any) {
@@ -922,7 +975,7 @@ async function updateBotStatus(botId: string, status: string, subCode?: string):
       botId,
       status,
       subCode,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -930,7 +983,10 @@ async function updateBotStatus(botId: string, status: string, subCode?: string):
 /**
  * Notify client about waiting room situation
  */
-async function notifyClientAboutWaitingRoom(botId: string, subCode?: string): Promise<void> {
+async function notifyClientAboutWaitingRoom(
+  botId: string,
+  subCode?: string
+): Promise<void> {
   try {
     // Get meeting and client information
     const { data: meeting } = await supabase
@@ -950,31 +1006,35 @@ async function notifyClientAboutWaitingRoom(botId: string, subCode?: string): Pr
       meetingId: meeting.id,
       clientId: meeting.client_id,
       botId,
-      message: 'Your meeting bot is waiting to be admitted to the meeting. Please ask the host to admit the bot.',
+      message:
+        'Your meeting bot is waiting to be admitted to the meeting. Please ask the host to admit the bot.',
       subCode,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Call notification service
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify(notificationPayload)
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify(notificationPayload),
+      }
+    );
 
     logger.info('Client notified about waiting room', {
       botId,
       meetingId: meeting.id,
-      clientId: meeting.client_id
+      clientId: meeting.client_id,
     });
   } catch (error: any) {
     logger.error('Failed to notify client about waiting room', {
       botId,
       subCode,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -982,7 +1042,10 @@ async function notifyClientAboutWaitingRoom(botId: string, subCode?: string): Pr
 /**
  * Notify client about recording permission issue
  */
-async function notifyClientAboutRecordingPermission(botId: string, subCode?: string): Promise<void> {
+async function notifyClientAboutRecordingPermission(
+  botId: string,
+  subCode?: string
+): Promise<void> {
   try {
     // Get meeting and client information
     const { data: meeting } = await supabase
@@ -1002,31 +1065,35 @@ async function notifyClientAboutRecordingPermission(botId: string, subCode?: str
       meetingId: meeting.id,
       clientId: meeting.client_id,
       botId,
-      message: 'Recording permission was denied for your meeting bot. Please check meeting settings.',
+      message:
+        'Recording permission was denied for your meeting bot. Please check meeting settings.',
       subCode,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Call notification service
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify(notificationPayload)
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify(notificationPayload),
+      }
+    );
 
     logger.info('Client notified about recording permission', {
       botId,
       meetingId: meeting.id,
-      clientId: meeting.client_id
+      clientId: meeting.client_id,
     });
   } catch (error: any) {
     logger.error('Failed to notify client about recording permission', {
       botId,
       subCode,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -1034,7 +1101,11 @@ async function notifyClientAboutRecordingPermission(botId: string, subCode?: str
 /**
  * Notify client about fatal error
  */
-async function notifyClientAboutFatalError(botId: string, subCode?: string, diagnosis?: any): Promise<void> {
+async function notifyClientAboutFatalError(
+  botId: string,
+  subCode?: string,
+  diagnosis?: any
+): Promise<void> {
   try {
     // Get meeting and client information
     const { data: meeting } = await supabase
@@ -1054,34 +1125,38 @@ async function notifyClientAboutFatalError(botId: string, subCode?: string, diag
       meetingId: meeting.id,
       clientId: meeting.client_id,
       botId,
-      message: 'Your meeting bot encountered a fatal error and could not join the meeting.',
+      message:
+        'Your meeting bot encountered a fatal error and could not join the meeting.',
       subCode,
       diagnosis,
       troubleshootingUrl: diagnosis?.explorerUrl,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     // Call notification service
-    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`
-      },
-      body: JSON.stringify(notificationPayload)
-    });
+    await fetch(
+      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        },
+        body: JSON.stringify(notificationPayload),
+      }
+    );
 
     logger.info('Client notified about fatal error', {
       botId,
       meetingId: meeting.id,
       clientId: meeting.client_id,
-      subCode
+      subCode,
     });
   } catch (error: any) {
     logger.error('Failed to notify client about fatal error', {
       botId,
       subCode,
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -1095,14 +1170,16 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
 
     // Get headers
     const svixId = headers['svix-id'] || headers['webhook-id'];
-    const svixTimestamp = headers['svix-timestamp'] || headers['webhook-timestamp'];
-    const svixSignature = headers['svix-signature'] || headers['webhook-signature'];
+    const svixTimestamp =
+      headers['svix-timestamp'] || headers['webhook-timestamp'];
+    const svixSignature =
+      headers['svix-signature'] || headers['webhook-signature'];
 
     if (!svixId || !svixTimestamp || !svixSignature) {
       logger.warn('Missing required webhook headers', {
         hasId: !!svixId,
         hasTimestamp: !!svixTimestamp,
-        hasSignature: !!svixSignature
+        hasSignature: !!svixSignature,
       });
       return false;
     }
@@ -1137,11 +1214,12 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
     const currentTime = Math.floor(Date.now() / 1000);
     const timeDiff = Math.abs(currentTime - timestamp);
 
-    if (timeDiff > 300) { // 5 minutes
+    if (timeDiff > 300) {
+      // 5 minutes
       logger.warn('Webhook timestamp too old', {
         timestamp,
         currentTime,
-        timeDiff
+        timeDiff,
       });
       return false;
     }
@@ -1160,13 +1238,13 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
 
     logger.warn('Webhook signature verification failed', {
       expectedSignature,
-      receivedSignatures: signatures
+      receivedSignatures: signatures,
     });
 
     return false;
   } catch (error: any) {
     logger.error('Error verifying webhook signature', {
-      error: error.message
+      error: error.message,
     });
     return false;
   }
@@ -1201,19 +1279,23 @@ async function handleTranscriptData(event: any): Promise<void> {
       transcriptId: transcript_id,
       recordingId: recording_id,
       participantId: transcriptData.participant?.id,
-      wordsCount: transcriptData.words?.length || 0
+      wordsCount: transcriptData.words?.length || 0,
     });
 
     // Store transcript data in database
-    await storeTranscriptData(bot_id, transcript_id, recording_id, transcriptData);
+    await storeTranscriptData(
+      bot_id,
+      transcript_id,
+      recording_id,
+      transcriptData
+    );
 
     // Trigger real-time transcription processing
     await processRealTimeTranscription(bot_id, transcriptData);
-
   } catch (error: any) {
     logger.error('Error handling transcript data', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1231,19 +1313,23 @@ async function handleTranscriptPartialData(event: any): Promise<void> {
       transcriptId: transcript_id,
       recordingId: recording_id,
       participantId: transcriptData.participant?.id,
-      wordsCount: transcriptData.words?.length || 0
+      wordsCount: transcriptData.words?.length || 0,
     });
 
     // Store partial transcript data
-    await storePartialTranscriptData(bot_id, transcript_id, recording_id, transcriptData);
+    await storePartialTranscriptData(
+      bot_id,
+      transcript_id,
+      recording_id,
+      transcriptData
+    );
 
     // Process partial transcription for real-time updates
     await processPartialTranscription(bot_id, transcriptData);
-
   } catch (error: any) {
     logger.error('Error handling transcript partial data', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1258,7 +1344,7 @@ async function handleTranscriptDone(event: any): Promise<void> {
     logger.info('Transcript completed', {
       botId: bot_id,
       transcriptId: transcript_id,
-      recordingId: recording_id
+      recordingId: recording_id,
     });
 
     // Update transcript status in database
@@ -1275,7 +1361,7 @@ async function handleTranscriptDone(event: any): Promise<void> {
       logger.warn('Could not find meeting for transcript done event', {
         botId: bot_id,
         transcriptId: transcript_id,
-        error: meetingError?.message
+        error: meetingError?.message,
       });
       return;
     }
@@ -1290,17 +1376,16 @@ async function handleTranscriptDone(event: any): Promise<void> {
         bot_id: bot_id,
         recording_id: recording_id,
         completed_at: new Date().toISOString(),
-        meeting_data: meeting
+        meeting_data: meeting,
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
       `transcript_${transcript_id}`
     );
-
   } catch (error: any) {
     logger.error('Error handling transcript done', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1318,19 +1403,22 @@ async function handleTranscriptFailed(event: any): Promise<void> {
       transcriptId: transcript_id,
       recordingId: recording_id,
       errorCode: errorData.code,
-      subCode: errorData.sub_code
+      subCode: errorData.sub_code,
     });
 
     // Update transcript status in database
     await updateTranscriptStatus(transcript_id, 'failed', errorData);
 
     // Notify client about transcription failure
-    await notifyClientAboutTranscriptionFailure(bot_id, transcript_id, errorData);
-
+    await notifyClientAboutTranscriptionFailure(
+      bot_id,
+      transcript_id,
+      errorData
+    );
   } catch (error: any) {
     logger.error('Error handling transcript failed', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1347,16 +1435,15 @@ async function handleAudioSeparateData(event: any): Promise<void> {
       botId: bot_id,
       recordingId: recording_id,
       participantId: audioData.participant?.id,
-      timestamp: audioData.timestamp
+      timestamp: audioData.timestamp,
     });
 
     // Process real-time audio data
     await processRealTimeAudio(bot_id, recording_id, audioData);
-
   } catch (error: any) {
     logger.error('Error handling audio separate data', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1374,16 +1461,15 @@ async function handleVideoSeparatePngData(event: any): Promise<void> {
       recordingId: recording_id,
       participantId: videoData.participant?.id,
       type: videoData.type,
-      timestamp: videoData.timestamp
+      timestamp: videoData.timestamp,
     });
 
     // Process real-time video PNG data
     await processRealTimeVideoPng(bot_id, recording_id, videoData);
-
   } catch (error: any) {
     logger.error('Error handling video separate PNG data', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1401,16 +1487,15 @@ async function handleVideoSeparateH264Data(event: any): Promise<void> {
       recordingId: recording_id,
       participantId: videoData.participant?.id,
       type: videoData.type,
-      timestamp: videoData.timestamp
+      timestamp: videoData.timestamp,
     });
 
     // Process real-time video H264 data
     await processRealTimeVideoH264(bot_id, recording_id, videoData);
-
   } catch (error: any) {
     logger.error('Error handling video separate H264 data', {
       error: error.message,
-      event
+      event,
     });
   }
 }
@@ -1418,7 +1503,12 @@ async function handleVideoSeparateH264Data(event: any): Promise<void> {
 /**
  * Store transcript data in database
  */
-async function storeTranscriptData(botId: string, transcriptId: string, recordingId: string, transcriptData: any): Promise<void> {
+async function storeTranscriptData(
+  botId: string,
+  transcriptId: string,
+  recordingId: string,
+  transcriptData: any
+): Promise<void> {
   try {
     // Implementation would store transcript data in database
     // This is a placeholder for the actual database operation
@@ -1426,13 +1516,13 @@ async function storeTranscriptData(botId: string, transcriptId: string, recordin
       botId,
       transcriptId,
       recordingId,
-      participantId: transcriptData.participant?.id
+      participantId: transcriptData.participant?.id,
     });
   } catch (error: any) {
     logger.error('Failed to store transcript data', {
       error: error.message,
       botId,
-      transcriptId
+      transcriptId,
     });
   }
 }
@@ -1440,20 +1530,25 @@ async function storeTranscriptData(botId: string, transcriptId: string, recordin
 /**
  * Store partial transcript data in database
  */
-async function storePartialTranscriptData(botId: string, transcriptId: string, recordingId: string, transcriptData: any): Promise<void> {
+async function storePartialTranscriptData(
+  botId: string,
+  transcriptId: string,
+  recordingId: string,
+  transcriptData: any
+): Promise<void> {
   try {
     // Implementation would store partial transcript data in database
     logger.info('Storing partial transcript data', {
       botId,
       transcriptId,
       recordingId,
-      participantId: transcriptData.participant?.id
+      participantId: transcriptData.participant?.id,
     });
   } catch (error: any) {
     logger.error('Failed to store partial transcript data', {
       error: error.message,
       botId,
-      transcriptId
+      transcriptId,
     });
   }
 }
@@ -1461,19 +1556,23 @@ async function storePartialTranscriptData(botId: string, transcriptId: string, r
 /**
  * Update transcript status in database
  */
-async function updateTranscriptStatus(transcriptId: string, status: string, errorData?: any): Promise<void> {
+async function updateTranscriptStatus(
+  transcriptId: string,
+  status: string,
+  errorData?: any
+): Promise<void> {
   try {
     // Implementation would update transcript status in database
     logger.info('Updating transcript status', {
       transcriptId,
       status,
-      errorData
+      errorData,
     });
   } catch (error: any) {
     logger.error('Failed to update transcript status', {
       error: error.message,
       transcriptId,
-      status
+      status,
     });
   }
 }
@@ -1481,18 +1580,21 @@ async function updateTranscriptStatus(transcriptId: string, status: string, erro
 /**
  * Process real-time transcription
  */
-async function processRealTimeTranscription(botId: string, transcriptData: any): Promise<void> {
+async function processRealTimeTranscription(
+  botId: string,
+  transcriptData: any
+): Promise<void> {
   try {
     // Implementation would process real-time transcription
     logger.info('Processing real-time transcription', {
       botId,
       participantId: transcriptData.participant?.id,
-      wordsCount: transcriptData.words?.length
+      wordsCount: transcriptData.words?.length,
     });
   } catch (error: any) {
     logger.error('Failed to process real-time transcription', {
       error: error.message,
-      botId
+      botId,
     });
   }
 }
@@ -1500,18 +1602,21 @@ async function processRealTimeTranscription(botId: string, transcriptData: any):
 /**
  * Process partial transcription
  */
-async function processPartialTranscription(botId: string, transcriptData: any): Promise<void> {
+async function processPartialTranscription(
+  botId: string,
+  transcriptData: any
+): Promise<void> {
   try {
     // Implementation would process partial transcription
     logger.info('Processing partial transcription', {
       botId,
       participantId: transcriptData.participant?.id,
-      wordsCount: transcriptData.words?.length
+      wordsCount: transcriptData.words?.length,
     });
   } catch (error: any) {
     logger.error('Failed to process partial transcription', {
       error: error.message,
-      botId
+      botId,
     });
   }
 }
@@ -1519,20 +1624,24 @@ async function processPartialTranscription(botId: string, transcriptData: any): 
 /**
  * Notify client about transcription failure
  */
-async function notifyClientAboutTranscriptionFailure(botId: string, transcriptId: string, errorData: any): Promise<void> {
+async function notifyClientAboutTranscriptionFailure(
+  botId: string,
+  transcriptId: string,
+  errorData: any
+): Promise<void> {
   try {
     // Implementation would notify client about transcription failure
     logger.info('Notifying client about transcription failure', {
       botId,
       transcriptId,
       errorCode: errorData.code,
-      subCode: errorData.sub_code
+      subCode: errorData.sub_code,
     });
   } catch (error: any) {
     logger.error('Failed to notify client about transcription failure', {
       error: error.message,
       botId,
-      transcriptId
+      transcriptId,
     });
   }
 }
@@ -1540,20 +1649,24 @@ async function notifyClientAboutTranscriptionFailure(botId: string, transcriptId
 /**
  * Process real-time audio data
  */
-async function processRealTimeAudio(botId: string, recordingId: string, audioData: any): Promise<void> {
+async function processRealTimeAudio(
+  botId: string,
+  recordingId: string,
+  audioData: any
+): Promise<void> {
   try {
     // Implementation would process real-time audio data
     logger.info('Processing real-time audio', {
       botId,
       recordingId,
       participantId: audioData.participant?.id,
-      timestamp: audioData.timestamp
+      timestamp: audioData.timestamp,
     });
   } catch (error: any) {
     logger.error('Failed to process real-time audio', {
       error: error.message,
       botId,
-      recordingId
+      recordingId,
     });
   }
 }
@@ -1561,7 +1674,11 @@ async function processRealTimeAudio(botId: string, recordingId: string, audioDat
 /**
  * Process real-time video PNG data
  */
-async function processRealTimeVideoPng(botId: string, recordingId: string, videoData: any): Promise<void> {
+async function processRealTimeVideoPng(
+  botId: string,
+  recordingId: string,
+  videoData: any
+): Promise<void> {
   try {
     // Implementation would process real-time video PNG data
     logger.info('Processing real-time video PNG', {
@@ -1569,13 +1686,13 @@ async function processRealTimeVideoPng(botId: string, recordingId: string, video
       recordingId,
       participantId: videoData.participant?.id,
       type: videoData.type,
-      timestamp: videoData.timestamp
+      timestamp: videoData.timestamp,
     });
   } catch (error: any) {
     logger.error('Failed to process real-time video PNG', {
       error: error.message,
       botId,
-      recordingId
+      recordingId,
     });
   }
 }
@@ -1583,7 +1700,11 @@ async function processRealTimeVideoPng(botId: string, recordingId: string, video
 /**
  * Process real-time video H264 data
  */
-async function processRealTimeVideoH264(botId: string, recordingId: string, videoData: any): Promise<void> {
+async function processRealTimeVideoH264(
+  botId: string,
+  recordingId: string,
+  videoData: any
+): Promise<void> {
   try {
     // Implementation would process real-time video H264 data
     logger.info('Processing real-time video H264', {
@@ -1591,13 +1712,13 @@ async function processRealTimeVideoH264(botId: string, recordingId: string, vide
       recordingId,
       participantId: videoData.participant?.id,
       type: videoData.type,
-      timestamp: videoData.timestamp
+      timestamp: videoData.timestamp,
     });
   } catch (error: any) {
     logger.error('Failed to process real-time video H264', {
       error: error.message,
       botId,
-      recordingId
+      recordingId,
     });
   }
 }

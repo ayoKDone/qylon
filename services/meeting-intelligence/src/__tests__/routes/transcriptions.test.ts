@@ -41,11 +41,11 @@ describe('Transcriptions Routes', () => {
       next();
     });
 
-    app.use('/api/transcriptions', authMiddleware, transcriptionsRouter);
+    app.use('/api/v1/transcriptions', authMiddleware, transcriptionsRouter);
     jest.clearAllMocks();
   });
 
-  describe('POST /api/transcriptions/process', () => {
+  describe('POST /api/v1/transcriptions/process', () => {
     it('should process meeting recording and generate transcription', async () => {
       const processData = {
         meetingId: 'test-meeting-id',
@@ -54,7 +54,7 @@ describe('Transcriptions Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(201);
 
@@ -69,7 +69,7 @@ describe('Transcriptions Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(400);
 
@@ -85,7 +85,7 @@ describe('Transcriptions Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(400);
 
@@ -101,7 +101,7 @@ describe('Transcriptions Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(400);
 
@@ -110,12 +110,12 @@ describe('Transcriptions Routes', () => {
     });
   });
 
-  describe('GET /api/transcriptions/meeting/:meetingId', () => {
+  describe('GET /api/v1/transcriptions/meeting/:meetingId', () => {
     it('should get transcription for meeting', async () => {
       const meetingId = 'test-meeting-id';
 
       const response = await request(app)
-        .get(`/api/transcriptions/meeting/${meetingId}`)
+        .get(`/api/v1/transcriptions/meeting/${meetingId}`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -126,7 +126,7 @@ describe('Transcriptions Routes', () => {
       const meetingId = 'non-existent-meeting-id';
 
       const response = await request(app)
-        .get(`/api/transcriptions/meeting/${meetingId}`)
+        .get(`/api/v1/transcriptions/meeting/${meetingId}`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -135,7 +135,7 @@ describe('Transcriptions Routes', () => {
 
     it('should validate meeting ID format', async () => {
       const response = await request(app)
-        .get('/api/transcriptions/meeting/not-a-uuid')
+        .get('/api/v1/transcriptions/meeting/not-a-uuid')
         .expect(400);
 
       expect(response.body.success).toBe(false);
@@ -146,7 +146,7 @@ describe('Transcriptions Routes', () => {
   describe('Error handling', () => {
     it('should handle malformed JSON', async () => {
       const response = await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .set('Content-Type', 'application/json')
         .send('invalid json')
         .expect(400);
@@ -164,7 +164,7 @@ describe('Transcriptions Routes', () => {
       });
 
       await request(app)
-        .get('/api/transcriptions/meeting/test-meeting-id')
+        .get('/api/v1/transcriptions/meeting/test-meeting-id')
         .expect(401);
     });
 
@@ -176,7 +176,7 @@ describe('Transcriptions Routes', () => {
       };
 
       await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(201);
 
@@ -194,7 +194,7 @@ describe('Transcriptions Routes', () => {
       };
 
       await request(app)
-        .post('/api/transcriptions/process')
+        .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(201);
 
@@ -209,7 +209,7 @@ describe('Transcriptions Routes', () => {
 
     it('should log errors with context', async () => {
       await request(app)
-        .get('/api/transcriptions/meeting/invalid-id')
+        .get('/api/v1/transcriptions/meeting/invalid-id')
         .expect(400);
 
       expect(logger.error).toHaveBeenCalledWith(
