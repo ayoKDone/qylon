@@ -50,6 +50,7 @@ module.exports = {
   },
 
   // Setup files
+  setupFiles: ['<rootDir>/src/__tests__/jest.setup.ts'],
   setupFilesAfterEnv: [],
 
   // Test timeout
