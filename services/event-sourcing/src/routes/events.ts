@@ -2,10 +2,18 @@ import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
 import { AggregateTypes, QylonEventTypes } from '../models/Event';
 import { EventBuilder, SupabaseEventStore } from '../services/EventStore';
+import { EventSubscriber } from '../services/EventSubscriber';
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
 const eventStore = new SupabaseEventStore();
+
+// EventSubscriber will be injected from the main service
+let eventSubscriber: EventSubscriber | null = null;
+
+export function setEventSubscriber(subscriber: EventSubscriber): void {
+  eventSubscriber = subscriber;
+}
 
 // Create event
 router.post(
@@ -83,6 +91,20 @@ router.post(
 
       const builtEvent = event.build();
       await eventStore.saveEvent(builtEvent);
+
+      // Trigger workflow automation if EventSubscriber is available
+      if (eventSubscriber) {
+        try {
+          await eventSubscriber.processEvent(builtEvent);
+        } catch (error: any) {
+          logger.error('Failed to process event for workflow triggers', {
+            eventId: builtEvent.id,
+            eventType: builtEvent.eventType,
+            error: error.message
+          });
+          // Don't fail the event creation if workflow processing fails
+        }
+      }
 
       logger.info('Event created successfully', {
         eventId: builtEvent.id,

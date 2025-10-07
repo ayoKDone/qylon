@@ -21,7 +21,7 @@ export class WorkflowEngine {
   }
 
   /**
-   * Execute a workflow
+   * Execute a workflow (legacy method)
    */
   async executeWorkflow(
     workflowId: string,
@@ -61,6 +61,72 @@ export class WorkflowEngine {
     } catch (error) {
       logger.error('Workflow execution failed', {
         workflowId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute a workflow triggered by an event
+   */
+  async executeWorkflowFromEvent(
+    workflowId: string,
+    inputData: Record<string, any>,
+    context: Record<string, any>,
+    triggeredBy: {
+      eventId: string;
+      eventType: string;
+      aggregateId: string;
+    }
+  ): Promise<WorkflowExecution> {
+    try {
+      logWorkflow('event_driven_workflow_execution_started', workflowId, triggeredBy.eventId);
+
+      // Get workflow definition
+      const workflow = await this.getWorkflow(workflowId);
+      if (!workflow) {
+        throw new WorkflowError(
+          `Workflow not found: ${workflowId}`,
+          'WORKFLOW_NOT_FOUND',
+          404
+        );
+      }
+
+      // Create execution context with event information
+      const executionContext: ExecutionContext = {
+        variables: {
+          ...context,
+          // Add event-specific context
+          event: {
+            id: triggeredBy.eventId,
+            type: triggeredBy.eventType,
+            aggregateId: triggeredBy.aggregateId,
+            triggeredAt: new Date().toISOString()
+          }
+        },
+        input_data: inputData,
+        state_history: [],
+        action_results: [],
+      };
+
+      // Create workflow execution record with event metadata
+      const execution = await this.createEventDrivenExecution(workflow, executionContext, triggeredBy);
+
+      // Execute workflow asynchronously
+      this.executeWorkflowAsync(execution.id, workflow, executionContext);
+
+      logWorkflow('event_driven_workflow_execution_created', workflowId, execution.id, {
+        eventId: triggeredBy.eventId,
+        eventType: triggeredBy.eventType
+      });
+
+      return execution;
+    } catch (error) {
+      logger.error('Event-driven workflow execution failed', {
+        workflowId,
+        eventId: triggeredBy.eventId,
+        eventType: triggeredBy.eventType,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
@@ -152,6 +218,71 @@ export class WorkflowEngine {
     } catch (error) {
       logger.error('Execution creation error', {
         workflowId: workflow.id,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Create event-driven workflow execution record
+   */
+  private async createEventDrivenExecution(
+    workflow: Workflow,
+    context: ExecutionContext,
+    triggeredBy: {
+      eventId: string;
+      eventType: string;
+      aggregateId: string;
+    }
+  ): Promise<WorkflowExecution> {
+    try {
+      const { data, error } = await this.supabase
+        .from('workflow_executions')
+        .insert({
+          workflow_id: workflow.id,
+          client_id: workflow.client_id,
+          status: ExecutionStatus.PENDING,
+          context: context,
+          started_at: new Date().toISOString(),
+          metadata: {
+            triggered_by_event: {
+              event_id: triggeredBy.eventId,
+              event_type: triggeredBy.eventType,
+              aggregate_id: triggeredBy.aggregateId,
+              triggered_at: new Date().toISOString()
+            },
+            execution_type: 'event_driven'
+          }
+        })
+        .select()
+        .single();
+
+      if (error) {
+        throw new ExecutionError(
+          `Failed to create event-driven execution: ${error.message}`,
+          'EXECUTION_CREATION_FAILED'
+        );
+      }
+
+      return {
+        id: data.id,
+        workflow_id: data.workflow_id,
+        client_id: data.client_id,
+        status: data.status,
+        current_state: data.current_state,
+        context: data.context,
+        started_at: new Date(data.started_at),
+        completed_at: data.completed_at
+          ? new Date(data.completed_at)
+          : undefined,
+        error: data.error,
+        metadata: data.metadata,
+      };
+    } catch (error) {
+      logger.error('Event-driven execution creation error', {
+        workflowId: workflow.id,
+        eventId: triggeredBy.eventId,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
