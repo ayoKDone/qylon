@@ -1,9 +1,8 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
-
-type ForgotPasswordInputs = {
-  email: string;
-};
+import { supabase } from '../../lib/supabase';
+import type { ForgotPasswordInputs } from '../../types/auth';
 
 export default function ForgotPassword() {
   const {
@@ -12,9 +11,24 @@ export default function ForgotPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordInputs>();
 
+  const [message, setMessage] = useState<string | null>(null);
+
   const onSubmit = async (data: ForgotPasswordInputs) => {
-    console.log('Forgot Password Data:', data);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setMessage(null);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        setMessage(`Error: ${error.message}`);
+      } else {
+        setMessage('Check your email for password reset instructions.');
+      }
+    } catch (err) {
+      setMessage('Something went wrong. Please try again.');
+      console.error(err);
+    }
   };
 
   return (
@@ -71,6 +85,11 @@ export default function ForgotPassword() {
               <span className="message">{errors.email.message}</span>
             )}
           </div>
+
+          {/* Message */}
+          {message && (
+            <p className="text-sm text-center text-gray-700 mt-2">{message}</p>
+          )}
 
           {/* Submit */}
           <button

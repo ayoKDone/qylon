@@ -1,29 +1,47 @@
-// src/pages/Signup.tsx
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../../services/authService';
+import type { SignUpFormInputs } from '../../types/auth';
 import { Divider } from '../UI/Divider';
 import { SocialLogin } from '../UI/SocialLogin';
 
-type SignupFormInputs = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
 export default function Signup() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupFormInputs>();
+  } = useForm<SignUpFormInputs>();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const onSubmit = async (data: SignupFormInputs) => {
-    console.log('Form Data:', data);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  const onSubmit = async (data: SignUpFormInputs) => {
+    setFormError(null);
+
+    try {
+      const response = await authService.signUp({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (response.error) {
+        setFormError(response.error);
+        return;
+      }
+
+      // If session is null, user needs to confirm email
+      if (!response.session) {
+        navigate('/verify-email', { state: { email: data.email } });
+        return;
+      }
+      navigate('/dashboard');
+    } catch (err: unknown) {
+      setFormError('An unexpected error occurred. Please try again.');
+      console.error(err);
+    }
   };
 
   return (
@@ -98,6 +116,11 @@ export default function Signup() {
                 <span className="message">{errors.password.message}</span>
               )}
             </div>
+
+            {/* Form error */}
+            {formError && (
+              <p className="text-red-500 text-sm xui-my-1">{formError}</p>
+            )}
 
             {/* Terms */}
             <div className="xui-d-flex xui-font-sz-small xui-flex-ai-center xui-grid-gap-half xui-my-1">

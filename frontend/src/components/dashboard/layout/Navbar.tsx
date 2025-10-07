@@ -1,19 +1,16 @@
 // src/components/dashboard/layout/Navbar.tsx
 
 import {
-  FiLogOut,
   FiBell,
+  FiLogOut,
+  FiMenu,
+  FiSearch,
   FiSun,
   FiUser,
-  FiSearch,
-  FiMenu,
 } from 'react-icons/fi';
-type NavbarProps = {
-  title: string;
-  subtitle?: string;
-  userName?: string;
-  avatarUrl?: string;
-};
+import { authService } from '../../../services/authService';
+import type { NavbarProps } from '../../../types/dashboard';
+
 export default function Navbar({
   title,
   subtitle,
@@ -43,7 +40,10 @@ export default function Navbar({
         <button className="p-3 rounded-full hover:bg-gray-400/40 bg-white border border-gray-200 xui-d-none xui-md-d-inline-flex">
           <FiSearch className="text-black" size={18} />
         </button>
-        <button className="p-3 rounded-full hover:bg-gray-400/40 relative bg-white border border-gray-200">
+        <button
+          className="p-3 rounded-full hover:bg-gray-400/40 relative bg-white border border-gray-200"
+          onClick={authService.logout}
+        >
           <FiLogOut className="text-black" size={18} />
         </button>
 
