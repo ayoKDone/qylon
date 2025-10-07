@@ -48,13 +48,27 @@ export class AutomatedBotDeploymentService {
     clientId: string,
     teamId?: string,
     hoursAhead: number = 24
-  ): Promise<Array<{ meeting: CalendarMeeting; bot: any; success: boolean; error?: string }>> {
+  ): Promise<
+    Array<{
+      meeting: CalendarMeeting;
+      bot: any;
+      success: boolean;
+      error?: string;
+    }>
+  > {
     try {
       // Get upcoming meetings from calendar integration
-      const upcomingMeetings = await this.getUpcomingMeetings(clientId, teamId, hoursAhead);
+      const upcomingMeetings = await this.getUpcomingMeetings(
+        clientId,
+        teamId,
+        hoursAhead
+      );
 
       if (upcomingMeetings.length === 0) {
-        logger.info('No upcoming meetings found for bot deployment', { clientId, teamId });
+        logger.info('No upcoming meetings found for bot deployment', {
+          clientId,
+          teamId,
+        });
         return [];
       }
 
@@ -68,14 +82,14 @@ export class AutomatedBotDeploymentService {
 
       // Deploy bots for each meeting
       const deploymentResults = await Promise.allSettled(
-        upcomingMeetings.map(async (meeting) => {
+        upcomingMeetings.map(async meeting => {
           try {
             // Check if bot already exists for this meeting
             const existingBot = await this.getExistingBotForMeeting(meeting.id);
             if (existingBot) {
               logger.info('Bot already exists for meeting', {
                 meetingId: meeting.id,
-                botId: existingBot.id
+                botId: existingBot.id,
               });
               return { meeting, bot: existingBot, success: true };
             }
@@ -96,7 +110,7 @@ export class AutomatedBotDeploymentService {
               meetingId: meeting.id,
               botId: bot.id,
               clientId,
-              teamId
+              teamId,
             });
 
             return { meeting, bot, success: true };
@@ -105,7 +119,7 @@ export class AutomatedBotDeploymentService {
               meetingId: meeting.id,
               clientId,
               teamId,
-              error: error.message
+              error: error.message,
             });
             return { meeting, bot: null, success: false, error: error.message };
           }
@@ -120,7 +134,7 @@ export class AutomatedBotDeploymentService {
             meeting: upcomingMeetings[index],
             bot: null,
             success: false,
-            error: result.reason?.message || 'Unknown error'
+            error: result.reason?.message || 'Unknown error',
           };
         }
       });
@@ -131,7 +145,7 @@ export class AutomatedBotDeploymentService {
         teamId,
         totalMeetings: upcomingMeetings.length,
         successfulDeployments: successCount,
-        failedDeployments: results.length - successCount
+        failedDeployments: results.length - successCount,
       });
 
       return results;
@@ -139,7 +153,7 @@ export class AutomatedBotDeploymentService {
       logger.error('Failed to deploy bots for upcoming meetings', {
         clientId,
         teamId,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -162,7 +176,7 @@ export class AutomatedBotDeploymentService {
         return {
           bot: null,
           success: false,
-          error: 'Auto-deployment disabled for client'
+          error: 'Auto-deployment disabled for client',
         };
       }
 
@@ -190,7 +204,7 @@ export class AutomatedBotDeploymentService {
         botId: bot.id,
         clientId,
         teamId,
-        hostName
+        hostName,
       });
 
       return { bot, success: true };
@@ -200,7 +214,7 @@ export class AutomatedBotDeploymentService {
         clientId,
         teamId,
         hostName,
-        error: error.message
+        error: error.message,
       });
       return { bot: null, success: false, error: error.message };
     }
@@ -216,12 +230,13 @@ export class AutomatedBotDeploymentService {
   ): Promise<CalendarMeeting[]> {
     try {
       const now = new Date();
-      const futureTime = new Date(now.getTime() + (hoursAhead * 60 * 60 * 1000));
+      const futureTime = new Date(now.getTime() + hoursAhead * 60 * 60 * 1000);
 
       // Query meetings from database that are scheduled in the future
       const { data: meetings, error } = await this.supabase
         .from('meetings')
-        .select(`
+        .select(
+          `
           id,
           title,
           start_time,
@@ -235,7 +250,8 @@ export class AutomatedBotDeploymentService {
             email,
             role
           )
-        `)
+        `
+        )
         .eq('client_id', clientId)
         .gte('start_time', now.toISOString())
         .lte('start_time', futureTime.toISOString())
@@ -255,14 +271,14 @@ export class AutomatedBotDeploymentService {
         platform: meeting.platform,
         client_id: meeting.client_id,
         team_id: meeting.metadata?.team_id,
-        participants: meeting.meeting_participants || []
+        participants: meeting.meeting_participants || [],
       }));
     } catch (error: any) {
       logger.error('Failed to get upcoming meetings', {
         clientId,
         teamId,
         hoursAhead,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -271,7 +287,9 @@ export class AutomatedBotDeploymentService {
   /**
    * Get bot deployment configuration for a client
    */
-  public async getBotDeploymentConfig(clientId: string): Promise<BotDeploymentConfig> {
+  public async getBotDeploymentConfig(
+    clientId: string
+  ): Promise<BotDeploymentConfig> {
     try {
       const { data: config, error } = await this.supabase
         .from('client_settings')
@@ -279,23 +297,28 @@ export class AutomatedBotDeploymentService {
         .eq('client_id', clientId)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-        throw new Error(`Failed to get bot deployment config: ${error.message}`);
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 = no rows returned
+        throw new Error(
+          `Failed to get bot deployment config: ${error.message}`
+        );
       }
 
       // Return default configuration if none exists
-      return config?.bot_deployment_config || {
-        clientId,
-        autoDeploy: true,
-        platforms: ['zoom', 'teams', 'google_meet', 'webex'],
-        transcriptionProvider: 'recallai_streaming',
-        language: 'en',
-        cleanupAfterHours: 24
-      };
+      return (
+        config?.bot_deployment_config || {
+          clientId,
+          autoDeploy: true,
+          platforms: ['zoom', 'teams', 'google_meet', 'webex'],
+          transcriptionProvider: 'recallai_streaming',
+          language: 'en',
+          cleanupAfterHours: 24,
+        }
+      );
     } catch (error: any) {
       logger.error('Failed to get bot deployment config', {
         clientId,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -324,6 +347,7 @@ export class AutomatedBotDeploymentService {
       // Verify bot still exists in Recall.ai
       try {
         return await this.recallAIService.getBot(botId);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Bot doesn't exist in Recall.ai, remove from metadata
         await this.supabase
@@ -332,8 +356,8 @@ export class AutomatedBotDeploymentService {
             metadata: {
               ...meeting.metadata,
               recall_bot_id: null,
-              recall_bot_token: null
-            }
+              recall_bot_token: null,
+            },
           })
           .eq('id', meetingId);
 
@@ -342,7 +366,7 @@ export class AutomatedBotDeploymentService {
     } catch (error: any) {
       logger.error('Failed to check existing bot for meeting', {
         meetingId,
-        error: error.message
+        error: error.message,
       });
       return null;
     }
@@ -367,8 +391,8 @@ export class AutomatedBotDeploymentService {
             recall_bot_name: bot.name,
             recall_bot_created_at: bot.created_at.toISOString(),
             client_id: clientId,
-            team_id: teamId
-          }
+            team_id: teamId,
+          },
         })
         .eq('id', meetingId);
 
@@ -376,7 +400,7 @@ export class AutomatedBotDeploymentService {
         meetingId,
         botId: bot.id,
         clientId,
-        teamId
+        teamId,
       });
     } catch (error: any) {
       logger.error('Failed to store bot information', {
@@ -384,7 +408,7 @@ export class AutomatedBotDeploymentService {
         botId: bot.id,
         clientId,
         teamId,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -414,8 +438,8 @@ export class AutomatedBotDeploymentService {
             is_on_the_fly: true,
             host_name: hostName,
             team_id: teamId,
-            created_via: 'automated_bot_deployment'
-          }
+            created_via: 'automated_bot_deployment',
+          },
         })
         .select()
         .single();
@@ -431,7 +455,7 @@ export class AutomatedBotDeploymentService {
         clientId,
         teamId,
         hostName,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -440,7 +464,9 @@ export class AutomatedBotDeploymentService {
   /**
    * Detect platform from meeting URL
    */
-  private detectPlatformFromUrl(meetingUrl: string): 'zoom' | 'teams' | 'google_meet' | 'webex' | 'other' {
+  private detectPlatformFromUrl(
+    meetingUrl: string
+  ): 'zoom' | 'teams' | 'google_meet' | 'webex' | 'other' {
     const url = meetingUrl.toLowerCase();
 
     if (url.includes('zoom.us')) return 'zoom';
@@ -454,14 +480,20 @@ export class AutomatedBotDeploymentService {
   /**
    * Cleanup inactive bots for a client
    */
-  async cleanupInactiveBots(clientId: string, olderThanHours: number = 24): Promise<number> {
+  async cleanupInactiveBots(
+    clientId: string,
+    olderThanHours: number = 24
+  ): Promise<number> {
     try {
-      return await this.recallAIService.cleanupInactiveBots(clientId, olderThanHours);
+      return await this.recallAIService.cleanupInactiveBots(
+        clientId,
+        olderThanHours
+      );
     } catch (error: any) {
       logger.error('Failed to cleanup inactive bots', {
         clientId,
         olderThanHours,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -475,16 +507,16 @@ export class AutomatedBotDeploymentService {
     config: Partial<BotDeploymentConfig>
   ): Promise<void> {
     try {
-      const { error } = await this.supabase
-        .from('client_settings')
-        .upsert({
-          client_id: clientId,
-          bot_deployment_config: config,
-          updated_at: new Date().toISOString()
-        });
+      const { error } = await this.supabase.from('client_settings').upsert({
+        client_id: clientId,
+        bot_deployment_config: config,
+        updated_at: new Date().toISOString(),
+      });
 
       if (error) {
-        throw new Error(`Failed to update bot deployment config: ${error.message}`);
+        throw new Error(
+          `Failed to update bot deployment config: ${error.message}`
+        );
       }
 
       logger.info('Bot deployment config updated', { clientId, config });
@@ -492,7 +524,7 @@ export class AutomatedBotDeploymentService {
       logger.error('Failed to update bot deployment config', {
         clientId,
         config,
-        error: error.message
+        error: error.message,
       });
       throw error;
     }

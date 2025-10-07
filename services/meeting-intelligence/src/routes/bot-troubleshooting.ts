@@ -40,7 +40,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get bot status', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -86,7 +86,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to diagnose bot issues', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -127,7 +127,7 @@ router.get(
         data: {
           botId,
           screenshots,
-          count: screenshots.length
+          count: screenshots.length,
         },
         timestamp: new Date().toISOString(),
       };
@@ -136,7 +136,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get bot screenshots', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -170,7 +170,10 @@ router.get(
         return;
       }
 
-      const screenshot = await recallAIService.getBotScreenshot(botId, screenshotId);
+      const screenshot = await recallAIService.getBotScreenshot(
+        botId,
+        screenshotId
+      );
 
       const response: ApiResponse<any> = {
         success: true,
@@ -183,7 +186,7 @@ router.get(
       logger.error('Failed to get bot screenshot', {
         botId: req.params.botId,
         screenshotId: req.params.screenshotId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -218,7 +221,9 @@ router.get(
       }
 
       // Generate explorer URL based on region
-      const region = process.env.RECALL_AI_BASE_URL?.includes('us-west-2') ? 'us-west-2' : 'us-east-1';
+      const region = process.env.RECALL_AI_BASE_URL?.includes('us-west-2')
+        ? 'us-west-2'
+        : 'us-east-1';
       const explorerUrl = `https://${region}.recall.ai/dashboard/explorer/bot/${botId}`;
 
       const response: ApiResponse<any> = {
@@ -226,7 +231,7 @@ router.get(
         data: {
           botId,
           explorerUrl,
-          region
+          region,
         },
         timestamp: new Date().toISOString(),
       };
@@ -235,7 +240,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get bot explorer URL', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -273,19 +278,25 @@ router.get(
       const [botStatus, diagnosis, screenshots] = await Promise.allSettled([
         recallAIService.getBotStatus(botId),
         recallAIService.diagnoseBotIssues(botId),
-        recallAIService.getBotScreenshots(botId)
+        recallAIService.getBotScreenshots(botId),
       ]);
 
       const troubleshooting = {
         botId,
         status: botStatus.status === 'fulfilled' ? botStatus.value : null,
         diagnosis: diagnosis.status === 'fulfilled' ? diagnosis.value : null,
-        screenshots: screenshots.status === 'fulfilled' ? screenshots.value : null,
+        screenshots:
+          screenshots.status === 'fulfilled' ? screenshots.value : null,
         errors: {
-          statusError: botStatus.status === 'rejected' ? botStatus.reason?.message : null,
-          diagnosisError: diagnosis.status === 'rejected' ? diagnosis.reason?.message : null,
-          screenshotsError: screenshots.status === 'rejected' ? screenshots.reason?.message : null
-        }
+          statusError:
+            botStatus.status === 'rejected' ? botStatus.reason?.message : null,
+          diagnosisError:
+            diagnosis.status === 'rejected' ? diagnosis.reason?.message : null,
+          screenshotsError:
+            screenshots.status === 'rejected'
+              ? screenshots.reason?.message
+              : null,
+        },
       };
 
       const response: ApiResponse<any> = {
@@ -298,7 +309,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get comprehensive troubleshooting info', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -323,7 +334,10 @@ router.get(
       const { errorCode } = req.params;
       const { subCode } = req.query;
 
-      const troubleshootingGuide = getTroubleshootingGuide(errorCode, subCode as string);
+      const troubleshootingGuide = getTroubleshootingGuide(
+        errorCode,
+        subCode as string
+      );
 
       const response: ApiResponse<any> = {
         success: true,
@@ -336,7 +350,7 @@ router.get(
       logger.error('Failed to get troubleshooting guide', {
         errorCode: req.params.errorCode,
         subCode: req.query.subCode,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -353,7 +367,10 @@ router.get(
 /**
  * Get troubleshooting guide for specific error codes
  */
-function getTroubleshootingGuide(errorCode: string, subCode?: string): {
+function getTroubleshootingGuide(
+  errorCode: string,
+  subCode?: string
+): {
   errorCode: string;
   subCode?: string;
   title: string;
@@ -363,107 +380,110 @@ function getTroubleshootingGuide(errorCode: string, subCode?: string): {
   relatedLinks: string[];
 } {
   const guides: Record<string, any> = {
-    'meeting_not_found': {
+    meeting_not_found: {
       title: 'Meeting Not Found',
-      description: 'The bot was unable to find the meeting at the provided URL.',
+      description:
+        'The bot was unable to find the meeting at the provided URL.',
       steps: [
         'Verify the meeting URL is correct and complete',
         'Check if the meeting has been cancelled or rescheduled',
         'Ensure the meeting exists and is accessible',
-        'Try creating a new meeting and updating the URL'
+        'Try creating a new meeting and updating the URL',
       ],
       prevention: [
         'Always verify meeting URLs before deployment',
         'Use calendar integration to get accurate meeting URLs',
-        'Implement URL validation before bot creation'
+        'Implement URL validation before bot creation',
       ],
       relatedLinks: [
         'https://docs.recall.ai/troubleshooting/meeting-not-found',
-        'https://docs.recall.ai/guides/meeting-url-validation'
-      ]
+        'https://docs.recall.ai/guides/meeting-url-validation',
+      ],
     },
-    'insufficient_permissions': {
+    insufficient_permissions: {
       title: 'Insufficient Permissions',
-      description: 'The bot does not have the necessary permissions to join the meeting.',
+      description:
+        'The bot does not have the necessary permissions to join the meeting.',
       steps: [
         'Check meeting settings and ensure bots are allowed',
         'Verify the meeting host has granted necessary permissions',
         'Check if the meeting requires authentication',
-        'Ensure the bot account has proper access rights'
+        'Ensure the bot account has proper access rights',
       ],
       prevention: [
         'Configure meeting settings to allow bots',
         'Use authenticated bot accounts when required',
-        'Test bot permissions before deployment'
+        'Test bot permissions before deployment',
       ],
       relatedLinks: [
         'https://docs.recall.ai/troubleshooting/permissions',
-        'https://docs.recall.ai/guides/bot-authentication'
-      ]
+        'https://docs.recall.ai/guides/bot-authentication',
+      ],
     },
-    'waiting_room_blocked': {
+    waiting_room_blocked: {
       title: 'Bot Stuck in Waiting Room',
       description: 'The bot is waiting to be admitted to the meeting.',
       steps: [
         'Ask the meeting host to admit the bot from the waiting room',
         'Check if the meeting has waiting room enabled',
         'Verify the bot name is recognizable to the host',
-        'Consider disabling waiting room for automated meetings'
+        'Consider disabling waiting room for automated meetings',
       ],
       prevention: [
         'Configure meetings to automatically admit bots',
         'Use recognizable bot names',
-        'Disable waiting room for automated meetings'
+        'Disable waiting room for automated meetings',
       ],
       relatedLinks: [
         'https://docs.recall.ai/troubleshooting/waiting-room',
-        'https://docs.recall.ai/guides/meeting-settings'
-      ]
+        'https://docs.recall.ai/guides/meeting-settings',
+      ],
     },
-    'recording_disabled': {
+    recording_disabled: {
       title: 'Recording Disabled',
       description: 'Recording is disabled for this meeting.',
       steps: [
         'Enable recording in the meeting settings',
         'Check if the meeting platform allows recording',
         'Verify the bot has recording permissions',
-        'Contact the meeting host to enable recording'
+        'Contact the meeting host to enable recording',
       ],
       prevention: [
         'Always enable recording before bot deployment',
         'Configure default recording settings',
-        'Verify recording permissions during setup'
+        'Verify recording permissions during setup',
       ],
       relatedLinks: [
         'https://docs.recall.ai/troubleshooting/recording',
-        'https://docs.recall.ai/guides/recording-setup'
-      ]
-    }
+        'https://docs.recall.ai/guides/recording-setup',
+      ],
+    },
   };
 
-  const guide = guides[errorCode] || guides[subCode || ''] || {
-    title: 'Unknown Error',
-    description: 'An unknown error occurred with the bot.',
-    steps: [
-      'Check the bot status in the Recall.ai dashboard',
-      'Review the bot logs for more details',
-      'Contact Recall.ai support if the issue persists'
-    ],
-    prevention: [
-      'Monitor bot status regularly',
-      'Implement proper error handling',
-      'Keep bot configurations up to date'
-    ],
-    relatedLinks: [
-      'https://docs.recall.ai/troubleshooting',
-      'https://docs.recall.ai/support'
-    ]
-  };
+  const guide = guides[errorCode] ||
+    guides[subCode || ''] || {
+      title: 'Unknown Error',
+      description: 'An unknown error occurred with the bot.',
+      steps: [
+        'Check the bot status in the Recall.ai dashboard',
+        'Review the bot logs for more details',
+        'Contact Recall.ai support if the issue persists',
+      ],
+      prevention: [
+        'Monitor bot status regularly',
+        'Implement proper error handling',
+        'Keep bot configurations up to date',
+      ],
+      relatedLinks: [
+        'https://docs.recall.ai/troubleshooting',
+        'https://docs.recall.ai/support',
+      ],
+    };
 
   return {
     errorCode,
     subCode,
-    ...guide
+    ...guide,
   };
 }
 

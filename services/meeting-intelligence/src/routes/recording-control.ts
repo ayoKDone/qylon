@@ -35,7 +35,7 @@ router.post(
         data: {
           botId,
           action: 'pause_recording',
-          message: 'Recording paused successfully'
+          message: 'Recording paused successfully',
         },
         timestamp: new Date().toISOString(),
       };
@@ -44,7 +44,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to pause recording', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -85,7 +85,7 @@ router.post(
         data: {
           botId,
           action: 'resume_recording',
-          message: 'Recording resumed successfully'
+          message: 'Recording resumed successfully',
         },
         timestamp: new Date().toISOString(),
       };
@@ -94,7 +94,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to resume recording', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -135,7 +135,7 @@ router.post(
         data: {
           botId,
           action: 'start_recording',
-          message: 'Recording started successfully'
+          message: 'Recording started successfully',
         },
         timestamp: new Date().toISOString(),
       };
@@ -144,7 +144,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to start recording', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -185,7 +185,7 @@ router.post(
         data: {
           botId,
           action: 'stop_recording',
-          message: 'Recording stopped successfully'
+          message: 'Recording stopped successfully',
         },
         timestamp: new Date().toISOString(),
       };
@@ -194,7 +194,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to stop recording', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -240,7 +240,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get recording status', {
         botId: req.params.botId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
