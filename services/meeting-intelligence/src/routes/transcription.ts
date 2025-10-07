@@ -39,7 +39,11 @@ router.post(
         return;
       }
 
-      const transcript = await recallAIService.createAsyncTranscript(recordingId, provider, diarization);
+      const transcript = await recallAIService.createAsyncTranscript(
+        recordingId,
+        provider,
+        diarization
+      );
 
       const response: ApiResponse<any> = {
         success: true,
@@ -51,7 +55,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to create async transcript', {
         recordingId: req.params.recordingId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -97,7 +101,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get transcript', {
         transcriptId: req.params.transcriptId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -146,7 +150,9 @@ router.get(
       }
 
       // Download the transcript data
-      const transcriptData = await recallAIService.downloadTranscript(transcript.data.download_url);
+      const transcriptData = await recallAIService.downloadTranscript(
+        transcript.data.download_url
+      );
 
       const response: ApiResponse<any> = {
         success: true,
@@ -156,7 +162,7 @@ router.get(
           data: transcriptData,
           metadata: transcript.metadata,
           provider: transcript.provider,
-          diarization: transcript.diarization
+          diarization: transcript.diarization,
         },
         timestamp: new Date().toISOString(),
       };
@@ -165,7 +171,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to download transcript', {
         transcriptId: req.params.transcriptId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -199,14 +205,15 @@ router.get(
         return;
       }
 
-      const separateAudios = await recallAIService.getSeparateAudios(recordingId);
+      const separateAudios =
+        await recallAIService.getSeparateAudios(recordingId);
 
       const response: ApiResponse<any> = {
         success: true,
         data: {
           recordingId,
           separateAudios,
-          count: separateAudios.length
+          count: separateAudios.length,
         },
         timestamp: new Date().toISOString(),
       };
@@ -215,7 +222,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get separate audios', {
         recordingId: req.params.recordingId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -250,17 +257,20 @@ router.get(
       }
 
       // First get the separate audios
-      const separateAudios = await recallAIService.getSeparateAudios(recordingId);
+      const separateAudios =
+        await recallAIService.getSeparateAudios(recordingId);
 
       // Then get the audio parts
-      const audioParts = await recallAIService.getSeparateAudioParts({ results: separateAudios });
+      const audioParts = await recallAIService.getSeparateAudioParts({
+        results: separateAudios,
+      });
 
       const response: ApiResponse<any> = {
         success: true,
         data: {
           recordingId,
           audioParts,
-          count: audioParts.length
+          count: audioParts.length,
         },
         timestamp: new Date().toISOString(),
       };
@@ -269,7 +279,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get separate audio parts', {
         recordingId: req.params.recordingId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -303,14 +313,15 @@ router.get(
         return;
       }
 
-      const separateVideos = await recallAIService.getSeparateVideos(recordingId);
+      const separateVideos =
+        await recallAIService.getSeparateVideos(recordingId);
 
       const response: ApiResponse<any> = {
         success: true,
         data: {
           recordingId,
           separateVideos,
-          count: separateVideos.length
+          count: separateVideos.length,
         },
         timestamp: new Date().toISOString(),
       };
@@ -319,7 +330,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get separate videos', {
         recordingId: req.params.recordingId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -354,17 +365,20 @@ router.get(
       }
 
       // First get the separate videos
-      const separateVideos = await recallAIService.getSeparateVideos(recordingId);
+      const separateVideos =
+        await recallAIService.getSeparateVideos(recordingId);
 
       // Then get the video parts
-      const videoParts = await recallAIService.getSeparateVideoParts({ results: separateVideos });
+      const videoParts = await recallAIService.getSeparateVideoParts({
+        results: separateVideos,
+      });
 
       const response: ApiResponse<any> = {
         success: true,
         data: {
           recordingId,
           videoParts,
-          count: videoParts.length
+          count: videoParts.length,
         },
         timestamp: new Date().toISOString(),
       };
@@ -373,7 +387,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get separate video parts', {
         recordingId: req.params.recordingId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({

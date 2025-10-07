@@ -41,14 +41,14 @@ describe('Meetings Routes', () => {
       next();
     });
 
-    app.use('/api/meetings', authMiddleware, meetingsRouter);
+    app.use('/api/v1/meetings', authMiddleware, meetingsRouter);
     jest.clearAllMocks();
   });
 
-  describe('GET /api/meetings/client/:clientId', () => {
+  describe('GET /api/v1/meetings/client/:clientId', () => {
     it('should get meetings for authenticated user', async () => {
       const response = await request(app)
-        .get('/api/meetings/client/test-client-id')
+        .get('/api/v1/meetings/client/test-client-id')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -59,7 +59,7 @@ describe('Meetings Routes', () => {
     it('should handle query parameters', async () => {
       const response = await request(app)
         .get(
-          '/api/meetings/client/test-client-id?status=active&limit=10&page=1'
+          '/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1'
         )
         .expect(200);
 
@@ -73,16 +73,18 @@ describe('Meetings Routes', () => {
         res.status(401).json({ error: 'Unauthorized' });
       });
 
-      await request(app).get('/api/meetings/client/test-client-id').expect(401);
+      await request(app)
+        .get('/api/v1/meetings/client/test-client-id')
+        .expect(401);
     });
   });
 
-  describe('GET /api/meetings/:id', () => {
+  describe('GET /api/v1/meetings/:id', () => {
     it('should get specific meeting by ID', async () => {
       const meetingId = 'test-meeting-id';
 
       const response = await request(app)
-        .get(`/api/meetings/${meetingId}`)
+        .get(`/api/v1/meetings/${meetingId}`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -92,7 +94,7 @@ describe('Meetings Routes', () => {
 
     it('should handle invalid meeting ID', async () => {
       const response = await request(app)
-        .get('/api/meetings/invalid-id')
+        .get('/api/v1/meetings/invalid-id')
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -101,7 +103,7 @@ describe('Meetings Routes', () => {
 
     it('should validate UUID format', async () => {
       const response = await request(app)
-        .get('/api/meetings/not-a-uuid')
+        .get('/api/v1/meetings/not-a-uuid')
         .expect(400);
 
       expect(response.body.success).toBe(false);
@@ -109,7 +111,7 @@ describe('Meetings Routes', () => {
     });
   });
 
-  describe('POST /api/meetings', () => {
+  describe('POST /api/v1/meetings', () => {
     it('should create new meeting with valid data', async () => {
       const meetingData = {
         title: 'Test Meeting',
@@ -122,7 +124,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/meetings')
+        .post('/api/v1/meetings')
         .send(meetingData)
         .expect(201);
 
@@ -139,7 +141,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/meetings')
+        .post('/api/v1/meetings')
         .send(invalidData)
         .expect(400);
 
@@ -156,7 +158,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/meetings')
+        .post('/api/v1/meetings')
         .send(invalidData)
         .expect(400);
 
@@ -173,7 +175,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .post('/api/meetings')
+        .post('/api/v1/meetings')
         .send(invalidData)
         .expect(400);
 
@@ -184,7 +186,7 @@ describe('Meetings Routes', () => {
     });
   });
 
-  describe('PUT /api/meetings/:id', () => {
+  describe('PUT /api/v1/meetings/:id', () => {
     it('should update meeting with valid data', async () => {
       const meetingId = 'test-meeting-id';
       const updateData = {
@@ -193,7 +195,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .put(`/api/meetings/${meetingId}`)
+        .put(`/api/v1/meetings/${meetingId}`)
         .send(updateData)
         .expect(200);
 
@@ -209,7 +211,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .put(`/api/meetings/${meetingId}`)
+        .put(`/api/v1/meetings/${meetingId}`)
         .send(updateData)
         .expect(404);
 
@@ -224,7 +226,7 @@ describe('Meetings Routes', () => {
       };
 
       const response = await request(app)
-        .put(`/api/meetings/${meetingId}`)
+        .put(`/api/v1/meetings/${meetingId}`)
         .send(invalidData)
         .expect(400);
 
@@ -233,12 +235,12 @@ describe('Meetings Routes', () => {
     });
   });
 
-  describe('DELETE /api/meetings/:id', () => {
+  describe('DELETE /api/v1/meetings/:id', () => {
     it('should delete meeting successfully', async () => {
       const meetingId = 'test-meeting-id';
 
       const response = await request(app)
-        .delete(`/api/meetings/${meetingId}`)
+        .delete(`/api/v1/meetings/${meetingId}`)
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -249,7 +251,7 @@ describe('Meetings Routes', () => {
       const meetingId = 'non-existent-meeting-id';
 
       const response = await request(app)
-        .delete(`/api/meetings/${meetingId}`)
+        .delete(`/api/v1/meetings/${meetingId}`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -258,7 +260,7 @@ describe('Meetings Routes', () => {
 
     it('should validate UUID format', async () => {
       const response = await request(app)
-        .delete('/api/meetings/not-a-uuid')
+        .delete('/api/v1/meetings/not-a-uuid')
         .expect(400);
 
       expect(response.body.success).toBe(false);
@@ -269,7 +271,7 @@ describe('Meetings Routes', () => {
   describe('Error handling', () => {
     it('should handle malformed JSON', async () => {
       const response = await request(app)
-        .post('/api/meetings')
+        .post('/api/v1/meetings')
         .set('Content-Type', 'application/json')
         .send('invalid json')
         .expect(400);
@@ -281,7 +283,7 @@ describe('Meetings Routes', () => {
 
   describe('Logging', () => {
     it('should log successful operations', async () => {
-      await request(app).get('/api/meetings').expect(200);
+      await request(app).get('/api/v1/meetings').expect(200);
 
       expect(logger.info).toHaveBeenCalledWith(
         'Meetings retrieved',
@@ -293,7 +295,7 @@ describe('Meetings Routes', () => {
     });
 
     it('should log errors', async () => {
-      await request(app).get('/api/meetings/invalid-id').expect(404);
+      await request(app).get('/api/v1/meetings/invalid-id').expect(404);
 
       expect(logger.error).toHaveBeenCalledWith(
         'Meeting retrieval failed',

@@ -6,7 +6,9 @@ import { rateLimiter } from './middleware/rateLimiter';
 import { requestLogger } from './middleware/requestLogger';
 import eventRoutes, { setEventSubscriber } from './routes/events';
 import healthRoutes from './routes/health';
-import monitoringRoutes, { setEventSubscriberForMonitoring } from './routes/monitoring';
+import monitoringRoutes, {
+  setEventSubscriberForMonitoring,
+} from './routes/monitoring';
 import sagaRoutes from './routes/sagas';
 import { EventSubscriber } from './services/EventSubscriber';
 import { logger } from './utils/logger';
@@ -58,7 +60,7 @@ async function startService() {
     });
   } catch (error: any) {
     logger.error('Failed to start Event Sourcing service', {
-      error: error.message
+      error: error.message,
     });
     process.exit(1);
   }

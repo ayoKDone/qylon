@@ -44,7 +44,7 @@ router.post(
         teamId,
         totalMeetings: results.length,
         successfulDeployments: successCount,
-        failedDeployments: failureCount
+        failedDeployments: failureCount,
       });
 
       const response: ApiResponse<any> = {
@@ -53,7 +53,7 @@ router.post(
           totalMeetings: results.length,
           successfulDeployments: successCount,
           failedDeployments: failureCount,
-          results
+          results,
         },
         timestamp: new Date().toISOString(),
       };
@@ -62,7 +62,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to deploy bots for upcoming meetings', {
         error: error.message,
-        body: req.body
+        body: req.body,
       });
 
       res.status(500).json({
@@ -118,7 +118,7 @@ router.post(
         clientId: client_id,
         teamId: team_id,
         hostName: host_name,
-        botId: result.bot?.id
+        botId: result.bot?.id,
       });
 
       const response: ApiResponse<any> = {
@@ -128,7 +128,7 @@ router.post(
           meeting_url,
           client_id,
           team_id,
-          host_name
+          host_name,
         },
         timestamp: new Date().toISOString(),
       };
@@ -137,7 +137,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to deploy bot for on-the-fly meeting', {
         error: error.message,
-        body: req.body
+        body: req.body,
       });
 
       res.status(500).json({
@@ -161,7 +161,8 @@ router.get(
     try {
       const { clientId } = req.params;
 
-      const config = await botDeploymentService.getBotDeploymentConfig(clientId);
+      const config =
+        await botDeploymentService.getBotDeploymentConfig(clientId);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -173,7 +174,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get bot deployment config', {
         clientId: req.params.clientId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -212,7 +213,7 @@ router.put(
 
       logger.info('Bot deployment config updated', {
         clientId,
-        config
+        config,
       });
 
       const response: ApiResponse<any> = {
@@ -226,7 +227,7 @@ router.put(
       logger.error('Failed to update bot deployment config', {
         clientId: req.params.clientId,
         config: req.body,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -259,7 +260,7 @@ router.post(
       logger.info('Bot cleanup completed', {
         clientId,
         deletedCount,
-        olderThanHours
+        olderThanHours,
       });
 
       const response: ApiResponse<any> = {
@@ -267,7 +268,7 @@ router.post(
         data: {
           deletedCount,
           olderThanHours,
-          clientId
+          clientId,
         },
         timestamp: new Date().toISOString(),
       };
@@ -276,7 +277,7 @@ router.post(
     } catch (error: any) {
       logger.error('Failed to cleanup inactive bots', {
         clientId: req.params.clientId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({
@@ -309,12 +310,15 @@ router.get(
       );
 
       // Get deployment config
-      const config = await botDeploymentService.getBotDeploymentConfig(clientId);
+      const config =
+        await botDeploymentService.getBotDeploymentConfig(clientId);
 
       // Count meetings with bots
       let meetingsWithBots = 0;
       for (const meeting of upcomingMeetings) {
-        const existingBot = await botDeploymentService.getExistingBotForMeeting(meeting.id);
+        const existingBot = await botDeploymentService.getExistingBotForMeeting(
+          meeting.id
+        );
         if (existingBot) {
           meetingsWithBots++;
         }
@@ -329,7 +333,7 @@ router.get(
           meetingsWithBots,
           meetingsWithoutBots: upcomingMeetings.length - meetingsWithBots,
           autoDeployEnabled: config.autoDeploy,
-          config
+          config,
         },
         timestamp: new Date().toISOString(),
       };
@@ -338,7 +342,7 @@ router.get(
     } catch (error: any) {
       logger.error('Failed to get deployment status', {
         clientId: req.params.clientId,
-        error: error.message
+        error: error.message,
       });
 
       res.status(500).json({

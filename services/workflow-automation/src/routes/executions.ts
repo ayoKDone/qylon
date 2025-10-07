@@ -29,7 +29,8 @@ router.post(
           res.status(400).json({
             success: false,
             error: 'ValidationError',
-            message: 'Missing required fields: workflowId, inputData, triggeredBy',
+            message:
+              'Missing required fields: workflowId, inputData, triggeredBy',
             timestamp: new Date().toISOString(),
           });
           return;

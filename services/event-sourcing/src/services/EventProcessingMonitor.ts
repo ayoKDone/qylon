@@ -54,7 +54,7 @@ export class EventProcessingMonitor {
     averageProcessingTime: 0,
     eventsByType: {},
     eventsByAggregateType: {},
-    processingErrors: []
+    processingErrors: [],
   };
 
   private workflowMetrics: WorkflowTriggerMetrics = {
@@ -64,7 +64,7 @@ export class EventProcessingMonitor {
     averageTriggerTime: 0,
     triggersByEventType: {},
     triggersByWorkflowId: {},
-    triggerErrors: []
+    triggerErrors: [],
   };
 
   private processingTimes: number[] = [];
@@ -96,20 +96,26 @@ export class EventProcessingMonitor {
 
     // Update processing times
     this.processingTimes.push(processingTime);
-    this.eventMetrics.averageProcessingTime = this.calculateAverage(this.processingTimes);
+    this.eventMetrics.averageProcessingTime = this.calculateAverage(
+      this.processingTimes
+    );
 
     logger.debug('Event processing completed successfully', {
       eventId: event.id,
       eventType: event.eventType,
       processingTimeMs: processingTime,
-      totalEventsProcessed: this.eventMetrics.totalEventsProcessed
+      totalEventsProcessed: this.eventMetrics.totalEventsProcessed,
     });
   }
 
   /**
    * Record failed event processing
    */
-  recordEventProcessingError(event: Event, error: Error, processingTime: number): void {
+  recordEventProcessingError(
+    event: Event,
+    error: Error,
+    processingTime: number
+  ): void {
     this.eventMetrics.totalEventsProcessed++;
     this.eventMetrics.failedEvents++;
     this.eventMetrics.lastProcessedAt = new Date().toISOString();
@@ -118,24 +124,27 @@ export class EventProcessingMonitor {
     this.eventMetrics.processingErrors.push({
       eventId: event.id,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Keep only last 100 errors
     if (this.eventMetrics.processingErrors.length > 100) {
-      this.eventMetrics.processingErrors = this.eventMetrics.processingErrors.slice(-100);
+      this.eventMetrics.processingErrors =
+        this.eventMetrics.processingErrors.slice(-100);
     }
 
     // Update processing times
     this.processingTimes.push(processingTime);
-    this.eventMetrics.averageProcessingTime = this.calculateAverage(this.processingTimes);
+    this.eventMetrics.averageProcessingTime = this.calculateAverage(
+      this.processingTimes
+    );
 
     logger.error('Event processing failed', {
       eventId: event.id,
       eventType: event.eventType,
       error: error.message,
       processingTimeMs: processingTime,
-      totalFailedEvents: this.eventMetrics.failedEvents
+      totalFailedEvents: this.eventMetrics.failedEvents,
     });
   }
 
@@ -155,19 +164,25 @@ export class EventProcessingMonitor {
 
     // Update trigger times
     this.triggerTimes.push(triggerTime);
-    this.workflowMetrics.averageTriggerTime = this.calculateAverage(this.triggerTimes);
+    this.workflowMetrics.averageTriggerTime = this.calculateAverage(
+      this.triggerTimes
+    );
 
     logger.debug('Workflow trigger executed successfully', {
       triggerId,
       triggerTimeMs: triggerTime,
-      totalTriggersExecuted: this.workflowMetrics.totalTriggersExecuted
+      totalTriggersExecuted: this.workflowMetrics.totalTriggersExecuted,
     });
   }
 
   /**
    * Record failed workflow trigger execution
    */
-  recordWorkflowTriggerError(triggerId: string, error: Error, triggerTime: number): void {
+  recordWorkflowTriggerError(
+    triggerId: string,
+    error: Error,
+    triggerTime: number
+  ): void {
     this.workflowMetrics.totalTriggersExecuted++;
     this.workflowMetrics.failedTriggers++;
 
@@ -175,23 +190,26 @@ export class EventProcessingMonitor {
     this.workflowMetrics.triggerErrors.push({
       triggerId,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Keep only last 100 errors
     if (this.workflowMetrics.triggerErrors.length > 100) {
-      this.workflowMetrics.triggerErrors = this.workflowMetrics.triggerErrors.slice(-100);
+      this.workflowMetrics.triggerErrors =
+        this.workflowMetrics.triggerErrors.slice(-100);
     }
 
     // Update trigger times
     this.triggerTimes.push(triggerTime);
-    this.workflowMetrics.averageTriggerTime = this.calculateAverage(this.triggerTimes);
+    this.workflowMetrics.averageTriggerTime = this.calculateAverage(
+      this.triggerTimes
+    );
 
     logger.error('Workflow trigger execution failed', {
       triggerId,
       error: error.message,
       triggerTimeMs: triggerTime,
-      totalFailedTriggers: this.workflowMetrics.failedTriggers
+      totalFailedTriggers: this.workflowMetrics.failedTriggers,
     });
   }
 
@@ -213,18 +231,33 @@ export class EventProcessingMonitor {
    * Get system health status
    */
   getSystemHealth(): SystemHealth {
-    const eventSuccessRate = this.eventMetrics.totalEventsProcessed > 0
-      ? (this.eventMetrics.successfulEvents / this.eventMetrics.totalEventsProcessed) * 100
-      : 100;
+    const eventSuccessRate =
+      this.eventMetrics.totalEventsProcessed > 0
+        ? (this.eventMetrics.successfulEvents /
+            this.eventMetrics.totalEventsProcessed) *
+          100
+        : 100;
 
-    const triggerSuccessRate = this.workflowMetrics.totalTriggersExecuted > 0
-      ? (this.workflowMetrics.successfulTriggers / this.workflowMetrics.totalTriggersExecuted) * 100
-      : 100;
+    const triggerSuccessRate =
+      this.workflowMetrics.totalTriggersExecuted > 0
+        ? (this.workflowMetrics.successfulTriggers /
+            this.workflowMetrics.totalTriggersExecuted) *
+          100
+        : 100;
 
-    const eventProcessingStatus = this.getHealthStatus(eventSuccessRate, this.eventMetrics.averageProcessingTime);
-    const workflowTriggerStatus = this.getHealthStatus(triggerSuccessRate, this.workflowMetrics.averageTriggerTime);
+    const eventProcessingStatus = this.getHealthStatus(
+      eventSuccessRate,
+      this.eventMetrics.averageProcessingTime
+    );
+    const workflowTriggerStatus = this.getHealthStatus(
+      triggerSuccessRate,
+      this.workflowMetrics.averageTriggerTime
+    );
 
-    const overallStatus = this.getOverallHealthStatus(eventProcessingStatus, workflowTriggerStatus);
+    const overallStatus = this.getOverallHealthStatus(
+      eventProcessingStatus,
+      workflowTriggerStatus
+    );
 
     const recommendations = this.generateRecommendations(
       eventSuccessRate,
@@ -238,15 +271,15 @@ export class EventProcessingMonitor {
       eventProcessing: {
         status: eventProcessingStatus,
         successRate: eventSuccessRate,
-        averageProcessingTime: this.eventMetrics.averageProcessingTime
+        averageProcessingTime: this.eventMetrics.averageProcessingTime,
       },
       workflowTriggers: {
         status: workflowTriggerStatus,
         successRate: triggerSuccessRate,
-        averageTriggerTime: this.workflowMetrics.averageTriggerTime
+        averageTriggerTime: this.workflowMetrics.averageTriggerTime,
       },
       recommendations,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   }
 
@@ -261,7 +294,7 @@ export class EventProcessingMonitor {
       averageProcessingTime: 0,
       eventsByType: {},
       eventsByAggregateType: {},
-      processingErrors: []
+      processingErrors: [],
     };
 
     this.workflowMetrics = {
@@ -271,7 +304,7 @@ export class EventProcessingMonitor {
       averageTriggerTime: 0,
       triggersByEventType: {},
       triggersByWorkflowId: {},
-      triggerErrors: []
+      triggerErrors: [],
     };
 
     this.processingTimes = [];
@@ -291,7 +324,10 @@ export class EventProcessingMonitor {
   /**
    * Determine health status based on success rate and performance
    */
-  private getHealthStatus(successRate: number, averageTime: number): 'healthy' | 'degraded' | 'unhealthy' {
+  private getHealthStatus(
+    successRate: number,
+    averageTime: number
+  ): 'healthy' | 'degraded' | 'unhealthy' {
     if (successRate >= 95 && averageTime < 1000) {
       return 'healthy';
     } else if (successRate >= 80 && averageTime < 5000) {
@@ -329,27 +365,39 @@ export class EventProcessingMonitor {
     const recommendations: string[] = [];
 
     if (eventSuccessRate < 95) {
-      recommendations.push('Event processing success rate is below 95%. Check for system errors and event validation issues.');
+      recommendations.push(
+        'Event processing success rate is below 95%. Check for system errors and event validation issues.'
+      );
     }
 
     if (triggerSuccessRate < 95) {
-      recommendations.push('Workflow trigger success rate is below 95%. Verify workflow definitions and automation service connectivity.');
+      recommendations.push(
+        'Workflow trigger success rate is below 95%. Verify workflow definitions and automation service connectivity.'
+      );
     }
 
     if (avgEventTime > 1000) {
-      recommendations.push('Event processing time is above 1 second. Consider optimizing event handling logic.');
+      recommendations.push(
+        'Event processing time is above 1 second. Consider optimizing event handling logic.'
+      );
     }
 
     if (avgTriggerTime > 5000) {
-      recommendations.push('Workflow trigger execution time is above 5 seconds. Check workflow automation service performance.');
+      recommendations.push(
+        'Workflow trigger execution time is above 5 seconds. Check workflow automation service performance.'
+      );
     }
 
     if (this.eventMetrics.failedEvents > 10) {
-      recommendations.push('High number of failed events detected. Review error logs and system stability.');
+      recommendations.push(
+        'High number of failed events detected. Review error logs and system stability.'
+      );
     }
 
     if (this.workflowMetrics.failedTriggers > 5) {
-      recommendations.push('High number of failed workflow triggers. Verify workflow automation service health.');
+      recommendations.push(
+        'High number of failed workflow triggers. Verify workflow automation service health.'
+      );
     }
 
     if (recommendations.length === 0) {

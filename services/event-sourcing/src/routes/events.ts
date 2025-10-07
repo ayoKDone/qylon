@@ -100,7 +100,7 @@ router.post(
           logger.error('Failed to process event for workflow triggers', {
             eventId: builtEvent.id,
             eventType: builtEvent.eventType,
-            error: error.message
+            error: error.message,
           });
           // Don't fail the event creation if workflow processing fails
         }

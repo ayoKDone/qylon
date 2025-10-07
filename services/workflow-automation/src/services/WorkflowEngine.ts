@@ -81,7 +81,11 @@ export class WorkflowEngine {
     }
   ): Promise<WorkflowExecution> {
     try {
-      logWorkflow('event_driven_workflow_execution_started', workflowId, triggeredBy.eventId);
+      logWorkflow(
+        'event_driven_workflow_execution_started',
+        workflowId,
+        triggeredBy.eventId
+      );
 
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
@@ -102,8 +106,8 @@ export class WorkflowEngine {
             id: triggeredBy.eventId,
             type: triggeredBy.eventType,
             aggregateId: triggeredBy.aggregateId,
-            triggeredAt: new Date().toISOString()
-          }
+            triggeredAt: new Date().toISOString(),
+          },
         },
         input_data: inputData,
         state_history: [],
@@ -111,15 +115,24 @@ export class WorkflowEngine {
       };
 
       // Create workflow execution record with event metadata
-      const execution = await this.createEventDrivenExecution(workflow, executionContext, triggeredBy);
+      const execution = await this.createEventDrivenExecution(
+        workflow,
+        executionContext,
+        triggeredBy
+      );
 
       // Execute workflow asynchronously
       this.executeWorkflowAsync(execution.id, workflow, executionContext);
 
-      logWorkflow('event_driven_workflow_execution_created', workflowId, execution.id, {
-        eventId: triggeredBy.eventId,
-        eventType: triggeredBy.eventType
-      });
+      logWorkflow(
+        'event_driven_workflow_execution_created',
+        workflowId,
+        execution.id,
+        {
+          eventId: triggeredBy.eventId,
+          eventType: triggeredBy.eventType,
+        }
+      );
 
       return execution;
     } catch (error) {
@@ -250,10 +263,10 @@ export class WorkflowEngine {
               event_id: triggeredBy.eventId,
               event_type: triggeredBy.eventType,
               aggregate_id: triggeredBy.aggregateId,
-              triggered_at: new Date().toISOString()
+              triggered_at: new Date().toISOString(),
             },
-            execution_type: 'event_driven'
-          }
+            execution_type: 'event_driven',
+          },
         })
         .select()
         .single();

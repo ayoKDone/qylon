@@ -35,7 +35,7 @@ export class EventSubscriber {
       baseURL: process.env.WORKFLOW_AUTOMATION_URL || 'http://localhost:3005',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
         'User-Agent': 'Qylon-EventSourcing/1.0.0',
       },
     });
@@ -51,7 +51,9 @@ export class EventSubscriber {
         return config;
       },
       error => {
-        logger.error('Workflow Automation API request error', { error: error.message });
+        logger.error('Workflow Automation API request error', {
+          error: error.message,
+        });
         return Promise.reject(error);
       }
     );
@@ -84,11 +86,11 @@ export class EventSubscriber {
     try {
       await this.loadWorkflowTriggers();
       logger.info('Event subscriber initialized successfully', {
-        triggerCount: this.workflowTriggers.size
+        triggerCount: this.workflowTriggers.size,
       });
     } catch (error: any) {
       logger.error('Failed to initialize event subscriber', {
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -104,7 +106,7 @@ export class EventSubscriber {
       if (this.isProcessing) {
         logger.warn('Event processing already in progress, skipping event', {
           eventId: event.id,
-          eventType: event.eventType
+          eventType: event.eventType,
         });
         return;
       }
@@ -116,7 +118,7 @@ export class EventSubscriber {
         eventId: event.id,
         eventType: event.eventType,
         aggregateType: event.aggregateType,
-        aggregateId: event.aggregateId
+        aggregateId: event.aggregateId,
       });
 
       // Find matching workflow triggers
@@ -127,13 +129,13 @@ export class EventSubscriber {
         eventType: event.eventType,
         aggregateType: event.aggregateType,
         availableTriggers: Array.from(this.workflowTriggers.keys()),
-        matchingTriggersCount: matchingTriggers.length
+        matchingTriggersCount: matchingTriggers.length,
       });
 
       if (matchingTriggers.length === 0) {
         logger.debug('No matching workflow triggers found', {
           eventId: event.id,
-          eventType: event.eventType
+          eventType: event.eventType,
         });
 
         // Record successful processing even with no triggers
@@ -145,7 +147,7 @@ export class EventSubscriber {
       logger.info('Found matching workflow triggers', {
         eventId: event.id,
         eventType: event.eventType,
-        triggerCount: matchingTriggers.length
+        triggerCount: matchingTriggers.length,
       });
 
       // Execute matching workflows
@@ -162,9 +164,8 @@ export class EventSubscriber {
         eventId: event.id,
         eventType: event.eventType,
         processingTimeMs: processingTime,
-        triggeredWorkflows: matchingTriggers.length
+        triggeredWorkflows: matchingTriggers.length,
       });
-
     } catch (error: any) {
       const processingTime = Date.now() - startTime;
       this.monitor.recordEventProcessingError(event, error, processingTime);
@@ -173,7 +174,7 @@ export class EventSubscriber {
         eventId: event.id,
         eventType: event.eventType,
         error: error.message,
-        processingTimeMs: processingTime
+        processingTimeMs: processingTime,
       });
       throw error;
     } finally {
@@ -198,7 +199,7 @@ export class EventSubscriber {
           clientId: 'default',
           isActive: true,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         {
           id: 'trigger_transcription_completed',
@@ -209,7 +210,7 @@ export class EventSubscriber {
           clientId: 'default',
           isActive: true,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         {
           id: 'trigger_meeting_summary',
@@ -220,8 +221,8 @@ export class EventSubscriber {
           clientId: 'default',
           isActive: true,
           createdAt: new Date(),
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       ];
 
       // Group triggers by event type for efficient lookup
@@ -235,12 +236,11 @@ export class EventSubscriber {
 
       logger.info('Workflow triggers loaded', {
         totalTriggers: defaultTriggers.length,
-        eventTypes: Array.from(this.workflowTriggers.keys())
+        eventTypes: Array.from(this.workflowTriggers.keys()),
       });
-
     } catch (error: any) {
       logger.error('Failed to load workflow triggers', {
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
@@ -275,7 +275,10 @@ export class EventSubscriber {
   /**
    * Evaluate workflow trigger conditions
    */
-  private evaluateConditions(conditions: WorkflowCondition[], eventData: Record<string, any>): boolean {
+  private evaluateConditions(
+    conditions: WorkflowCondition[],
+    eventData: Record<string, any>
+  ): boolean {
     return conditions.every(condition => {
       const fieldValue = this.getNestedFieldValue(eventData, condition.field);
 
@@ -285,7 +288,10 @@ export class EventSubscriber {
         case 'not_equals':
           return fieldValue !== condition.value;
         case 'contains':
-          return typeof fieldValue === 'string' && fieldValue.includes(condition.value);
+          return (
+            typeof fieldValue === 'string' &&
+            fieldValue.includes(condition.value)
+          );
         case 'greater_than':
           return typeof fieldValue === 'number' && fieldValue > condition.value;
         case 'less_than':
@@ -299,7 +305,10 @@ export class EventSubscriber {
   /**
    * Get nested field value from object using dot notation
    */
-  private getNestedFieldValue(obj: Record<string, any>, fieldPath: string): any {
+  private getNestedFieldValue(
+    obj: Record<string, any>,
+    fieldPath: string
+  ): any {
     return fieldPath.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : undefined;
     }, obj);
@@ -308,7 +317,10 @@ export class EventSubscriber {
   /**
    * Execute a workflow for a trigger
    */
-  private async executeWorkflow(trigger: WorkflowTrigger, event: Event): Promise<void> {
+  private async executeWorkflow(
+    trigger: WorkflowTrigger,
+    event: Event
+  ): Promise<void> {
     const startTime = Date.now();
 
     try {
@@ -319,7 +331,7 @@ export class EventSubscriber {
         eventType: event.eventType,
         triggerId: trigger.id,
         triggerName: trigger.name,
-        workflowId: trigger.workflowId
+        workflowId: trigger.workflowId,
       });
 
       // Prepare workflow execution request
@@ -333,19 +345,19 @@ export class EventSubscriber {
           user_id: event.userId,
           correlation_id: event.correlationId,
           causation_id: event.causationId,
-          metadata: event.metadata
+          metadata: event.metadata,
         },
         context: {
           client_id: trigger.clientId,
           trigger_id: trigger.id,
           trigger_name: trigger.name,
-          event_timestamp: event.timestamp
+          event_timestamp: event.timestamp,
         },
         triggeredBy: {
           eventId: event.id,
           eventType: event.eventType,
-          aggregateId: event.aggregateId
-        }
+          aggregateId: event.aggregateId,
+        },
       };
 
       // Call Workflow Automation service
@@ -362,7 +374,7 @@ export class EventSubscriber {
         triggerId: trigger.id,
         workflowId: trigger.workflowId,
         triggerTimeMs: triggerTime,
-        executionId: response.data.data?.id
+        executionId: response.data.data?.id,
       });
 
       logger.info('Workflow execution initiated successfully', {
@@ -370,9 +382,8 @@ export class EventSubscriber {
         triggerId: trigger.id,
         workflowId: trigger.workflowId,
         triggerTimeMs: triggerTime,
-        executionId: response.data.data?.id
+        executionId: response.data.data?.id,
       });
-
     } catch (error: any) {
       const triggerTime = Date.now() - startTime;
       this.monitor.recordWorkflowTriggerError(trigger.id, error, triggerTime);
@@ -384,7 +395,7 @@ export class EventSubscriber {
         workflowId: trigger.workflowId,
         triggerTimeMs: triggerTime,
         errorMessage: error.message,
-        errorType: error.constructor.name
+        errorType: error.constructor.name,
       });
 
       logger.error('Failed to execute workflow', {
@@ -392,7 +403,7 @@ export class EventSubscriber {
         triggerId: trigger.id,
         workflowId: trigger.workflowId,
         triggerTimeMs: triggerTime,
-        error: error.message
+        error: error.message,
       });
 
       logger.error('Failed to execute workflow for trigger', {
@@ -401,7 +412,7 @@ export class EventSubscriber {
         triggerId: trigger.id,
         triggerName: trigger.name,
         workflowId: trigger.workflowId,
-        error: error.message
+        error: error.message,
       });
 
       // Don't throw error to prevent blocking other triggers
@@ -417,7 +428,7 @@ export class EventSubscriber {
       logger.info('Workflow triggers reloaded successfully');
     } catch (error: any) {
       logger.error('Failed to reload workflow triggers', {
-        error: error.message
+        error: error.message,
       });
       throw error;
     }
