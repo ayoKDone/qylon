@@ -1,6 +1,6 @@
 // src/components/StatCard.tsx
-import { LucideIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { LucideIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface StatCardProps {
   icon: LucideIcon;
@@ -31,7 +31,7 @@ export default function StatCard({
     if (displayValue !== value) {
       setIsUpdating(true);
       setDisplayValue(value);
-      
+
       const timer = setTimeout(() => {
         setIsUpdating(false);
       }, 500);
@@ -41,33 +41,37 @@ export default function StatCard({
   }, [value, displayValue]);
 
   return (
-    <div className={`bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-all duration-300 ${
-      isUpdating ? 'ring-2 ring-blue-400 ' : ''
-    }`}>
+    <div
+      className={`bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-all duration-300 ${
+        isUpdating ? 'ring-2 ring-blue-400 ' : ''
+      }`}
+    >
       <div className="xui-d-flex xui-flex-ai-flex-end xui-flex-jc-space-between mb-4">
         <div className={`${isAnimating ? 'animate-pulse' : ''}`}>
           <Icon className={`w-8 h-8 ${iconColor}`} />
         </div>
         {trendIcon && (
-          <svg 
-            className="w-5 h-5 text-green-500 animate-bounce" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            className="w-5 h-5 text-green-500 animate-bounce"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
             />
           </svg>
         )}
       </div>
-      
-      <div className={`text-4xl font-bold text-gray-800 mb-1 transition-all duration-300 ${
-        isUpdating ? 'scale-110' : ''
-      }`}>
+
+      <div
+        className={`text-4xl font-bold text-gray-800 mb-1 transition-all duration-300 ${
+          isUpdating ? 'scale-110' : ''
+        }`}
+      >
         {displayValue}
       </div>
       <div className="text-sm text-gray-600 mb-2">{label}</div>

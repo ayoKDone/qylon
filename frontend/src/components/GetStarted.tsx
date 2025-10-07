@@ -1,7 +1,7 @@
-import { FeatureList } from "./FeatureList";
-import { TestimonialCarousel } from "./TestimonialCarousel";
-import { PiBrain } from "react-icons/pi";
-import { MdRocketLaunch } from "react-icons/md";
+import { FeatureList } from './FeatureList';
+import { TestimonialCarousel } from './TestimonialCarousel';
+import { PiBrain } from 'react-icons/pi';
+import { MdRocketLaunch } from 'react-icons/md';
 
 export default function GetStarted() {
   return (
@@ -11,7 +11,6 @@ export default function GetStarted() {
         <div className="max-w-md text-center">
           <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-center w-12 h-12 rounded-full bg-purple-100 mb-6 mx-auto">
             <PiBrain className="w-6 h-6 text-purple-500" />
-            
           </div>
 
           <h1 className="text-3xl font-bold mb-4">
@@ -30,7 +29,7 @@ export default function GetStarted() {
           </button>
 
           <p className="text-sm text-gray-500 mt-4">
-            Already have an account?{" "}
+            Already have an account?{' '}
             <a href="/login" className="text-purple-600 font-medium">
               Sign in
             </a>

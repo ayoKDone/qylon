@@ -1,23 +1,23 @@
-import { FaMicrophone } from "react-icons/fa";
-import { FaWandMagicSparkles } from "react-icons/fa6";
-import { MdRocketLaunch } from "react-icons/md";
+import { FaMicrophone } from 'react-icons/fa';
+import { FaWandMagicSparkles } from 'react-icons/fa6';
+import { MdRocketLaunch } from 'react-icons/md';
 
 export function FeatureList() {
   const features = [
     {
       icon: <FaMicrophone className="w-5 h-5 text-cyan-600" />, // teal/blue
-      bg: "bg-cyan-100",
-      text: "Automatic meeting transcription & analysis",
+      bg: 'bg-cyan-100',
+      text: 'Automatic meeting transcription & analysis',
     },
     {
       icon: <FaWandMagicSparkles className="w-5 h-5 text-indigo-600" />, // indigo
-      bg: "bg-indigo-100",
-      text: "AI-generated action items & summaries",
+      bg: 'bg-indigo-100',
+      text: 'AI-generated action items & summaries',
     },
     {
       icon: <MdRocketLaunch className="w-5 h-5 text-purple-600" />, // purple
-      bg: "bg-purple-100",
-      text: "Intelligent workflow automation",
+      bg: 'bg-purple-100',
+      text: 'Intelligent workflow automation',
     },
   ];
 

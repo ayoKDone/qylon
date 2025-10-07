@@ -1,6 +1,6 @@
 // src/components/PageHeader.tsx
-import { ReactNode } from "react";
-import { LucideIcon } from "lucide-react";
+import { ReactNode } from 'react';
+import { LucideIcon } from 'lucide-react';
 
 interface PageHeaderProps {
   title: string;
@@ -9,7 +9,7 @@ interface PageHeaderProps {
     label: string;
     icon?: LucideIcon;
     onClick: () => void;
-    variant?: "primary" | "secondary";
+    variant?: 'primary' | 'secondary';
   };
   secondaryAction?: {
     icon: LucideIcon;
@@ -31,9 +31,7 @@ export default function SectionHeader({
       <div className="xui-d-flex xui-flex-jc-space-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-          {subtitle && (
-            <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
         </div>
 
         <div className="flex items-center gap-3">
@@ -41,9 +39,9 @@ export default function SectionHeader({
             <button
               onClick={primaryAction.onClick}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                primaryAction.variant === "secondary"
-                  ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  : "bg-blue-600 text-white shadow-md"
+                primaryAction.variant === 'secondary'
+                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-blue-600 text-white shadow-md'
               }`}
             >
               {primaryAction.icon && <primaryAction.icon className="w-5 h-5" />}

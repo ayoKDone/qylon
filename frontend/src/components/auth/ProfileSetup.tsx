@@ -1,6 +1,3 @@
-
 export default function ProfileSetup() {
-  return (
-    <div>ProfileSetup</div>
-  )
+  return <div>ProfileSetup</div>;
 }

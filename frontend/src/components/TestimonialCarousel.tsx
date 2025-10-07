@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const testimonials = [
   {
     quote:
-      "Qylon transformed our meeting efficiency by 300%. What used to take hours of manual work now happens automatically in minutes.",
-    name: "Sarah Chen",
-    role: "VP of Operations at TechFlow",
+      'Qylon transformed our meeting efficiency by 300%. What used to take hours of manual work now happens automatically in minutes.',
+    name: 'Sarah Chen',
+    role: 'VP of Operations at TechFlow',
   },
   {
     quote:
-      "Thanks to Qylon, our team saves 10+ hours every week. The AI summaries are spot on and incredibly useful.",
-    name: "David Lee",
-    role: "Head of Product at InnovateX",
+      'Thanks to Qylon, our team saves 10+ hours every week. The AI summaries are spot on and incredibly useful.',
+    name: 'David Lee',
+    role: 'Head of Product at InnovateX',
   },
   {
     quote:
-      "Finally, a tool that turns meetings into something actionable. Our productivity has skyrocketed.",
-    name: "Maria Gonzalez",
-    role: "Project Manager at BrightWorks",
+      'Finally, a tool that turns meetings into something actionable. Our productivity has skyrocketed.',
+    name: 'Maria Gonzalez',
+    role: 'Project Manager at BrightWorks',
   },
 ];
 
@@ -29,7 +29,7 @@ export function TestimonialCarousel() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % testimonials.length);
+      setIndex(prev => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);

@@ -2,19 +2,19 @@
 export default function RecentActivity() {
   const activities = [
     {
-      title: "Created 3 tasks",
-      subtitle: "AI Assistant",
-      time: "2 min ago",
+      title: 'Created 3 tasks',
+      subtitle: 'AI Assistant',
+      time: '2 min ago',
     },
     {
-      title: "Meeting ended",
-      subtitle: "Product Team",
-      time: "15 min ago",
+      title: 'Meeting ended',
+      subtitle: 'Product Team',
+      time: '15 min ago',
     },
     {
-      title: "Synced to ClickUp",
-      subtitle: "Integration",
-      time: "1 hour ago",
+      title: 'Synced to ClickUp',
+      subtitle: 'Integration',
+      time: '1 hour ago',
     },
   ];
 
@@ -29,11 +29,9 @@ export default function RecentActivity() {
             <p className="text-gray-800 font-medium text-sm">
               {activity.title}
             </p>
-            <p className="text-gray-500 text-xs mt-0.5">
-              {activity.subtitle}
-            </p>
+            <p className="text-gray-500 text-xs mt-0.5">{activity.subtitle}</p>
           </div>
-          
+
           <div className="flex-shrink-0 ml-4">
             <span className="text-blue-500 text-xs font-medium">
               {activity.time}

@@ -1,14 +1,18 @@
 // src/components/layout/AuthLayout.tsx
-import { ReactNode } from "react"
-import { Stepper, Step } from "../UI/Stepper"
+import { ReactNode } from 'react';
+import { Stepper, Step } from '../UI/Stepper';
 
 type AuthLayoutProps = {
-  children: ReactNode
-  steps?: Step[]
-  currentStep?: number
-}
+  children: ReactNode;
+  steps?: Step[];
+  currentStep?: number;
+};
 
-export function AuthLayout({ children, steps, currentStep = 0 }: AuthLayoutProps) {
+export function AuthLayout({
+  children,
+  steps,
+  currentStep = 0,
+}: AuthLayoutProps) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -33,7 +37,9 @@ export function AuthLayout({ children, steps, currentStep = 0 }: AuthLayoutProps
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-purple-600 h-2 rounded-full transition-all"
-                  style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                  style={{
+                    width: `${((currentStep + 1) / steps.length) * 100}%`,
+                  }}
                 />
               </div>
             </div>
@@ -46,5 +52,5 @@ export function AuthLayout({ children, steps, currentStep = 0 }: AuthLayoutProps
         <div className="w-full max-w-md">{children}</div>
       </main>
     </div>
-  )
+  );
 }

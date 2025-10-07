@@ -1,6 +1,6 @@
 // src/components/auth/SocialLogin.tsx
-import { GoogleOAuthProvider } from "@react-oauth/google"
-import { GoogleButton } from "./GoogleButton"
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleButton } from './GoogleButton';
 
 export function SocialLogin() {
   return (
@@ -12,7 +12,12 @@ export function SocialLogin() {
           type="button"
           className="py-2.5 flex items-center justify-center gap-2 border rounded-md"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="25"
+            height="25"
+            viewBox="0 0 48 48"
+          >
             <path fill="#ff5722" d="M6 6H22V22H6z"></path>
             <path fill="#4caf50" d="M26 6H42V22H26z"></path>
             <path fill="#ffc107" d="M26 26H42V42H26z"></path>
@@ -22,5 +27,5 @@ export function SocialLogin() {
         </button>
       </div>
     </GoogleOAuthProvider>
-  )
+  );
 }

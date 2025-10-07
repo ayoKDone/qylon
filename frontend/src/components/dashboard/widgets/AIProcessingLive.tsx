@@ -1,32 +1,32 @@
 // src/components/AIProcessingLive.tsx
-import { Cpu } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Cpu } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 interface Task {
   id: string;
   text: string;
-  status: "extracting" | "completed" | "syncing" | "processing";
+  status: 'extracting' | 'completed' | 'syncing' | 'processing';
   timestamp: Date;
 }
 
 export default function AIProcessingLive() {
   const [tasks, setTasks] = useState<Task[]>([
     {
-      id: "1",
-      text: "Sarah to review budget proposal by Friday",
-      status: "extracting",
+      id: '1',
+      text: 'Sarah to review budget proposal by Friday',
+      status: 'extracting',
       timestamp: new Date(),
     },
     {
-      id: "2",
-      text: "Schedule follow-up meeting with clients",
-      status: "completed",
+      id: '2',
+      text: 'Schedule follow-up meeting with clients',
+      status: 'completed',
       timestamp: new Date(),
     },
     {
-      id: "3",
-      text: "Update project timeline in ClickUp",
-      status: "syncing",
+      id: '3',
+      text: 'Update project timeline in ClickUp',
+      status: 'syncing',
       timestamp: new Date(),
     },
   ]);
@@ -40,20 +40,20 @@ export default function AIProcessingLive() {
 
     const interval = setInterval(() => {
       // Simulate status changes
-      setTasks((prevTasks) =>
-        prevTasks.map((task) => {
-          if (task.status === "extracting" && Math.random() > 0.7) {
-            return { ...task, status: "syncing" as const };
+      setTasks(prevTasks =>
+        prevTasks.map(task => {
+          if (task.status === 'extracting' && Math.random() > 0.7) {
+            return { ...task, status: 'syncing' as const };
           }
-          if (task.status === "syncing" && Math.random() > 0.7) {
-            return { ...task, status: "completed" as const };
+          if (task.status === 'syncing' && Math.random() > 0.7) {
+            return { ...task, status: 'completed' as const };
           }
           return task;
         })
       );
 
       // Update active conversations count based on processing tasks
-      setActiveConversations((prev) => {
+      setActiveConversations(prev => {
         const random = Math.random();
         if (random > 0.8) return Math.min(prev + 1, 5); // Max 5 conversations
         if (random < 0.2) return Math.max(prev - 1, 1); // Min 1 conversation
@@ -103,7 +103,7 @@ export default function AIProcessingLive() {
           onClick={() => setIsLive(!isLive)}
           className="text-xs px-3 py-1 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
         >
-          {isLive ? "Pause" : "Resume"}
+          {isLive ? 'Pause' : 'Resume'}
         </button>
       </div>
 
@@ -113,9 +113,7 @@ export default function AIProcessingLive() {
             No active tasks being processed
           </div>
         ) : (
-          tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
-          ))
+          tasks.map(task => <TaskItem key={task.id} task={task} />)
         )}
       </div>
     </div>
@@ -125,27 +123,27 @@ export default function AIProcessingLive() {
 function TaskItem({ task }: { task: Task }) {
   const statusConfig = {
     extracting: {
-      color: "bg-yellow-100 text-yellow-700",
-      border: "border-l-yellow-400",
-      label: "extracting",
+      color: 'bg-yellow-100 text-yellow-700',
+      border: 'border-l-yellow-400',
+      label: 'extracting',
       animate: true,
     },
     completed: {
-      color: "bg-green-100 text-green-700",
-      border: "border-l-green-400",
-      label: "completed",
+      color: 'bg-green-100 text-green-700',
+      border: 'border-l-green-400',
+      label: 'completed',
       animate: false,
     },
     syncing: {
-      color: "bg-blue-100 text-blue-700",
-      border: "border-l-blue-400",
-      label: "syncing",
+      color: 'bg-blue-100 text-blue-700',
+      border: 'border-l-blue-400',
+      label: 'syncing',
       animate: true,
     },
     processing: {
-      color: "bg-purple-100 text-purple-700",
-      border: "border-l-purple-400",
-      label: "processing",
+      color: 'bg-purple-100 text-purple-700',
+      border: 'border-l-purple-400',
+      label: 'processing',
       animate: true,
     },
   };
@@ -165,7 +163,9 @@ function TaskItem({ task }: { task: Task }) {
             <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce delay-200"></div>
           </div>
         )}
-        <span className={`text-xs px-2 py-1 rounded-full font-medium ${config.color}`}>
+        <span
+          className={`text-xs px-2 py-1 rounded-full font-medium ${config.color}`}
+        >
           {config.label}
         </span>
       </div>

@@ -1,7 +1,4 @@
-import {
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useState } from 'react';
 import { captureMethods, faqs } from '../utils/mockdata';
 

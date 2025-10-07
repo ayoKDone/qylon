@@ -1,7 +1,19 @@
 // src/components/TaskItem.tsx
-import { User, Calendar, Zap, Edit2, ExternalLink, Trash2, ChevronDown, Circle, Clock, AlertCircle, CheckCircle2 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  User,
+  Calendar,
+  Zap,
+  Edit2,
+  ExternalLink,
+  Trash2,
+  ChevronDown,
+  Circle,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+} from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
+import { useState } from 'react';
 
 interface TaskAction {
   label: string;
@@ -19,8 +31,8 @@ interface TaskItemProps {
   meeting: string;
   tags: string[];
   description?: string;
-  priority: "high" | "medium" | "low";
-  status: "pending" | "in-progress" | "completed" | "overdue";
+  priority: 'high' | 'medium' | 'low';
+  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
   actions?: TaskAction[];
   onStatusChange?: (id: string, status: string) => void;
   isExpandable?: boolean;
@@ -45,53 +57,53 @@ export default function TaskItem({
   const statusConfig = {
     pending: {
       icon: Circle,
-      color: "text-gray-400",
-      bgColor: "bg-gray-50",
+      color: 'text-gray-400',
+      bgColor: 'bg-gray-50',
     },
-    "in-progress": {
+    'in-progress': {
       icon: Clock,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-50',
     },
     overdue: {
       icon: AlertCircle,
-      color: "text-red-500",
-      bgColor: "bg-red-50",
+      color: 'text-red-500',
+      bgColor: 'bg-red-50',
     },
     completed: {
       icon: CheckCircle2,
-      color: "text-green-500",
-      bgColor: "bg-green-50",
+      color: 'text-green-500',
+      bgColor: 'bg-green-50',
     },
   };
 
   const priorityConfig = {
-    high: "bg-red-100 text-red-700",
-    medium: "bg-amber-100 text-amber-700",
-    low: "bg-blue-100 text-blue-700",
+    high: 'bg-red-100 text-red-700',
+    medium: 'bg-amber-100 text-amber-700',
+    low: 'bg-blue-100 text-blue-700',
   };
 
   const defaultActions: TaskAction[] = [
     {
-      label: "Edit",
+      label: 'Edit',
       icon: Edit2,
-      iconColor: "text-blue-600",
-      bgColor: "bg-blue-50",
-      onClick: () => console.log("Edit", id),
+      iconColor: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      onClick: () => console.log('Edit', id),
     },
     {
-      label: "Open in clickup",
+      label: 'Open in clickup',
       icon: ExternalLink,
-      iconColor: "text-teal-600",
-      bgColor: "bg-teal-50",
-      onClick: () => console.log("Open", id),
+      iconColor: 'text-teal-600',
+      bgColor: 'bg-teal-50',
+      onClick: () => console.log('Open', id),
     },
     {
-      label: "Delete",
+      label: 'Delete',
       icon: Trash2,
-      iconColor: "text-red-600",
-      bgColor: "bg-red-50",
-      onClick: () => console.log("Delete", id),
+      iconColor: 'text-red-600',
+      bgColor: 'bg-red-50',
+      onClick: () => console.log('Delete', id),
     },
   ];
 
@@ -113,15 +125,23 @@ export default function TaskItem({
         <div className="flex-1">
           {/* Title and Priority */}
           <div className="xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between gap-4 mb-2">
-            <h3 className={`text-base font-semibold text-gray-900 ${status === "completed" ? "line-through text-slate-300" : ""}`}>
+            <h3
+              className={`text-base font-semibold text-gray-900 ${status === 'completed' ? 'line-through text-slate-300' : ''}`}
+            >
               {title}
             </h3>
             <div className="xui-d-flex xui-flex-ai-center gap-2">
-              <span className={`px-2 py-1 rounded text-xs font-medium ${priorityConfig[priority]}`}>
+              <span
+                className={`px-2 py-1 rounded text-xs font-medium ${priorityConfig[priority]}`}
+              >
                 {priority}
               </span>
               <button className="p-1 hover:bg-gray-100 rounded">
-                <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                 </svg>
               </button>
@@ -130,7 +150,9 @@ export default function TaskItem({
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="p-1 hover:bg-gray-100 rounded transition-transform"
                 >
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                  <ChevronDown
+                    className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                  />
                 </button>
               )}
             </div>
@@ -180,7 +202,7 @@ export default function TaskItem({
                   <button
                     key={index}
                     onClick={action.onClick}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${action.bgColor || "bg-gray-100"} ${action.iconColor || "text-gray-700"}`}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${action.bgColor || 'bg-gray-100'} ${action.iconColor || 'text-gray-700'}`}
                   >
                     <Icon className="w-4 h-4" />
                     {action.label}

@@ -1,6 +1,6 @@
 // src/components/TaskStats.tsx
-import { Target, CheckCircle2, AlertCircle, Clock } from "lucide-react";
-import { LucideIcon } from "lucide-react";
+import { Target, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 interface StatItem {
   icon: LucideIcon;
@@ -18,30 +18,30 @@ export default function TaskStats({ stats }: TaskStatsProps) {
   const defaultStats: StatItem[] = [
     {
       icon: Target,
-      iconColor: "text-cyan-500",
-      iconBgColor: "bg-cyan-50",
-      label: "Total Tasks",
+      iconColor: 'text-cyan-500',
+      iconBgColor: 'bg-cyan-50',
+      label: 'Total Tasks',
       value: 4,
     },
     {
       icon: CheckCircle2,
-      iconColor: "text-green-500",
-      iconBgColor: "bg-green-50",
-      label: "Completed",
+      iconColor: 'text-green-500',
+      iconBgColor: 'bg-green-50',
+      label: 'Completed',
       value: 1,
     },
     {
       icon: AlertCircle,
-      iconColor: "text-red-500",
-      iconBgColor: "bg-red-50",
-      label: "Overdue",
+      iconColor: 'text-red-500',
+      iconBgColor: 'bg-red-50',
+      label: 'Overdue',
       value: 1,
     },
     {
       icon: Clock,
-      iconColor: "text-amber-500",
-      iconBgColor: "bg-amber-50",
-      label: "In Progress",
+      iconColor: 'text-amber-500',
+      iconBgColor: 'bg-amber-50',
+      label: 'In Progress',
       value: 1,
     },
   ];
@@ -58,12 +58,14 @@ export default function TaskStats({ stats }: TaskStatsProps) {
             className="bg-white xui-bdr-rad-2 p-6 border border-gray-200"
           >
             <div className="xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between mb-3">
-                <div className={`w-10 h-10 rounded-full ${stat.iconBgColor} xui-d-flex xui-flex-ai-center xui-flex-jc-center`}>
-                    <Icon className={`w-5 h-5 ${stat.iconColor}`} />
-                </div>
-                <div className="text-3xl font-bold text-gray-900 mb-1">
-                    {stat.value}
-                </div>
+              <div
+                className={`w-10 h-10 rounded-full ${stat.iconBgColor} xui-d-flex xui-flex-ai-center xui-flex-jc-center`}
+              >
+                <Icon className={`w-5 h-5 ${stat.iconColor}`} />
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {stat.value}
+              </div>
             </div>
             <div className="text-sm text-gray-600">{stat.label}</div>
           </div>

@@ -1,7 +1,11 @@
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth"; // or context
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth'; // or context
 
-export default function ProtectedRoute({ children }: { children: JSX.Element }) {
+export default function ProtectedRoute({
+  children,
+}: {
+  children: JSX.Element;
+}) {
   const { user, loading } = useAuth(); // this comes from Supabase or your AuthContext
 
   if (loading) return <div>Loading...</div>;

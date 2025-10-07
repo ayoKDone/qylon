@@ -1,5 +1,5 @@
 // src/components/TeamMemberCard.tsx
-import { Star, Flame } from "lucide-react";
+import { Star, Flame } from 'lucide-react';
 
 interface TeamMemberCardProps {
   name: string;
@@ -82,11 +82,15 @@ export default function TeamMemberCard({
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4 mb-3">
         <div>
-          <div className="text-lg font-bold text-gray-900">{tasksCompleted}/{totalTasks}</div>
+          <div className="text-lg font-bold text-gray-900">
+            {tasksCompleted}/{totalTasks}
+          </div>
           <div className="text-xs text-gray-500">Tasks</div>
         </div>
         <div>
-          <div className={`text-lg font-bold ${rate >= 90 ? 'text-green-600' : rate >= 80 ? 'text-amber-600' : 'text-red-600'}`}>
+          <div
+            className={`text-lg font-bold ${rate >= 90 ? 'text-green-600' : rate >= 80 ? 'text-amber-600' : 'text-red-600'}`}
+          >
             {rate}%
           </div>
           <div className="text-xs text-gray-500">Rate</div>

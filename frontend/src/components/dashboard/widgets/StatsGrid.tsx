@@ -1,7 +1,7 @@
 // src/components/StatsGrid.tsx
-import { Zap, Clock, Target } from "lucide-react";
-import { useState, useEffect } from "react";
-import StatCard from "./StatCard";
+import { Zap, Clock, Target } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import StatCard from './StatCard';
 
 interface Stats {
   tasksCreated: number;
@@ -14,7 +14,7 @@ export default function StatsGrid() {
   const [stats, setStats] = useState<Stats>({
     tasksCreated: 12,
     tasksToday: 5,
-    timeSaved: "47m",
+    timeSaved: '47m',
     accuracy: 94,
   });
 
@@ -24,12 +24,12 @@ export default function StatsGrid() {
   useEffect(() => {
     const fetchStats = async () => {
       setIsLoading(true);
-      
+
       // TODO: Replace with actual API call
       // const response = await fetch('/api/stats');
       // const data = await response.json();
       // setStats(data);
-      
+
       setIsLoading(false);
     };
 
@@ -38,7 +38,7 @@ export default function StatsGrid() {
     // Poll for updates every 30 seconds
     const interval = setInterval(() => {
       // Simulate random updates for demo
-      setStats((prev) => ({
+      setStats(prev => ({
         tasksCreated: prev.tasksCreated + (Math.random() > 0.7 ? 1 : 0),
         tasksToday: prev.tasksToday + (Math.random() > 0.8 ? 1 : 0),
         timeSaved: `${parseInt(prev.timeSaved) + (Math.random() > 0.7 ? 2 : 0)}m`,

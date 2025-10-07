@@ -1,5 +1,5 @@
 // src/components/QuickActions.tsx
-import { LucideIcon } from "lucide-react";
+import { LucideIcon } from 'lucide-react';
 
 interface Action {
   icon: LucideIcon;
