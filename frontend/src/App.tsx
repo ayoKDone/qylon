@@ -1,5 +1,10 @@
 import React from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
@@ -21,10 +26,8 @@ import ROI from './components/ROI';
 // New placeholder imports (to be implemented)
 import ForgotPassword from '@/components/auth/ForgotPassword';
 import Login from '@/components/auth/Login';
-import ProfileSetup from '@/components/auth/ProfileSetup';
 import ResetPassword from '@/components/auth/ResetPassword';
 import Signup from '@/components/auth/Signup';
-import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Verification from './components/auth/Verification';
 import Stylexui from './utils/Stylexui';
 
@@ -42,29 +45,22 @@ const AppContent: React.FC = () => {
       <Stylexui />
       <Routes>
         {/* Existing routes */}
-        <Route path='/admin' element={<AdminDashboard />} />
-        <Route path='/app' element={<AppUI />} />
-        <Route path='/demo' element={<ProductDemo />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/app" element={<AppUI />} />
+        <Route path="/demo" element={<ProductDemo />} />
 
         {/* 🔑 Auth routes */}
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/verify' element={<Verification />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
-        <Route
-          path='/setup'
-          element={
-            <ProtectedRoute>
-              <ProfileSetup />
-            </ProtectedRoute>
-          }
-        />
-        <Route path='/get-started' element={<GetStarted />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify" element={<Verification />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        <Route path="/get-started" element={<GetStarted />} />
 
         {/* Landing page */}
         <Route
-          path='/'
+          path="/"
           element={
             <div
               className={`min-h-screen transition-colors duration-300 ${
@@ -85,13 +81,13 @@ const AppContent: React.FC = () => {
         />
 
         {/* Fallback */}
-        <Route path='*' element={<Navigate to='/' replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
 
         {/* Dashboard routes */}
-        <Route path='/dashboard/*' element={<DashboardPage />} />
+        <Route path="/dashboard/*" element={<DashboardPage />} />
 
         {/* Setup routes */}
-        <Route path='/setup/*' element={<SetUpLayout />} />
+        <Route path="/setup/*" element={<SetUpLayout />} />
       </Routes>
     </Router>
   );
