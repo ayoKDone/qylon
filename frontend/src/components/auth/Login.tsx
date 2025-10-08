@@ -1,16 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useSupabaseSession } from '../../hooks/useSupabaseSession';
+import { authService } from '../../services/authService';
+import type { LoginFormInputs } from '../../types/auth';
+import { getErrorMessage } from '../../utils/handleError';
 import { Divider } from '../UI/Divider';
 import { SocialLogin } from '../UI/SocialLogin';
 
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
-
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { user, loading } = useSupabaseSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/dashboard');
+    }
+  }, [user, loading, navigate]);
 
   const {
     register,
@@ -19,9 +28,18 @@ export default function Login() {
   } = useForm<LoginFormInputs>();
 
   const onSubmit = async (data: LoginFormInputs) => {
-    console.log('Login Data:', data);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setError(null);
+    try {
+      await authService.login(data);
+
+      // Redirect after login
+      window.location.href = '/dashboard';
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
+    }
   };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <>
@@ -34,6 +52,11 @@ export default function Login() {
             className='xui-form xui-max-w-500 xui-mx-auto xui-mt-2'
             onSubmit={handleSubmit(onSubmit)}
           >
+            {error && (
+              <div className="text-red-500 text-sm xui-my-1 text-center">
+                {error}
+              </div>
+            )}
             {/* Email */}
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               <label>Email</label>

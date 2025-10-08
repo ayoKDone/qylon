@@ -27,7 +27,6 @@ import Signup from '@/components/auth/Signup';
 import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Verification from './components/auth/Verification';
 import Stylexui from './utils/Stylexui';
-
 // Dashboard imports
 import DashboardPage from '@/pages/Dashboard';
 
@@ -64,9 +63,8 @@ const AppContent: React.FC = () => {
           path='/'
           element={
             <div
-              className={`min-h-screen transition-colors duration-300 ${
-                isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-              }`}
+              className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
+                }`}
             >
               <Header />
               <Hero />
@@ -85,7 +83,14 @@ const AppContent: React.FC = () => {
         <Route path='*' element={<Navigate to='/' replace />} />
 
         {/* Dashboard routes */}
-        <Route path='/dashboard/*' element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
