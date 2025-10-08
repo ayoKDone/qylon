@@ -59,7 +59,7 @@ export class SDKConnection {
       userId: string;
       platform: SDKPlatform;
       apiKey: string;
-    },
+    }
   ) {
     // Validate required fields
     if (!data.userId) {

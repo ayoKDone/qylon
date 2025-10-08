@@ -229,24 +229,24 @@ run_snyk_scan() {
 
     echo "Running Snyk security scan..."
 
-    # Try to run Snyk test and handle authentication failures gracefully
-    if snyk test --severity-threshold=high 2>/dev/null; then
+    # Check if Snyk is authenticated
+    if ! snyk auth --check 2>/dev/null; then
+        print_warning "Snyk not authenticated. Skipping Snyk scan."
+        print_warning "To enable Snyk scanning, run: snyk auth"
+        return 0
+    fi
+
+    if snyk test --severity-threshold=high; then
         print_success "Snyk scan passed"
         return 0
     else
-        local snyk_exit_code=$?
-        if [ $snyk_exit_code -eq 2 ] || [ $snyk_exit_code -eq 1 ]; then
-            # Check if it's an authentication error
-            if snyk test --severity-threshold=high 2>&1 | grep -q "Authentication error\|SNYK-0005"; then
-                print_warning "Snyk not authenticated. Skipping Snyk scan."
-                print_warning "To enable Snyk scanning, run: snyk auth"
-                return 0
-            else
-                print_error "Snyk scan found vulnerabilities"
-                return 1
-            fi
+        # Check if it's an authentication error
+        if snyk test --severity-threshold=high 2>&1 | grep -q "Authentication error"; then
+            print_warning "Snyk authentication error. Skipping Snyk scan."
+            print_warning "To enable Snyk scanning, run: snyk auth"
+            return 0
         else
-            print_error "Snyk scan failed with exit code: $snyk_exit_code"
+            print_error "Snyk scan found vulnerabilities"
             return 1
         fi
     fi
@@ -257,6 +257,10 @@ run_retire_scan() {
     print_section "Retire.js Vulnerability Scan"
 
     if ! check_tool "retire" "npm install -g retire"; then
+<<<<<<< HEAD
+        print_warning "Retire.js not found. Skipping retire.js scan."
+=======
+>>>>>>> origin/dev
         return 0
     fi
 
@@ -275,6 +279,10 @@ run_audit_ci() {
     print_section "Audit-CI Security Scan"
 
     if ! check_tool "audit-ci" "npm install -g audit-ci"; then
+<<<<<<< HEAD
+        print_warning "Audit-ci not found. Skipping audit-ci scan."
+=======
+>>>>>>> origin/dev
         return 0
     fi
 
@@ -293,6 +301,10 @@ run_bandit_scan() {
     print_section "Bandit Python Security Scan"
 
     if ! check_tool "bandit" "pip install bandit"; then
+<<<<<<< HEAD
+        print_warning "Bandit not found. Skipping Bandit scan."
+=======
+>>>>>>> origin/dev
         return 0
     fi
 
@@ -323,6 +335,10 @@ run_trivy_scan() {
     print_section "Trivy Container Security Scan"
 
     if ! check_tool "trivy" "Install Trivy from https://aquasecurity.github.io/trivy/"; then
+<<<<<<< HEAD
+        print_warning "Trivy not found. Skipping Trivy scan."
+=======
+>>>>>>> origin/dev
         return 0
     fi
 

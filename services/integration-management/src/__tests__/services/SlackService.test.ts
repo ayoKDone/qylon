@@ -55,7 +55,7 @@ describe('SlackService', () => {
       service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
       await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow(
-        'Authentication failed',
+        'Authentication failed'
       );
     });
   });
@@ -81,7 +81,7 @@ describe('SlackService', () => {
         expect.objectContaining({
           channelId: 'C1234567890',
           text: 'Hello, World!',
-        }),
+        })
       );
     });
 
@@ -89,7 +89,7 @@ describe('SlackService', () => {
       service.sendMessage.mockRejectedValue(new Error('API Error'));
 
       await expect(service.sendMessage('C1234567890', 'Hello, World!')).rejects.toThrow(
-        'API Error',
+        'API Error'
       );
     });
   });
@@ -125,7 +125,7 @@ describe('SlackService', () => {
           id: 'C1234567890',
           name: 'general',
           isMember: true,
-        }),
+        })
       );
     });
 
@@ -162,7 +162,7 @@ describe('SlackService', () => {
           username: 'john.doe',
           realName: 'John Doe',
           email: 'john@example.com',
-        }),
+        })
       );
     });
 
@@ -192,7 +192,7 @@ describe('SlackService', () => {
         expect.objectContaining({
           teamId: 'T1234567890',
           teamName: 'Test Team',
-        }),
+        })
       );
     });
 
@@ -212,7 +212,7 @@ describe('SlackService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        }),
+        })
       );
     });
   });

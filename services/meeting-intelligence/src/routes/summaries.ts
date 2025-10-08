@@ -24,7 +24,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `,
+      `
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -85,7 +85,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**
@@ -105,7 +105,7 @@ router.post(
           `
         *,
         clients!inner(user_id)
-      `,
+      `
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -168,7 +168,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**

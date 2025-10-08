@@ -33,7 +33,7 @@ router.post(
       const results = await botDeploymentService.deployBotsForUpcomingMeetings(
         clientId,
         teamId,
-        hoursAhead,
+        hoursAhead
       );
 
       const successCount = results.filter(r => r.success).length;
@@ -73,7 +73,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -100,7 +100,7 @@ router.post(
         meeting_url,
         client_id,
         team_id,
-        host_name,
+        host_name
       );
 
       if (!result.success) {
@@ -148,7 +148,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -184,7 +184,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -237,7 +237,7 @@ router.put(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -284,7 +284,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -342,7 +342,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 export default router;

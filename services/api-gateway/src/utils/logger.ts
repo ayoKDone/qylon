@@ -18,7 +18,7 @@ const logFormat = winston.format.combine(
       userId,
       ...meta,
     });
-  }),
+  })
 );
 
 // Create logger instance

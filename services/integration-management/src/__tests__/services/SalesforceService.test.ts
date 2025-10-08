@@ -66,7 +66,7 @@ describe('SalesforceService', () => {
       service.authenticate.mockRejectedValue(new Error('Missing required Salesforce credentials'));
 
       await expect(service.authenticate(invalidCredentials)).rejects.toThrow(
-        'Missing required Salesforce credentials',
+        'Missing required Salesforce credentials'
       );
     });
 

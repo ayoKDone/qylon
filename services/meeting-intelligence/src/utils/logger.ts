@@ -9,7 +9,7 @@ const logger = winston.createLogger({
     }),
     winston.format.errors({ stack: true }),
     winston.format.json(),
-    winston.format.prettyPrint(),
+    winston.format.prettyPrint()
   ),
   defaultMeta: {
     service: 'meeting-intelligence',
@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
       level: 'error',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    }),
+    })
   );
 
   logger.add(
@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'production') {
       filename: 'logs/combined.log',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    }),
+    })
   );
 }
 

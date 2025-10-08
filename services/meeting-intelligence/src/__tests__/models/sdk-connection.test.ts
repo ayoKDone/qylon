@@ -44,7 +44,7 @@ describe('SDKConnection', () => {
 
       expect(connection.id).toBeDefined();
       expect(connection.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
       );
     });
 
@@ -197,7 +197,7 @@ describe('SDKConnection', () => {
       });
 
       expect(() => connection.updateMetadata('invalid-metadata' as any)).toThrow(
-        'Metadata must be an object',
+        'Metadata must be an object'
       );
     });
   });

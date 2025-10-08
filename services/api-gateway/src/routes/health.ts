@@ -85,7 +85,7 @@ router.get('/', async (req: Request, res: Response) => {
 
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
-      services.map(service => checkServiceHealth(service)),
+      services.map(service => checkServiceHealth(service))
     );
 
     const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
@@ -146,7 +146,7 @@ router.get('/detailed', async (req: Request, res: Response) => {
 
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
-      services.map(service => checkServiceHealth(service)),
+      services.map(service => checkServiceHealth(service))
     );
 
     const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {

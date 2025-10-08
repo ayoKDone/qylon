@@ -21,7 +21,7 @@ module.exports = {
     'prefer-const': 'error',
     'no-var': 'error',
     semi: ['error', 'always'],
-    'comma-dangle': ['error', 'always-multiline'],
+    'comma-dangle': 'off', // Let Prettier handle this
   },
   overrides: [
     {

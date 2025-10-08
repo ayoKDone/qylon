@@ -68,7 +68,7 @@ export class AudioProcessor extends EventEmitter {
       enable_auto_gain_control: true,
       target_quality_score: 80,
       max_processing_time_ms: 100,
-    },
+    }
   ) {
     super();
     this.config = config;
@@ -96,7 +96,7 @@ export class AudioProcessor extends EventEmitter {
       const validMimeTypes = ['audio/wav', 'audio/mp3', 'audio/mpeg', 'audio/ogg', 'audio/webm'];
       if (!validMimeTypes.includes(file.mimetype)) {
         errors.push(
-          'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm',
+          'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm'
         );
       }
     }
@@ -115,7 +115,7 @@ export class AudioProcessor extends EventEmitter {
   async processAudioChunk(
     chunk: Buffer,
     chunkIndex: number,
-    totalChunks: number,
+    totalChunks: number
   ): Promise<{
     success: boolean;
     chunkIndex?: number;
@@ -208,7 +208,7 @@ export class AudioProcessor extends EventEmitter {
    * Extract audio metadata
    */
   async extractAudioMetadata(
-    audioBuffer: Buffer,
+    audioBuffer: Buffer
   ): Promise<{ success: boolean; metadata?: any; error?: string }> {
     try {
       if (!audioBuffer || audioBuffer.length === 0) {

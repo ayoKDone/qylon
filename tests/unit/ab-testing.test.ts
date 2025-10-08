@@ -125,13 +125,13 @@ describe('A/B Testing Framework', () => {
 
         const updatedExperiment = await experimentService.updateExperiment(
           experiment.id,
-          updateRequest,
+          updateRequest
         );
 
         expect(updatedExperiment.name).toBe('Updated Test Experiment');
         expect(updatedExperiment.description).toBe('An updated test experiment');
         expect(updatedExperiment.updatedAt.getTime()).toBeGreaterThanOrEqual(
-          experiment.updatedAt.getTime(),
+          experiment.updatedAt.getTime()
         );
       });
 
@@ -141,7 +141,7 @@ describe('A/B Testing Framework', () => {
         };
 
         await expect(
-          experimentService.updateExperiment('non-existent-id', updateRequest),
+          experimentService.updateExperiment('non-existent-id', updateRequest)
         ).rejects.toThrow('Experiment non-existent-id not found');
       });
     });
@@ -205,7 +205,7 @@ describe('A/B Testing Framework', () => {
 
         // Try to start again
         await expect(experimentService.startExperiment(experiment.id)).rejects.toThrow(
-          'Experiment',
+          'Experiment'
         );
       });
     });
@@ -424,7 +424,7 @@ describe('A/B Testing Framework', () => {
         };
 
         await expect(experimentService.recordEvent(eventRequest)).rejects.toThrow(
-          'User user-123 is not assigned to experiment',
+          'User user-123 is not assigned to experiment'
         );
       });
     });
@@ -562,7 +562,7 @@ describe('A/B Testing Framework', () => {
               name: 'API Test Experiment',
             }),
             message: 'Experiment created successfully',
-          }),
+          })
         );
       });
 
@@ -576,7 +576,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: false,
             error: expect.any(String),
-          }),
+          })
         );
       });
     });
@@ -622,7 +622,7 @@ describe('A/B Testing Framework', () => {
               id: createdExperiment.id,
               name: 'API Test Experiment',
             }),
-          }),
+          })
         );
       });
 
@@ -636,7 +636,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: false,
             error: 'Experiment not found',
-          }),
+          })
         );
       });
     });
@@ -692,7 +692,7 @@ describe('A/B Testing Framework', () => {
               variantId: expect.any(String),
             }),
             message: 'User assigned to experiment successfully',
-          }),
+          })
         );
       });
     });
@@ -763,7 +763,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: true,
             message: 'Event recorded successfully',
-          }),
+          })
         );
       });
     });
@@ -810,7 +810,7 @@ describe('A/B Testing Framework', () => {
               analytics: expect.any(Array),
               summary: expect.any(Object),
             }),
-          }),
+          })
         );
       });
     });
@@ -859,7 +859,7 @@ describe('A/B Testing Framework', () => {
               summary: expect.any(Object),
               recommendations: expect.any(Array),
             }),
-          }),
+          })
         );
       });
     });
@@ -873,7 +873,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: true,
             data: expect.any(Array),
-          }),
+          })
         );
       });
     });
@@ -891,7 +891,7 @@ describe('A/B Testing Framework', () => {
               timestamp: expect.any(String),
               version: '1.0.0',
             }),
-          }),
+          })
         );
       });
     });

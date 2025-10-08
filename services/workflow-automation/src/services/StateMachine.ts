@@ -35,7 +35,7 @@ export class StateMachine {
       if (!startState) {
         throw new StateMachineError(
           'No start state found in workflow definition',
-          'NO_START_STATE',
+          'NO_START_STATE'
         );
       }
 
@@ -96,7 +96,7 @@ export class StateMachine {
         if (!nextState) {
           throw new StateMachineError(
             `Next state not found: ${transition.to_state}`,
-            'NEXT_STATE_NOT_FOUND',
+            'NEXT_STATE_NOT_FOUND'
           );
         }
 
@@ -211,7 +211,7 @@ export class StateMachine {
     if (!this.currentState) return;
 
     const stateExecution = this.stateHistory.find(
-      se => se.state_id === this.currentState && !se.exited_at,
+      se => se.state_id === this.currentState && !se.exited_at
     );
 
     if (stateExecution) {
@@ -471,7 +471,7 @@ export class StateMachine {
     const delay = Math.min(
       action.retry_policy.backoff_ms *
         Math.pow(action.retry_policy.backoff_multiplier, actionResult.retry_count - 1),
-      action.retry_policy.max_backoff_ms || 30000,
+      action.retry_policy.max_backoff_ms || 30000
     );
 
     logger.info('Retrying action', {
@@ -599,7 +599,7 @@ export class StateMachine {
    */
   private async evaluateTransition(
     transition: WorkflowTransition,
-    event?: string,
+    event?: string
   ): Promise<boolean> {
     // Check if event matches
     if (transition.event && transition.event !== event) {

@@ -48,7 +48,7 @@ describe('AudioProcessor', () => {
       const result = audioProcessor.validateAudioFile(invalidFile);
       expect(result.isValid).toBe(false);
       expect(result.errors).toContain(
-        'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm',
+        'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm'
       );
     });
 
@@ -126,7 +126,7 @@ describe('AudioProcessor', () => {
       const result = await audioProcessor.processAudioChunk(
         audioChunk,
         invalidChunkIndex,
-        totalChunks,
+        totalChunks
       );
 
       expect(result.success).toBe(false);

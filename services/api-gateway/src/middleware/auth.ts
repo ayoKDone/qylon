@@ -16,7 +16,7 @@ try {
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in auth middleware - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) },
+    { error: error instanceof Error ? error.message : String(error) }
   );
 }
 
@@ -256,7 +256,7 @@ export const optionalAuth = (req: AuthenticatedRequest, res: Response, next: Nex
 export const requireClientAccess = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   (async () => {
     try {

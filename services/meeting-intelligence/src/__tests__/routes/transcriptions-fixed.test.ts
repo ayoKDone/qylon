@@ -449,7 +449,7 @@ describe('Transcriptions Routes', () => {
         expect.objectContaining({
           meetingId: processData.meetingId,
           userId: 'test-user-id',
-        }),
+        })
       );
     });
 
@@ -477,7 +477,7 @@ describe('Transcriptions Routes', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        }),
+        })
       );
     });
   });

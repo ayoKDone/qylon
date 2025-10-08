@@ -108,7 +108,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       previousMessages?: CommunicationMessage[];
-    },
+    }
   ): Promise<AIResponse> {
     try {
       const sessionKey = `${context.userId}_${context.sessionId}`;
@@ -213,7 +213,7 @@ export class AICommunicationService {
       userId: string;
       preferences?: Record<string, any>;
       history?: CommunicationMessage[];
-    },
+    }
   ): Promise<string> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -259,7 +259,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       audience?: string;
-    },
+    }
   ): Promise<string> {
     try {
       const currentSentiment = await this.analyzeSentiment(originalResponse);
@@ -322,7 +322,7 @@ Optimized response:`;
     category: string,
     content: string,
     variables: string[],
-    sentiment?: 'positive' | 'negative' | 'neutral',
+    sentiment?: 'positive' | 'negative' | 'neutral'
   ): Promise<ResponseTemplate> {
     try {
       const template: ResponseTemplate = {
@@ -361,7 +361,7 @@ Optimized response:`;
 
   async updateResponseTemplate(
     templateId: string,
-    updates: Partial<ResponseTemplate>,
+    updates: Partial<ResponseTemplate>
   ): Promise<ResponseTemplate> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -502,7 +502,7 @@ Guidelines:
 
   private async personalizeContent(
     content: string,
-    preferences: Record<string, any>,
+    preferences: Record<string, any>
   ): Promise<string> {
     // Simple personalization based on preferences
     // In a real implementation, this would use AI to personalize content
@@ -526,7 +526,7 @@ Guidelines:
       operation,
       IntegrationType.COMMUNICATION_SLACK, // Using a generic type for AI service
       this.config.userId,
-      data,
+      data
     );
   }
 }

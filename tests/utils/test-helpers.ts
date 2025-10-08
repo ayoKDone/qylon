@@ -281,7 +281,7 @@ export class TestDataGenerator {
   static generateEvent(
     type: string,
     data: any = {},
-    overrides: Partial<MockEvent> = {},
+    overrides: Partial<MockEvent> = {}
   ): MockEvent {
     return {
       id: this.generateId(),
@@ -383,7 +383,7 @@ export class TestUtils {
     return jest
       .fn()
       .mockImplementation(
-        () => new Promise(resolve => setTimeout(() => resolve(returnValue), delay)),
+        () => new Promise(resolve => setTimeout(() => resolve(returnValue), delay))
       );
   }
 

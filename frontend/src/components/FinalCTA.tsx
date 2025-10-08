@@ -28,7 +28,7 @@ const FinalCTA: React.FC = () => {
         }
       } else {
         setSubmitMessage(
-          "🚀 You're in! Welcome to our priority waitlist. You'll receive exclusive early access when we launch!",
+          "🚀 You're in! Welcome to our priority waitlist. You'll receive exclusive early access when we launch!"
         );
 
         // Send welcome email
@@ -45,7 +45,7 @@ const FinalCTA: React.FC = () => {
                 email: email.toLowerCase().trim(),
                 source: 'final-cta',
               }),
-            },
+            }
           );
 
           if (emailResponse.ok) {

@@ -300,7 +300,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       },
       meeting.client_id, // Using client_id as userId for now
       `meeting_${meeting.id}`,
-      `transcription_${recording_id}`,
+      `transcription_${recording_id}`
     );
 
     // Publish transcription completed event
@@ -316,7 +316,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
-      `transcription_${recording_id}`,
+      `transcription_${recording_id}`
     );
 
     logger.info('Transcription completed - meeting updated and events published', {
@@ -557,7 +557,7 @@ async function handleBotDone(event: any): Promise<void> {
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
-    `bot_${bot_id}`,
+    `bot_${bot_id}`
   );
 
   // Publish meeting ended event
@@ -573,7 +573,7 @@ async function handleBotDone(event: any): Promise<void> {
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
-    `bot_${bot_id}`,
+    `bot_${bot_id}`
   );
 }
 
@@ -803,7 +803,7 @@ async function sendFatalErrorAlert(
   errorMessage: string,
   errorCode: string,
   subCode: string,
-  diagnosis: any,
+  diagnosis: any
 ): Promise<void> {
   try {
     // Send to monitoring system
@@ -884,7 +884,7 @@ async function sendClientNotification(clientId: string, notification: any): Prom
           notification,
           timestamp: new Date().toISOString(),
         }),
-      },
+      }
     );
   } catch (error: any) {
     logger.error('Failed to send client notification', {
@@ -989,7 +989,7 @@ async function notifyClientAboutWaitingRoom(botId: string, subCode?: string): Pr
  */
 async function notifyClientAboutRecordingPermission(
   botId: string,
-  subCode?: string,
+  subCode?: string
 ): Promise<void> {
   try {
     // Get meeting and client information
@@ -1046,7 +1046,7 @@ async function notifyClientAboutRecordingPermission(
 async function notifyClientAboutFatalError(
   botId: string,
   subCode?: string,
-  diagnosis?: any,
+  diagnosis?: any
 ): Promise<void> {
   try {
     // Get meeting and client information
@@ -1302,7 +1302,7 @@ async function handleTranscriptDone(event: any): Promise<void> {
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
-      `transcript_${transcript_id}`,
+      `transcript_${transcript_id}`
     );
   } catch (error: any) {
     logger.error('Error handling transcript done', {
@@ -1425,7 +1425,7 @@ async function storeTranscriptData(
   botId: string,
   transcriptId: string,
   recordingId: string,
-  transcriptData: any,
+  transcriptData: any
 ): Promise<void> {
   try {
     // Implementation would store transcript data in database
@@ -1452,7 +1452,7 @@ async function storePartialTranscriptData(
   botId: string,
   transcriptId: string,
   recordingId: string,
-  transcriptData: any,
+  transcriptData: any
 ): Promise<void> {
   try {
     // Implementation would store partial transcript data in database
@@ -1477,7 +1477,7 @@ async function storePartialTranscriptData(
 async function updateTranscriptStatus(
   transcriptId: string,
   status: string,
-  errorData?: any,
+  errorData?: any
 ): Promise<void> {
   try {
     // Implementation would update transcript status in database
@@ -1539,7 +1539,7 @@ async function processPartialTranscription(botId: string, transcriptData: any): 
 async function notifyClientAboutTranscriptionFailure(
   botId: string,
   transcriptId: string,
-  errorData: any,
+  errorData: any
 ): Promise<void> {
   try {
     // Implementation would notify client about transcription failure
@@ -1564,7 +1564,7 @@ async function notifyClientAboutTranscriptionFailure(
 async function processRealTimeAudio(
   botId: string,
   recordingId: string,
-  audioData: any,
+  audioData: any
 ): Promise<void> {
   try {
     // Implementation would process real-time audio data
@@ -1589,7 +1589,7 @@ async function processRealTimeAudio(
 async function processRealTimeVideoPng(
   botId: string,
   recordingId: string,
-  videoData: any,
+  videoData: any
 ): Promise<void> {
   try {
     // Implementation would process real-time video PNG data
@@ -1615,7 +1615,7 @@ async function processRealTimeVideoPng(
 async function processRealTimeVideoH264(
   botId: string,
   recordingId: string,
-  videoData: any,
+  videoData: any
 ): Promise<void> {
   try {
     // Implementation would process real-time video H264 data

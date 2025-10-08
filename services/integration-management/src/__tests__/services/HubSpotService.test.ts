@@ -55,7 +55,7 @@ describe('HubSpotService', () => {
       service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
       await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow(
-        'Authentication failed',
+        'Authentication failed'
       );
     });
   });
@@ -156,7 +156,7 @@ describe('HubSpotService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        }),
+        })
       );
     });
 
@@ -174,7 +174,7 @@ describe('HubSpotService', () => {
       };
 
       await expect(service.createContact(invalidContactData)).rejects.toThrow(
-        'Invalid contact data',
+        'Invalid contact data'
       );
     });
   });
@@ -205,7 +205,7 @@ describe('HubSpotService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        }),
+        })
       );
     });
   });
@@ -228,7 +228,7 @@ describe('HubSpotService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           portalId: '12345678',
-        }),
+        })
       );
     });
 
@@ -248,7 +248,7 @@ describe('HubSpotService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        }),
+        })
       );
     });
   });

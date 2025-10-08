@@ -38,7 +38,7 @@ export class APIKeyManager {
       if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
         this.supabase = createClient(
           process.env.SUPABASE_URL,
-          process.env.SUPABASE_SERVICE_ROLE_KEY,
+          process.env.SUPABASE_SERVICE_ROLE_KEY
         );
         logger.info('Supabase client initialized successfully in APIKeyManager');
       } else {
@@ -48,7 +48,7 @@ export class APIKeyManager {
     } catch (error) {
       logger.warn(
         'Failed to initialize Supabase client in APIKeyManager - running in local development mode',
-        { error: error instanceof Error ? error.message : String(error) },
+        { error: error instanceof Error ? error.message : String(error) }
       );
       this.supabase = null;
     }
@@ -194,7 +194,7 @@ export class APIKeyManager {
       const { data, error } = await this.supabase
         .from('api_keys')
         .select(
-          'id, name, user_id, permissions, expires_at, last_used_at, is_active, created_at, updated_at',
+          'id, name, user_id, permissions, expires_at, last_used_at, is_active, created_at, updated_at'
         )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
@@ -257,7 +257,7 @@ export class APIKeyManager {
   async rotateAPIKey(
     keyId: string,
     userId: string,
-    request: CreateAPIKeyRequest,
+    request: CreateAPIKeyRequest
   ): Promise<APIKeyResponse> {
     try {
       // Get the old key details

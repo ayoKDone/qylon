@@ -128,7 +128,7 @@ export const rateLimiter = (configKey: string = 'default') => {
       if (config.burst && entry.count >= config.burst) {
         const timeSinceFirstRequest = now - (entry.resetTime - config.window);
         const expectedRequests = Math.floor(
-          timeSinceFirstRequest / (config.window / config.requests),
+          timeSinceFirstRequest / (config.window / config.requests)
         );
 
         if (entry.count > expectedRequests) {

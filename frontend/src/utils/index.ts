@@ -104,7 +104,7 @@ export const isValidUrl = (url: string): boolean => {
 // Debounce utility
 export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number,
+  wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
@@ -116,7 +116,7 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
 // Throttle utility
 export const throttle = <T extends (...args: unknown[]) => unknown>(
   func: T,
-  limit: number,
+  limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
   return (...args: Parameters<T>) => {

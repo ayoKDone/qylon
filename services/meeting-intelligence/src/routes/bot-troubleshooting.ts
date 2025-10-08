@@ -51,7 +51,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -97,7 +97,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -147,7 +147,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -194,7 +194,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -248,7 +248,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -311,7 +311,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -349,7 +349,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -357,7 +357,7 @@ router.get(
  */
 function getTroubleshootingGuide(
   errorCode: string,
-  subCode?: string,
+  subCode?: string
 ): {
   errorCode: string;
   subCode?: string;

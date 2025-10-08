@@ -241,7 +241,7 @@ The Qylon Team
         {
           status: 200,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
+        }
       );
     } else {
       throw new Error('Failed to send email');
@@ -257,7 +257,7 @@ The Qylon Team
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      }
     );
   }
 });

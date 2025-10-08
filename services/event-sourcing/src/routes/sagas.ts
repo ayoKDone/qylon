@@ -73,7 +73,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get saga by ID
@@ -144,7 +144,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get sagas by correlation ID
@@ -196,7 +196,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get sagas by status
@@ -260,7 +260,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Execute a specific saga step
@@ -304,7 +304,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Compensate a saga
@@ -345,7 +345,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get available saga definitions
@@ -384,7 +384,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 export default router;

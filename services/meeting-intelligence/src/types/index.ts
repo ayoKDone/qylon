@@ -259,7 +259,7 @@ export class MeetingIntelligenceError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500,
+    public statusCode: number = 500
   ) {
     super(message);
     this.name = 'MeetingIntelligenceError';
@@ -270,7 +270,7 @@ export class RecallAIError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500,
+    public statusCode: number = 500
   ) {
     super(message);
     this.name = 'RecallAIError';
@@ -281,7 +281,7 @@ export class TranscriptionError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500,
+    public statusCode: number = 500
   ) {
     super(message);
     this.name = 'TranscriptionError';

@@ -1,20 +1,16 @@
-import { ReactNode, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSupabaseSession } from '../../hooks/useSupabaseSession';
+import { useAuth } from '@/hooks/useAuth'; // or context
+import { ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 
-type Props = { children: ReactNode };
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth(); // this comes from Supabase or your AuthContext
 
-export default function ProtectedRoute({ children }: Props) {
-  const { user, loading } = useSupabaseSession();
-  const navigate = useNavigate();
+  if (loading) return <div>Loading...</div>;
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login');
-    }
-  }, [loading, user, navigate]);
+  if (!user) {
+    // not logged in → redirect to login
+    return <Navigate to='/login' replace />;
+  }
 
-  if (loading) return <p>Loading...</p>;
-  console.log('ProtectedRoute user:', user);
-  return <>{user && children}</>;
+  return children; // logged in → show the protected page
 }

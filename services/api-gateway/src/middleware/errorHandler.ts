@@ -9,7 +9,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction,
+  _next: NextFunction
 ): void => {
   // Log the error
   logError(error, req);
@@ -93,7 +93,7 @@ export class ValidationError extends Error {
 
   constructor(
     message: string,
-    public details?: any,
+    public details?: any
   ) {
     super(message);
   }

@@ -141,7 +141,7 @@ export class PipedriveService extends BaseCRMService {
               start,
               limit,
             },
-          },
+          }
         );
 
         if (!response.data.success) {
@@ -171,7 +171,7 @@ export class PipedriveService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -189,7 +189,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -257,7 +257,7 @@ export class PipedriveService extends BaseCRMService {
             // Check if opportunity exists in our system
             const existingOpportunity = await this.getOpportunityFromDatabase(
               opportunity.id,
-              userId,
+              userId
             );
 
             if (existingOpportunity) {
@@ -272,7 +272,7 @@ export class PipedriveService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -290,7 +290,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -417,7 +417,7 @@ export class PipedriveService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>,
+    opportunity: Partial<CRMOpportunity>
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
@@ -461,7 +461,7 @@ export class PipedriveService extends BaseCRMService {
         `/persons/${contactId}`,
         {
           params: { api_token: this.apiToken },
-        },
+        }
       );
 
       if (!response.data.success) {
@@ -487,7 +487,7 @@ export class PipedriveService extends BaseCRMService {
         `/deals/${opportunityId}`,
         {
           params: { api_token: this.apiToken },
-        },
+        }
       );
 
       if (!response.data.success) {
@@ -518,7 +518,7 @@ export class PipedriveService extends BaseCRMService {
             fields: 'name,email',
             limit: 50,
           },
-        },
+        }
       );
 
       if (!response.data.success) {
@@ -546,7 +546,7 @@ export class PipedriveService extends BaseCRMService {
             fields: 'title',
             limit: 50,
           },
-        },
+        }
       );
 
       if (!response.data.success) {
@@ -623,7 +623,7 @@ export class PipedriveService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -632,7 +632,7 @@ export class PipedriveService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -640,14 +640,14 @@ export class PipedriveService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -656,7 +656,7 @@ export class PipedriveService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -664,7 +664,7 @@ export class PipedriveService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

@@ -129,7 +129,7 @@ export class HubSpotService extends BaseCRMService {
 
         const response = await this.apiClient.get<HubSpotSearchResponse<HubSpotContact>>(
           '/crm/v3/objects/contacts',
-          { params },
+          { params }
         );
 
         const hubspotContacts = response.data.results;
@@ -155,7 +155,7 @@ export class HubSpotService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Contact ${hubspotContact.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Contact ${hubspotContact.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -173,7 +173,7 @@ export class HubSpotService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -229,7 +229,7 @@ export class HubSpotService extends BaseCRMService {
 
         const response = await this.apiClient.get<HubSpotSearchResponse<HubSpotDeal>>(
           '/crm/v3/objects/deals',
-          { params },
+          { params }
         );
 
         const hubspotDeals = response.data.results;
@@ -243,7 +243,7 @@ export class HubSpotService extends BaseCRMService {
             // Check if opportunity exists in our system
             const existingOpportunity = await this.getOpportunityFromDatabase(
               opportunity.id,
-              userId,
+              userId
             );
 
             if (existingOpportunity) {
@@ -258,7 +258,7 @@ export class HubSpotService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Deal ${hubspotDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Deal ${hubspotDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -276,7 +276,7 @@ export class HubSpotService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -388,7 +388,7 @@ export class HubSpotService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>,
+    opportunity: Partial<CRMOpportunity>
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
@@ -424,7 +424,7 @@ export class HubSpotService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<HubSpotContact>(
-        `/crm/v3/objects/contacts/${contactId}`,
+        `/crm/v3/objects/contacts/${contactId}`
       );
 
       return this.transformContactFromCRM(response.data);
@@ -443,7 +443,7 @@ export class HubSpotService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<HubSpotDeal>(
-        `/crm/v3/objects/deals/${opportunityId}`,
+        `/crm/v3/objects/deals/${opportunityId}`
       );
 
       return this.transformOpportunityFromCRM(response.data);
@@ -486,7 +486,7 @@ export class HubSpotService extends BaseCRMService {
             'lastmodifieddate',
           ],
           limit: 50,
-        },
+        }
       );
 
       return response.data.results.map(contact => this.transformContactFromCRM(contact));
@@ -526,7 +526,7 @@ export class HubSpotService extends BaseCRMService {
             'lastmodifieddate',
           ],
           limit: 50,
-        },
+        }
       );
 
       return response.data.results.map(deal => this.transformOpportunityFromCRM(deal));
@@ -596,7 +596,7 @@ export class HubSpotService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -605,7 +605,7 @@ export class HubSpotService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -613,14 +613,14 @@ export class HubSpotService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -629,7 +629,7 @@ export class HubSpotService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -637,7 +637,7 @@ export class HubSpotService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

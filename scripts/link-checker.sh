@@ -235,12 +235,12 @@ main() {
         # Check specific files
         IFS=',' read -ra files_to_check <<< "$FILES_TO_CHECK"
     else
-        # Find all markdown files
-        files_to_check=($(find . -name "*.md" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./venv/*" -not -path "./.venv/*" 2>/dev/null || true))
+        # Find all markdown files (excluding node_modules and other build directories)
+        files_to_check=($(find . -name "*.md" -not -path "*/node_modules/*" -not -path "./.git/*" -not -path "./venv/*" -not -path "./.venv/*" 2>/dev/null || true))
 
         # Also check README files and documentation
-        files_to_check+=($(find . -name "README*" -not -path "./node_modules/*" -not -path "./.git/*" 2>/dev/null || true))
-        files_to_check+=($(find . -name "*.rst" -not -path "./node_modules/*" -not -path "./.git/*" 2>/dev/null || true))
+        files_to_check+=($(find . -name "README*" -not -path "*/node_modules/*" -not -path "./.git/*" 2>/dev/null || true))
+        files_to_check+=($(find . -name "*.rst" -not -path "*/node_modules/*" -not -path "./.git/*" 2>/dev/null || true))
     fi
 
     if [ ${#files_to_check[@]} -eq 0 ]; then

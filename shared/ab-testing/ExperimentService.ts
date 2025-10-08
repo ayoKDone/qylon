@@ -62,7 +62,7 @@ export class ExperimentService {
    */
   async updateExperiment(
     experimentId: string,
-    request: ExperimentUpdateRequest,
+    request: ExperimentUpdateRequest
   ): Promise<Experiment> {
     const experiment = this.experiments.get(experimentId);
     if (!experiment) {
@@ -129,7 +129,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'draft') {
       throw new Error(
-        `Experiment ${experimentId} cannot be started from status ${experiment.status}`,
+        `Experiment ${experimentId} cannot be started from status ${experiment.status}`
       );
     }
 
@@ -155,7 +155,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'running') {
       throw new Error(
-        `Experiment ${experimentId} cannot be paused from status ${experiment.status}`,
+        `Experiment ${experimentId} cannot be paused from status ${experiment.status}`
       );
     }
 
@@ -180,7 +180,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'running' && experiment.status !== 'paused') {
       throw new Error(
-        `Experiment ${experimentId} cannot be completed from status ${experiment.status}`,
+        `Experiment ${experimentId} cannot be completed from status ${experiment.status}`
       );
     }
 
@@ -257,13 +257,13 @@ export class ExperimentService {
     const assignment = this.assignments.get(`${request.userId}:${request.experimentId}`);
     if (!assignment) {
       throw new Error(
-        `User ${request.userId} is not assigned to experiment ${request.experimentId}`,
+        `User ${request.userId} is not assigned to experiment ${request.experimentId}`
       );
     }
 
     if (assignment.variantId !== request.variantId) {
       throw new Error(
-        `Variant mismatch for user ${request.userId} in experiment ${request.experimentId}`,
+        `Variant mismatch for user ${request.userId} in experiment ${request.experimentId}`
       );
     }
 
@@ -365,7 +365,7 @@ export class ExperimentService {
   private calculateAnalytics(
     experiment: Experiment,
     results: ExperimentResult[],
-    _request?: ExperimentAnalyticsRequest,
+    _request?: ExperimentAnalyticsRequest
   ): ExperimentAnalytics[] {
     const analytics: ExperimentAnalytics[] = [];
 
@@ -403,7 +403,7 @@ export class ExperimentService {
    */
   private calculateSummary(
     experiment: Experiment,
-    analytics: ExperimentAnalytics[],
+    analytics: ExperimentAnalytics[]
   ): ExperimentSummary {
     const totalUsers = analytics.reduce((sum, a) => sum + a.totalUsers, 0);
     const totalSessions = analytics.reduce((sum, a) => sum + a.totalSessions, 0);
@@ -411,11 +411,11 @@ export class ExperimentService {
     const overallConversionRate = totalUsers > 0 ? (totalConversions / totalUsers) * 100 : 0;
 
     const bestPerformingVariant = analytics.reduce((best, current) =>
-      current.conversionRate > best.conversionRate ? current : best,
+      current.conversionRate > best.conversionRate ? current : best
     );
 
     const duration = Math.ceil(
-      (experiment.endDate.getTime() - experiment.startDate.getTime()) / (1000 * 60 * 60 * 24),
+      (experiment.endDate.getTime() - experiment.startDate.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     return {
@@ -436,7 +436,7 @@ export class ExperimentService {
    */
   private calculateVariantReports(
     experiment: Experiment,
-    analytics: ExperimentAnalytics[],
+    analytics: ExperimentAnalytics[]
   ): VariantReport[] {
     const controlVariant = experiment.variants.find(v => v.isControl);
     const controlAnalytics = controlVariant
@@ -476,7 +476,7 @@ export class ExperimentService {
   private generateRecommendations(
     experiment: Experiment,
     analytics: ExperimentAnalytics[],
-    summary: ExperimentSummary,
+    summary: ExperimentSummary
   ): string[] {
     const recommendations: string[] = [];
 
@@ -489,7 +489,7 @@ export class ExperimentService {
     }
 
     const bestVariant = analytics.reduce((best, current) =>
-      current.conversionRate > best.conversionRate ? current : best,
+      current.conversionRate > best.conversionRate ? current : best
     );
 
     if (bestVariant.conversionRate > 0) {
@@ -532,7 +532,7 @@ export class ExperimentService {
    */
   private calculateStatisticalSignificance(
     experiment: Experiment,
-    results: ExperimentResult[],
+    results: ExperimentResult[]
   ): boolean {
     // Simplified calculation
     return results.length > 1000;

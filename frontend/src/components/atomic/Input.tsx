@@ -26,7 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled = false,
       ...props
     },
-    ref,
+    ref
   ) => {
     const baseStyles = 'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
 
@@ -89,7 +89,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {helperText && !error && <p className='mt-1 text-sm text-gray-500'>{helperText}</p>}
       </div>
     );
-  },
+  }
 );
 
 Input.displayName = 'Input';

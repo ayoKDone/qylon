@@ -14,7 +14,7 @@ const logFormat = winston.format.combine(
       service: 'integration-management',
       ...meta,
     });
-  }),
+  })
 );
 
 // Create logger instance
@@ -74,7 +74,7 @@ export const logIntegrationEvent = (
   event: string,
   integrationType: string,
   userId: string,
-  data: Record<string, any> = {},
+  data: Record<string, any> = {}
 ) => {
   logger.info('Integration Event', {
     event,
@@ -89,7 +89,7 @@ export const logIntegrationError = (
   error: Error,
   integrationType: string,
   userId: string,
-  context: Record<string, any> = {},
+  context: Record<string, any> = {}
 ) => {
   logger.error('Integration Error', {
     error: error.message,
@@ -112,7 +112,7 @@ export const logSyncResult = (
     recordsFailed: number;
     duration: number;
     errors?: string[];
-  },
+  }
 ) => {
   logger.info('Sync Result', {
     integrationType,
@@ -126,7 +126,7 @@ export const logSyncResult = (
 export const logPerformance = (
   operation: string,
   duration: number,
-  metadata: Record<string, any> = {},
+  metadata: Record<string, any> = {}
 ) => {
   logger.info('Performance Metric', {
     operation,
@@ -140,7 +140,7 @@ export const logPerformance = (
 export const logSecurityEvent = (
   event: string,
   userId: string,
-  details: Record<string, any> = {},
+  details: Record<string, any> = {}
 ) => {
   logger.warn('Security Event', {
     event,
