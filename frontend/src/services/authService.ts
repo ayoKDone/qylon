@@ -12,7 +12,7 @@ export const authService = {
       {
         email: data.email,
         password: data.password,
-      }
+      },
     );
 
     if (error) {
