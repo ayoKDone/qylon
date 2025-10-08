@@ -78,13 +78,13 @@ export class WorkflowEngine {
       eventId: string;
       eventType: string;
       aggregateId: string;
-    }
+    },
   ): Promise<WorkflowExecution> {
     try {
       logWorkflow(
         'event_driven_workflow_execution_started',
         workflowId,
-        triggeredBy.eventId
+        triggeredBy.eventId,
       );
 
       // Get workflow definition
@@ -93,7 +93,7 @@ export class WorkflowEngine {
         throw new WorkflowError(
           `Workflow not found: ${workflowId}`,
           'WORKFLOW_NOT_FOUND',
-          404
+          404,
         );
       }
 
@@ -118,7 +118,7 @@ export class WorkflowEngine {
       const execution = await this.createEventDrivenExecution(
         workflow,
         executionContext,
-        triggeredBy
+        triggeredBy,
       );
 
       // Execute workflow asynchronously
@@ -131,7 +131,7 @@ export class WorkflowEngine {
         {
           eventId: triggeredBy.eventId,
           eventType: triggeredBy.eventType,
-        }
+        },
       );
 
       return execution;
@@ -247,7 +247,7 @@ export class WorkflowEngine {
       eventId: string;
       eventType: string;
       aggregateId: string;
-    }
+    },
   ): Promise<WorkflowExecution> {
     try {
       const { data, error } = await this.supabase
@@ -274,7 +274,7 @@ export class WorkflowEngine {
       if (error) {
         throw new ExecutionError(
           `Failed to create event-driven execution: ${error.message}`,
-          'EXECUTION_CREATION_FAILED'
+          'EXECUTION_CREATION_FAILED',
         );
       }
 

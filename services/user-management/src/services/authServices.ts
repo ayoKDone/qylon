@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { pool } from '../database';
 import supabase from '../supabaseClient';
 import { LoginResponse, RegisterResponse, User } from '../types';
+import { logger } from '../utils/logger';
 
 export async function registerUser(
   req: Request,

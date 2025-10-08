@@ -55,7 +55,7 @@ export class EventSubscriber {
           error: error.message,
         });
         return Promise.reject(error);
-      }
+      },
     );
 
     this.workflowAutomationClient.interceptors.response.use(
@@ -75,7 +75,7 @@ export class EventSubscriber {
           data: error.response?.data,
         });
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -152,7 +152,7 @@ export class EventSubscriber {
 
       // Execute matching workflows
       const executionPromises = matchingTriggers.map(trigger =>
-        this.executeWorkflow(trigger, event)
+        this.executeWorkflow(trigger, event),
       );
 
       await Promise.allSettled(executionPromises);
@@ -277,7 +277,7 @@ export class EventSubscriber {
    */
   private evaluateConditions(
     conditions: WorkflowCondition[],
-    eventData: Record<string, any>
+    eventData: Record<string, any>,
   ): boolean {
     return conditions.every(condition => {
       const fieldValue = this.getNestedFieldValue(eventData, condition.field);
@@ -307,7 +307,7 @@ export class EventSubscriber {
    */
   private getNestedFieldValue(
     obj: Record<string, any>,
-    fieldPath: string
+    fieldPath: string,
   ): any {
     return fieldPath.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : undefined;
@@ -319,7 +319,7 @@ export class EventSubscriber {
    */
   private async executeWorkflow(
     trigger: WorkflowTrigger,
-    event: Event
+    event: Event,
   ): Promise<void> {
     const startTime = Date.now();
 
@@ -363,7 +363,7 @@ export class EventSubscriber {
       // Call Workflow Automation service
       const response = await this.workflowAutomationClient.post(
         '/api/v1/executions/execute',
-        executionRequest
+        executionRequest,
       );
 
       const triggerTime = Date.now() - startTime;

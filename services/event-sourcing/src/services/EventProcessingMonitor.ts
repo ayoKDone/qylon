@@ -97,7 +97,7 @@ export class EventProcessingMonitor {
     // Update processing times
     this.processingTimes.push(processingTime);
     this.eventMetrics.averageProcessingTime = this.calculateAverage(
-      this.processingTimes
+      this.processingTimes,
     );
 
     logger.debug('Event processing completed successfully', {
@@ -114,7 +114,7 @@ export class EventProcessingMonitor {
   recordEventProcessingError(
     event: Event,
     error: Error,
-    processingTime: number
+    processingTime: number,
   ): void {
     this.eventMetrics.totalEventsProcessed++;
     this.eventMetrics.failedEvents++;
@@ -136,7 +136,7 @@ export class EventProcessingMonitor {
     // Update processing times
     this.processingTimes.push(processingTime);
     this.eventMetrics.averageProcessingTime = this.calculateAverage(
-      this.processingTimes
+      this.processingTimes,
     );
 
     logger.error('Event processing failed', {
@@ -165,7 +165,7 @@ export class EventProcessingMonitor {
     // Update trigger times
     this.triggerTimes.push(triggerTime);
     this.workflowMetrics.averageTriggerTime = this.calculateAverage(
-      this.triggerTimes
+      this.triggerTimes,
     );
 
     logger.debug('Workflow trigger executed successfully', {
@@ -181,7 +181,7 @@ export class EventProcessingMonitor {
   recordWorkflowTriggerError(
     triggerId: string,
     error: Error,
-    triggerTime: number
+    triggerTime: number,
   ): void {
     this.workflowMetrics.totalTriggersExecuted++;
     this.workflowMetrics.failedTriggers++;
@@ -202,7 +202,7 @@ export class EventProcessingMonitor {
     // Update trigger times
     this.triggerTimes.push(triggerTime);
     this.workflowMetrics.averageTriggerTime = this.calculateAverage(
-      this.triggerTimes
+      this.triggerTimes,
     );
 
     logger.error('Workflow trigger execution failed', {
@@ -247,23 +247,23 @@ export class EventProcessingMonitor {
 
     const eventProcessingStatus = this.getHealthStatus(
       eventSuccessRate,
-      this.eventMetrics.averageProcessingTime
+      this.eventMetrics.averageProcessingTime,
     );
     const workflowTriggerStatus = this.getHealthStatus(
       triggerSuccessRate,
-      this.workflowMetrics.averageTriggerTime
+      this.workflowMetrics.averageTriggerTime,
     );
 
     const overallStatus = this.getOverallHealthStatus(
       eventProcessingStatus,
-      workflowTriggerStatus
+      workflowTriggerStatus,
     );
 
     const recommendations = this.generateRecommendations(
       eventSuccessRate,
       triggerSuccessRate,
       this.eventMetrics.averageProcessingTime,
-      this.workflowMetrics.averageTriggerTime
+      this.workflowMetrics.averageTriggerTime,
     );
 
     return {
@@ -326,7 +326,7 @@ export class EventProcessingMonitor {
    */
   private getHealthStatus(
     successRate: number,
-    averageTime: number
+    averageTime: number,
   ): 'healthy' | 'degraded' | 'unhealthy' {
     if (successRate >= 95 && averageTime < 1000) {
       return 'healthy';
@@ -342,7 +342,7 @@ export class EventProcessingMonitor {
    */
   private getOverallHealthStatus(
     eventStatus: 'healthy' | 'degraded' | 'unhealthy',
-    triggerStatus: 'healthy' | 'degraded' | 'unhealthy'
+    triggerStatus: 'healthy' | 'degraded' | 'unhealthy',
   ): 'healthy' | 'degraded' | 'unhealthy' {
     if (eventStatus === 'unhealthy' || triggerStatus === 'unhealthy') {
       return 'unhealthy';
@@ -360,43 +360,43 @@ export class EventProcessingMonitor {
     eventSuccessRate: number,
     triggerSuccessRate: number,
     avgEventTime: number,
-    avgTriggerTime: number
+    avgTriggerTime: number,
   ): string[] {
     const recommendations: string[] = [];
 
     if (eventSuccessRate < 95) {
       recommendations.push(
-        'Event processing success rate is below 95%. Check for system errors and event validation issues.'
+        'Event processing success rate is below 95%. Check for system errors and event validation issues.',
       );
     }
 
     if (triggerSuccessRate < 95) {
       recommendations.push(
-        'Workflow trigger success rate is below 95%. Verify workflow definitions and automation service connectivity.'
+        'Workflow trigger success rate is below 95%. Verify workflow definitions and automation service connectivity.',
       );
     }
 
     if (avgEventTime > 1000) {
       recommendations.push(
-        'Event processing time is above 1 second. Consider optimizing event handling logic.'
+        'Event processing time is above 1 second. Consider optimizing event handling logic.',
       );
     }
 
     if (avgTriggerTime > 5000) {
       recommendations.push(
-        'Workflow trigger execution time is above 5 seconds. Check workflow automation service performance.'
+        'Workflow trigger execution time is above 5 seconds. Check workflow automation service performance.',
       );
     }
 
     if (this.eventMetrics.failedEvents > 10) {
       recommendations.push(
-        'High number of failed events detected. Review error logs and system stability.'
+        'High number of failed events detected. Review error logs and system stability.',
       );
     }
 
     if (this.workflowMetrics.failedTriggers > 5) {
       recommendations.push(
-        'High number of failed workflow triggers. Verify workflow automation service health.'
+        'High number of failed workflow triggers. Verify workflow automation service health.',
       );
     }
 

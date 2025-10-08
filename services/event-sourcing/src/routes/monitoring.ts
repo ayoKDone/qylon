@@ -8,7 +8,7 @@ const router: Router = Router();
 let eventSubscriber: EventSubscriber | null = null;
 
 export function setEventSubscriberForMonitoring(
-  subscriber: EventSubscriber
+  subscriber: EventSubscriber,
 ): void {
   eventSubscriber = subscriber;
 }
