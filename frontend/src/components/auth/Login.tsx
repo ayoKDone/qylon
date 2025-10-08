@@ -30,9 +30,7 @@ export default function Login() {
   const onSubmit = async (data: LoginFormInputs) => {
     setError(null);
     try {
-      const response = await authService.login(data);
-
-      console.log('Login successful:', response);
+      await authService.login(data);
 
       // Redirect after login
       window.location.href = '/dashboard';
