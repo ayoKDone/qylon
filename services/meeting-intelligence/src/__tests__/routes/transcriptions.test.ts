@@ -283,7 +283,7 @@ describe('Transcriptions Routes', () => {
   describe('Authentication', () => {
     it('should require authentication for all endpoints', async () => {
       // Mock auth middleware to reject
-      mockAuthMiddleware.mockImplementation(async (req, res, next) => {
+      mockAuthMiddleware.mockImplementation(async (req, res, _next) => {
         res.status(401).json({
           error: 'Unauthorized',
           message: 'Authentication required',

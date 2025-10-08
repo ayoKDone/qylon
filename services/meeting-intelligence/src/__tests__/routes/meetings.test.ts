@@ -162,7 +162,7 @@ describe('Meetings Routes', () => {
 
     it('should require authentication', async () => {
       // Mock auth middleware to reject
-      mockAuthMiddleware.mockImplementation(async (req, res, next) => {
+      mockAuthMiddleware.mockImplementation(async (req, res, _next) => {
         res.status(401).json({
           error: 'Unauthorized',
           message: 'Authentication required',
@@ -331,13 +331,15 @@ describe('Meetings Routes', () => {
       };
 
       // Mock successful fetch and update
-      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
-        data: mockMeeting,
-        error: null,
-      }).mockResolvedValueOnce({
-        data: { ...mockMeeting, ...updateData },
-        error: null,
-      });
+      mockSupabaseClient.mockQuery.single
+        .mockResolvedValueOnce({
+          data: mockMeeting,
+          error: null,
+        })
+        .mockResolvedValueOnce({
+          data: { ...mockMeeting, ...updateData },
+          error: null,
+        });
 
       const response = await request(app)
         .put(`/api/v1/meetings/${meetingId}`)
@@ -458,7 +460,9 @@ describe('Meetings Routes', () => {
         count: 0,
       });
 
-      await request(app).get('/api/v1/meetings/client/test-client-id').expect(200);
+      await request(app)
+        .get('/api/v1/meetings/client/test-client-id')
+        .expect(200);
 
       expect(logger.info).toHaveBeenCalledWith(
         'Meetings retrieved',
