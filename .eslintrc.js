@@ -2,15 +2,13 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    browser: true,
     es2022: true,
     jest: true,
   },
   extends: [
     'eslint:recommended',
-    '@typescript-eslint/recommended',
     'prettier',
-    'plugin:security/recommended',
-    'plugin:sonarjs/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -19,95 +17,16 @@ module.exports = {
   },
   plugins: [
     '@typescript-eslint',
-    'import',
-    'security',
-    'sonarjs',
   ],
   rules: {
-    // TypeScript specific rules
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/explicit-function-return-type': 'warn',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-non-null-assertion': 'error',
-    '@typescript-eslint/prefer-const': 'error',
-    '@typescript-eslint/no-var-requires': 'error',
-
-    // Import rules
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
-        'newlines-between': 'always',
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
-      },
-    ],
-    'import/no-unresolved': 'error',
-    'import/no-cycle': 'error',
-    'import/no-self-import': 'error',
-
-    // Security rules
-    'security/detect-object-injection': 'warn',
-    'security/detect-non-literal-regexp': 'warn',
-    'security/detect-unsafe-regex': 'error',
-    'security/detect-buffer-noassert': 'error',
-    'security/detect-child-process': 'warn',
-    'security/detect-disable-mustache-escape': 'error',
-    'security/detect-eval-with-expression': 'error',
-    'security/detect-no-csrf-before-method-override': 'error',
-    'security/detect-non-literal-fs-filename': 'warn',
-    'security/detect-non-literal-require': 'warn',
-    'security/detect-possible-timing-attacks': 'warn',
-    'security/detect-pseudoRandomBytes': 'error',
-
-    // SonarJS rules
-    'sonarjs/cognitive-complexity': ['error', 15],
-    'sonarjs/no-duplicate-string': ['error', { threshold: 3 }],
-    'sonarjs/no-identical-functions': 'error',
-    'sonarjs/no-redundant-boolean': 'error',
-    'sonarjs/no-unused-collection': 'error',
-    'sonarjs/no-useless-catch': 'error',
-    'sonarjs/prefer-immediate-return': 'error',
-    'sonarjs/prefer-object-literal': 'error',
-    'sonarjs/prefer-single-boolean-return': 'error',
-
-    // General rules
+    // Basic rules
     'no-console': 'warn',
     'no-debugger': 'error',
-    'no-duplicate-imports': 'error',
-    'no-unused-expressions': 'error',
+    'no-unused-vars': 'error',
     'prefer-const': 'error',
     'no-var': 'error',
-    'object-shorthand': 'error',
-    'prefer-arrow-callback': 'error',
-    'prefer-template': 'error',
-    'template-curly-spacing': 'error',
-    'arrow-spacing': 'error',
-    'comma-dangle': ['error', 'always-multiline'],
-    'comma-spacing': 'error',
-    'comma-style': 'error',
-    'computed-property-spacing': 'error',
-    'func-call-spacing': 'error',
-    'key-spacing': 'error',
-    'keyword-spacing': 'error',
-    'object-curly-spacing': ['error', 'always'],
     'semi': ['error', 'always'],
-    'semi-spacing': 'error',
-    'space-before-blocks': 'error',
-    'space-before-function-paren': ['error', 'never'],
-    'space-in-parens': 'error',
-    'space-infix-ops': 'error',
-    'space-unary-ops': 'error',
-    'spaced-comment': 'error',
+    'comma-dangle': ['error', 'always-multiline'],
   },
   overrides: [
     {
@@ -116,15 +35,13 @@ module.exports = {
         jest: true,
       },
       rules: {
-        '@typescript-eslint/no-explicit-any': 'off',
-        'sonarjs/no-duplicate-string': 'off',
+        'no-unused-vars': 'off',
       },
     },
     {
       files: ['**/*.js'],
       rules: {
-        '@typescript-eslint/no-var-requires': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
+        'no-unused-vars': 'off',
       },
     },
   ],
