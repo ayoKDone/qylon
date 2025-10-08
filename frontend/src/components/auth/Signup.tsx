@@ -108,9 +108,7 @@ export default function Signup() {
             </div>
 
             {/* Form error */}
-            {formError && (
-              <p className="text-red-500 text-sm xui-my-1">{formError}</p>
-            )}
+            {formError && <p className='text-red-500 text-sm xui-my-1'>{formError}</p>}
 
             {/* Terms */}
             <div className='xui-d-flex xui-font-sz-small xui-flex-ai-center xui-grid-gap-half xui-my-1'>

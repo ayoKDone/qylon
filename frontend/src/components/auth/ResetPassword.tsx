@@ -60,12 +60,7 @@ export default function ResetPassword() {
   return (
     <>
       <nav className='xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
-        <img
-          src="/static/images/logo-full.png"
-          alt="Qylon Logo"
-          width={118}
-          height={45}
-        />
+        <img src='/static/images/logo-full.png' alt='Qylon Logo' width={118} height={45} />
         <p className='text-sm text-gray-500'>
           Don’t have an account?{' '}
           <a href='/signup' className='text-purple-600 font-medium xui-text-dc-underline'>
@@ -80,9 +75,7 @@ export default function ResetPassword() {
             Choose a strong password for your account
           </p>
 
-          {message && (
-            <p className="mb-4 text-center text-red-500">{message}</p>
-          )}
+          {message && <p className='mb-4 text-center text-red-500'>{message}</p>}
 
           {/* New Password */}
           <div className='xui-form-box' xui-error={errors.newPassword ? 'true' : 'false'}>
@@ -137,12 +130,12 @@ export default function ResetPassword() {
           </div>
 
           <button
-            type="submit"
+            type='submit'
             disabled={isSubmitting || loading || !token}
-            className="w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center"
+            className='w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center'
           >
             {isSubmitting || loading ? (
-              <FaSpinner className="animate-spin h-6 w-6" />
+              <FaSpinner className='animate-spin h-6 w-6' />
             ) : (
               'Reset Password'
             )}

@@ -74,9 +74,7 @@ export default function ForgotPassword() {
           </div>
 
           {/* Message */}
-          {message && (
-            <p className="text-sm text-center text-gray-700 mt-2">{message}</p>
-          )}
+          {message && <p className='text-sm text-center text-gray-700 mt-2'>{message}</p>}
 
           {/* Submit */}
           <button

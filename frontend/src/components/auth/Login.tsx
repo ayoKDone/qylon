@@ -52,11 +52,7 @@ export default function Login() {
             className='xui-form xui-max-w-500 xui-mx-auto xui-mt-2'
             onSubmit={handleSubmit(onSubmit)}
           >
-            {error && (
-              <div className="text-red-500 text-sm xui-my-1 text-center">
-                {error}
-              </div>
-            )}
+            {error && <div className='text-red-500 text-sm xui-my-1 text-center'>{error}</div>}
             {/* Email */}
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               <label>Email</label>

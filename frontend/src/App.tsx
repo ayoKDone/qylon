@@ -63,8 +63,9 @@ const AppContent: React.FC = () => {
           path='/'
           element={
             <div
-              className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-                }`}
+              className={`min-h-screen transition-colors duration-300 ${
+                isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
+              }`}
             >
               <Header />
               <Hero />
@@ -84,7 +85,7 @@ const AppContent: React.FC = () => {
 
         {/* Dashboard routes */}
         <Route
-          path="/dashboard"
+          path='/dashboard'
           element={
             <ProtectedRoute>
               <DashboardPage />
