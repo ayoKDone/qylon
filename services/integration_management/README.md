@@ -22,12 +22,14 @@ These instructions will get you a copy of the project up and running on your loc
 ### Installation
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd integration-management
     ```
 
 2.  **Create a virtual environment and install dependencies:**
+
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
@@ -38,6 +40,7 @@ These instructions will get you a copy of the project up and running on your loc
     The service uses a PostgreSQL database. You can either set one up manually or use the provided Docker Compose file.
 
     To start a PostgreSQL container:
+
     ```bash
     docker-compose up -d db
     ```
@@ -122,31 +125,31 @@ Here is a summary of the available API endpoints:
 
 ### Health Check
 
--   `GET /health`: Checks if the service is running.
+- `GET /health`: Checks if the service is running.
 
 ### Zoom Integration
 
--   `GET /auth/zoom/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Zoom.
--   `GET /auth/zoom/callback`: Handles the OAuth 2.0 callback from Zoom.
--   `GET /auth/zoom/meetings/{user_id}`: Fetches upcoming meetings for a user.
+- `GET /auth/zoom/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Zoom.
+- `GET /auth/zoom/callback`: Handles the OAuth 2.0 callback from Zoom.
+- `GET /auth/zoom/meetings/{user_id}`: Fetches upcoming meetings for a user.
 
 ### Google Integration
 
--   `GET /google/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Google.
--   `GET /google/callback`: Handles the OAuth 2.0 callback from Google.
--   `GET /google/calendar/{user_id}`: Fetches calendar events for a user.
--   `POST /google/recall/webhook`: Webhook to receive transcriptions from Recall.ai.
--   `GET /google/transcripts/{bot_id}/{user_id}`: Retrieves a meeting transcript.
+- `GET /google/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Google.
+- `GET /google/callback`: Handles the OAuth 2.0 callback from Google.
+- `GET /google/calendar/{user_id}`: Fetches calendar events for a user.
+- `POST /google/recall/webhook`: Webhook to receive transcriptions from Recall.ai.
+- `GET /google/transcripts/{bot_id}/{user_id}`: Retrieves a meeting transcript.
 
 ### Microsoft Teams Integration
 
--   `GET /teams/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Microsoft Teams.
--   `GET /teams/callback`: Handles the OAuth 2.0 callback from Microsoft Teams.
--   `GET /teams/meetings/{user_id}`: Fetches upcoming meetings for a user.
+- `GET /teams/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Microsoft Teams.
+- `GET /teams/callback`: Handles the OAuth 2.0 callback from Microsoft Teams.
+- `GET /teams/meetings/{user_id}`: Fetches upcoming meetings for a user.
 
 ### General Integrations
 
--   `GET /integrations/me`: Lists all active integrations for the currently authenticated user.
+- `GET /integrations/me`: Lists all active integrations for the currently authenticated user.
 
 ## Running Tests
 
