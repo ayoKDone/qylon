@@ -347,7 +347,8 @@ export class AutomatedBotDeploymentService {
       // Verify bot still exists in Recall.ai
       try {
         return await this.recallAIService.getBot(botId);
-      } catch {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
         // Bot doesn't exist in Recall.ai, remove from metadata
         await this.supabase
           .from('meetings')

@@ -1,30 +1,59 @@
 module.exports = {
+  root: true,
   env: {
-    browser: true,
-    es2021: true,
     node: true,
+    browser: true,
+    es2022: true,
     jest: true,
   },
-  extends: ['eslint:recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'prettier',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 2022,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: [
+    '@typescript-eslint',
+  ],
   rules: {
-    'prettier/prettier': 'error',
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    // Basic rules
     'no-console': 'warn',
     'no-debugger': 'error',
+    'no-unused-vars': 'error',
+    'prefer-const': 'error',
+    'no-var': 'error',
+    'semi': ['error', 'always'],
+    'comma-dangle': ['error', 'always-multiline'],
   },
+  overrides: [
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      env: {
+        jest: true,
+      },
+      rules: {
+        'no-unused-vars': 'off',
+      },
+    },
+    {
+      files: ['**/*.js'],
+      rules: {
+        'no-unused-vars': 'off',
+      },
+    },
+  ],
   ignorePatterns: [
     'node_modules/',
     'dist/',
     'build/',
-    '*.js',
     'coverage/',
-    '.nyc_output/',
+    '*.min.js',
+    '*.bundle.js',
+    'cypress/',
+    'frontend/dist/',
+    'frontend/build/',
   ],
 };

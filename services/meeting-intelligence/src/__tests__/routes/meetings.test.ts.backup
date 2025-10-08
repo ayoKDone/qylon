@@ -70,33 +70,17 @@ jest.mock('@supabase/supabase-js', () => ({
     };
 
     // Make the query chainable and resolve to the expected result
-    mockQuery.then = jest
-      .fn()
-      .mockResolvedValue({ data: [], error: null, count: 0 });
+    mockQuery.then = jest.fn().mockResolvedValue({ data: [], error: null, count: 0 });
 
     return {
       from: jest.fn(() => mockQuery),
       auth: {
-        getUser: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
-        getSession: jest.fn().mockResolvedValue({
-          data: { session: { user: { id: 'test-user-id' } } },
-          error: null,
-        }),
-        signInWithPassword: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
-        signUp: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { user: { id: 'test-user-id' } } }, error: null }),
+        signInWithPassword: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+        signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
         signOut: jest.fn().mockResolvedValue({ error: null }),
-        onAuthStateChange: jest.fn().mockReturnValue({
-          data: { subscription: { unsubscribe: jest.fn() } },
-        }),
+        onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } })
       },
       rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
       storage: {
@@ -105,26 +89,20 @@ jest.mock('@supabase/supabase-js', () => ({
           download: jest.fn().mockResolvedValue({ data: null, error: null }),
           remove: jest.fn().mockResolvedValue({ data: null, error: null }),
           list: jest.fn().mockResolvedValue({ data: [], error: null }),
-          getPublicUrl: jest
-            .fn()
-            .mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
-        })),
-      },
+          getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://test.url' } })
+        }))
+      }
     };
-  }),
+  })
 }));
 
 // Mock RecallAIService
 jest.mock('../../services/RecallAIService', () => ({
   RecallAIService: jest.fn().mockImplementation(() => ({
-    createBot: jest
-      .fn()
-      .mockResolvedValue({ success: true, data: { bot_id: 'test-bot-id' } }),
-    getBot: jest
-      .fn()
-      .mockResolvedValue({ success: true, data: { id: 'test-bot-id' } }),
+    createBot: jest.fn().mockResolvedValue({ success: true, data: { bot_id: 'test-bot-id' } }),
+    getBot: jest.fn().mockResolvedValue({ success: true, data: { id: 'test-bot-id' } }),
     deleteBot: jest.fn().mockResolvedValue({ success: true }),
-  })),
+  }))
 }));
 
 const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
@@ -143,8 +121,7 @@ describe('Meetings Routes', () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
     process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
     process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
-    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL =
-      'https://test.recall.ai/api/v1';
+    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL = 'https://test.recall.ai/api/v1';
 
     app = express();
     app.use(express.json());
@@ -179,9 +156,9 @@ describe('Meetings Routes', () => {
             page: 1,
             limit: 20,
             total: 0,
-            totalPages: 0,
+            totalPages: 0
           },
-          timestamp: new Date().toISOString(),
+          timestamp: new Date().toISOString()
         });
       });
 
@@ -199,24 +176,6 @@ describe('Meetings Routes', () => {
     });
 
     it('should handle query parameters', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({
-          success: true,
-          data: [],
-          pagination: {
-            page: 1,
-            limit: 10,
-            total: 0,
-            totalPages: 0,
-          },
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings/client/:clientId', mockHandler);
-
       const response = await request(app)
         .get(
           '/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1'
@@ -224,9 +183,7 @@ describe('Meetings Routes', () => {
         .expect(200);
 
       expect(response.body.success).toBe(true);
-      expect(response.body.pagination).toBeDefined();
-      expect(response.body.pagination.page).toBe(1);
-      expect(response.body.pagination.limit).toBe(10);
+      expect(response.body.data).toBeDefined();
     });
 
     it('should require authentication', async () => {
@@ -234,17 +191,6 @@ describe('Meetings Routes', () => {
       mockAuthMiddleware.mockImplementationOnce(async (req, res, _next) => {
         res.status(401).json({ error: 'Unauthorized' });
       });
-
-      // Mock the route handler
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({ success: true });
-      });
-
-      app.get(
-        '/api/v1/meetings/client/:clientId',
-        mockAuthMiddleware,
-        mockHandler
-      );
 
       await request(app)
         .get('/api/v1/meetings/client/test-client-id')
@@ -256,22 +202,6 @@ describe('Meetings Routes', () => {
     it('should get specific meeting by ID', async () => {
       const meetingId = 'test-meeting-id';
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({
-          success: true,
-          data: {
-            id: meetingId,
-            title: 'Test Meeting',
-            client_id: 'test-client-id',
-          },
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings/:meetingId', mockHandler);
-
       const response = await request(app)
         .get(`/api/v1/meetings/${meetingId}`)
         .expect(200);
@@ -282,18 +212,6 @@ describe('Meetings Routes', () => {
     });
 
     it('should handle invalid meeting ID', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(404).json({
-          success: false,
-          error: 'Meeting not found',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings/:meetingId', mockHandler);
-
       const response = await request(app)
         .get('/api/v1/meetings/invalid-id')
         .expect(404);
@@ -303,18 +221,6 @@ describe('Meetings Routes', () => {
     });
 
     it('should validate UUID format', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid meeting ID format',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings/:meetingId', mockHandler);
-
       const response = await request(app)
         .get('/api/v1/meetings/not-a-uuid')
         .expect(400);
@@ -329,27 +235,12 @@ describe('Meetings Routes', () => {
       const meetingData = {
         title: 'Test Meeting',
         description: 'Test meeting description',
-        start_time: '2024-01-01T10:00:00Z',
-        end_time: '2024-01-01T11:00:00Z',
+        startTime: '2024-01-01T10:00:00Z',
+        endTime: '2024-01-01T11:00:00Z',
+        clientId: 'test-client-id',
         platform: 'zoom',
-        meeting_url: 'https://zoom.us/j/123456789',
-        client_id: 'test-client-id',
+        meetingUrl: 'https://zoom.us/j/123456789',
       };
-
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(201).json({
-          success: true,
-          data: {
-            id: 'new-meeting-id',
-            ...meetingData,
-          },
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/meetings', mockHandler);
 
       const response = await request(app)
         .post('/api/v1/meetings')
@@ -359,6 +250,7 @@ describe('Meetings Routes', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
       expect(response.body.data.title).toBe(meetingData.title);
+      expect(response.body.data.clientId).toBe(meetingData.clientId);
     });
 
     it('should validate required fields', async () => {
@@ -367,26 +259,13 @@ describe('Meetings Routes', () => {
         startTime: 'invalid-date',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'Invalid request data',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/meetings', mockHandler);
-
       const response = await request(app)
         .post('/api/v1/meetings')
         .send(invalidData)
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
+      expect(response.body.error).toContain('Validation failed');
     });
 
     it('should validate date formats', async () => {
@@ -394,20 +273,8 @@ describe('Meetings Routes', () => {
         title: 'Test Meeting',
         startTime: 'not-a-date',
         endTime: 'also-not-a-date',
+        clientId: 'test-client-id',
       };
-
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'Invalid date format',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/meetings', mockHandler);
 
       const response = await request(app)
         .post('/api/v1/meetings')
@@ -415,7 +282,7 @@ describe('Meetings Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
+      expect(response.body.error).toContain('Invalid date format');
     });
 
     it('should validate end time is after start time', async () => {
@@ -423,20 +290,8 @@ describe('Meetings Routes', () => {
         title: 'Test Meeting',
         startTime: '2024-01-01T11:00:00Z',
         endTime: '2024-01-01T10:00:00Z', // End before start
+        clientId: 'test-client-id',
       };
-
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'End time must be after start time',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/meetings', mockHandler);
 
       const response = await request(app)
         .post('/api/v1/meetings')
@@ -444,7 +299,9 @@ describe('Meetings Routes', () => {
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
+      expect(response.body.error).toContain(
+        'End time must be after start time'
+      );
     });
   });
 
@@ -455,21 +312,6 @@ describe('Meetings Routes', () => {
         title: 'Updated Meeting Title',
         description: 'Updated description',
       };
-
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({
-          success: true,
-          data: {
-            id: meetingId,
-            ...updateData,
-          },
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.put('/api/v1/meetings/:meetingId', mockHandler);
 
       const response = await request(app)
         .put(`/api/v1/meetings/${meetingId}`)
@@ -482,21 +324,14 @@ describe('Meetings Routes', () => {
     });
 
     it('should handle meeting not found', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(404).json({
-          success: false,
-          error: 'Meeting not found',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.put('/api/v1/meetings/:meetingId', mockHandler);
+      const meetingId = 'non-existent-meeting-id';
+      const updateData = {
+        title: 'Updated Title',
+      };
 
       const response = await request(app)
-        .put('/api/v1/meetings/non-existent-id')
-        .send({ title: 'Updated Title' })
+        .put(`/api/v1/meetings/${meetingId}`)
+        .send(updateData)
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -508,18 +343,6 @@ describe('Meetings Routes', () => {
       const invalidData = {
         startTime: 'invalid-date',
       };
-
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'Validation failed',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.put('/api/v1/meetings/:meetingId', mockHandler);
 
       const response = await request(app)
         .put(`/api/v1/meetings/${meetingId}`)
@@ -535,18 +358,6 @@ describe('Meetings Routes', () => {
     it('should delete meeting successfully', async () => {
       const meetingId = 'test-meeting-id';
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({
-          success: true,
-          message: 'Meeting deleted successfully',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.delete('/api/v1/meetings/:meetingId', mockHandler);
-
       const response = await request(app)
         .delete(`/api/v1/meetings/${meetingId}`)
         .expect(200);
@@ -556,20 +367,10 @@ describe('Meetings Routes', () => {
     });
 
     it('should handle meeting not found', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(404).json({
-          success: false,
-          error: 'Meeting not found',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.delete('/api/v1/meetings/:meetingId', mockHandler);
+      const meetingId = 'non-existent-meeting-id';
 
       const response = await request(app)
-        .delete('/api/v1/meetings/non-existent-id')
+        .delete(`/api/v1/meetings/${meetingId}`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
@@ -577,18 +378,6 @@ describe('Meetings Routes', () => {
     });
 
     it('should validate UUID format', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid meeting ID format',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.delete('/api/v1/meetings/:meetingId', mockHandler);
-
       const response = await request(app)
         .delete('/api/v1/meetings/not-a-uuid')
         .expect(400);
@@ -600,61 +389,31 @@ describe('Meetings Routes', () => {
 
   describe('Error handling', () => {
     it('should handle malformed JSON', async () => {
-      // Don't use a mock handler - let Express handle the malformed JSON
       const response = await request(app)
         .post('/api/v1/meetings')
         .set('Content-Type', 'application/json')
-        .send('{"invalid": json,}')
+        .send('invalid json')
         .expect(400);
 
-      // The response should have some error indication
-      expect(response.body).toBeDefined();
-      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Invalid JSON');
     });
   });
 
   describe('Logging', () => {
     it('should log successful operations', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        logger.info('Meetings retrieved', { userId: 'test-user-id' });
-        res.status(200).json({
-          success: true,
-          data: [],
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings', mockHandler);
-
       await request(app).get('/api/v1/meetings').expect(200);
 
       expect(logger.info).toHaveBeenCalledWith(
         'Meetings retrieved',
         expect.objectContaining({
           userId: 'test-user-id',
+          count: expect.any(Number),
         })
       );
     });
 
     it('should log errors', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        logger.error('Meeting retrieval failed', {
-          error: 'Meeting not found',
-          meetingId: 'invalid-id',
-        });
-        res.status(404).json({
-          success: false,
-          error: 'Meeting not found',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/meetings/:meetingId', mockHandler);
-
       await request(app).get('/api/v1/meetings/invalid-id').expect(404);
 
       expect(logger.error).toHaveBeenCalledWith(
