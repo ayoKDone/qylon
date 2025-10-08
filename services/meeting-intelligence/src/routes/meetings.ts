@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
 import { Request, Response, Router } from 'express';
+import { supabase } from '../config/database';
 import { requireClientAccess } from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
 import { RecallAIService } from '../services/RecallAIService';
@@ -15,10 +15,6 @@ import {
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 const recallAIService = new RecallAIService();
 
 /**
