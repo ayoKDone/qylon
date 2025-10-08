@@ -51,7 +51,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -97,7 +97,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -147,7 +147,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -170,10 +170,7 @@ router.get(
         return;
       }
 
-      const screenshot = await recallAIService.getBotScreenshot(
-        botId,
-        screenshotId
-      );
+      const screenshot = await recallAIService.getBotScreenshot(botId, screenshotId);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -197,7 +194,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -251,7 +248,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -285,17 +282,11 @@ router.get(
         botId,
         status: botStatus.status === 'fulfilled' ? botStatus.value : null,
         diagnosis: diagnosis.status === 'fulfilled' ? diagnosis.value : null,
-        screenshots:
-          screenshots.status === 'fulfilled' ? screenshots.value : null,
+        screenshots: screenshots.status === 'fulfilled' ? screenshots.value : null,
         errors: {
-          statusError:
-            botStatus.status === 'rejected' ? botStatus.reason?.message : null,
-          diagnosisError:
-            diagnosis.status === 'rejected' ? diagnosis.reason?.message : null,
-          screenshotsError:
-            screenshots.status === 'rejected'
-              ? screenshots.reason?.message
-              : null,
+          statusError: botStatus.status === 'rejected' ? botStatus.reason?.message : null,
+          diagnosisError: diagnosis.status === 'rejected' ? diagnosis.reason?.message : null,
+          screenshotsError: screenshots.status === 'rejected' ? screenshots.reason?.message : null,
         },
       };
 
@@ -320,7 +311,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -334,10 +325,7 @@ router.get(
       const { errorCode } = req.params;
       const { subCode } = req.query;
 
-      const troubleshootingGuide = getTroubleshootingGuide(
-        errorCode,
-        subCode as string
-      );
+      const troubleshootingGuide = getTroubleshootingGuide(errorCode, subCode as string);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -361,7 +349,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -369,7 +357,7 @@ router.get(
  */
 function getTroubleshootingGuide(
   errorCode: string,
-  subCode?: string
+  subCode?: string,
 ): {
   errorCode: string;
   subCode?: string;
@@ -382,8 +370,7 @@ function getTroubleshootingGuide(
   const guides: Record<string, any> = {
     meeting_not_found: {
       title: 'Meeting Not Found',
-      description:
-        'The bot was unable to find the meeting at the provided URL.',
+      description: 'The bot was unable to find the meeting at the provided URL.',
       steps: [
         'Verify the meeting URL is correct and complete',
         'Check if the meeting has been cancelled or rescheduled',
@@ -402,8 +389,7 @@ function getTroubleshootingGuide(
     },
     insufficient_permissions: {
       title: 'Insufficient Permissions',
-      description:
-        'The bot does not have the necessary permissions to join the meeting.',
+      description: 'The bot does not have the necessary permissions to join the meeting.',
       steps: [
         'Check meeting settings and ensure bots are allowed',
         'Verify the meeting host has granted necessary permissions',
@@ -474,10 +460,7 @@ function getTroubleshootingGuide(
         'Implement proper error handling',
         'Keep bot configurations up to date',
       ],
-      relatedLinks: [
-        'https://docs.recall.ai/troubleshooting',
-        'https://docs.recall.ai/support',
-      ],
+      relatedLinks: ['https://docs.recall.ai/troubleshooting', 'https://docs.recall.ai/support'],
     };
 
   return {

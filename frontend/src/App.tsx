@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Navigate,
-  Route,
-  BrowserRouter as Router,
-  Routes,
-} from 'react-router-dom';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
@@ -43,29 +38,29 @@ const AppContent: React.FC = () => {
       <Stylexui />
       <Routes>
         {/* Existing routes */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/app" element={<AppUI />} />
-        <Route path="/demo" element={<ProductDemo />} />
+        <Route path='/admin' element={<AdminDashboard />} />
+        <Route path='/app' element={<AppUI />} />
+        <Route path='/demo' element={<ProductDemo />} />
 
         {/* 🔑 Auth routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify" element={<Verification />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
+        <Route path='/verify' element={<Verification />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
         <Route
-          path="/setup"
+          path='/setup'
           element={
             <ProtectedRoute>
               <ProfileSetup />
             </ProtectedRoute>
           }
         />
-        <Route path="/get-started" element={<GetStarted />} />
+        <Route path='/get-started' element={<GetStarted />} />
 
         {/* Landing page */}
         <Route
-          path="/"
+          path='/'
           element={
             <div
               className={`min-h-screen transition-colors duration-300 ${
@@ -86,11 +81,11 @@ const AppContent: React.FC = () => {
         />
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path='*' element={<Navigate to='/' replace />} />
 
         {/* Dashboard routes */}
         <Route
-          path="/dashboard"
+          path='/dashboard'
           element={
             <ProtectedRoute>
               <DashboardPage />

@@ -21,7 +21,7 @@ axiosClient.interceptors.request.use(
 
     return config;
   },
-  error => Promise.reject(error)
+  error => Promise.reject(error),
 );
 
 // Response interceptor for errors (optional)
@@ -33,7 +33,7 @@ axiosClient.interceptors.response.use(
       // e.g., supabase.auth.signOut() or redirect
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosClient;

@@ -48,7 +48,7 @@ describe('AudioProcessor', () => {
       const result = audioProcessor.validateAudioFile(invalidFile);
       expect(result.isValid).toBe(false);
       expect(result.errors).toContain(
-        'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm'
+        'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm',
       );
     });
 
@@ -62,9 +62,7 @@ describe('AudioProcessor', () => {
 
       const result = audioProcessor.validateAudioFile(largeFile);
       expect(result.isValid).toBe(false);
-      expect(result.errors).toContain(
-        'File size exceeds maximum limit of 50MB'
-      );
+      expect(result.errors).toContain('File size exceeds maximum limit of 50MB');
     });
 
     it('should reject empty file', () => {
@@ -100,11 +98,7 @@ describe('AudioProcessor', () => {
       const chunkIndex = 0;
       const totalChunks = 5;
 
-      const result = await audioProcessor.processAudioChunk(
-        audioChunk,
-        chunkIndex,
-        totalChunks
-      );
+      const result = await audioProcessor.processAudioChunk(audioChunk, chunkIndex, totalChunks);
 
       expect(result.success).toBe(true);
       expect(result.chunkIndex).toBe(chunkIndex);
@@ -118,11 +112,7 @@ describe('AudioProcessor', () => {
       const chunkIndex = 0;
       const totalChunks = 1;
 
-      const result = await audioProcessor.processAudioChunk(
-        emptyChunk,
-        chunkIndex,
-        totalChunks
-      );
+      const result = await audioProcessor.processAudioChunk(emptyChunk, chunkIndex, totalChunks);
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Empty audio chunk');
@@ -136,7 +126,7 @@ describe('AudioProcessor', () => {
       const result = await audioProcessor.processAudioChunk(
         audioChunk,
         invalidChunkIndex,
-        totalChunks
+        totalChunks,
       );
 
       expect(result.success).toBe(false);
@@ -148,11 +138,7 @@ describe('AudioProcessor', () => {
       const chunkIndex = 10;
       const totalChunks = 5;
 
-      const result = await audioProcessor.processAudioChunk(
-        audioChunk,
-        chunkIndex,
-        totalChunks
-      );
+      const result = await audioProcessor.processAudioChunk(audioChunk, chunkIndex, totalChunks);
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Chunk index exceeds total chunks');
@@ -161,11 +147,7 @@ describe('AudioProcessor', () => {
 
   describe('combineAudioChunks', () => {
     it('should combine multiple audio chunks', async () => {
-      const chunks = [
-        Buffer.from('chunk1'),
-        Buffer.from('chunk2'),
-        Buffer.from('chunk3'),
-      ];
+      const chunks = [Buffer.from('chunk1'), Buffer.from('chunk2'), Buffer.from('chunk3')];
 
       const result = await audioProcessor.combineAudioChunks(chunks);
 
@@ -183,10 +165,7 @@ describe('AudioProcessor', () => {
     });
 
     it('should handle null/undefined chunks', async () => {
-      const result = await audioProcessor.combineAudioChunks([
-        null,
-        undefined,
-      ] as any);
+      const result = await audioProcessor.combineAudioChunks([null, undefined] as any);
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Invalid audio chunk');
@@ -238,11 +217,7 @@ describe('AudioProcessor', () => {
 
     it('should handle processing errors gracefully', async () => {
       // Test with invalid chunk index
-      const result = await audioProcessor.processAudioChunk(
-        Buffer.from('test'),
-        -1,
-        1
-      );
+      const result = await audioProcessor.processAudioChunk(Buffer.from('test'), -1, 1);
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Invalid chunk index');

@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
         }
       } else {
         setSubmitMessage(
-          "🎉 Welcome to the future! You'll be among the first to experience AI-powered meeting automation."
+          "🎉 Welcome to the future! You'll be among the first to experience AI-powered meeting automation.",
         );
 
         // Send welcome email
@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
                 email: email.toLowerCase().trim(),
                 source: 'hero',
               }),
-            }
+            },
           );
 
           if (emailResponse.ok) {
@@ -60,23 +60,21 @@ const Hero: React.FC = () => {
       setEmail('');
     } catch (error) {
       console.error('Error submitting to waitlist:', error);
-      setSubmitMessage(
-        'Something went wrong. Please try again or contact us directly.'
-      );
+      setSubmitMessage('Something went wrong. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className='relative min-h-screen flex items-center justify-center overflow-hidden pt-20'>
       {/* Liquid Background */}
-      <div className="liquid-bg">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-800 to-indigo-900"></div>
+      <div className='liquid-bg'>
+        <div className='absolute inset-0 bg-gradient-to-br from-violet-900 via-purple-800 to-indigo-900'></div>
 
         {/* Animated liquid orbs */}
         <div
-          className="liquid-orb w-96 h-96 bg-gradient-to-r from-pink-500 to-violet-600"
+          className='liquid-orb w-96 h-96 bg-gradient-to-r from-pink-500 to-violet-600'
           style={{
             top: '10%',
             left: '10%',
@@ -84,7 +82,7 @@ const Hero: React.FC = () => {
           }}
         ></div>
         <div
-          className="liquid-orb w-80 h-80 bg-gradient-to-r from-cyan-400 to-blue-500"
+          className='liquid-orb w-80 h-80 bg-gradient-to-r from-cyan-400 to-blue-500'
           style={{
             top: '60%',
             right: '10%',
@@ -92,7 +90,7 @@ const Hero: React.FC = () => {
           }}
         ></div>
         <div
-          className="liquid-orb w-64 h-64 bg-gradient-to-r from-orange-400 to-pink-500"
+          className='liquid-orb w-64 h-64 bg-gradient-to-r from-orange-400 to-pink-500'
           style={{
             bottom: '20%',
             left: '50%',
@@ -100,7 +98,7 @@ const Hero: React.FC = () => {
           }}
         ></div>
         <div
-          className="liquid-orb w-72 h-72 bg-gradient-to-r from-purple-500 to-indigo-600"
+          className='liquid-orb w-72 h-72 bg-gradient-to-r from-purple-500 to-indigo-600'
           style={{
             top: '30%',
             right: '40%',
@@ -109,63 +107,55 @@ const Hero: React.FC = () => {
         ></div>
       </div>
 
-      <div className="container mx-auto px-6 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
+      <div className='container mx-auto px-6 text-center relative z-10'>
+        <div className='max-w-4xl mx-auto'>
           {/* Badge */}
-          <div className="mb-8 inline-flex items-center px-6 py-3 glass rounded-full text-white text-sm font-medium tracking-wide">
-            <span className="w-2 h-2 bg-gradient-to-r from-cyan-300 to-pink-300 rounded-full mr-3 animate-pulse"></span>
+          <div className='mb-8 inline-flex items-center px-6 py-3 glass rounded-full text-white text-sm font-medium tracking-wide'>
+            <span className='w-2 h-2 bg-gradient-to-r from-cyan-300 to-pink-300 rounded-full mr-3 animate-pulse'></span>
             AI-Powered Meeting Automation
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            <span className="block text-white drop-shadow-lg">
-              Transform Conversations Into
-            </span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-pink-300 to-violet-300 bg-clip-text text-transparent drop-shadow-lg">
+          <h1 className='text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight'>
+            <span className='block text-white drop-shadow-lg'>Transform Conversations Into</span>
+            <span className='block bg-gradient-to-r from-cyan-300 via-pink-300 to-violet-300 bg-clip-text text-transparent drop-shadow-lg'>
               Completed Tasks
             </span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed text-white/80 drop-shadow-sm">
-            The era of meeting bots is over. Qylon captures every conversation
-            and delivers action items straight into{' '}
-            <span className="text-cyan-300 font-semibold">ClickUp</span>,{' '}
-            <span className="text-cyan-300 font-semibold">Asana</span>, or{' '}
-            <span className="text-cyan-300 font-semibold">Monday</span>.
+          <p className='text-lg sm:text-xl md:text-2xl mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed text-white/80 drop-shadow-sm'>
+            The era of meeting bots is over. Qylon captures every conversation and delivers action
+            items straight into <span className='text-cyan-300 font-semibold'>ClickUp</span>,{' '}
+            <span className='text-cyan-300 font-semibold'>Asana</span>, or{' '}
+            <span className='text-cyan-300 font-semibold'>Monday</span>.
           </p>
 
           {/* Waitlist Form */}
-          <div id="waitlist" className="max-w-md mx-auto mb-8 md:mb-12 px-4">
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row gap-4"
-            >
-              <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
+          <div id='waitlist' className='max-w-md mx-auto mb-8 md:mb-12 px-4'>
+            <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
+              <div className='relative flex-1'>
+                <Mail className='absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60' />
                 <input
-                  type="email"
+                  type='email'
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder='Enter your email'
                   disabled={isSubmitting}
-                  className="w-full pl-12 pr-4 py-3 md:py-4 glass rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-white placeholder-white/60 bg-white/10"
+                  className='w-full pl-12 pr-4 py-3 md:py-4 glass rounded-2xl focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200 text-base text-white placeholder-white/60 bg-white/10'
                   required
                 />
               </div>
               <button
-                type="submit"
+                type='submit'
                 disabled={isSubmitting}
                 className={`px-6 sm:px-8 py-3 md:py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group text-base shadow-lg ${
-                  isSubmitting
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:scale-105'
+                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
                 }`}
               >
                 {isSubmitting ? 'Joining...' : 'Join waitlist'}
                 {!isSubmitting && (
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  <ArrowRight className='w-5 h-5 group-hover:translate-x-1 transition-transform duration-200' />
                 )}
               </button>
             </form>
@@ -187,22 +177,21 @@ const Hero: React.FC = () => {
           </div>
 
           {/* Social Proof */}
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-white/70">
-            <div className="flex items-center space-x-2">
-              <div className="flex -space-x-2">
+          <div className='flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-white/70'>
+            <div className='flex items-center space-x-2'>
+              <div className='flex -space-x-2'>
                 {[1, 2, 3, 4].map(i => (
                   <div
                     key={i}
-                    className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-pink-500 rounded-full border-2 border-white/20"
+                    className='w-8 h-8 bg-gradient-to-r from-cyan-400 to-pink-500 rounded-full border-2 border-white/20'
                   ></div>
                 ))}
               </div>
-              <span className="text-sm">50+ early adopters</span>
+              <span className='text-sm'>50+ early adopters</span>
             </div>
-            <div className="hidden sm:block h-4 w-px bg-white/30"></div>
-            <div className="text-sm">
-              <span className="text-cyan-300 font-semibold">95%+ accuracy</span>{' '}
-              in task extraction
+            <div className='hidden sm:block h-4 w-px bg-white/30'></div>
+            <div className='text-sm'>
+              <span className='text-cyan-300 font-semibold'>95%+ accuracy</span> in task extraction
             </div>
           </div>
         </div>

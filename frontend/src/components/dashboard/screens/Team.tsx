@@ -133,50 +133,46 @@ export default function Team() {
     });
   }, [setNavbar]);
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       <SectionHeader
-        title="Team Dashboard"
-        subtitle="Monitor team performance and collaboration"
+        title='Team Dashboard'
+        subtitle='Monitor team performance and collaboration'
         primaryAction={{
           label: 'Add Member',
           onClick: () => console.log('Add member'),
         }}
       >
-        <TabNavigation
-          tabs={tabs}
-          defaultTab="overview"
-          onTabChange={setActiveTab}
-        />
+        <TabNavigation tabs={tabs} defaultTab='overview' onTabChange={setActiveTab} />
       </SectionHeader>
       {/* Render content based on active tab */}
       <div>
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-4">
-              <StatsHeader title="Team Members">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+          <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
+            <div className='lg:col-span-4'>
+              <StatsHeader title='Team Members'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4'>
                   {teamMembers.map(member => (
                     <TeamMemberCard key={member.name} {...member} />
                   ))}
                 </div>
               </StatsHeader>
             </div>
-            <div className="lg:col-span-8">
-              <StatsHeader title="Team Performance">
-                <div className="space-y-4">
+            <div className='lg:col-span-8'>
+              <StatsHeader title='Team Performance'>
+                <div className='space-y-4'>
                   <ProgressBar
-                    label="Team Completion Rate"
+                    label='Team Completion Rate'
                     value={91}
-                    color="bg-green-500"
-                    valueColor="text-green-600"
+                    color='bg-green-500'
+                    valueColor='text-green-600'
                   />
 
                   <ProgressBar
-                    label="Total Tasks Completed"
+                    label='Total Tasks Completed'
                     value={41}
                     maxValue={54}
-                    color="bg-blue-500"
-                    valueColor="text-blue-600"
+                    color='bg-blue-500'
+                    valueColor='text-blue-600'
                   />
                 </div>
               </StatsHeader>
@@ -184,26 +180,19 @@ export default function Team() {
           </div>
         )}
         {activeTab === 'calendar' && (
-          <div className="lg:col-span-8">
+          <div className='lg:col-span-8'>
             <StatsHeader
-              title="Team Calendar & Events"
+              title='Team Calendar & Events'
               rightContent={
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={previousWeek}
-                    className="p-2 hover:bg-gray-100 rounded-lg"
-                  >
-                    <ChevronLeft className="w-5 h-5 text-gray-600" />
+                <div className='flex items-center gap-2'>
+                  <button onClick={previousWeek} className='p-2 hover:bg-gray-100 rounded-lg'>
+                    <ChevronLeft className='w-5 h-5 text-gray-600' />
                   </button>
-                  <span className="text-sm font-semibold text-gray-700">
-                    {monthNames[currentDate.getMonth()]}{' '}
-                    {currentDate.getFullYear()}
+                  <span className='text-sm font-semibold text-gray-700'>
+                    {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                   </span>
-                  <button
-                    onClick={nextWeek}
-                    className="p-2 hover:bg-gray-100 rounded-lg"
-                  >
-                    <ChevronRight className="w-5 h-5 text-gray-600" />
+                  <button onClick={nextWeek} className='p-2 hover:bg-gray-100 rounded-lg'>
+                    <ChevronRight className='w-5 h-5 text-gray-600' />
                   </button>
                 </div>
               }

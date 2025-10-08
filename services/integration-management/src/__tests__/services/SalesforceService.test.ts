@@ -1,9 +1,5 @@
 import { SalesforceService } from '../../services/SalesforceService';
-import {
-  IntegrationConfig,
-  IntegrationStatus,
-  IntegrationType,
-} from '../../types';
+import { IntegrationConfig, IntegrationStatus, IntegrationType } from '../../types';
 
 // Mock the entire SalesforceService class
 jest.mock('../../services/SalesforceService');
@@ -34,9 +30,7 @@ describe('SalesforceService', () => {
     };
 
     // Create a mock instance
-    service = new SalesforceService(
-      mockConfig
-    ) as jest.Mocked<SalesforceService>;
+    service = new SalesforceService(mockConfig) as jest.Mocked<SalesforceService>;
   });
 
   describe('authenticate', () => {
@@ -63,31 +57,23 @@ describe('SalesforceService', () => {
       const result = await service.authenticate(sandboxConfig.credentials);
 
       expect(result).toBe(true);
-      expect(service.authenticate).toHaveBeenCalledWith(
-        sandboxConfig.credentials
-      );
+      expect(service.authenticate).toHaveBeenCalledWith(sandboxConfig.credentials);
     });
 
     it('should throw error for missing credentials', async () => {
       const invalidCredentials = {};
 
-      service.authenticate.mockRejectedValue(
-        new Error('Missing required Salesforce credentials')
-      );
+      service.authenticate.mockRejectedValue(new Error('Missing required Salesforce credentials'));
 
       await expect(service.authenticate(invalidCredentials)).rejects.toThrow(
-        'Missing required Salesforce credentials'
+        'Missing required Salesforce credentials',
       );
     });
 
     it('should throw error for authentication failure', async () => {
-      service.authenticate.mockRejectedValue(
-        new Error('Authentication failed')
-      );
+      service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
-      await expect(
-        service.authenticate(mockConfig.credentials)
-      ).rejects.toThrow();
+      await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow();
     });
   });
 
@@ -106,25 +92,17 @@ describe('SalesforceService', () => {
 
       service.syncContacts.mockResolvedValue(mockSyncResult);
 
-      const result = await service.syncContacts(
-        'test-user-id',
-        'test-client-id'
-      );
+      const result = await service.syncContacts('test-user-id', 'test-client-id');
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(2);
-      expect(service.syncContacts).toHaveBeenCalledWith(
-        'test-user-id',
-        'test-client-id'
-      );
+      expect(service.syncContacts).toHaveBeenCalledWith('test-user-id', 'test-client-id');
     });
 
     it('should handle sync errors gracefully', async () => {
       service.syncContacts.mockRejectedValue(new Error('Sync failed'));
 
-      await expect(
-        service.syncContacts('test-user-id', 'test-client-id')
-      ).rejects.toThrow();
+      await expect(service.syncContacts('test-user-id', 'test-client-id')).rejects.toThrow();
     });
   });
 
@@ -143,17 +121,11 @@ describe('SalesforceService', () => {
 
       service.syncOpportunities.mockResolvedValue(mockSyncResult);
 
-      const result = await service.syncOpportunities(
-        'test-user-id',
-        'test-client-id'
-      );
+      const result = await service.syncOpportunities('test-user-id', 'test-client-id');
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(1);
-      expect(service.syncOpportunities).toHaveBeenCalledWith(
-        'test-user-id',
-        'test-client-id'
-      );
+      expect(service.syncOpportunities).toHaveBeenCalledWith('test-user-id', 'test-client-id');
     });
   });
 
@@ -197,13 +169,9 @@ describe('SalesforceService', () => {
         updatedAt: new Date().toISOString(),
       };
 
-      service.createContact.mockRejectedValue(
-        new Error('Invalid contact email')
-      );
+      service.createContact.mockRejectedValue(new Error('Invalid contact email'));
 
-      await expect(service.createContact(invalidContact)).rejects.toThrow(
-        'Invalid contact email'
-      );
+      await expect(service.createContact(invalidContact)).rejects.toThrow('Invalid contact email');
     });
   });
 
@@ -232,10 +200,7 @@ describe('SalesforceService', () => {
       expect(result).toHaveLength(1);
       expect(result[0]?.firstName).toBe('John');
       expect(result[0]?.lastName).toBe('Doe');
-      expect(service.searchContacts).toHaveBeenCalledWith(
-        'John',
-        'test-user-id'
-      );
+      expect(service.searchContacts).toHaveBeenCalledWith('John', 'test-user-id');
     });
   });
 
@@ -256,9 +221,7 @@ describe('SalesforceService', () => {
 
       expect(result.status).toBe('healthy');
       expect(result.details.authenticated).toBe(true);
-      expect(result.details.integrationType).toBe(
-        IntegrationType.CRM_SALESFORCE
-      );
+      expect(result.details.integrationType).toBe(IntegrationType.CRM_SALESFORCE);
     });
 
     it('should return unhealthy status when not authenticated', async () => {

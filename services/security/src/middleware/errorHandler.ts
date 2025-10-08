@@ -13,7 +13,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   const requestId = req.headers['x-request-id'] as string;
 

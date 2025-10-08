@@ -7,10 +7,7 @@ export class SupabaseEventStore implements IEventStore {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   async saveEvent(event: Event): Promise<void> {
@@ -56,10 +53,7 @@ export class SupabaseEventStore implements IEventStore {
     }
   }
 
-  async getEvents(
-    aggregateId: string,
-    fromVersion: number = 0
-  ): Promise<Event[]> {
+  async getEvents(aggregateId: string, fromVersion: number = 0): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
         .from('events')
@@ -96,10 +90,7 @@ export class SupabaseEventStore implements IEventStore {
     }
   }
 
-  async getEventsByType(
-    eventType: string,
-    limit: number = 100
-  ): Promise<Event[]> {
+  async getEventsByType(eventType: string, limit: number = 100): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
         .from('events')
@@ -149,9 +140,7 @@ export class SupabaseEventStore implements IEventStore {
           correlationId,
           error: error.message,
         });
-        throw new Error(
-          `Failed to get events by correlation ID: ${error.message}`
-        );
+        throw new Error(`Failed to get events by correlation ID: ${error.message}`);
       }
 
       const events = data?.map(this.mapToEvent) || [];

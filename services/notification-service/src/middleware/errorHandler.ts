@@ -6,7 +6,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   logger.error('Unhandled error', {
     error: error.message,
@@ -19,21 +19,14 @@ export const errorHandler = (
 
   const response: ApiResponse<null> = {
     success: false,
-    error:
-      process.env['NODE_ENV'] === 'production'
-        ? 'Internal server error'
-        : error.message,
+    error: process.env['NODE_ENV'] === 'production' ? 'Internal server error' : error.message,
     timestamp: new Date().toISOString(),
   };
 
   res.status(500).json(response);
 };
 
-export const notFoundHandler = (
-  req: Request,
-  res: Response,
-  _next: NextFunction
-): void => {
+export const notFoundHandler = (req: Request, res: Response, _next: NextFunction): void => {
   const response: ApiResponse<null> = {
     success: false,
     error: `Route ${req.method} ${req.url} not found`,

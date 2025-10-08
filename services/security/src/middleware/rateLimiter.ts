@@ -38,22 +38,18 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
 export const apiRateLimiter = createRateLimiter(
   15 * 60 * 1000, // 15 minutes
   1000, // 1000 requests per window
-  'Too many requests from this IP, please try again later'
+  'Too many requests from this IP, please try again later',
 );
 
 // Authentication rate limiter (stricter)
 export const authRateLimiter = createRateLimiter(
   15 * 60 * 1000, // 15 minutes
   5, // 5 login attempts per window
-  'Too many authentication attempts, please try again later'
+  'Too many authentication attempts, please try again later',
 );
 
 // User-specific rate limiter
-export const userRateLimiter = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const userRateLimiter = (req: Request, res: Response, next: NextFunction): void => {
   const userId = (req as any).user?.id;
 
   if (!userId) {
@@ -66,7 +62,7 @@ export const userRateLimiter = (
   const userLimiter = createRateLimiter(
     15 * 60 * 1000, // 15 minutes
     2000, // 2000 requests per window for authenticated users
-    'Too many requests from this user, please try again later'
+    'Too many requests from this user, please try again later',
   );
 
   userLimiter(req, res, next);
@@ -76,14 +72,14 @@ export const userRateLimiter = (
 export const uploadRateLimiter = createRateLimiter(
   60 * 60 * 1000, // 1 hour
   10, // 10 uploads per hour
-  'Too many file uploads, please try again later'
+  'Too many file uploads, please try again later',
 );
 
 // Webhook rate limiter
 export const webhookRateLimiter = createRateLimiter(
   60 * 1000, // 1 minute
   100, // 100 webhook calls per minute
-  'Too many webhook requests, please try again later'
+  'Too many webhook requests, please try again later',
 );
 
 // Default rate limiter

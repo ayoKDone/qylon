@@ -31,8 +31,7 @@ export const options = {
 
 // Test data
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:3000';
-const INTEGRATION_SERVICE_URL =
-  __ENV.INTEGRATION_SERVICE_URL || 'http://localhost:3006';
+const INTEGRATION_SERVICE_URL = __ENV.INTEGRATION_SERVICE_URL || 'http://localhost:3006';
 
 // Main test scenarios
 export function setup() {
@@ -41,10 +40,8 @@ export function setup() {
   // Verify system is ready
   const healthResponse = http.get(`${BASE_URL}/health`);
   check(healthResponse, {
-    'API Gateway health endpoint responds': r =>
-      r.status === 200 || r.status === 503, // Allow 503 for partial deployment
-    'API Gateway health response time is acceptable': r =>
-      r.timings.duration < 10000, // Allow up to 10 seconds for health checks
+    'API Gateway health endpoint responds': r => r.status === 200 || r.status === 503, // Allow 503 for partial deployment
+    'API Gateway health response time is acceptable': r => r.timings.duration < 10000, // Allow up to 10 seconds for health checks
   });
 
   return {
@@ -57,21 +54,16 @@ export default function (data) {
   // Test API Gateway health endpoint
   const apiGatewayHealth = http.get(`${data.baseUrl}/health`);
   check(apiGatewayHealth, {
-    'API Gateway health endpoint responds': r =>
-      r.status === 200 || r.status === 503, // Allow 503 for partial deployment
-    'API Gateway health response time is acceptable': r =>
-      r.timings.duration < 10000, // Allow up to 10 seconds for health checks
+    'API Gateway health endpoint responds': r => r.status === 200 || r.status === 503, // Allow 503 for partial deployment
+    'API Gateway health response time is acceptable': r => r.timings.duration < 10000, // Allow up to 10 seconds for health checks
   });
   sleep(1);
 
   // Test Integration Management Service health directly
-  const integrationServiceHealth = http.get(
-    `${data.integrationServiceUrl}/health`
-  );
+  const integrationServiceHealth = http.get(`${data.integrationServiceUrl}/health`);
   check(integrationServiceHealth, {
     'Integration Service health endpoint responds': r => r.status === 200,
-    'Integration Service health response time is acceptable': r =>
-      r.timings.duration < 2000,
+    'Integration Service health response time is acceptable': r => r.timings.duration < 2000,
   });
   sleep(1);
 }

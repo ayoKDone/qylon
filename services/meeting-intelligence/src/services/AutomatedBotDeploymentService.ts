@@ -34,10 +34,7 @@ export class AutomatedBotDeploymentService {
   private recallAIService: RecallAIService;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     this.recallAIService = new RecallAIService();
   }
 
@@ -47,7 +44,7 @@ export class AutomatedBotDeploymentService {
   async deployBotsForUpcomingMeetings(
     clientId: string,
     teamId?: string,
-    hoursAhead: number = 24
+    hoursAhead: number = 24,
   ): Promise<
     Array<{
       meeting: CalendarMeeting;
@@ -58,11 +55,7 @@ export class AutomatedBotDeploymentService {
   > {
     try {
       // Get upcoming meetings from calendar integration
-      const upcomingMeetings = await this.getUpcomingMeetings(
-        clientId,
-        teamId,
-        hoursAhead
-      );
+      const upcomingMeetings = await this.getUpcomingMeetings(clientId, teamId, hoursAhead);
 
       if (upcomingMeetings.length === 0) {
         logger.info('No upcoming meetings found for bot deployment', {
@@ -100,7 +93,7 @@ export class AutomatedBotDeploymentService {
               meeting.title,
               clientId,
               teamId,
-              meeting.start_time
+              meeting.start_time,
             );
 
             // Store bot information in database
@@ -123,7 +116,7 @@ export class AutomatedBotDeploymentService {
             });
             return { meeting, bot: null, success: false, error: error.message };
           }
-        })
+        }),
       );
 
       const results = deploymentResults.map((result, index) => {
@@ -166,7 +159,7 @@ export class AutomatedBotDeploymentService {
     meetingUrl: string,
     clientId: string,
     teamId?: string,
-    hostName?: string
+    hostName?: string,
   ): Promise<{ bot: any; success: boolean; error?: string }> {
     try {
       // Get client's bot deployment configuration
@@ -185,7 +178,7 @@ export class AutomatedBotDeploymentService {
         meetingUrl,
         clientId,
         teamId,
-        hostName
+        hostName,
       );
 
       // Deploy bot
@@ -193,7 +186,7 @@ export class AutomatedBotDeploymentService {
         meetingUrl,
         clientId,
         teamId,
-        hostName
+        hostName,
       );
 
       // Store bot information
@@ -226,7 +219,7 @@ export class AutomatedBotDeploymentService {
   public async getUpcomingMeetings(
     clientId: string,
     teamId?: string,
-    hoursAhead: number = 24
+    hoursAhead: number = 24,
   ): Promise<CalendarMeeting[]> {
     try {
       const now = new Date();
@@ -250,7 +243,7 @@ export class AutomatedBotDeploymentService {
             email,
             role
           )
-        `
+        `,
         )
         .eq('client_id', clientId)
         .gte('start_time', now.toISOString())
@@ -287,9 +280,7 @@ export class AutomatedBotDeploymentService {
   /**
    * Get bot deployment configuration for a client
    */
-  public async getBotDeploymentConfig(
-    clientId: string
-  ): Promise<BotDeploymentConfig> {
+  public async getBotDeploymentConfig(clientId: string): Promise<BotDeploymentConfig> {
     try {
       const { data: config, error } = await this.supabase
         .from('client_settings')
@@ -299,9 +290,7 @@ export class AutomatedBotDeploymentService {
 
       if (error && error.code !== 'PGRST116') {
         // PGRST116 = no rows returned
-        throw new Error(
-          `Failed to get bot deployment config: ${error.message}`
-        );
+        throw new Error(`Failed to get bot deployment config: ${error.message}`);
       }
 
       // Return default configuration if none exists
@@ -379,7 +368,7 @@ export class AutomatedBotDeploymentService {
     meetingId: string,
     bot: any,
     clientId: string,
-    teamId?: string
+    teamId?: string,
   ): Promise<void> {
     try {
       await this.supabase
@@ -421,7 +410,7 @@ export class AutomatedBotDeploymentService {
     meetingUrl: string,
     clientId: string,
     teamId?: string,
-    hostName?: string
+    hostName?: string,
   ): Promise<any> {
     try {
       const { data: meeting, error } = await this.supabase
@@ -465,7 +454,7 @@ export class AutomatedBotDeploymentService {
    * Detect platform from meeting URL
    */
   private detectPlatformFromUrl(
-    meetingUrl: string
+    meetingUrl: string,
   ): 'zoom' | 'teams' | 'google_meet' | 'webex' | 'other' {
     const url = meetingUrl.toLowerCase();
 
@@ -480,15 +469,9 @@ export class AutomatedBotDeploymentService {
   /**
    * Cleanup inactive bots for a client
    */
-  async cleanupInactiveBots(
-    clientId: string,
-    olderThanHours: number = 24
-  ): Promise<number> {
+  async cleanupInactiveBots(clientId: string, olderThanHours: number = 24): Promise<number> {
     try {
-      return await this.recallAIService.cleanupInactiveBots(
-        clientId,
-        olderThanHours
-      );
+      return await this.recallAIService.cleanupInactiveBots(clientId, olderThanHours);
     } catch (error: any) {
       logger.error('Failed to cleanup inactive bots', {
         clientId,
@@ -504,7 +487,7 @@ export class AutomatedBotDeploymentService {
    */
   async updateBotDeploymentConfig(
     clientId: string,
-    config: Partial<BotDeploymentConfig>
+    config: Partial<BotDeploymentConfig>,
   ): Promise<void> {
     try {
       const { error } = await this.supabase.from('client_settings').upsert({
@@ -514,9 +497,7 @@ export class AutomatedBotDeploymentService {
       });
 
       if (error) {
-        throw new Error(
-          `Failed to update bot deployment config: ${error.message}`
-        );
+        throw new Error(`Failed to update bot deployment config: ${error.message}`);
       }
 
       logger.info('Bot deployment config updated', { clientId, config });
