@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { pool } from '../database';
 import supabase from '../supabaseClient';
 import { LoginResponse, RegisterResponse, User } from '../types';
+import { logger } from '../utils/logger';
 
 export async function registerUser(req: Request, res: Response<RegisterResponse>) {
   const {
@@ -47,7 +48,7 @@ export async function registerUser(req: Request, res: Response<RegisterResponse>
 
     res.status(201).json({ message: 'User registered', user });
   } catch (dbError) {
-    console.error('Failed to save user to Postgres:', dbError);
+    logger.error('Failed to save user to Postgres', { error: dbError });
     // If user not registered in DB then rollback
     await supabase.auth.admin.deleteUser(supabaseUser.id).catch(() => {});
     res.status(500).json({ message: 'Database error', user: null });
@@ -78,7 +79,7 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
 
     res.json({ message: 'Login successful', token, user });
   } catch (dbError) {
-    console.error('Failed to update last_login_at:', dbError);
+    logger.error('Failed to update last_login_at', { error: dbError });
     res.status(500).json({ message: 'Database error', token: '', user: null });
   }
 }

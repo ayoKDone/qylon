@@ -178,7 +178,7 @@ const response = await fetch(
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  }
+  },
 );
 ```
 
@@ -203,7 +203,7 @@ const subscription = supabase
     { event: '*', schema: 'public', table: 'meetings' },
     payload => {
       console.log('Change received!', payload);
-    }
+    },
   )
   .subscribe();
 ```
@@ -360,7 +360,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
     },
-  }
+  },
 );
 ```
 

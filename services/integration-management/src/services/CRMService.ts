@@ -18,7 +18,7 @@ export interface ICRMService {
   createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity>;
   updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>
+    opportunity: Partial<CRMOpportunity>,
   ): Promise<CRMOpportunity>;
   getContact(contactId: string): Promise<CRMContact | null>;
   getOpportunity(opportunityId: string): Promise<CRMOpportunity | null>;
@@ -46,7 +46,7 @@ export abstract class BaseCRMService implements ICRMService {
   abstract createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity>;
   abstract updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>
+    opportunity: Partial<CRMOpportunity>,
   ): Promise<CRMOpportunity>;
   abstract getContact(contactId: string): Promise<CRMContact | null>;
   abstract getOpportunity(opportunityId: string): Promise<CRMOpportunity | null>;

@@ -390,7 +390,7 @@ describe('User Onboarding Flow', () => {
 
       // Should show onboarding completion
       cy.shouldShowSuccessNotification(
-        "Congratulations! You've completed your first meeting setup."
+        "Congratulations! You've completed your first meeting setup.",
       );
 
       // Should show next steps

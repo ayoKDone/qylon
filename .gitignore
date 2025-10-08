@@ -225,3 +225,144 @@ logs/
 tmp/
 temp/
 .cache/
+
+# AI and Cursor specific files
+.cursor/
+.cursorrules.backup
+*.cursor-*
+ai-generated-*
+temp-ai-*
+
+# Build artifacts and compiled files
+*.tsbuildinfo
+*.d.ts.map
+*.js.map
+*.mjs.map
+*.cjs.map
+
+# Test artifacts
+test-results/
+playwright-report/
+test-results.xml
+coverage.xml
+junit.xml
+*.lcov
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Package manager files
+.npm
+.yarn
+.pnpm-debug.log*
+.yarn-integrity
+package-lock.json.backup
+yarn.lock.backup
+
+# Runtime and process files
+*.pid
+*.seed
+*.pid.lock
+pids/
+*.pid.lock
+
+# Coverage and profiling
+coverage/
+.nyc_output
+profiling/
+*.prof
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.backup
+*~
+.#*
+\#*#
+.*.swp
+.*.swo
+
+# Security and secrets (additional patterns)
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.csr
+*.der
+secrets/
+keys/
+certificates/
+*.env.backup
+*.env.local.backup
+
+# Database files
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+
+# Docker and container files
+.dockerignore.backup
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+
+# Terraform and infrastructure
+.terraform/
+.terraform.lock.hcl
+*.tfstate.backup
+*.tfplan
+*.tfvars.backup
+
+# Monitoring and metrics
+metrics/
+monitoring/
+*.metrics
+*.prom
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+
+# Generated documentation
+docs/generated/
+api-docs/generated/
+*.generated.md
+
+# Local development overrides
+docker-compose.override.yml
+.env.override
+config.local.*
+settings.local.*
+
+# Backup and temporary directories
+backup/
+backups/
+temp/
+temporary/
+scratch/
