@@ -50,34 +50,34 @@ export default function StatsGrid() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
       <StatCard
         icon={Zap}
-        iconColor="text-blue-500"
+        iconColor='text-blue-500'
         value={stats.tasksCreated}
-        label="Tasks Created"
+        label='Tasks Created'
         subtitle={`+${stats.tasksToday} today`}
-        subtitleColor="text-green-600"
+        subtitleColor='text-green-600'
         trendIcon={stats.tasksToday > 0}
         isAnimating={isLoading}
       />
       <StatCard
         icon={Clock}
-        iconColor="text-teal-500"
+        iconColor='text-teal-500'
         value={stats.timeSaved}
-        label="Time Saved"
-        subtitle="This week"
-        subtitleColor="text-teal-600"
+        label='Time Saved'
+        subtitle='This week'
+        subtitleColor='text-teal-600'
         trendIcon={true}
         isAnimating={isLoading}
       />
       <StatCard
         icon={Target}
-        iconColor="text-purple-500"
+        iconColor='text-purple-500'
         value={`${stats.accuracy}%`}
-        label="Accuracy"
-        subtitle="AI precision"
-        subtitleColor="text-purple-600"
+        label='Accuracy'
+        subtitle='AI precision'
+        subtitleColor='text-purple-600'
         isAnimating={isLoading}
       />
     </div>

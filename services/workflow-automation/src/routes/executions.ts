@@ -1,11 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
 import { WorkflowEngine } from '../services/WorkflowEngine';
-import {
-  ApiResponse,
-  ExecuteWorkflowSchema,
-  PaginatedResponse,
-} from '../types';
+import { ApiResponse, ExecuteWorkflowSchema, PaginatedResponse } from '../types';
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
@@ -36,11 +32,7 @@ router.post(
       const { workflow_id, input_data, context } = validationResult.data;
 
       // Execute workflow
-      const execution = await workflowEngine.executeWorkflow(
-        workflow_id,
-        input_data,
-        context
-      );
+      const execution = await workflowEngine.executeWorkflow(workflow_id, input_data, context);
 
       logger.info('Workflow execution started', {
         workflowId: workflow_id,
@@ -68,7 +60,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -109,7 +101,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -132,11 +124,7 @@ router.get(
         limit,
       });
 
-      const { executions, total } = await workflowEngine.getExecutions(
-        workflowId,
-        page,
-        limit
-      );
+      const { executions, total } = await workflowEngine.getExecutions(workflowId, page, limit);
 
       const totalPages = Math.ceil(total / limit);
 
@@ -159,7 +147,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -190,7 +178,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

@@ -14,7 +14,7 @@ export class EventBusService {
     data?: any,
     userId?: string,
     eventId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): Promise<void> {
     logger.info('Meeting event published', {
       eventType,
@@ -38,7 +38,7 @@ export class EventBusService {
     data?: any,
     userId?: string,
     eventId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): Promise<void> {
     logger.info('Bot event published', {
       eventType,
@@ -61,7 +61,7 @@ export class EventBusService {
     data?: any,
     userId?: string,
     eventId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): Promise<void> {
     logger.info('Transcription event published', {
       eventType,

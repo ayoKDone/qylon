@@ -4,116 +4,110 @@ import { EventBusService } from '../services/EventBusService';
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 const eventBusService = new EventBusService();
 
 /**
  * Handle Recall.ai webhook events
  */
-router.post(
-  '/recall-ai',
-  async (req: Request, res: Response): Promise<void> => {
-    try {
-      const event = req.body;
+router.post('/recall-ai', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const event = req.body;
 
-      logger.info('Received Recall.ai webhook event', {
-        eventType: event.event_type,
-        botId: event.bot_id,
-        meetingId: event.meeting_id,
-        timestamp: new Date().toISOString(),
-      });
+    logger.info('Received Recall.ai webhook event', {
+      eventType: event.event_type,
+      botId: event.bot_id,
+      meetingId: event.meeting_id,
+      timestamp: new Date().toISOString(),
+    });
 
-      // Verify webhook signature if configured
-      if (process.env.RECALL_AI_WEBHOOK_SECRET) {
-        const rawBody = JSON.stringify(event);
-        if (!verifyWebhookSignature(rawBody, req.headers)) {
-          logger.warn('Invalid webhook signature', {
-            headers: req.headers,
-            hasSecret: !!process.env.RECALL_AI_WEBHOOK_SECRET,
-          });
-          res.status(401).json({ error: 'Invalid signature' });
-          return;
-        }
+    // Verify webhook signature if configured
+    if (process.env.RECALL_AI_WEBHOOK_SECRET) {
+      const rawBody = JSON.stringify(event);
+      if (!verifyWebhookSignature(rawBody, req.headers)) {
+        logger.warn('Invalid webhook signature', {
+          headers: req.headers,
+          hasSecret: !!process.env.RECALL_AI_WEBHOOK_SECRET,
+        });
+        res.status(401).json({ error: 'Invalid signature' });
+        return;
       }
-
-      // Process different event types
-      switch (event.event_type) {
-        case 'bot.joining_call':
-          await handleBotJoiningCall(event);
-          break;
-        case 'bot.in_waiting_room':
-          await handleBotInWaitingRoom(event);
-          break;
-        case 'bot.in_call_not_recording':
-          await handleBotInCallNotRecording(event);
-          break;
-        case 'bot.recording_permission_allowed':
-          await handleRecordingPermissionAllowed(event);
-          break;
-        case 'bot.recording_permission_denied':
-          await handleRecordingPermissionDenied(event);
-          break;
-        case 'bot.in_call_recording':
-          await handleBotInCallRecording(event);
-          break;
-        case 'bot.call_ended':
-          await handleBotCallEnded(event);
-          break;
-        case 'bot.done':
-          await handleBotDone(event);
-          break;
-        case 'bot.fatal':
-          await handleBotFatal(event);
-          break;
-        case 'transcript.data':
-          await handleTranscriptData(event);
-          break;
-        case 'transcript.partial_data':
-          await handleTranscriptPartialData(event);
-          break;
-        case 'transcript.done':
-          await handleTranscriptDone(event);
-          break;
-        case 'transcript.failed':
-          await handleTranscriptFailed(event);
-          break;
-        case 'audio_separate_raw.data':
-          await handleAudioSeparateData(event);
-          break;
-        case 'video_separate_png.data':
-          await handleVideoSeparatePngData(event);
-          break;
-        case 'video_separate_h264.data':
-          await handleVideoSeparateH264Data(event);
-          break;
-        case 'recording.started':
-          await handleRecordingStarted(event);
-          break;
-        case 'recording.stopped':
-          await handleRecordingStopped(event);
-          break;
-        case 'transcription.completed':
-          await handleTranscriptionCompleted(event);
-          break;
-        default:
-          logger.info('Unhandled webhook event type', {
-            eventType: event.event_type,
-          });
-      }
-
-      res.status(200).json({ success: true });
-    } catch (error: any) {
-      logger.error('Failed to process Recall.ai webhook', {
-        error: error.message,
-        body: req.body,
-      });
-      res.status(500).json({ error: 'Webhook processing failed' });
     }
+
+    // Process different event types
+    switch (event.event_type) {
+      case 'bot.joining_call':
+        await handleBotJoiningCall(event);
+        break;
+      case 'bot.in_waiting_room':
+        await handleBotInWaitingRoom(event);
+        break;
+      case 'bot.in_call_not_recording':
+        await handleBotInCallNotRecording(event);
+        break;
+      case 'bot.recording_permission_allowed':
+        await handleRecordingPermissionAllowed(event);
+        break;
+      case 'bot.recording_permission_denied':
+        await handleRecordingPermissionDenied(event);
+        break;
+      case 'bot.in_call_recording':
+        await handleBotInCallRecording(event);
+        break;
+      case 'bot.call_ended':
+        await handleBotCallEnded(event);
+        break;
+      case 'bot.done':
+        await handleBotDone(event);
+        break;
+      case 'bot.fatal':
+        await handleBotFatal(event);
+        break;
+      case 'transcript.data':
+        await handleTranscriptData(event);
+        break;
+      case 'transcript.partial_data':
+        await handleTranscriptPartialData(event);
+        break;
+      case 'transcript.done':
+        await handleTranscriptDone(event);
+        break;
+      case 'transcript.failed':
+        await handleTranscriptFailed(event);
+        break;
+      case 'audio_separate_raw.data':
+        await handleAudioSeparateData(event);
+        break;
+      case 'video_separate_png.data':
+        await handleVideoSeparatePngData(event);
+        break;
+      case 'video_separate_h264.data':
+        await handleVideoSeparateH264Data(event);
+        break;
+      case 'recording.started':
+        await handleRecordingStarted(event);
+        break;
+      case 'recording.stopped':
+        await handleRecordingStopped(event);
+        break;
+      case 'transcription.completed':
+        await handleTranscriptionCompleted(event);
+        break;
+      default:
+        logger.info('Unhandled webhook event type', {
+          eventType: event.event_type,
+        });
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error: any) {
+    logger.error('Failed to process Recall.ai webhook', {
+      error: error.message,
+      body: req.body,
+    });
+    res.status(500).json({ error: 'Webhook processing failed' });
   }
-);
+});
 
 /**
  * Handle bot joined call event
@@ -202,9 +196,7 @@ async function handleRecordingStarted(event: any): Promise<void> {
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(
-        `Failed to update meeting with recording info: ${error.message}`
-      );
+      throw new Error(`Failed to update meeting with recording info: ${error.message}`);
     }
 
     logger.info('Recording started - meeting updated', {
@@ -240,9 +232,7 @@ async function handleRecordingStopped(event: any): Promise<void> {
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(
-        `Failed to update meeting with recording URL: ${error.message}`
-      );
+      throw new Error(`Failed to update meeting with recording URL: ${error.message}`);
     }
 
     logger.info('Recording stopped - meeting updated', {
@@ -273,9 +263,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       .single();
 
     if (meetingError || !meeting) {
-      throw new Error(
-        `Failed to get meeting for bot ${bot_id}: ${meetingError?.message}`
-      );
+      throw new Error(`Failed to get meeting for bot ${bot_id}: ${meetingError?.message}`);
     }
 
     // Update meeting with transcription information
@@ -294,9 +282,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       .eq('metadata->>recall_bot_id', bot_id);
 
     if (error) {
-      throw new Error(
-        `Failed to update meeting with transcription: ${error.message}`
-      );
+      throw new Error(`Failed to update meeting with transcription: ${error.message}`);
     }
 
     // Publish meeting completed event to Event Bus
@@ -314,7 +300,7 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       },
       meeting.client_id, // Using client_id as userId for now
       `meeting_${meeting.id}`,
-      `transcription_${recording_id}`
+      `transcription_${recording_id}`,
     );
 
     // Publish transcription completed event
@@ -330,18 +316,15 @@ async function handleTranscriptionCompleted(event: any): Promise<void> {
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
-      `transcription_${recording_id}`
+      `transcription_${recording_id}`,
     );
 
-    logger.info(
-      'Transcription completed - meeting updated and events published',
-      {
-        botId: bot_id,
-        recordingId: recording_id,
-        transcriptUrl: transcript_url,
-        meetingId: meeting.id,
-      }
-    );
+    logger.info('Transcription completed - meeting updated and events published', {
+      botId: bot_id,
+      recordingId: recording_id,
+      transcriptUrl: transcript_url,
+      meetingId: meeting.id,
+    });
   } catch (error: any) {
     logger.error('Failed to handle transcription completed event', {
       event,
@@ -359,9 +342,7 @@ async function handleBotError(event: any): Promise<void> {
     const { bot_id, error_message, error_code, sub_code } = event;
 
     // Get detailed bot status for troubleshooting
-    const recallService = new (
-      await import('../services/RecallAIService')
-    ).RecallAIService();
+    const recallService = new (await import('../services/RecallAIService')).RecallAIService();
     let diagnosis = null;
 
     try {
@@ -396,26 +377,17 @@ async function handleBotError(event: any): Promise<void> {
 
     // Send alert to monitoring system if fatal error
     if (sub_code && isFatalError(sub_code)) {
-      await sendFatalErrorAlert(
-        bot_id,
-        error_message,
-        error_code,
-        sub_code,
-        diagnosis
-      );
+      await sendFatalErrorAlert(bot_id, error_message, error_code, sub_code, diagnosis);
     }
 
-    logger.error(
-      'Bot error occurred - meeting updated with troubleshooting info',
-      {
-        botId: bot_id,
-        errorMessage: error_message,
-        errorCode: error_code,
-        subCode: sub_code,
-        hasDiagnosis: !!diagnosis,
-        explorerUrl: diagnosis?.explorerUrl,
-      }
-    );
+    logger.error('Bot error occurred - meeting updated with troubleshooting info', {
+      botId: bot_id,
+      errorMessage: error_message,
+      errorCode: error_code,
+      subCode: sub_code,
+      hasDiagnosis: !!diagnosis,
+      explorerUrl: diagnosis?.explorerUrl,
+    });
   } catch (error: any) {
     logger.error('Failed to handle bot error event', {
       event,
@@ -585,7 +557,7 @@ async function handleBotDone(event: any): Promise<void> {
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
-    `bot_${bot_id}`
+    `bot_${bot_id}`,
   );
 
   // Publish meeting ended event
@@ -601,7 +573,7 @@ async function handleBotDone(event: any): Promise<void> {
     },
     meeting.client_id,
     `meeting_${meeting.id}`,
-    `bot_${bot_id}`
+    `bot_${bot_id}`,
   );
 }
 
@@ -622,9 +594,7 @@ async function handleBotFatal(event: any): Promise<void> {
   await updateBotStatus(bot_id, 'fatal', sub_code);
 
   // Get detailed bot status for troubleshooting
-  const recallService = new (
-    await import('../services/RecallAIService')
-  ).RecallAIService();
+  const recallService = new (await import('../services/RecallAIService')).RecallAIService();
   let diagnosis = null;
 
   try {
@@ -711,10 +681,7 @@ async function handleBotStatusChange(event: any): Promise<void> {
 /**
  * Handle fatal status changes
  */
-async function handleFatalStatusChange(
-  botId: string,
-  statusChange: any
-): Promise<void> {
+async function handleFatalStatusChange(botId: string, statusChange: any): Promise<void> {
   try {
     // Get meeting information
     const { data: meeting, error } = await supabase
@@ -775,10 +742,7 @@ async function handleFatalStatusChange(
 /**
  * Handle waiting room status
  */
-async function handleWaitingRoomStatus(
-  botId: string,
-  statusChange: any
-): Promise<void> {
+async function handleWaitingRoomStatus(botId: string, statusChange: any): Promise<void> {
   try {
     // Get meeting information
     const { data: meeting, error } = await supabase
@@ -839,7 +803,7 @@ async function sendFatalErrorAlert(
   errorMessage: string,
   errorCode: string,
   subCode: string,
-  diagnosis: any
+  diagnosis: any,
 ): Promise<void> {
   try {
     // Send to monitoring system
@@ -854,17 +818,14 @@ async function sendFatalErrorAlert(
     };
 
     // Call notification service
-    await fetch(
-      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/alerts/fatal-error`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
-        },
-        body: JSON.stringify(alertPayload),
-      }
-    );
+    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/alerts/fatal-error`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+      },
+      body: JSON.stringify(alertPayload),
+    });
 
     logger.info('Fatal error alert sent', {
       botId,
@@ -884,21 +845,18 @@ async function sendFatalErrorAlert(
  */
 async function sendClientAlert(clientId: string, alert: any): Promise<void> {
   try {
-    await fetch(
-      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-alert`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
-        },
-        body: JSON.stringify({
-          clientId,
-          alert,
-          timestamp: new Date().toISOString(),
-        }),
-      }
-    );
+    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-alert`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+      },
+      body: JSON.stringify({
+        clientId,
+        alert,
+        timestamp: new Date().toISOString(),
+      }),
+    });
   } catch (error: any) {
     logger.error('Failed to send client alert', {
       clientId,
@@ -911,10 +869,7 @@ async function sendClientAlert(clientId: string, alert: any): Promise<void> {
 /**
  * Send client notification
  */
-async function sendClientNotification(
-  clientId: string,
-  notification: any
-): Promise<void> {
+async function sendClientNotification(clientId: string, notification: any): Promise<void> {
   try {
     await fetch(
       `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/client-notification`,
@@ -929,7 +884,7 @@ async function sendClientNotification(
           notification,
           timestamp: new Date().toISOString(),
         }),
-      }
+      },
     );
   } catch (error: any) {
     logger.error('Failed to send client notification', {
@@ -945,11 +900,7 @@ async function sendClientNotification(
 /**
  * Update bot status in database
  */
-async function updateBotStatus(
-  botId: string,
-  status: string,
-  subCode?: string
-): Promise<void> {
+async function updateBotStatus(botId: string, status: string, subCode?: string): Promise<void> {
   try {
     const { error } = await supabase
       .from('meetings')
@@ -983,10 +934,7 @@ async function updateBotStatus(
 /**
  * Notify client about waiting room situation
  */
-async function notifyClientAboutWaitingRoom(
-  botId: string,
-  subCode?: string
-): Promise<void> {
+async function notifyClientAboutWaitingRoom(botId: string, subCode?: string): Promise<void> {
   try {
     // Get meeting and client information
     const { data: meeting } = await supabase
@@ -1013,17 +961,14 @@ async function notifyClientAboutWaitingRoom(
     };
 
     // Call notification service
-    await fetch(
-      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
-        },
-        body: JSON.stringify(notificationPayload),
-      }
-    );
+    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+      },
+      body: JSON.stringify(notificationPayload),
+    });
 
     logger.info('Client notified about waiting room', {
       botId,
@@ -1044,7 +989,7 @@ async function notifyClientAboutWaitingRoom(
  */
 async function notifyClientAboutRecordingPermission(
   botId: string,
-  subCode?: string
+  subCode?: string,
 ): Promise<void> {
   try {
     // Get meeting and client information
@@ -1072,17 +1017,14 @@ async function notifyClientAboutRecordingPermission(
     };
 
     // Call notification service
-    await fetch(
-      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
-        },
-        body: JSON.stringify(notificationPayload),
-      }
-    );
+    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+      },
+      body: JSON.stringify(notificationPayload),
+    });
 
     logger.info('Client notified about recording permission', {
       botId,
@@ -1104,7 +1046,7 @@ async function notifyClientAboutRecordingPermission(
 async function notifyClientAboutFatalError(
   botId: string,
   subCode?: string,
-  diagnosis?: any
+  diagnosis?: any,
 ): Promise<void> {
   try {
     // Get meeting and client information
@@ -1125,8 +1067,7 @@ async function notifyClientAboutFatalError(
       meetingId: meeting.id,
       clientId: meeting.client_id,
       botId,
-      message:
-        'Your meeting bot encountered a fatal error and could not join the meeting.',
+      message: 'Your meeting bot encountered a fatal error and could not join the meeting.',
       subCode,
       diagnosis,
       troubleshootingUrl: diagnosis?.explorerUrl,
@@ -1134,17 +1075,14 @@ async function notifyClientAboutFatalError(
     };
 
     // Call notification service
-    await fetch(
-      `${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
-        },
-        body: JSON.stringify(notificationPayload),
-      }
-    );
+    await fetch(`${process.env.NOTIFICATION_SERVICE_URL}/api/v1/notifications/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.INTER_SERVICE_TOKEN}`,
+      },
+      body: JSON.stringify(notificationPayload),
+    });
 
     logger.info('Client notified about fatal error', {
       botId,
@@ -1170,10 +1108,8 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
 
     // Get headers
     const svixId = headers['svix-id'] || headers['webhook-id'];
-    const svixTimestamp =
-      headers['svix-timestamp'] || headers['webhook-timestamp'];
-    const svixSignature =
-      headers['svix-signature'] || headers['webhook-signature'];
+    const svixTimestamp = headers['svix-timestamp'] || headers['webhook-timestamp'];
+    const svixSignature = headers['svix-signature'] || headers['webhook-signature'];
 
     if (!svixId || !svixTimestamp || !svixSignature) {
       logger.warn('Missing required webhook headers', {
@@ -1192,9 +1128,7 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
     }
 
     // Extract secret from whsec_ format
-    const secret = signingSecret.startsWith('whsec_')
-      ? signingSecret.split('_')[1]
-      : signingSecret;
+    const secret = signingSecret.startsWith('whsec_') ? signingSecret.split('_')[1] : signingSecret;
 
     // Construct signed content
     const signedContent = `${svixId}.${svixTimestamp}.${payload}`;
@@ -1227,9 +1161,7 @@ function verifyWebhookSignature(payload: string, headers: any): boolean {
     // Check if any signature matches (constant-time comparison)
     for (const signature of signatures) {
       // Remove version prefix (e.g., "v1,")
-      const cleanSignature = signature.includes(',')
-        ? signature.split(',')[1]
-        : signature;
+      const cleanSignature = signature.includes(',') ? signature.split(',')[1] : signature;
 
       if (constantTimeCompare(cleanSignature, expectedSignature)) {
         return true;
@@ -1283,12 +1215,7 @@ async function handleTranscriptData(event: any): Promise<void> {
     });
 
     // Store transcript data in database
-    await storeTranscriptData(
-      bot_id,
-      transcript_id,
-      recording_id,
-      transcriptData
-    );
+    await storeTranscriptData(bot_id, transcript_id, recording_id, transcriptData);
 
     // Trigger real-time transcription processing
     await processRealTimeTranscription(bot_id, transcriptData);
@@ -1317,12 +1244,7 @@ async function handleTranscriptPartialData(event: any): Promise<void> {
     });
 
     // Store partial transcript data
-    await storePartialTranscriptData(
-      bot_id,
-      transcript_id,
-      recording_id,
-      transcriptData
-    );
+    await storePartialTranscriptData(bot_id, transcript_id, recording_id, transcriptData);
 
     // Process partial transcription for real-time updates
     await processPartialTranscription(bot_id, transcriptData);
@@ -1380,7 +1302,7 @@ async function handleTranscriptDone(event: any): Promise<void> {
       },
       meeting.client_id,
       `meeting_${meeting.id}`,
-      `transcript_${transcript_id}`
+      `transcript_${transcript_id}`,
     );
   } catch (error: any) {
     logger.error('Error handling transcript done', {
@@ -1410,11 +1332,7 @@ async function handleTranscriptFailed(event: any): Promise<void> {
     await updateTranscriptStatus(transcript_id, 'failed', errorData);
 
     // Notify client about transcription failure
-    await notifyClientAboutTranscriptionFailure(
-      bot_id,
-      transcript_id,
-      errorData
-    );
+    await notifyClientAboutTranscriptionFailure(bot_id, transcript_id, errorData);
   } catch (error: any) {
     logger.error('Error handling transcript failed', {
       error: error.message,
@@ -1507,7 +1425,7 @@ async function storeTranscriptData(
   botId: string,
   transcriptId: string,
   recordingId: string,
-  transcriptData: any
+  transcriptData: any,
 ): Promise<void> {
   try {
     // Implementation would store transcript data in database
@@ -1534,7 +1452,7 @@ async function storePartialTranscriptData(
   botId: string,
   transcriptId: string,
   recordingId: string,
-  transcriptData: any
+  transcriptData: any,
 ): Promise<void> {
   try {
     // Implementation would store partial transcript data in database
@@ -1559,7 +1477,7 @@ async function storePartialTranscriptData(
 async function updateTranscriptStatus(
   transcriptId: string,
   status: string,
-  errorData?: any
+  errorData?: any,
 ): Promise<void> {
   try {
     // Implementation would update transcript status in database
@@ -1580,10 +1498,7 @@ async function updateTranscriptStatus(
 /**
  * Process real-time transcription
  */
-async function processRealTimeTranscription(
-  botId: string,
-  transcriptData: any
-): Promise<void> {
+async function processRealTimeTranscription(botId: string, transcriptData: any): Promise<void> {
   try {
     // Implementation would process real-time transcription
     logger.info('Processing real-time transcription', {
@@ -1602,10 +1517,7 @@ async function processRealTimeTranscription(
 /**
  * Process partial transcription
  */
-async function processPartialTranscription(
-  botId: string,
-  transcriptData: any
-): Promise<void> {
+async function processPartialTranscription(botId: string, transcriptData: any): Promise<void> {
   try {
     // Implementation would process partial transcription
     logger.info('Processing partial transcription', {
@@ -1627,7 +1539,7 @@ async function processPartialTranscription(
 async function notifyClientAboutTranscriptionFailure(
   botId: string,
   transcriptId: string,
-  errorData: any
+  errorData: any,
 ): Promise<void> {
   try {
     // Implementation would notify client about transcription failure
@@ -1652,7 +1564,7 @@ async function notifyClientAboutTranscriptionFailure(
 async function processRealTimeAudio(
   botId: string,
   recordingId: string,
-  audioData: any
+  audioData: any,
 ): Promise<void> {
   try {
     // Implementation would process real-time audio data
@@ -1677,7 +1589,7 @@ async function processRealTimeAudio(
 async function processRealTimeVideoPng(
   botId: string,
   recordingId: string,
-  videoData: any
+  videoData: any,
 ): Promise<void> {
   try {
     // Implementation would process real-time video PNG data
@@ -1703,7 +1615,7 @@ async function processRealTimeVideoPng(
 async function processRealTimeVideoH264(
   botId: string,
   recordingId: string,
-  videoData: any
+  videoData: any,
 ): Promise<void> {
   try {
     // Implementation would process real-time video H264 data

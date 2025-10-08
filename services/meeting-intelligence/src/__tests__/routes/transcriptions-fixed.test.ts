@@ -69,9 +69,7 @@ jest.mock('@supabase/supabase-js', () => ({
     };
 
     // Make the query chainable and resolve to the expected result
-    mockQuery.then = jest
-      .fn()
-      .mockResolvedValue({ data: [], error: null, count: 0 });
+    mockQuery.then = jest.fn().mockResolvedValue({ data: [], error: null, count: 0 });
 
     return {
       from: jest.fn(() => mockQuery),
@@ -104,18 +102,14 @@ jest.mock('@supabase/supabase-js', () => ({
           download: jest.fn().mockResolvedValue({ data: null, error: null }),
           remove: jest.fn().mockResolvedValue({ data: null, error: null }),
           list: jest.fn().mockResolvedValue({ data: [], error: null }),
-          getPublicUrl: jest
-            .fn()
-            .mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
+          getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
         })),
       },
     };
   }),
 }));
 
-const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
-  typeof authMiddleware
->;
+const mockAuthMiddleware = authMiddleware as jest.MockedFunction<typeof authMiddleware>;
 const mockRequireClientAccess = requireClientAccess as jest.MockedFunction<
   typeof requireClientAccess
 >;
@@ -129,8 +123,7 @@ describe('Transcriptions Routes', () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
     process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
     process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
-    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL =
-      'https://test.recall.ai/api/v1';
+    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL = 'https://test.recall.ai/api/v1';
 
     app = express();
     app.use(express.json({ limit: '50mb' }));
@@ -387,11 +380,7 @@ describe('Transcriptions Routes', () => {
         res.status(200).json({ success: true });
       });
 
-      app.post(
-        '/api/v1/transcriptions/process',
-        mockAuthMiddleware,
-        mockHandler
-      );
+      app.post('/api/v1/transcriptions/process', mockAuthMiddleware, mockHandler);
 
       await request(app)
         .post('/api/v1/transcriptions/process')
@@ -416,11 +405,7 @@ describe('Transcriptions Routes', () => {
       });
 
       // Replace the route handler
-      app.post(
-        '/api/v1/transcriptions/process',
-        mockAuthMiddleware,
-        mockHandler
-      );
+      app.post('/api/v1/transcriptions/process', mockAuthMiddleware, mockHandler);
 
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
@@ -457,17 +442,14 @@ describe('Transcriptions Routes', () => {
       // Replace the route handler
       app.post('/api/v1/transcriptions/process', mockHandler);
 
-      await request(app)
-        .post('/api/v1/transcriptions/process')
-        .send(processData)
-        .expect(201);
+      await request(app).post('/api/v1/transcriptions/process').send(processData).expect(201);
 
       expect(logger.info).toHaveBeenCalledWith(
         'Transcription processing started',
         expect.objectContaining({
           meetingId: processData.meetingId,
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
@@ -488,16 +470,14 @@ describe('Transcriptions Routes', () => {
       // Replace the route handler
       app.get('/api/v1/transcriptions/meeting/:meetingId', mockHandler);
 
-      await request(app)
-        .get('/api/v1/transcriptions/meeting/invalid-id')
-        .expect(400);
+      await request(app).get('/api/v1/transcriptions/meeting/invalid-id').expect(400);
 
       expect(logger.error).toHaveBeenCalledWith(
         'Transcription retrieval failed',
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        })
+        }),
       );
     });
   });

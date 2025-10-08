@@ -8,8 +8,7 @@ process.env.SUPABASE_URL = 'https://test.supabase.co';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
 process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
 process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
-process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL =
-  'https://test.recall.ai/api/v1';
+process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL = 'https://test.recall.ai/api/v1';
 
 async function testRoute() {
   try {

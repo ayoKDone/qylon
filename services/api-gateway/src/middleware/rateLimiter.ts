@@ -20,19 +20,15 @@ declare module 'express-serve-static-core' {
 let supabase: any = null;
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     logger.info('Supabase client initialized successfully');
   } else {
     logger.warn('Supabase not configured - running in local development mode');
   }
 } catch (error) {
-  logger.warn(
-    'Failed to initialize Supabase client - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
-  );
+  logger.warn('Failed to initialize Supabase client - running in local development mode', {
+    error: error instanceof Error ? error.message : String(error),
+  });
 }
 
 // Custom key generator that includes user ID for authenticated requests
@@ -96,9 +92,7 @@ const handler = async (req: Request, res: Response) => {
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
     retryAfter: Math.round(
-      req.rateLimit?.resetTime
-        ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000
-        : 60
+      req.rateLimit?.resetTime ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000 : 60,
     ),
   });
 };

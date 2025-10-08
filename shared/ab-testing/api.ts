@@ -38,10 +38,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to create experiment',
+        error: error instanceof Error ? error.message : 'Failed to create experiment',
       });
     }
   }
@@ -52,8 +49,7 @@ export class ABTestingAPI {
   async getExperiment(req: Request, res: Response): Promise<void> {
     try {
       const { experimentId } = req.params;
-      const experiment =
-        await this.experimentService.getExperiment(experimentId);
+      const experiment = await this.experimentService.getExperiment(experimentId);
 
       if (!experiment) {
         res.status(404).json({
@@ -70,8 +66,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to get experiment',
+        error: error instanceof Error ? error.message : 'Failed to get experiment',
       });
     }
   }
@@ -81,17 +76,12 @@ export class ABTestingAPI {
    */
   async listExperiments(req: Request, res: Response): Promise<void> {
     try {
-      const filters = req.query.filters
-        ? JSON.parse(req.query.filters as string)
-        : undefined;
+      const filters = req.query.filters ? JSON.parse(req.query.filters as string) : undefined;
       const pagination = req.query.pagination
         ? JSON.parse(req.query.pagination as string)
         : undefined;
 
-      const experiments = await this.experimentService.listExperiments(
-        filters,
-        pagination
-      );
+      const experiments = await this.experimentService.listExperiments(filters, pagination);
 
       res.status(200).json({
         success: true,
@@ -101,8 +91,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to list experiments',
+        error: error instanceof Error ? error.message : 'Failed to list experiments',
       });
     }
   }
@@ -115,10 +104,7 @@ export class ABTestingAPI {
       const { experimentId } = req.params;
       const request: ExperimentUpdateRequest = req.body;
 
-      const experiment = await this.experimentService.updateExperiment(
-        experimentId,
-        request
-      );
+      const experiment = await this.experimentService.updateExperiment(experimentId, request);
 
       res.status(200).json({
         success: true,
@@ -128,10 +114,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to update experiment',
+        error: error instanceof Error ? error.message : 'Failed to update experiment',
       });
     }
   }
@@ -142,8 +125,7 @@ export class ABTestingAPI {
   async startExperiment(req: Request, res: Response): Promise<void> {
     try {
       const { experimentId } = req.params;
-      const experiment =
-        await this.experimentService.startExperiment(experimentId);
+      const experiment = await this.experimentService.startExperiment(experimentId);
 
       res.status(200).json({
         success: true,
@@ -153,8 +135,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to start experiment',
+        error: error instanceof Error ? error.message : 'Failed to start experiment',
       });
     }
   }
@@ -165,8 +146,7 @@ export class ABTestingAPI {
   async pauseExperiment(req: Request, res: Response): Promise<void> {
     try {
       const { experimentId } = req.params;
-      const experiment =
-        await this.experimentService.pauseExperiment(experimentId);
+      const experiment = await this.experimentService.pauseExperiment(experimentId);
 
       res.status(200).json({
         success: true,
@@ -176,8 +156,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to pause experiment',
+        error: error instanceof Error ? error.message : 'Failed to pause experiment',
       });
     }
   }
@@ -188,8 +167,7 @@ export class ABTestingAPI {
   async completeExperiment(req: Request, res: Response): Promise<void> {
     try {
       const { experimentId } = req.params;
-      const experiment =
-        await this.experimentService.completeExperiment(experimentId);
+      const experiment = await this.experimentService.completeExperiment(experimentId);
 
       res.status(200).json({
         success: true,
@@ -199,10 +177,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to complete experiment',
+        error: error instanceof Error ? error.message : 'Failed to complete experiment',
       });
     }
   }
@@ -223,10 +198,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to assign user to experiment',
+        error: error instanceof Error ? error.message : 'Failed to assign user to experiment',
       });
     }
   }
@@ -246,8 +218,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to record event',
+        error: error instanceof Error ? error.message : 'Failed to record event',
       });
     }
   }
@@ -272,8 +243,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to get analytics',
+        error: error instanceof Error ? error.message : 'Failed to get analytics',
       });
     }
   }
@@ -293,8 +263,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to generate report',
+        error: error instanceof Error ? error.message : 'Failed to generate report',
       });
     }
   }
@@ -355,8 +324,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to get templates',
+        error: error instanceof Error ? error.message : 'Failed to get templates',
       });
     }
   }
@@ -392,10 +360,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(400).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to create experiment from template',
+        error: error instanceof Error ? error.message : 'Failed to create experiment from template',
       });
     }
   }
@@ -417,10 +382,7 @@ export class ABTestingAPI {
     } catch (error) {
       res.status(500).json({
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to get user assignments',
+        error: error instanceof Error ? error.message : 'Failed to get user assignments',
       });
     }
   }
@@ -465,45 +427,24 @@ export function setupABTestingRoutes(app: any): void {
   app.get('/api/v1/experiments', api.listExperiments.bind(api));
   app.get('/api/v1/experiments/:experimentId', api.getExperiment.bind(api));
   app.put('/api/v1/experiments/:experimentId', api.updateExperiment.bind(api));
-  app.post(
-    '/api/v1/experiments/:experimentId/start',
-    api.startExperiment.bind(api)
-  );
-  app.post(
-    '/api/v1/experiments/:experimentId/pause',
-    api.pauseExperiment.bind(api)
-  );
-  app.post(
-    '/api/v1/experiments/:experimentId/complete',
-    api.completeExperiment.bind(api)
-  );
+  app.post('/api/v1/experiments/:experimentId/start', api.startExperiment.bind(api));
+  app.post('/api/v1/experiments/:experimentId/pause', api.pauseExperiment.bind(api));
+  app.post('/api/v1/experiments/:experimentId/complete', api.completeExperiment.bind(api));
 
   // User assignment and events
   app.post('/api/v1/experiments/assign', api.assignUser.bind(api));
   app.post('/api/v1/experiments/events', api.recordEvent.bind(api));
 
   // Analytics and reporting
-  app.get(
-    '/api/v1/experiments/:experimentId/analytics',
-    api.getAnalytics.bind(api)
-  );
-  app.get(
-    '/api/v1/experiments/:experimentId/report',
-    api.generateReport.bind(api)
-  );
+  app.get('/api/v1/experiments/:experimentId/analytics', api.getAnalytics.bind(api));
+  app.get('/api/v1/experiments/:experimentId/report', api.generateReport.bind(api));
 
   // Templates
   app.get('/api/v1/experiments/templates', api.getTemplates.bind(api));
-  app.post(
-    '/api/v1/experiments/templates/:templateId/create',
-    api.createFromTemplate.bind(api)
-  );
+  app.post('/api/v1/experiments/templates/:templateId/create', api.createFromTemplate.bind(api));
 
   // User assignments
-  app.get(
-    '/api/v1/users/:userId/experiments',
-    api.getUserAssignments.bind(api)
-  );
+  app.get('/api/v1/users/:userId/experiments', api.getUserAssignments.bind(api));
 
   // Health check
   app.get('/api/v1/experiments/health', api.getHealth.bind(api));

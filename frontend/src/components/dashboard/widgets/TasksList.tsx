@@ -9,8 +9,7 @@ export default function TasksLists() {
       date: '2024-01-20',
       meeting: 'Product Strategy Session',
       tags: ['#budget', '#finance', '#q1'],
-      description:
-        'Analyze the budget allocation for marketing and development teams',
+      description: 'Analyze the budget allocation for marketing and development teams',
       priority: 'high' as const,
       status: 'pending' as const,
     },
@@ -47,14 +46,12 @@ export default function TasksLists() {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {tasks.map(task => (
         <TaskItem
           key={task.id}
           {...task}
-          onStatusChange={(id, status) =>
-            console.log('Status change:', id, status)
-          }
+          onStatusChange={(id, status) => console.log('Status change:', id, status)}
         />
       ))}
     </div>

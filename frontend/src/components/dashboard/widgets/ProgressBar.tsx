@@ -35,12 +35,10 @@ export default function ProgressBar({
       : value;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between mb-2">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <span className={`text-lg font-bold ${valueColor}`}>
-          {displayValue}
-        </span>
+    <div className='bg-white rounded-lg border border-gray-200 p-4'>
+      <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between mb-2'>
+        <span className='text-sm font-medium text-gray-700'>{label}</span>
+        <span className={`text-lg font-bold ${valueColor}`}>{displayValue}</span>
       </div>
 
       <div

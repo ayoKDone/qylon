@@ -143,10 +143,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 
   // Coverage test match patterns
-  testMatch: [
-    '**/__tests__/**/*.(ts|tsx|js|jsx)',
-    '**/*.(test|spec).(ts|tsx|js|jsx)',
-  ],
+  testMatch: ['**/__tests__/**/*.(ts|tsx|js|jsx)', '**/*.(test|spec).(ts|tsx|js|jsx)'],
 
   // Coverage ignore patterns
   testPathIgnorePatterns: [
@@ -159,9 +156,7 @@ module.exports = {
   ],
 
   // Coverage transform ignore patterns
-  transformIgnorePatterns: [
-    '/node_modules/(?!(module-that-needs-to-be-transformed)/)',
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(module-that-needs-to-be-transformed)/)'],
 
   // Coverage module name mapping
   moduleNameMapping: {
@@ -215,10 +210,7 @@ module.exports = {
   cacheDirectory: '<rootDir>/.jest-cache',
 
   // Coverage watch plugins
-  watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-  ],
+  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 
   // Coverage notification
   notify: true,

@@ -26,14 +26,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled = false,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const baseStyles =
-      'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
+    const baseStyles = 'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
 
     const variantStyles = {
-      default:
-        'border border-gray-300 bg-white focus:ring-[#6366F1] focus:border-[#6366F1]',
+      default: 'border border-gray-300 bg-white focus:ring-[#6366F1] focus:border-[#6366F1]',
       filled: 'border-0 bg-gray-100 focus:ring-[#6366F1] focus:bg-white',
       outlined:
         'border-2 border-gray-300 bg-transparent focus:ring-[#6366F1] focus:border-[#6366F1]',
@@ -45,27 +43,19 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       lg: 'px-5 py-3 text-lg',
     };
 
-    const errorStyles = error
-      ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
-      : '';
+    const errorStyles = error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : '';
 
-    const disabledStyles = disabled
-      ? 'bg-gray-100 cursor-not-allowed opacity-60'
-      : '';
+    const disabledStyles = disabled ? 'bg-gray-100 cursor-not-allowed opacity-60' : '';
 
     const widthStyle = fullWidth ? 'w-full' : '';
 
     return (
       <div className={`${fullWidth ? 'w-full' : ''}`}>
-        {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {label}
-          </label>
-        )}
+        {label && <label className='block text-sm font-medium text-gray-700 mb-1'>{label}</label>}
 
-        <div className="relative">
+        <div className='relative'>
           {icon && iconPosition === 'left' && (
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <div className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'>
               {icon}
             </div>
           )}
@@ -88,20 +78,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {icon && iconPosition === 'right' && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <div className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400'>
               {icon}
             </div>
           )}
         </div>
 
-        {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+        {error && <p className='mt-1 text-sm text-red-600'>{error}</p>}
 
-        {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
-        )}
+        {helperText && !error && <p className='mt-1 text-sm text-gray-500'>{helperText}</p>}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

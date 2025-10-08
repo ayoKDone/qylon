@@ -132,8 +132,7 @@ export const testData = {
 
 // Utility functions
 export function generateRandomString(length) {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -143,9 +142,7 @@ export function generateRandomString(length) {
 
 export function generateRandomDate() {
   const now = new Date();
-  const future = new Date(
-    now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000
-  );
+  const future = new Date(now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000);
   return future.toISOString();
 }
 
@@ -171,14 +168,10 @@ export function authenticateUser(user, baseUrl) {
     password: user.password,
   });
 
-  const loginResponse = http.post(
-    `${baseUrl}/api/v1/auth/login`,
-    loginPayload,
-    {
-      headers: { 'Content-Type': 'application/json' },
-      tags: { endpoint: 'auth_login' },
-    }
-  );
+  const loginResponse = http.post(`${baseUrl}/api/v1/auth/login`, loginPayload, {
+    headers: { 'Content-Type': 'application/json' },
+    tags: { endpoint: 'auth_login' },
+  });
 
   const success = check(loginResponse, {
     'login status is 200': r => r.status === 200,

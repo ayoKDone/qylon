@@ -11,13 +11,13 @@ export default function DashboardLayout() {
   });
 
   return (
-    <section className="xui-dashboard">
+    <section className='xui-dashboard'>
       <Navigator />
-      <div className="screen" xui-navbar="true">
-        <div className="sticky top-0 z-10 px-5 mb-3">
+      <div className='screen' xui-navbar='true'>
+        <div className='sticky top-0 z-10 px-5 mb-3'>
           <Navbar title={navbar.title ?? ''} subtitle={navbar.subtitle ?? ''} />
         </div>
-        <main className="p-6 content">
+        <main className='p-6 content'>
           {/* 👇 Pass setter to children */}
           <Outlet context={{ setNavbar }} />
         </main>

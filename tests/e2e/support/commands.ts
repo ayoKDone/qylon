@@ -100,12 +100,9 @@ Cypress.Commands.add('submitForm', (formTestId: string) => {
   cy.get(`[data-testid="${formTestId}"]`).submit();
 });
 
-Cypress.Commands.add(
-  'selectOption',
-  (selectTestId: string, optionValue: string) => {
-    cy.get(`[data-testid="${selectTestId}"]`).select(optionValue);
-  }
-);
+Cypress.Commands.add('selectOption', (selectTestId: string, optionValue: string) => {
+  cy.get(`[data-testid="${selectTestId}"]`).select(optionValue);
+});
 
 Cypress.Commands.add('checkCheckbox', (checkboxTestId: string) => {
   cy.get(`[data-testid="${checkboxTestId}"]`).check();
@@ -133,9 +130,7 @@ Cypress.Commands.add('filterTableBy', (columnName: string, value: string) => {
 });
 
 Cypress.Commands.add('selectTableRow', (rowIndex: number) => {
-  cy.get(
-    `[data-testid="table-row-${rowIndex}"] input[type="checkbox"]`
-  ).check();
+  cy.get(`[data-testid="table-row-${rowIndex}"] input[type="checkbox"]`).check();
 });
 
 // Modal interaction commands
@@ -150,60 +145,42 @@ Cypress.Commands.add('closeModal', (modalTestId: string) => {
 });
 
 Cypress.Commands.add('confirmModal', (modalTestId: string) => {
-  cy.get(
-    `[data-testid="${modalTestId}"] [data-testid="confirm-button"]`
-  ).click();
+  cy.get(`[data-testid="${modalTestId}"] [data-testid="confirm-button"]`).click();
   cy.get(`[data-testid="${modalTestId}"]`).should('not.be.visible');
 });
 
 // Notification commands
 Cypress.Commands.add(
   'expectNotification',
-  (
-    message: string,
-    type: 'success' | 'error' | 'warning' | 'info' = 'success'
-  ) => {
+  (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
     cy.get(`[data-testid="notification-${type}"]`).should('be.visible');
     cy.get(`[data-testid="notification-${type}"]`).should('contain', message);
-  }
+  },
 );
 
 Cypress.Commands.add(
   'dismissNotification',
   (type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
-    cy.get(
-      `[data-testid="notification-${type}"] [data-testid="dismiss-button"]`
-    ).click();
+    cy.get(`[data-testid="notification-${type}"] [data-testid="dismiss-button"]`).click();
     cy.get(`[data-testid="notification-${type}"]`).should('not.be.visible');
-  }
+  },
 );
 
 // Loading state commands
 Cypress.Commands.add('waitForLoading', (testId: string) => {
-  cy.get(`[data-testid="${testId}"] [data-testid="loading"]`).should(
-    'be.visible'
-  );
-  cy.get(`[data-testid="${testId}"] [data-testid="loading"]`).should(
-    'not.be.visible'
-  );
+  cy.get(`[data-testid="${testId}"] [data-testid="loading"]`).should('be.visible');
+  cy.get(`[data-testid="${testId}"] [data-testid="loading"]`).should('not.be.visible');
 });
 
 Cypress.Commands.add('waitForDataLoad', (testId: string) => {
-  cy.get(`[data-testid="${testId}"] [data-testid="no-data"]`).should(
-    'not.be.visible'
-  );
-  cy.get(`[data-testid="${testId}"] [data-testid="data-loaded"]`).should(
-    'be.visible'
-  );
+  cy.get(`[data-testid="${testId}"] [data-testid="no-data"]`).should('not.be.visible');
+  cy.get(`[data-testid="${testId}"] [data-testid="data-loaded"]`).should('be.visible');
 });
 
 // API interaction commands
-Cypress.Commands.add(
-  'interceptAPI',
-  (method: string, url: string, response: any) => {
-    cy.intercept(method, url, response);
-  }
-);
+Cypress.Commands.add('interceptAPI', (method: string, url: string, response: any) => {
+  cy.intercept(method, url, response);
+});
 
 Cypress.Commands.add('waitForAPI', (alias: string) => {
   cy.wait(alias);
@@ -216,7 +193,7 @@ Cypress.Commands.add(
       statusCode,
       body: response,
     }).as(`${method.toLowerCase()}_${url.replace(/[^a-zA-Z0-9]/g, '_')}`);
-  }
+  },
 );
 
 // File upload commands
@@ -224,12 +201,9 @@ Cypress.Commands.add('uploadFile', (inputTestId: string, filePath: string) => {
   cy.get(`[data-testid="${inputTestId}"]`).selectFile(filePath);
 });
 
-Cypress.Commands.add(
-  'uploadMultipleFiles',
-  (inputTestId: string, filePaths: string[]) => {
-    cy.get(`[data-testid="${inputTestId}"]`).selectFile(filePaths);
-  }
-);
+Cypress.Commands.add('uploadMultipleFiles', (inputTestId: string, filePaths: string[]) => {
+  cy.get(`[data-testid="${inputTestId}"]`).selectFile(filePaths);
+});
 
 // Date and time commands
 Cypress.Commands.add('selectDate', (dateInputTestId: string, date: string) => {
@@ -240,21 +214,15 @@ Cypress.Commands.add('selectTime', (timeInputTestId: string, time: string) => {
   cy.get(`[data-testid="${timeInputTestId}"]`).clear().type(time);
 });
 
-Cypress.Commands.add(
-  'selectDateTime',
-  (dateTimeInputTestId: string, dateTime: string) => {
-    cy.get(`[data-testid="${dateTimeInputTestId}"]`).clear().type(dateTime);
-  }
-);
+Cypress.Commands.add('selectDateTime', (dateTimeInputTestId: string, dateTime: string) => {
+  cy.get(`[data-testid="${dateTimeInputTestId}"]`).clear().type(dateTime);
+});
 
 // Search commands
-Cypress.Commands.add(
-  'searchFor',
-  (searchInputTestId: string, query: string) => {
-    cy.get(`[data-testid="${searchInputTestId}"]`).clear().type(query);
-    cy.get(`[data-testid="${searchInputTestId}"]`).type('{enter}');
-  }
-);
+Cypress.Commands.add('searchFor', (searchInputTestId: string, query: string) => {
+  cy.get(`[data-testid="${searchInputTestId}"]`).clear().type(query);
+  cy.get(`[data-testid="${searchInputTestId}"]`).type('{enter}');
+});
 
 Cypress.Commands.add('clearSearch', (searchInputTestId: string) => {
   cy.get(`[data-testid="${searchInputTestId}"]`).clear();
@@ -288,14 +256,10 @@ Cypress.Commands.add('checkA11yWithOptions', (options: any) => {
 Cypress.Commands.add('measurePerformance', (testName: string) => {
   cy.window().then(win => {
     const performance = win.performance;
-    const navigation = performance.getEntriesByType(
-      'navigation'
-    )[0] as PerformanceNavigationTiming;
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
 
     cy.log(`Performance metrics for ${testName}:`, {
-      domContentLoaded:
-        navigation.domContentLoadedEventEnd -
-        navigation.domContentLoadedEventStart,
+      domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
       loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
       totalTime: navigation.loadEventEnd - navigation.fetchStart,
     });
@@ -304,20 +268,9 @@ Cypress.Commands.add('measurePerformance', (testName: string) => {
 
 // Custom assertions
 Cypress.Commands.add('shouldHaveValidForm', (formTestId: string) => {
-  cy.get(`[data-testid="${formTestId}"]`).should(
-    'have.attr',
-    'novalidate',
-    false
-  );
-  cy.get(`[data-testid="${formTestId}"] input[required]`).should(
-    'have.attr',
-    'required'
-  );
-  cy.get(`[data-testid="${formTestId}"] input[type="email"]`).should(
-    'have.attr',
-    'type',
-    'email'
-  );
+  cy.get(`[data-testid="${formTestId}"]`).should('have.attr', 'novalidate', false);
+  cy.get(`[data-testid="${formTestId}"] input[required]`).should('have.attr', 'required');
+  cy.get(`[data-testid="${formTestId}"] input[type="email"]`).should('have.attr', 'type', 'email');
 });
 
 Cypress.Commands.add('shouldHaveValidTable', (tableTestId: string) => {
@@ -373,11 +326,9 @@ declare global {
       // Notifications
       expectNotification(
         message: string,
-        type?: 'success' | 'error' | 'warning' | 'info'
+        type?: 'success' | 'error' | 'warning' | 'info',
       ): Chainable<void>;
-      dismissNotification(
-        type?: 'success' | 'error' | 'warning' | 'info'
-      ): Chainable<void>;
+      dismissNotification(type?: 'success' | 'error' | 'warning' | 'info'): Chainable<void>;
 
       // Loading states
       waitForLoading(testId: string): Chainable<void>;
@@ -390,23 +341,17 @@ declare global {
         method: string,
         url: string,
         statusCode: number,
-        response: any
+        response: any,
       ): Chainable<void>;
 
       // File uploads
       uploadFile(inputTestId: string, filePath: string): Chainable<void>;
-      uploadMultipleFiles(
-        inputTestId: string,
-        filePaths: string[]
-      ): Chainable<void>;
+      uploadMultipleFiles(inputTestId: string, filePaths: string[]): Chainable<void>;
 
       // Date and time
       selectDate(dateInputTestId: string, date: string): Chainable<void>;
       selectTime(timeInputTestId: string, time: string): Chainable<void>;
-      selectDateTime(
-        dateTimeInputTestId: string,
-        dateTime: string
-      ): Chainable<void>;
+      selectDateTime(dateTimeInputTestId: string, dateTime: string): Chainable<void>;
 
       // Search
       searchFor(searchInputTestId: string, query: string): Chainable<void>;

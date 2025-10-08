@@ -59,7 +59,7 @@ export class SDKConnection {
       userId: string;
       platform: SDKPlatform;
       apiKey: string;
-    }
+    },
   ) {
     // Validate required fields
     if (!data.userId) {
@@ -71,10 +71,7 @@ export class SDKConnection {
     if (!data.apiKey) {
       throw new Error('API key is required');
     }
-    if (
-      data.status &&
-      !Object.values(SDKConnectionStatus).includes(data.status)
-    ) {
+    if (data.status && !Object.values(SDKConnectionStatus).includes(data.status)) {
       throw new Error('Invalid status');
     }
     if (data.metadata && typeof data.metadata !== 'object') {
@@ -92,14 +89,11 @@ export class SDKConnection {
   }
 
   private generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   public updateStatus(newStatus: SDKConnectionStatus): void {

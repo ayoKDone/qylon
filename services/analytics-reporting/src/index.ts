@@ -20,10 +20,7 @@ const port = process.env.PORT || 3008;
 // Logger configuration
 const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({ filename: 'logs/analytics-reporting.log' }),

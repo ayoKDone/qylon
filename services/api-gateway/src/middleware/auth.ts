@@ -8,20 +8,15 @@ import jwt from 'jsonwebtoken';
 let supabase: any = null;
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     logger.info('Supabase client initialized successfully in auth middleware');
   } else {
-    logger.warn(
-      'Supabase not configured in auth middleware - running in local development mode'
-    );
+    logger.warn('Supabase not configured in auth middleware - running in local development mode');
   }
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in auth middleware - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -29,11 +24,7 @@ try {
  * Authentication middleware that validates JWT tokens
  * and attaches user information to the request
  */
-export const authMiddleware = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   // Wrap async operations in an immediately invoked async function
   (async () => {
     try {
@@ -163,11 +154,7 @@ export const authMiddleware = (
  * Role-based authorization middleware
  */
 export const requireRole = (roles: UserRole | UserRole[]) => {
-  return (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction
-  ): void => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',
@@ -206,20 +193,13 @@ export const requireAdmin = requireRole(UserRole.ADMIN);
 /**
  * MSP Admin or Admin middleware
  */
-export const requireMSPAdmin = requireRole([
-  UserRole.ADMIN,
-  UserRole.MSP_ADMIN,
-]);
+export const requireMSPAdmin = requireRole([UserRole.ADMIN, UserRole.MSP_ADMIN]);
 
 /**
  * Optional authentication middleware
  * Attaches user if token is present but doesn't require it
  */
-export const optionalAuth = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const optionalAuth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   (async () => {
     try {
       const authHeader = req.headers.authorization;
@@ -276,7 +256,7 @@ export const optionalAuth = (
 export const requireClientAccess = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   (async () => {
     try {

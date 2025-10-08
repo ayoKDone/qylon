@@ -84,8 +84,7 @@ function generateRandomUser() {
 }
 
 function generateRandomString(length) {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -95,9 +94,7 @@ function generateRandomString(length) {
 
 function generateRandomDate() {
   const now = new Date();
-  const future = new Date(
-    now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000
-  );
+  const future = new Date(now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000);
   return future.toISOString();
 }
 
@@ -334,14 +331,10 @@ function testMeetingManagement(headers) {
       description: 'Normal test meeting description',
     });
 
-    const createResponse = http.post(
-      `${API_BASE_URL}/meetings`,
-      meetingPayload,
-      {
-        headers,
-        tags: { endpoint: 'meetings_create', operation: 'normal' },
-      }
-    );
+    const createResponse = http.post(`${API_BASE_URL}/meetings`, meetingPayload, {
+      headers,
+      tags: { endpoint: 'meetings_create', operation: 'normal' },
+    });
 
     const createSuccess = check(createResponse, {
       'create meeting status is 201': r => r.status === 201,
@@ -377,14 +370,10 @@ function testContentOperations(headers) {
       prompt: 'Generate a summary of this meeting',
     });
 
-    const generateResponse = http.post(
-      `${API_BASE_URL}/content/generate`,
-      contentPayload,
-      {
-        headers,
-        tags: { endpoint: 'content_generate', operation: 'normal' },
-      }
-    );
+    const generateResponse = http.post(`${API_BASE_URL}/content/generate`, contentPayload, {
+      headers,
+      tags: { endpoint: 'content_generate', operation: 'normal' },
+    });
 
     const generateSuccess = check(generateResponse, {
       'generate content status is 200': r => r.status === 200,
@@ -422,14 +411,10 @@ function testAnalytics(headers) {
       },
     });
 
-    const trackResponse = http.post(
-      `${API_BASE_URL}/analytics/events`,
-      eventPayload,
-      {
-        headers,
-        tags: { endpoint: 'analytics_track', operation: 'normal' },
-      }
-    );
+    const trackResponse = http.post(`${API_BASE_URL}/analytics/events`, eventPayload, {
+      headers,
+      tags: { endpoint: 'analytics_track', operation: 'normal' },
+    });
 
     const trackSuccess = check(trackResponse, {
       'track event status is 200': r => r.status === 200,
@@ -447,12 +432,8 @@ export function teardown(data) {
   console.log(`Total requests: ${requestCount.count}`);
   console.log(`Error rate: ${errorRate.rate}`);
   console.log(`Average response time: ${responseTime.avg}ms`);
-  console.log(
-    `95th percentile response time: ${responseTime.percentile(95)}ms`
-  );
-  console.log(
-    `99th percentile response time: ${responseTime.percentile(99)}ms`
-  );
+  console.log(`95th percentile response time: ${responseTime.percentile(95)}ms`);
+  console.log(`99th percentile response time: ${responseTime.percentile(99)}ms`);
   console.log(`Maximum response time: ${responseTime.max}ms`);
   console.log(`Minimum response time: ${responseTime.min}ms`);
 }

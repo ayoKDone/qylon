@@ -93,9 +93,7 @@ export interface MockResponse {
   send: jest.MockedFunction<(data: any) => MockResponse>;
   end: jest.MockedFunction<() => MockResponse>;
   set: jest.MockedFunction<(key: string, value: string) => MockResponse>;
-  cookie: jest.MockedFunction<
-    (name: string, value: string, options?: any) => MockResponse
-  >;
+  cookie: jest.MockedFunction<(name: string, value: string, options?: any) => MockResponse>;
   clearCookie: jest.MockedFunction<(name: string) => MockResponse>;
   redirect: jest.MockedFunction<(url: string) => MockResponse>;
   locals: Record<string, any>;
@@ -266,9 +264,7 @@ export class TestDataGenerator {
     };
   }
 
-  static generateNotification(
-    overrides: Partial<MockNotification> = {}
-  ): MockNotification {
+  static generateNotification(overrides: Partial<MockNotification> = {}): MockNotification {
     return {
       id: this.generateId(),
       user_id: this.generateId(),
@@ -285,7 +281,7 @@ export class TestDataGenerator {
   static generateEvent(
     type: string,
     data: any = {},
-    overrides: Partial<MockEvent> = {}
+    overrides: Partial<MockEvent> = {},
   ): MockEvent {
     return {
       id: this.generateId(),
@@ -303,8 +299,7 @@ export class TestDataGenerator {
  */
 export class TestAssertions {
   static expectValidUUID(value: string): void {
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     expect(value).toMatch(uuidRegex);
   }
 
@@ -388,17 +383,14 @@ export class TestUtils {
     return jest
       .fn()
       .mockImplementation(
-        () =>
-          new Promise(resolve => setTimeout(() => resolve(returnValue), delay))
+        () => new Promise(resolve => setTimeout(() => resolve(returnValue), delay)),
       );
   }
 
   static mockAsyncError(error: Error, delay: number = 0) {
     return jest
       .fn()
-      .mockImplementation(
-        () => new Promise((_, reject) => setTimeout(() => reject(error), delay))
-      );
+      .mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(error), delay)));
   }
 
   static createMockDatabase() {
