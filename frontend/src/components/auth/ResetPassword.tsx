@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 
 type ResetPasswordInputs = {
   newPassword: string;
@@ -10,6 +12,12 @@ type ResetPasswordInputs = {
 export default function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const token = searchParams.get('access_token');
 
   const {
     register,
@@ -18,9 +26,35 @@ export default function ResetPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordInputs>();
 
+  useEffect(() => {
+    if (!token) {
+      navigate('/forgot-password', { replace: true });
+    }
+  }, [token, navigate]);
+
   const onSubmit = async (data: ResetPasswordInputs) => {
-    console.log('Reset Password Data:', data);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    if (!token) return;
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: data.newPassword,
+      });
+
+      if (error) {
+        setMessage(`Error: ${error.message}`);
+      } else {
+        setMessage('Password reset successful! Redirecting to login...');
+        setTimeout(() => navigate('/login'), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage('Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,7 +63,6 @@ export default function ResetPassword() {
         <img
           src="/static/images/logo-full.png"
           alt="Qylon Logo"
-          className="xui-img-100"
           width={118}
           height={45}
         />
@@ -54,6 +87,10 @@ export default function ResetPassword() {
           <p className="xui-font-sz-small text-gray-500 mb-6">
             Choose a strong password for your account
           </p>
+
+          {message && (
+            <p className="mb-4 text-center text-red-500">{message}</p>
+          )}
 
           {/* New Password */}
           <div
@@ -126,10 +163,10 @@ export default function ResetPassword() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || loading || !token}
             className="w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center"
           >
-            {isSubmitting ? (
+            {isSubmitting || loading ? (
               <FaSpinner className="animate-spin h-6 w-6" />
             ) : (
               'Reset Password'

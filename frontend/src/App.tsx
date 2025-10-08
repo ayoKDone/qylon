@@ -32,7 +32,6 @@ import Signup from '@/components/auth/Signup';
 import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Verification from './components/auth/Verification';
 import Stylexui from './utils/Stylexui';
-
 // Dashboard imports
 import DashboardPage from '@/pages/Dashboard';
 
@@ -90,7 +89,14 @@ const AppContent: React.FC = () => {
         <Route path="*" element={<Navigate to="/" replace />} />
 
         {/* Dashboard routes */}
-        <Route path="/dashboard/*" element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
