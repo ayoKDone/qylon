@@ -10,7 +10,6 @@ import FAQ from './components/FAQ';
 import Features from './components/Features';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
-import GetStarted from './components/GetStarted';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
@@ -21,14 +20,14 @@ import ROI from './components/ROI';
 // New placeholder imports (to be implemented)
 import ForgotPassword from '@/components/auth/ForgotPassword';
 import Login from '@/components/auth/Login';
-import ProfileSetup from '@/components/auth/ProfileSetup';
 import ResetPassword from '@/components/auth/ResetPassword';
 import Signup from '@/components/auth/Signup';
-import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Verification from './components/auth/Verification';
 import Stylexui from './utils/Stylexui';
 // Dashboard imports
 import DashboardPage from '@/pages/Dashboard';
+
+// Setup imports
 
 const AppContent: React.FC = () => {
   const { isDark } = useTheme();
@@ -56,7 +55,7 @@ const AppContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        <Route path='/get-started' element={<GetStarted />} />
+        <Route path="/get-started" element={<GetStarted />} />
 
         {/* Landing page */}
         <Route
@@ -83,14 +82,7 @@ const AppContent: React.FC = () => {
         <Route path='*' element={<Navigate to='/' replace />} />
 
         {/* Dashboard routes */}
-        <Route
-          path='/dashboard'
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard/*" element={<DashboardPage />} />
       </Routes>
     </Router>
   );
