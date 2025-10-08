@@ -6,7 +6,7 @@ export class MeetingService {
 
   async getMeetings(
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<ApiResponse<PaginatedResponse<Meeting>>> {
     return apiService.getPaginated<Meeting>(this.baseEndpoint, page, limit);
   }
@@ -16,7 +16,7 @@ export class MeetingService {
   }
 
   async createMeeting(
-    meeting: Omit<Meeting, 'id' | 'created_at' | 'updated_at'>
+    meeting: Omit<Meeting, 'id' | 'created_at' | 'updated_at'>,
   ): Promise<ApiResponse<Meeting>> {
     return apiService.post<Meeting>(this.baseEndpoint, meeting);
   }
@@ -35,28 +35,28 @@ export class MeetingService {
 
   async createActionItem(
     meetingId: string,
-    actionItem: Omit<ActionItem, 'id' | 'meeting_id' | 'created_at' | 'updated_at'>
+    actionItem: Omit<ActionItem, 'id' | 'meeting_id' | 'created_at' | 'updated_at'>,
   ): Promise<ApiResponse<ActionItem>> {
     return apiService.post<ActionItem>(
       `${this.baseEndpoint}/${meetingId}/action-items`,
-      actionItem
+      actionItem,
     );
   }
 
   async updateActionItem(
     meetingId: string,
     actionItemId: string,
-    updates: Partial<ActionItem>
+    updates: Partial<ActionItem>,
   ): Promise<ApiResponse<ActionItem>> {
     return apiService.put<ActionItem>(
       `${this.baseEndpoint}/${meetingId}/action-items/${actionItemId}`,
-      updates
+      updates,
     );
   }
 
   async deleteActionItem(meetingId: string, actionItemId: string): Promise<ApiResponse<void>> {
     return apiService.delete<void>(
-      `${this.baseEndpoint}/${meetingId}/action-items/${actionItemId}`
+      `${this.baseEndpoint}/${meetingId}/action-items/${actionItemId}`,
     );
   }
 

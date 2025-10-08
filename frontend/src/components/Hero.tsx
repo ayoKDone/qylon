@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
         }
       } else {
         setSubmitMessage(
-          "🎉 Welcome to the future! You'll be among the first to experience AI-powered meeting automation."
+          "🎉 Welcome to the future! You'll be among the first to experience AI-powered meeting automation.",
         );
 
         // Send welcome email
@@ -45,7 +45,7 @@ const Hero: React.FC = () => {
                 email: email.toLowerCase().trim(),
                 source: 'hero',
               }),
-            }
+            },
           );
 
           if (emailResponse.ok) {

@@ -1,8 +1,4 @@
-import {
-  GoogleOAuthProvider,
-  TokenResponse,
-  useGoogleLogin,
-} from '@react-oauth/google';
+import { GoogleOAuthProvider, TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import React, { useState } from 'react';
 
 // Define the required scope for managing the user's calendar
@@ -32,10 +28,7 @@ const ConnectButtonLogic: React.FC<ConnectButtonLogicProps> = ({
 
   // Success handler receives the TokenResponse object
   const handleLoginSuccess = (
-    tokenResponse: Omit<
-      TokenResponse,
-      'error' | 'error_description' | 'error_uri'
-    >
+    tokenResponse: Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>,
   ) => {
     const accessToken = tokenResponse.access_token;
     console.log('Login Success! Access Token obtained.');
@@ -92,8 +85,8 @@ const ConnectButtonLogic: React.FC<ConnectButtonLogicProps> = ({
       }}
     >
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-        alt="Google Logo"
+        src='https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg'
+        alt='Google Logo'
         style={{ width: '18px', height: '18px' }}
       />
       Connect Your Google Calendar
@@ -116,10 +109,7 @@ export const GoogleCalendarConnect: React.FC<GoogleCalendarConnectProps> = ({
   return (
     // The Provider must wrap the component that uses the hook.
     <GoogleOAuthProvider clientId={clientId}>
-      <ConnectButtonLogic
-        onConnectSuccess={onConnectSuccess}
-        onConnectFailure={onConnectFailure}
-      />
+      <ConnectButtonLogic onConnectSuccess={onConnectSuccess} onConnectFailure={onConnectFailure} />
     </GoogleOAuthProvider>
   );
 };

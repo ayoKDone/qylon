@@ -13,11 +13,11 @@ export default function Setup() {
       <Routes>
         <Route element={<SetUpLayout />}>
           <Route index element={<Welcome />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="add-calendar" element={<IntegrateGoogle />} />
-          <Route path="integrations" element={<AllIntegrations />} />
-          <Route path="demo" element={<DemoSetup />} />
-          <Route path="complete" element={<Completed />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='add-calendar' element={<IntegrateGoogle />} />
+          <Route path='integrations' element={<AllIntegrations />} />
+          <Route path='demo' element={<DemoSetup />} />
+          <Route path='complete' element={<Completed />} />
         </Route>
       </Routes>
     </>
