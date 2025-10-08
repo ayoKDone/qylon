@@ -42,7 +42,7 @@ router.post(
       const transcript = await recallAIService.createAsyncTranscript(
         recordingId,
         provider,
-        diarization
+        diarization,
       );
 
       const response: ApiResponse<any> = {
@@ -66,7 +66,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -112,7 +112,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -151,7 +151,7 @@ router.get(
 
       // Download the transcript data
       const transcriptData = await recallAIService.downloadTranscript(
-        transcript.data.download_url
+        transcript.data.download_url,
       );
 
       const response: ApiResponse<any> = {
@@ -182,7 +182,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -233,7 +233,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -290,7 +290,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -341,7 +341,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -398,7 +398,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 export default router;

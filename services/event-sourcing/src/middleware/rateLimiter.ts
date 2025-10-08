@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from 'express';
 export const rateLimiter = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   // Basic rate limiting middleware - to be implemented
   next();

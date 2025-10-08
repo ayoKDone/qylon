@@ -32,7 +32,7 @@ describe('PipedriveService', () => {
     };
 
     service = new MockedPipedriveService(
-      mockConfig
+      mockConfig,
     ) as jest.Mocked<PipedriveService>;
 
     // Reset all mocks
@@ -51,21 +51,21 @@ describe('PipedriveService', () => {
 
     it('should throw error for missing credentials', async () => {
       service.authenticate.mockRejectedValue(
-        new Error('Pipedrive credentials are missing')
+        new Error('Pipedrive credentials are missing'),
       );
 
       await expect(service.authenticate({})).rejects.toThrow(
-        'Pipedrive credentials are missing'
+        'Pipedrive credentials are missing',
       );
     });
 
     it('should throw error for authentication failure', async () => {
       service.authenticate.mockRejectedValue(
-        new Error('Authentication failed')
+        new Error('Authentication failed'),
       );
 
       await expect(
-        service.authenticate(mockConfig.credentials)
+        service.authenticate(mockConfig.credentials),
       ).rejects.toThrow('Authentication failed');
     });
   });
@@ -85,7 +85,7 @@ describe('PipedriveService', () => {
 
       const result = await service.syncContacts(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
 
       expect(result.success).toBe(true);
@@ -109,7 +109,7 @@ describe('PipedriveService', () => {
 
       const result = await service.syncContacts(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
 
       expect(result.success).toBe(false);
@@ -133,7 +133,7 @@ describe('PipedriveService', () => {
 
       const result = await service.syncOpportunities(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
 
       expect(result.success).toBe(true);
@@ -176,13 +176,13 @@ describe('PipedriveService', () => {
           lastName: 'Doe',
           email: 'john@example.com',
           phone: '+1234567890',
-        })
+        }),
       );
     });
 
     it('should throw error for invalid contact data', async () => {
       service.createContact.mockRejectedValue(
-        new Error('Invalid contact data')
+        new Error('Invalid contact data'),
       );
 
       const invalidContactData = {
@@ -196,7 +196,7 @@ describe('PipedriveService', () => {
       };
 
       await expect(service.createContact(invalidContactData)).rejects.toThrow(
-        'Invalid contact data'
+        'Invalid contact data',
       );
     });
   });
@@ -227,7 +227,7 @@ describe('PipedriveService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        })
+        }),
       );
     });
   });
@@ -250,7 +250,7 @@ describe('PipedriveService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           companyId: 12345,
-        })
+        }),
       );
     });
 
@@ -270,7 +270,7 @@ describe('PipedriveService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        })
+        }),
       );
     });
   });

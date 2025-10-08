@@ -111,7 +111,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get events for an aggregate
@@ -134,7 +134,7 @@ router.get(
 
       const events = await eventStore.getEvents(
         aggregateId,
-        fromVersion ? parseInt(fromVersion as string) : 0
+        fromVersion ? parseInt(fromVersion as string) : 0,
       );
 
       logger.info('Events retrieved for aggregate', {
@@ -166,7 +166,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get events by type
@@ -201,7 +201,7 @@ router.get(
 
       const events = await eventStore.getEventsByType(
         eventType,
-        limit ? parseInt(limit as string) : 100
+        limit ? parseInt(limit as string) : 100,
       );
 
       logger.info('Events retrieved by type', {
@@ -234,7 +234,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get events by correlation ID
@@ -285,7 +285,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get available event types
@@ -317,7 +317,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

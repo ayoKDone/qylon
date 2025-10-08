@@ -39,7 +39,7 @@ export class RecallAIService {
       error => {
         logger.error('Recall.ai API request error', { error: error.message });
         return Promise.reject(error);
-      }
+      },
     );
 
     this.client.interceptors.response.use(
@@ -59,7 +59,7 @@ export class RecallAIService {
           data: error.response?.data,
         });
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -159,7 +159,7 @@ export class RecallAIService {
         google_meet?: 'web' | 'web_4_core';
         microsoft_teams?: 'web' | 'web_4_core';
       };
-    }
+    },
   ): Promise<RecallBot> {
     try {
       // Determine if this is a scheduled bot (>=10 minutes in advance) or ad-hoc
@@ -336,7 +336,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to create Recall.ai bot: ${error.message}`,
         'BOT_CREATION_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -367,7 +367,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get Recall.ai bot: ${error.message}`,
         'BOT_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -390,7 +390,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to delete Recall.ai bot: ${error.message}`,
         'BOT_DELETION_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -423,7 +423,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get Recall.ai recordings: ${error.message}`,
         'RECORDINGS_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -434,7 +434,7 @@ export class RecallAIService {
   async getTranscription(recordingId: string): Promise<any> {
     try {
       const response = await this.client.get(
-        `/recording/${recordingId}/transcript`
+        `/recording/${recordingId}/transcript`,
       );
 
       logger.info('Recall.ai transcription retrieved successfully', {
@@ -452,7 +452,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get Recall.ai transcription: ${error.message}`,
         'TRANSCRIPTION_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -482,7 +482,7 @@ export class RecallAIService {
       // Analyze status changes for errors
       const statusChanges = bot.status_changes || [];
       const fatalErrors = statusChanges.filter(
-        (change: any) => change.code === 'fatal'
+        (change: any) => change.code === 'fatal',
       );
       const hasFatalError = fatalErrors.length > 0;
       const lastError = hasFatalError
@@ -512,7 +512,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get bot status: ${error.message}`,
         'STATUS_FETCH_FAILED',
-        500
+        500,
       );
     }
   }
@@ -555,7 +555,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get bot screenshots: ${error.message}`,
         'SCREENSHOTS_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -565,7 +565,7 @@ export class RecallAIService {
    */
   async getBotScreenshot(
     botId: string,
-    screenshotId: string
+    screenshotId: string,
   ): Promise<{
     id: string;
     bot_id: string;
@@ -575,7 +575,7 @@ export class RecallAIService {
   }> {
     try {
       const response = await this.client.get(
-        `/bot/${botId}/screenshots/${screenshotId}`
+        `/bot/${botId}/screenshots/${screenshotId}`,
       );
       const screenshot = response.data;
 
@@ -602,7 +602,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get bot screenshot: ${error.message}`,
         'SCREENSHOT_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -686,7 +686,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to diagnose bot issues: ${error.message}`,
         'DIAGNOSIS_FAILED',
-        500
+        500,
       );
     }
   }
@@ -968,7 +968,7 @@ export class RecallAIService {
     meetingTitle: string,
     clientId: string,
     teamId?: string,
-    scheduledTime?: Date
+    scheduledTime?: Date,
   ): Promise<RecallBot> {
     try {
       const botName = `Qylon Bot - ${meetingTitle} - ${new Date().toISOString()}`;
@@ -1050,7 +1050,7 @@ export class RecallAIService {
     meetingUrl: string,
     clientId: string,
     teamId?: string,
-    hostName?: string
+    hostName?: string,
   ): Promise<RecallBot> {
     try {
       const botName = `Qylon Bot - On-the-fly - ${hostName || 'Unknown Host'} - ${new Date().toISOString()}`;
@@ -1130,7 +1130,7 @@ export class RecallAIService {
       clientId: string;
       teamId?: string;
       scheduledTime?: Date;
-    }>
+    }>,
   ): Promise<Array<{ meeting: any; bot: RecallBot | null; error?: string }>> {
     const results = await Promise.allSettled(
       meetings.map(async meeting => {
@@ -1140,7 +1140,7 @@ export class RecallAIService {
             meeting.title,
             meeting.clientId,
             meeting.teamId,
-            meeting.scheduledTime
+            meeting.scheduledTime,
           );
           return { meeting, bot };
         } catch (error: any) {
@@ -1150,7 +1150,7 @@ export class RecallAIService {
             error: error.message,
           };
         }
-      })
+      }),
     );
 
     return results.map((result, index) => {
@@ -1192,7 +1192,7 @@ export class RecallAIService {
    */
   async cleanupInactiveBots(
     clientId: string,
-    olderThanHours: number = 24
+    olderThanHours: number = 24,
   ): Promise<number> {
     try {
       const bots = await this.getBotsForClient(clientId);
@@ -1256,7 +1256,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to pause recording: ${error.message}`,
         'PAUSE_RECORDING_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1281,7 +1281,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to resume recording: ${error.message}`,
         'RESUME_RECORDING_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1306,7 +1306,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to start recording: ${error.message}`,
         'START_RECORDING_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1331,7 +1331,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to stop recording: ${error.message}`,
         'STOP_RECORDING_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1386,7 +1386,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get recording status: ${error.message}`,
         'RECORDING_STATUS_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1416,7 +1416,7 @@ export class RecallAIService {
   > {
     try {
       const response = await this.client.get(
-        `/video_separate?recording_id=${recordingId}`
+        `/video_separate?recording_id=${recordingId}`,
       );
       const separateVideos = response.data.results || [];
 
@@ -1453,7 +1453,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get separate videos: ${error.message}`,
         'SEPARATE_VIDEOS_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1520,7 +1520,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get separate video parts: ${error.message}`,
         'SEPARATE_VIDEO_PARTS_FETCH_FAILED',
-        500
+        500,
       );
     }
   }
@@ -1550,7 +1550,7 @@ export class RecallAIService {
   > {
     try {
       const response = await this.client.get(
-        `/audio_separate?recording_id=${recordingId}`
+        `/audio_separate?recording_id=${recordingId}`,
       );
       const separateAudios = response.data.results || [];
 
@@ -1587,7 +1587,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get separate audios: ${error.message}`,
         'SEPARATE_AUDIOS_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1652,7 +1652,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get separate audio parts: ${error.message}`,
         'SEPARATE_AUDIO_PARTS_FETCH_FAILED',
-        500
+        500,
       );
     }
   }
@@ -1663,7 +1663,7 @@ export class RecallAIService {
   async createAsyncTranscript(
     recordingId: string,
     provider: any,
-    diarization?: any
+    diarization?: any,
   ): Promise<{
     id: string;
     recording: {
@@ -1695,7 +1695,7 @@ export class RecallAIService {
 
       const response = await this.client.post(
         `/recording/${recordingId}/create_transcript`,
-        requestBody
+        requestBody,
       );
       const transcript = response.data;
 
@@ -1735,7 +1735,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to create async transcript: ${error.message}`,
         'ASYNC_TRANSCRIPT_CREATE_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1810,7 +1810,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to get transcript: ${error.message}`,
         'TRANSCRIPT_FETCH_FAILED',
-        error.response?.status || 500
+        error.response?.status || 500,
       );
     }
   }
@@ -1883,7 +1883,7 @@ export class RecallAIService {
       throw new RecallAIError(
         `Failed to download transcript: ${error.message}`,
         'TRANSCRIPT_DOWNLOAD_FAILED',
-        500
+        500,
       );
     }
   }

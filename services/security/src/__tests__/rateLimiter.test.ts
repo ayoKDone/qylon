@@ -75,7 +75,7 @@ describe('Rate Limiter Middleware', () => {
       expect(response.status).toBe(429);
       expect(response.body.error).toBe('Too Many Requests');
       expect(response.body.message).toContain(
-        'Too many authentication attempts'
+        'Too many authentication attempts',
       );
       expect(response.body.retryAfter).toBeDefined();
     });

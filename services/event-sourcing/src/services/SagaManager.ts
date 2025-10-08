@@ -16,7 +16,7 @@ export class SupabaseSagaManager implements ISagaManager {
   constructor() {
     this.supabase = createClient(
       process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
   }
 
@@ -24,7 +24,7 @@ export class SupabaseSagaManager implements ISagaManager {
     definition: SagaDefinition,
     correlationId: string,
     userId: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<Saga> {
     try {
       const sagaId = uuidv4();
@@ -122,10 +122,10 @@ export class SupabaseSagaManager implements ISagaManager {
       // Check dependencies
       if (step.dependsOn) {
         const dependencies = saga.steps.filter(s =>
-          step.dependsOn!.includes(s.name)
+          step.dependsOn!.includes(s.name),
         );
         const incompleteDependencies = dependencies.filter(
-          d => d.status !== SagaStepStatus.COMPLETED
+          d => d.status !== SagaStepStatus.COMPLETED,
         );
 
         if (incompleteDependencies.length > 0) {
@@ -296,7 +296,7 @@ export class SupabaseSagaManager implements ISagaManager {
 
       if (error) {
         throw new Error(
-          `Failed to get sagas by correlation ID: ${error.message}`
+          `Failed to get sagas by correlation ID: ${error.message}`,
         );
       }
 
@@ -365,7 +365,7 @@ export class SupabaseSagaManager implements ISagaManager {
 
   private async handleStepFailure(
     saga: Saga,
-    _failedStep: SagaStep
+    _failedStep: SagaStep,
   ): Promise<void> {
     // Determine compensation strategy based on saga definition
     // For now, we'll use backward recovery

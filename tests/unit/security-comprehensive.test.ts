@@ -116,7 +116,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         };
 
         await expect(authService.register(userData)).rejects.toThrow(
-          'Invalid email format'
+          'Invalid email format',
         );
       });
 
@@ -137,7 +137,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         };
 
         await expect(authService.register(userData)).rejects.toThrow(
-          'Password must be at least 8 characters long'
+          'Password must be at least 8 characters long',
         );
       });
 
@@ -169,7 +169,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         };
 
         await expect(authService.register(userData)).rejects.toThrow(
-          'User already registered'
+          'User already registered',
         );
       });
     });
@@ -256,7 +256,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         };
 
         await expect(authService.login(credentials)).rejects.toThrow(
-          'Invalid login credentials'
+          'Invalid login credentials',
         );
       });
 
@@ -278,7 +278,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
 
             if (parseInt(failedAttempts) >= 5) {
               throw new Error(
-                'Account temporarily locked due to too many failed attempts'
+                'Account temporarily locked due to too many failed attempts',
               );
             }
 
@@ -302,10 +302,10 @@ describe('Security Service Comprehensive Unit Tests', () => {
         };
 
         await expect(authService.login(credentials)).rejects.toThrow(
-          'Account temporarily locked due to too many failed attempts'
+          'Account temporarily locked due to too many failed attempts',
         );
         expect(mockRedis.get).toHaveBeenCalledWith(
-          `failed_attempts:${credentials.email}`
+          `failed_attempts:${credentials.email}`,
         );
       });
     });
@@ -345,7 +345,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
             email: user.email,
             role: user.role,
           }),
-          'test-secret'
+          'test-secret',
         );
         TestAssertions.expectValidJWT(token);
       });
@@ -669,7 +669,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         res.set('X-XSS-Protection', '1; mode=block');
         res.set(
           'Strict-Transport-Security',
-          'max-age=31536000; includeSubDomains'
+          'max-age=31536000; includeSubDomains',
         );
         res.set('Content-Security-Policy', "default-src 'self'");
         res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -683,15 +683,15 @@ describe('Security Service Comprehensive Unit Tests', () => {
       expect(res.set).toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block');
       expect(res.set).toHaveBeenCalledWith(
         'Strict-Transport-Security',
-        'max-age=31536000; includeSubDomains'
+        'max-age=31536000; includeSubDomains',
       );
       expect(res.set).toHaveBeenCalledWith(
         'Content-Security-Policy',
-        "default-src 'self'"
+        "default-src 'self'",
       );
       expect(res.set).toHaveBeenCalledWith(
         'Referrer-Policy',
-        'strict-origin-when-cross-origin'
+        'strict-origin-when-cross-origin',
       );
       expect(next).toHaveBeenCalled();
     });
@@ -819,7 +819,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
 
           await mockRedis.set(
             `session:${sessionId}`,
-            JSON.stringify(sessionData)
+            JSON.stringify(sessionData),
           );
           await mockRedis.expire(`session:${sessionId}`, 3600); // 1 hour
 
@@ -838,11 +838,11 @@ describe('Security Service Comprehensive Unit Tests', () => {
       TestAssertions.expectValidISO8601(result.expiresAt);
       expect(mockRedis.set).toHaveBeenCalledWith(
         `session:${result.sessionId}`,
-        expect.stringContaining(user.id)
+        expect.stringContaining(user.id),
       );
       expect(mockRedis.expire).toHaveBeenCalledWith(
         `session:${result.sessionId}`,
-        3600
+        3600,
       );
     });
 
@@ -874,7 +874,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
           sessionData.lastAccessed = TestDataGenerator.generateTimestamp();
           await mockRedis.set(
             `session:${sessionId}`,
-            JSON.stringify(sessionData)
+            JSON.stringify(sessionData),
           );
           await mockRedis.expire(`session:${sessionId}`, 3600);
 

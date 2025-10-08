@@ -17,7 +17,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 const recallAIService = new RecallAIService();
 
@@ -84,7 +84,7 @@ router.post(
         try {
           const bot = await recallAIService.createBot(
             meetingData.meeting_url,
-            `Qylon Bot - ${meetingData.title}`
+            `Qylon Bot - ${meetingData.title}`,
           );
 
           // Update meeting with bot information
@@ -147,7 +147,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -235,7 +235,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -254,7 +254,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -303,7 +303,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -338,7 +338,7 @@ router.put(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -436,7 +436,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -456,7 +456,7 @@ router.delete(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -533,7 +533,7 @@ router.delete(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

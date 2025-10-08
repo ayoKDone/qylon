@@ -83,7 +83,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid credentials provided',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
@@ -93,7 +93,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid contact email',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
 
@@ -101,7 +101,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Contact must have at least first name or last name',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
@@ -111,7 +111,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity name is required',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
 
@@ -119,14 +119,14 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity must be associated with a contact',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
 
   protected async handleApiError(
     error: any,
-    operation: string
+    operation: string,
   ): Promise<never> {
     const errorMessage =
       error.response?.data?.message || error.message || 'Unknown API error';
@@ -141,20 +141,20 @@ export abstract class BaseCRMService implements ICRMService {
         statusCode,
         url: error.config?.url,
         method: error.config?.method,
-      }
+      },
     );
 
     throw createExternalServiceError(
       `${operation} failed: ${errorMessage}`,
       this.integrationType,
-      this.config.userId
+      this.config.userId,
     );
   }
 
   protected async retryOperation<T>(
     operation: () => Promise<T>,
     maxRetries: number = 3,
-    delay: number = 1000
+    delay: number = 1000,
   ): Promise<T> {
     let lastError: Error;
 
@@ -202,7 +202,7 @@ export abstract class BaseCRMService implements ICRMService {
     recordsUpdated: number,
     recordsFailed: number,
     errors?: string[],
-    duration?: number
+    duration?: number,
   ): SyncResult {
     const result: SyncResult = {
       success,
@@ -221,13 +221,13 @@ export abstract class BaseCRMService implements ICRMService {
 
   protected async logOperation(
     operation: string,
-    data: Record<string, any> = {}
+    data: Record<string, any> = {},
   ): Promise<void> {
     logIntegrationEvent(
       operation,
       this.integrationType,
       this.config.userId,
-      data
+      data,
     );
   }
 

@@ -43,7 +43,7 @@ app.use(
       },
     },
     crossOriginEmbedderPolicy: false,
-  })
+  }),
 );
 
 // CORS configuration
@@ -60,7 +60,7 @@ app.use(
       'X-Request-ID',
       'X-API-Key',
     ],
-  })
+  }),
 );
 
 // Body parsing middleware

@@ -22,7 +22,7 @@ try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
     );
     logger.info('Supabase client initialized successfully');
   } else {
@@ -31,7 +31,7 @@ try {
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -98,7 +98,7 @@ const handler = async (req: Request, res: Response) => {
     retryAfter: Math.round(
       req.rateLimit?.resetTime
         ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000
-        : 60
+        : 60,
     ),
   });
 };

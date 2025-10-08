@@ -39,7 +39,7 @@ router.post(
       const execution = await workflowEngine.executeWorkflow(
         workflow_id,
         input_data,
-        context
+        context,
       );
 
       logger.info('Workflow execution started', {
@@ -68,7 +68,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -109,7 +109,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -135,7 +135,7 @@ router.get(
       const { executions, total } = await workflowEngine.getExecutions(
         workflowId,
         page,
-        limit
+        limit,
       );
 
       const totalPages = Math.ceil(total / limit);
@@ -159,7 +159,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -190,7 +190,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

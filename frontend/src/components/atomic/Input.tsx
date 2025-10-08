@@ -26,7 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled = false,
       ...props
     },
-    ref
+    ref,
   ) => {
     const baseStyles =
       'rounded-lg transition-all duration-200 focus:outline-none focus:ring-2';
@@ -101,7 +101,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

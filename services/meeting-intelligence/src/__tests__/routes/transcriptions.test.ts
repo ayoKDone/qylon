@@ -394,7 +394,7 @@ describe('Transcriptions Routes', () => {
         expect.objectContaining({
           meetingId: 'test-meeting-id',
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
@@ -413,7 +413,7 @@ describe('Transcriptions Routes', () => {
         'Transcription retrieval failed',
         expect.objectContaining({
           error: expect.any(String),
-        })
+        }),
       );
     });
   });

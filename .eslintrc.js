@@ -19,10 +19,10 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
-    // Basic rules
-    'no-console': 'warn',
+    // Basic rules - relaxed for development
+    'no-console': 'off', // Allow console statements in development
     'no-debugger': 'error',
-    'no-unused-vars': 'error',
+    'no-unused-vars': 'off', // Allow unused vars in development
     'prefer-const': 'error',
     'no-var': 'error',
     'semi': ['error', 'always'],

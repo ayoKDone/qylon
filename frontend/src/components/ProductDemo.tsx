@@ -421,7 +421,7 @@ const ProductDemo: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -659,7 +659,7 @@ const ProductDemo: React.FC = () => {
                                 {decision}
                               </span>
                             </div>
-                          )
+                          ),
                         )}
                       </div>
                     </div>
@@ -685,7 +685,7 @@ const ProductDemo: React.FC = () => {
                                 {participant}
                               </span>
                             </div>
-                          )
+                          ),
                         )}
                       </div>
                     </div>

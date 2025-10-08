@@ -7,7 +7,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 /**
@@ -30,7 +30,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -102,7 +102,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -126,7 +126,7 @@ router.patch(
           id,
           clients!inner(user_id)
         )
-      `
+      `,
         )
         .eq('id', actionItemId)
         .eq('meetings.clients.user_id', userId)
@@ -197,7 +197,7 @@ router.patch(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

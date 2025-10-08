@@ -51,7 +51,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -97,7 +97,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -147,7 +147,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -172,7 +172,7 @@ router.get(
 
       const screenshot = await recallAIService.getBotScreenshot(
         botId,
-        screenshotId
+        screenshotId,
       );
 
       const response: ApiResponse<any> = {
@@ -197,7 +197,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -251,7 +251,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -320,7 +320,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -336,7 +336,7 @@ router.get(
 
       const troubleshootingGuide = getTroubleshootingGuide(
         errorCode,
-        subCode as string
+        subCode as string,
       );
 
       const response: ApiResponse<any> = {
@@ -361,7 +361,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -369,7 +369,7 @@ router.get(
  */
 function getTroubleshootingGuide(
   errorCode: string,
-  subCode?: string
+  subCode?: string,
 ): {
   errorCode: string;
   subCode?: string;

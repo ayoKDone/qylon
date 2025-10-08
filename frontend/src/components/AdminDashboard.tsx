@@ -55,7 +55,7 @@ const AdminDashboard: React.FC = () => {
     hero: entries.filter(e => e.source === 'hero').length,
     finalCta: entries.filter(e => e.source === 'final-cta').length,
     today: entries.filter(
-      e => new Date(e.created_at).toDateString() === new Date().toDateString()
+      e => new Date(e.created_at).toDateString() === new Date().toDateString(),
     ).length,
   };
 

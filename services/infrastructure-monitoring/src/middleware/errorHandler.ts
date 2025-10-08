@@ -8,7 +8,7 @@ export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   // eslint-disable-next-line no-console
   console.error(err.stack);

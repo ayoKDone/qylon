@@ -128,7 +128,7 @@ const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
   let targetService: string | null = null;
 
   for (const [serviceName, serviceConfig] of Object.entries(
-    serviceRegistry
+    serviceRegistry,
   ) as [string, ServiceEndpoint][]) {
     for (const route of serviceConfig.routes) {
       if (path.startsWith(`/api/v1${route}`)) {
@@ -174,7 +174,7 @@ const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
 const serviceHealthCheck = async (
   req: Request,
   _res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const targetService = (req as any).targetService;
 
@@ -222,7 +222,7 @@ Object.entries(serviceRegistry).forEach(
     serviceConfig.routes.forEach((route: string) => {
       router.use(`/api/v1${route}`, proxy);
     });
-  }
+  },
 );
 
 /**
@@ -236,7 +236,7 @@ router.get('/services', (req: Request, _res: Response) => {
       port: service.port,
       routes: service.routes,
       healthCheck: service.healthCheck,
-    })
+    }),
   );
 
   _res.json({
@@ -259,7 +259,7 @@ router.get('/services/status', async (req: Request, _res: Response) => {
             `${serviceConfig.url}${serviceConfig.healthCheck}`,
             {
               timeout: 5000,
-            }
+            },
           );
 
           return {
@@ -276,8 +276,8 @@ router.get('/services/status', async (req: Request, _res: Response) => {
             lastCheck: new Date().toISOString(),
           };
         }
-      }
-    )
+      },
+    ),
   );
 
   const services = serviceStatuses.map((result, index) => {

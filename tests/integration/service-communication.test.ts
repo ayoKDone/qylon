@@ -58,7 +58,7 @@ describe('Service Communication Integration Tests', () => {
               `${serviceUrls.userManagement}${path}`,
               {
                 headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
+              },
             );
             return response.data;
           }
@@ -69,7 +69,7 @@ describe('Service Communication Integration Tests', () => {
       const result = await apiGateway.routeRequest(
         '/api/v1/users/profile',
         'GET',
-        { authorization: `Bearer ${token}` }
+        { authorization: `Bearer ${token}` },
       );
 
       expect(result.success).toBe(true);
@@ -81,7 +81,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -105,7 +105,7 @@ describe('Service Communication Integration Tests', () => {
               `${serviceUrls.clientManagement}${path}`,
               {
                 headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
+              },
             );
             return response.data;
           }
@@ -127,7 +127,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -152,7 +152,7 @@ describe('Service Communication Integration Tests', () => {
               _body,
               {
                 headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
+              },
             );
             return response.data;
           }
@@ -171,7 +171,7 @@ describe('Service Communication Integration Tests', () => {
         '/api/v1/meetings',
         'POST',
         { authorization: `Bearer ${token}` },
-        meetingData
+        meetingData,
       );
 
       expect(result.success).toBe(true);
@@ -184,7 +184,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -204,7 +204,7 @@ describe('Service Communication Integration Tests', () => {
                 `${serviceUrls.meetingIntelligence}${path}`,
                 {
                   headers: { ...headers, 'x-service-call': 'api-gateway' },
-                }
+                },
               );
               return response.data;
             }
@@ -256,7 +256,7 @@ describe('Service Communication Integration Tests', () => {
             `${serviceUrls.clientManagement}/api/v1/clients/${meetingData.client_id}`,
             {
               headers: { 'x-service-call': 'meeting-intelligence' },
-            }
+            },
           );
 
           if (!clientResponse.data.success) {
@@ -299,7 +299,7 @@ describe('Service Communication Integration Tests', () => {
         `${serviceUrls.clientManagement}/api/v1/clients/${client.id}`,
         expect.objectContaining({
           headers: { 'x-service-call': 'meeting-intelligence' },
-        })
+        }),
       );
     });
 
@@ -326,7 +326,7 @@ describe('Service Communication Integration Tests', () => {
             `${serviceUrls.meetingIntelligence}/api/v1/meetings/${meetingId}`,
             {
               headers: { 'x-service-call': 'content-creation' },
-            }
+            },
           );
 
           if (!meetingResponse.data.success) {
@@ -357,7 +357,7 @@ describe('Service Communication Integration Tests', () => {
       };
 
       const result = await contentCreationService.createMeetingSummary(
-        meeting.id
+        meeting.id,
       );
 
       expect(result.success).toBe(true);
@@ -367,7 +367,7 @@ describe('Service Communication Integration Tests', () => {
         `${serviceUrls.meetingIntelligence}/api/v1/meetings/${meeting.id}`,
         expect.objectContaining({
           headers: { 'x-service-call': 'content-creation' },
-        })
+        }),
       );
     });
 
@@ -399,7 +399,7 @@ describe('Service Communication Integration Tests', () => {
             },
             {
               headers: { 'x-service-call': 'workflow-automation' },
-            }
+            },
           );
 
           if (!notificationResponse.data.success) {
@@ -421,7 +421,7 @@ describe('Service Communication Integration Tests', () => {
 
       const result = await workflowAutomationService.triggerMeetingReminder(
         user.id,
-        meetingData
+        meetingData,
       );
 
       expect(result.success).toBe(true);
@@ -436,7 +436,7 @@ describe('Service Communication Integration Tests', () => {
         }),
         expect.objectContaining({
           headers: { 'x-service-call': 'workflow-automation' },
-        })
+        }),
       );
     });
   });
@@ -515,7 +515,7 @@ describe('Service Communication Integration Tests', () => {
 
       const result = await serviceWithTransaction.createUserWithClient(
         userData,
-        clientData
+        clientData,
       );
 
       expect(result.success).toBe(false);
@@ -536,7 +536,7 @@ describe('Service Communication Integration Tests', () => {
               data,
               {
                 timeout: 5000,
-              }
+              },
             );
             return {
               success: true,
@@ -552,7 +552,7 @@ describe('Service Communication Integration Tests', () => {
                 data,
                 {
                   timeout: 5000,
-                }
+                },
               );
               return {
                 success: true,
@@ -594,7 +594,7 @@ describe('Service Communication Integration Tests', () => {
           try {
             const response = await mockedAxios.post(
               'https://api.rate-limited.com/data',
-              data
+              data,
             );
             return {
               success: true,
@@ -606,13 +606,13 @@ describe('Service Communication Integration Tests', () => {
               // Rate limited - retry after delay
               const retryAfter = error.response.headers['retry-after'] || 60;
               await new Promise(resolve =>
-                setTimeout(resolve, retryAfter * 1000)
+                setTimeout(resolve, retryAfter * 1000),
               );
 
               // Retry once
               const retryResponse = await mockedAxios.post(
                 'https://api.rate-limited.com/data',
-                data
+                data,
               );
               return {
                 success: true,
@@ -720,7 +720,7 @@ describe('Service Communication Integration Tests', () => {
           type: 'meeting.created',
           aggregateId: result.data.id,
           payload: result.data,
-        })
+        }),
       );
     });
 
@@ -770,7 +770,7 @@ describe('Service Communication Integration Tests', () => {
           eventId: event.id,
           eventType: event.type,
           error: 'Invalid meeting ID',
-        })
+        }),
       );
     });
   });
@@ -788,7 +788,7 @@ describe('Service Communication Integration Tests', () => {
                 `${serviceUrls[service]}/health`,
                 {
                   timeout: 5000,
-                }
+                },
               );
               healthResults.push({
                 service,
@@ -831,28 +831,28 @@ describe('Service Communication Integration Tests', () => {
         }) // meeting-intelligence
         .mockRejectedValueOnce(
           new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+            "Cannot read properties of undefined (reading 'x-response-time')",
+          ),
         ) // content-creation
         .mockRejectedValueOnce(
           new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+            "Cannot read properties of undefined (reading 'x-response-time')",
+          ),
         ) // workflow-automation
         .mockRejectedValueOnce(
           new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+            "Cannot read properties of undefined (reading 'x-response-time')",
+          ),
         ) // integration-management
         .mockRejectedValueOnce(
           new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+            "Cannot read properties of undefined (reading 'x-response-time')",
+          ),
         ) // notification-service
         .mockRejectedValueOnce(
           new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+            "Cannot read properties of undefined (reading 'x-response-time')",
+          ),
         ); // analytics-reporting
 
       const result = await healthChecker.checkAllServices();
@@ -862,7 +862,7 @@ describe('Service Communication Integration Tests', () => {
 
       const healthyServices = result.data.filter(s => s.status === 'healthy');
       const unhealthyServices = result.data.filter(
-        s => s.status === 'unhealthy'
+        s => s.status === 'unhealthy',
       );
 
       expect(healthyServices.length).toBeGreaterThan(0);

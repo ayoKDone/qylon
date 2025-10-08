@@ -68,7 +68,7 @@ export class AudioProcessor extends EventEmitter {
       enable_auto_gain_control: true,
       target_quality_score: 80,
       max_processing_time_ms: 100,
-    }
+    },
   ) {
     super();
     this.config = config;
@@ -102,7 +102,7 @@ export class AudioProcessor extends EventEmitter {
       ];
       if (!validMimeTypes.includes(file.mimetype)) {
         errors.push(
-          'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm'
+          'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm',
         );
       }
     }
@@ -121,7 +121,7 @@ export class AudioProcessor extends EventEmitter {
   async processAudioChunk(
     chunk: Buffer,
     chunkIndex: number,
-    totalChunks: number
+    totalChunks: number,
   ): Promise<{
     success: boolean;
     chunkIndex?: number;
@@ -215,7 +215,7 @@ export class AudioProcessor extends EventEmitter {
    * Extract audio metadata
    */
   async extractAudioMetadata(
-    audioBuffer: Buffer
+    audioBuffer: Buffer,
   ): Promise<{ success: boolean; metadata?: any; error?: string }> {
     try {
       if (!audioBuffer || audioBuffer.length === 0) {
@@ -248,7 +248,7 @@ export class AudioProcessor extends EventEmitter {
    * Process an audio chunk (original method)
    */
   async processAudioChunkOriginal(
-    chunk: AudioChunk
+    chunk: AudioChunk,
   ): Promise<ProcessedAudioChunk> {
     const startTime = Date.now();
 
@@ -305,7 +305,7 @@ export class AudioProcessor extends EventEmitter {
    * Process multiple audio chunks in batch
    */
   async processAudioChunks(
-    chunks: AudioChunk[]
+    chunks: AudioChunk[],
   ): Promise<ProcessedAudioChunk[]> {
     logger.debug('Processing audio chunks in batch', {
       chunkCount: chunks.length,
@@ -411,7 +411,7 @@ export class AudioProcessor extends EventEmitter {
         processing_time_ms: processingTime,
         quality_improvement: this.calculateQualityImprovement(
           chunk,
-          processedData
+          processedData,
         ),
         noise_reduction_applied: this.config.enable_noise_reduction,
         compression_applied: false,
@@ -451,7 +451,7 @@ export class AudioProcessor extends EventEmitter {
    */
   private calculateQualityImprovement(
     originalChunk: AudioChunk,
-    _processedData: Buffer
+    _processedData: Buffer,
   ): number {
     // Simulate quality improvement calculation
     // In a real implementation, this would analyze audio quality metrics

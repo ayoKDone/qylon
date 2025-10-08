@@ -35,7 +35,7 @@ export default function CalendarGrid({
   const weekDays = getWeekDays();
   const hours = Array.from(
     { length: endHour - startHour + 1 },
-    (_, i) => startHour + i
+    (_, i) => startHour + i,
   );
 
   const isToday = (date: Date) => {

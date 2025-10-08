@@ -7,7 +7,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 // const recallAIService = new RecallAIService();
 // const openAIService = new OpenAIService();
@@ -44,7 +44,7 @@ router.post(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meeting_id)
         .eq('clients.user_id', userId)
@@ -108,7 +108,7 @@ router.post(
         meeting_id,
         recording_url,
         transcription.id,
-        options
+        options,
       );
 
       logger.info('Recording processing started', {
@@ -135,7 +135,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -155,7 +155,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -216,7 +216,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -226,7 +226,7 @@ async function processRecordingAsync(
   meetingId: string,
   recordingUrl: string,
   transcriptionId: string,
-  _options?: any
+  _options?: any,
 ): Promise<void> {
   try {
     logger.info('Starting async recording processing', {

@@ -219,7 +219,7 @@ describe('Meetings Routes', () => {
 
       const response = await request(app)
         .get(
-          '/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1'
+          '/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1',
         )
         .expect(200);
 
@@ -243,7 +243,7 @@ describe('Meetings Routes', () => {
       app.get(
         '/api/v1/meetings/client/:clientId',
         mockAuthMiddleware,
-        mockHandler
+        mockHandler,
       );
 
       await request(app)
@@ -634,7 +634,7 @@ describe('Meetings Routes', () => {
         'Meetings retrieved',
         expect.objectContaining({
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
@@ -662,7 +662,7 @@ describe('Meetings Routes', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        })
+        }),
       );
     });
   });

@@ -509,7 +509,7 @@ describe('API Gateway Comprehensive Unit Tests', () => {
 
         res.set(
           'Access-Control-Allow-Methods',
-          'GET, POST, PUT, DELETE, OPTIONS'
+          'GET, POST, PUT, DELETE, OPTIONS',
         );
         res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.set('Access-Control-Allow-Credentials', 'true');
@@ -525,19 +525,19 @@ describe('API Gateway Comprehensive Unit Tests', () => {
 
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Origin',
-        'https://app.qylon.com'
+        'https://app.qylon.com',
       );
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS'
+        'GET, POST, PUT, DELETE, OPTIONS',
       );
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization'
+        'Content-Type, Authorization',
       );
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Credentials',
-        'true'
+        'true',
       );
       expect(res.status).toHaveBeenCalledWith(200);
     });

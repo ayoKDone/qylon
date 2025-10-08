@@ -172,7 +172,7 @@ describe('Authentication Middleware', () => {
         requireRole(['admin']),
         (req, res) => {
           res.json({ success: true });
-        }
+        },
       );
 
       const response = await request(app)
@@ -204,7 +204,7 @@ describe('Authentication Middleware', () => {
         requireRole(['admin']),
         (req, res) => {
           res.json({ success: true });
-        }
+        },
       );
 
       const response = await request(app)
@@ -250,7 +250,7 @@ describe('Authentication Middleware', () => {
         requireClientAccess,
         (req, res) => {
           res.json({ success: true });
-        }
+        },
       );
 
       const response = await request(app)
@@ -293,7 +293,7 @@ describe('Authentication Middleware', () => {
         requireClientAccess,
         (req, res) => {
           res.json({ success: true });
-        }
+        },
       );
 
       const response = await request(app)

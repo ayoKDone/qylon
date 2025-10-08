@@ -390,7 +390,7 @@ describe('Transcriptions Routes', () => {
       app.post(
         '/api/v1/transcriptions/process',
         mockAuthMiddleware,
-        mockHandler
+        mockHandler,
       );
 
       await request(app)
@@ -419,7 +419,7 @@ describe('Transcriptions Routes', () => {
       app.post(
         '/api/v1/transcriptions/process',
         mockAuthMiddleware,
-        mockHandler
+        mockHandler,
       );
 
       const response = await request(app)
@@ -467,7 +467,7 @@ describe('Transcriptions Routes', () => {
         expect.objectContaining({
           meetingId: processData.meetingId,
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
@@ -497,7 +497,7 @@ describe('Transcriptions Routes', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        })
+        }),
       );
     });
   });

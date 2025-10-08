@@ -8,7 +8,7 @@ export function GoogleButton() {
         'https://www.googleapis.com/oauth2/v3/userinfo',
         {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        }
+        },
       ).then(r => r.json());
 
       console.log('Google user:', userInfo);
