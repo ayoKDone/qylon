@@ -12,10 +12,7 @@ import {
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 // const workflowEngine = new WorkflowEngine();
 
 /**
@@ -296,8 +293,7 @@ router.put(
       };
 
       if (req.body.name) updateData.name = req.body.name;
-      if (req.body.description !== undefined)
-        updateData.description = req.body.description;
+      if (req.body.description !== undefined) updateData.description = req.body.description;
       if (req.body.definition) updateData.definition = req.body.definition;
       if (req.body.status) updateData.status = req.body.status;
 

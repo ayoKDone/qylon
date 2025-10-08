@@ -239,11 +239,7 @@ router.post(
         return;
       }
 
-      const newAPIKey = await apiKeyManager.rotateAPIKey(
-        keyId,
-        userId,
-        validationResult.data,
-      );
+      const newAPIKey = await apiKeyManager.rotateAPIKey(keyId, userId, validationResult.data);
 
       logger.info('API key rotated', {
         userId,

@@ -9,8 +9,7 @@ export class RecallAIService {
 
   constructor() {
     this.apiKey = process.env.RECALL_AI_API_KEY!;
-    this.baseURL =
-      process.env.RECALL_AI_BASE_URL || 'https://api.recall.ai/api/v1';
+    this.baseURL = process.env.RECALL_AI_BASE_URL || 'https://api.recall.ai/api/v1';
 
     if (!this.apiKey) {
       throw new Error('RECALL_AI_API_KEY environment variable is required');
@@ -73,10 +72,7 @@ export class RecallAIService {
       clientId?: string;
       teamId?: string;
       autoStart?: boolean;
-      transcriptionProvider?:
-        | 'recallai_streaming'
-        | 'deepgram'
-        | 'meeting_captions';
+      transcriptionProvider?: 'recallai_streaming' | 'deepgram' | 'meeting_captions';
       language?: string;
       webhookUrl?: string;
       joinAt?: Date; // Schedule bot to join at specific time (>=10 minutes in advance)
@@ -164,14 +160,12 @@ export class RecallAIService {
     try {
       // Determine if this is a scheduled bot (>=10 minutes in advance) or ad-hoc
       const isScheduled =
-        options?.joinAt &&
-        options.joinAt.getTime() - Date.now() >= 10 * 60 * 1000;
+        options?.joinAt && options.joinAt.getTime() - Date.now() >= 10 * 60 * 1000;
 
       const botConfig = {
         bot_name: botName || `Qylon Bot ${Date.now()}`,
         meeting_url: meetingUrl,
-        ...(isScheduled &&
-          options.joinAt && { join_at: options.joinAt.toISOString() }),
+        ...(isScheduled && options.joinAt && { join_at: options.joinAt.toISOString() }),
         recording_config: {
           transcript: {
             provider: {
@@ -220,18 +214,13 @@ export class RecallAIService {
           ...(options?.recordingConfig?.transcript && {
             transcript: options.recordingConfig.transcript,
           }),
-          video_mixed_layout:
-            options?.recordingConfig?.videoMixedLayout || 'speaker_view',
+          video_mixed_layout: options?.recordingConfig?.videoMixedLayout || 'speaker_view',
           video_mixed_participant_video_when_screenshare:
-            options?.recordingConfig
-              ?.videoMixedParticipantVideoWhenScreenshare || 'overlap',
-          start_recording_on:
-            options?.recordingConfig?.startRecordingOn || 'participant_join',
+            options?.recordingConfig?.videoMixedParticipantVideoWhenScreenshare || 'overlap',
+          start_recording_on: options?.recordingConfig?.startRecordingOn || 'participant_join',
           include_bot_in_recording: {
-            audio:
-              options?.recordingConfig?.includeBotInRecording?.audio || false,
-            video:
-              options?.recordingConfig?.includeBotInRecording?.video || false,
+            audio: options?.recordingConfig?.includeBotInRecording?.audio || false,
+            video: options?.recordingConfig?.includeBotInRecording?.video || false,
           },
           metadata: {
             client_id: options?.clientId,
@@ -243,58 +232,46 @@ export class RecallAIService {
           automatic_leave: {
             ...(options.automaticLeave.silenceDetection && {
               silence_detection: {
-                timeout:
-                  options.automaticLeave.silenceDetection.timeout || 3600,
-                activate_after:
-                  options.automaticLeave.silenceDetection.activateAfter || 1200,
+                timeout: options.automaticLeave.silenceDetection.timeout || 3600,
+                activate_after: options.automaticLeave.silenceDetection.activateAfter || 1200,
               },
             }),
             ...(options.automaticLeave.botDetection && {
               bot_detection: {
-                ...(options.automaticLeave.botDetection
-                  .usingParticipantEvents && {
+                ...(options.automaticLeave.botDetection.usingParticipantEvents && {
                   using_participant_events: {
                     timeout:
-                      options.automaticLeave.botDetection.usingParticipantEvents
-                        .timeout || 600,
+                      options.automaticLeave.botDetection.usingParticipantEvents.timeout || 600,
                     activate_after:
-                      options.automaticLeave.botDetection.usingParticipantEvents
-                        .activateAfter || 1200,
+                      options.automaticLeave.botDetection.usingParticipantEvents.activateAfter ||
+                      1200,
                   },
                 }),
-                ...(options.automaticLeave.botDetection
-                  .usingParticipantNames && {
+                ...(options.automaticLeave.botDetection.usingParticipantNames && {
                   using_participant_names: {
-                    matches: options.automaticLeave.botDetection
-                      .usingParticipantNames.matches || [
+                    matches: options.automaticLeave.botDetection.usingParticipantNames.matches || [
                       'bot',
                       'notetaker',
                       'qylon',
                     ],
                     timeout:
-                      options.automaticLeave.botDetection.usingParticipantNames
-                        .timeout || 600,
+                      options.automaticLeave.botDetection.usingParticipantNames.timeout || 600,
                     activate_after:
-                      options.automaticLeave.botDetection.usingParticipantNames
-                        .activateAfter || 1200,
+                      options.automaticLeave.botDetection.usingParticipantNames.activateAfter ||
+                      1200,
                   },
                 }),
               },
             }),
             ...(options.automaticLeave.everyoneLeftTimeout && {
               everyone_left_timeout: {
-                timeout:
-                  options.automaticLeave.everyoneLeftTimeout.timeout || 2,
-                activate_after:
-                  options.automaticLeave.everyoneLeftTimeout.activateAfter || 0,
+                timeout: options.automaticLeave.everyoneLeftTimeout.timeout || 2,
+                activate_after: options.automaticLeave.everyoneLeftTimeout.activateAfter || 0,
               },
             }),
-            waiting_room_timeout:
-              options.automaticLeave.waitingRoomTimeout || 1200,
-            noone_joined_timeout:
-              options.automaticLeave.nooneJoinedTimeout || 1200,
-            in_call_not_recording_timeout:
-              options.automaticLeave.inCallNotRecordingTimeout || 3600,
+            waiting_room_timeout: options.automaticLeave.waitingRoomTimeout || 1200,
+            noone_joined_timeout: options.automaticLeave.nooneJoinedTimeout || 1200,
+            in_call_not_recording_timeout: options.automaticLeave.inCallNotRecordingTimeout || 3600,
             recording_permission_denied_timeout:
               options.automaticLeave.recordingPermissionDeniedTimeout || 30,
           },
@@ -433,9 +410,7 @@ export class RecallAIService {
    */
   async getTranscription(recordingId: string): Promise<any> {
     try {
-      const response = await this.client.get(
-        `/recording/${recordingId}/transcript`,
-      );
+      const response = await this.client.get(`/recording/${recordingId}/transcript`);
 
       logger.info('Recall.ai transcription retrieved successfully', {
         recordingId,
@@ -481,13 +456,9 @@ export class RecallAIService {
 
       // Analyze status changes for errors
       const statusChanges = bot.status_changes || [];
-      const fatalErrors = statusChanges.filter(
-        (change: any) => change.code === 'fatal',
-      );
+      const fatalErrors = statusChanges.filter((change: any) => change.code === 'fatal');
       const hasFatalError = fatalErrors.length > 0;
-      const lastError = hasFatalError
-        ? fatalErrors[fatalErrors.length - 1]
-        : undefined;
+      const lastError = hasFatalError ? fatalErrors[fatalErrors.length - 1] : undefined;
 
       logger.info('Bot status retrieved with troubleshooting info', {
         botId,
@@ -574,9 +545,7 @@ export class RecallAIService {
     metadata: any;
   }> {
     try {
-      const response = await this.client.get(
-        `/bot/${botId}/screenshots/${screenshotId}`,
-      );
+      const response = await this.client.get(`/bot/${botId}/screenshots/${screenshotId}`);
       const screenshot = response.data;
 
       logger.info('Bot screenshot retrieved', {
@@ -708,47 +677,36 @@ export class RecallAIService {
     // Comprehensive sub-code mapping based on Recall.ai documentation
     const recommendations: Record<string, string> = {
       // General fatal errors
-      bot_errored:
-        'The bot ran into an unexpected error. Try recreating the bot.',
+      bot_errored: 'The bot ran into an unexpected error. Try recreating the bot.',
       meeting_not_found:
         'No meeting was found at the given link. Verify the meeting URL is correct.',
-      meeting_not_started:
-        'The meeting has not started yet. Wait for the meeting to begin.',
+      meeting_not_started: 'The meeting has not started yet. Wait for the meeting to begin.',
       meeting_requires_registration:
         'The meeting requires registration. Ensure bot is joining from an allowed webinar URL.',
       meeting_requires_sign_in:
         'The meeting requires sign-in. Configure authenticated bot credentials.',
-      meeting_link_expired:
-        'The meeting link has expired. Generate a new meeting link.',
-      meeting_link_invalid:
-        'The meeting does not exist or the link is invalid.',
+      meeting_link_expired: 'The meeting link has expired. Generate a new meeting link.',
+      meeting_link_invalid: 'The meeting does not exist or the link is invalid.',
       meeting_password_incorrect: 'The meeting password is incorrect.',
-      meeting_locked:
-        'The meeting is locked. Ask the host to unlock the meeting.',
-      meeting_full:
-        'The meeting is full. Wait for participants to leave or create a new meeting.',
-      meeting_ended:
-        'The meeting has already ended and can no longer be joined.',
-      failed_to_launch_in_time:
-        'The bot took too long to launch. Re-run the Create Bot endpoint.',
+      meeting_locked: 'The meeting is locked. Ask the host to unlock the meeting.',
+      meeting_full: 'The meeting is full. Wait for participants to leave or create a new meeting.',
+      meeting_ended: 'The meeting has already ended and can no longer be joined.',
+      failed_to_launch_in_time: 'The bot took too long to launch. Re-run the Create Bot endpoint.',
 
       // Zoom-specific fatal errors
       zoom_sdk_credentials_missing:
         'Zoom SDK credentials are not configured. Set up Zoom credentials in Recall dashboard.',
       zoom_sdk_update_required: 'A newer version of the Zoom SDK is required.',
-      zoom_sdk_app_not_published:
-        'Zoom SDK credentials have not been approved by Zoom.',
+      zoom_sdk_app_not_published: 'Zoom SDK credentials have not been approved by Zoom.',
       zoom_email_blocked_by_admin:
         'The Zoom account has been disallowed by the workspace administrator.',
-      zoom_registration_required:
-        'Registration is required for this Zoom meeting.',
+      zoom_registration_required: 'Registration is required for this Zoom meeting.',
       zoom_captcha_required: 'Captcha is required for this Zoom meeting.',
       zoom_account_blocked:
         'The account has been blocked by Zoom. Generate ZAK token from a different account.',
       zoom_invalid_join_token:
         'Zoom SDK rejected the join token. Check token validity and permissions.',
-      zoom_invalid_signature:
-        'Zoom SDK could not generate a valid meeting-join signature.',
+      zoom_invalid_signature: 'Zoom SDK could not generate a valid meeting-join signature.',
       zoom_internal_error: 'Internal Zoom error occurred.',
       zoom_join_timeout: 'Request to join Zoom meeting timed out.',
       zoom_email_required: 'Email is required to join this Zoom meeting.',
@@ -757,57 +715,43 @@ export class RecallAIService {
       zoom_connection_failed: 'Failed to join due to Zoom server error.',
       zoom_error_multiple_device_join:
         'Another participant with same credentials joined the meeting.',
-      zoom_meeting_not_accessible:
-        'Meeting not accessible due to country restrictions.',
-      zoom_meeting_host_inactive:
-        'Meeting host has been disabled or restricted.',
-      zoom_invalid_webinar_invite:
-        'Invalid Zoom webinar invite. Check password and tokens.',
+      zoom_meeting_not_accessible: 'Meeting not accessible due to country restrictions.',
+      zoom_meeting_host_inactive: 'Meeting host has been disabled or restricted.',
+      zoom_invalid_webinar_invite: 'Invalid Zoom webinar invite. Check password and tokens.',
       zoom_another_meeting_in_progress: 'Host has another meeting in progress.',
 
       // Google Meet-specific fatal errors
       google_meet_internal_error: 'Google Meet internal issue occurred.',
       google_meet_sign_in_failed: 'Bot was not able to sign in to Google.',
-      google_meet_sign_in_captcha_failed:
-        'Bot could not sign in due to captcha.',
+      google_meet_sign_in_captcha_failed: 'Bot could not sign in due to captcha.',
       google_meet_bot_blocked: 'Bot was disallowed from joining the meeting.',
       google_meet_sso_sign_in_failed: 'Bot could not sign in with SSO.',
       google_meet_sign_in_missing_login_credentials:
         'Login credentials not configured for authenticated bot.',
-      google_meet_sign_in_missing_recovery_credentials:
-        'Recovery credentials not configured.',
-      google_meet_sso_sign_in_missing_login_credentials:
-        'SSO login credentials not configured.',
-      google_meet_sso_sign_in_missing_totp_secret:
-        'TOTP secret missing from password.',
+      google_meet_sign_in_missing_recovery_credentials: 'Recovery credentials not configured.',
+      google_meet_sso_sign_in_missing_login_credentials: 'SSO login credentials not configured.',
+      google_meet_sso_sign_in_missing_totp_secret: 'TOTP secret missing from password.',
       google_meet_video_error: 'Google Meet video error occurred.',
       google_meet_meeting_room_not_ready: 'Meeting room was not ready.',
       google_meet_login_not_available: 'Not enough available Google logins.',
-      google_meet_permission_denied_breakout:
-        'Bot tried to join active breakout room.',
-      google_meet_knocking_disabled:
-        'Host has disabled knocking to join meeting.',
-      google_meet_watermark_kicked:
-        'Watermark feature enabled and bot was not signed in.',
+      google_meet_permission_denied_breakout: 'Bot tried to join active breakout room.',
+      google_meet_knocking_disabled: 'Host has disabled knocking to join meeting.',
+      google_meet_watermark_kicked: 'Watermark feature enabled and bot was not signed in.',
 
       // Microsoft Teams-specific fatal errors
-      microsoft_teams_sign_in_credentials_missing:
-        'Teams sign-in credentials not configured.',
+      microsoft_teams_sign_in_credentials_missing: 'Teams sign-in credentials not configured.',
       microsoft_teams_call_dropped: 'Call dropped error from MS Teams.',
       microsoft_teams_sign_in_failed: 'Failed to sign in to Microsoft account.',
       microsoft_teams_internal_error: 'Microsoft Teams server error occurred.',
-      microsoft_teams_captcha_error:
-        'Captcha enabled for anonymous participants.',
+      microsoft_teams_captcha_error: 'Captcha enabled for anonymous participants.',
       microsoft_teams_bot_not_invited: 'Bot was not invited to the meeting.',
-      microsoft_teams_breakout_room_unsupported:
-        'Bot was moved to unsupported breakout room.',
+      microsoft_teams_breakout_room_unsupported: 'Bot was moved to unsupported breakout room.',
       microsoft_teams_event_not_started_for_external:
         'External participants cannot join before event begins.',
       microsoft_teams_2fa_required: '2FA is configured on signed-in Teams bot.',
 
       // Webex-specific fatal errors
-      webex_join_meeting_error:
-        'Failed to join Webex meeting. Check credentials setup.',
+      webex_join_meeting_error: 'Failed to join Webex meeting. Check credentials setup.',
     };
 
     if (subCode && recommendations[subCode]) {
@@ -818,8 +762,7 @@ export class RecallAIService {
       type: 'fatal',
       code: statusChange.code,
       sub_code: subCode,
-      message:
-        statusChange.message || `Fatal error: ${subCode || 'Unknown error'}`,
+      message: statusChange.message || `Fatal error: ${subCode || 'Unknown error'}`,
       recommendation,
       timestamp: statusChange.created_at,
     };
@@ -839,16 +782,12 @@ export class RecallAIService {
     let recommendation = 'Monitor the bot status for any further issues.';
 
     const recommendations: Record<string, string> = {
-      in_waiting_room:
-        'The bot is in the waiting room. Ask the host to admit the bot.',
+      in_waiting_room: 'The bot is in the waiting room. Ask the host to admit the bot.',
       in_call_not_recording:
         'The bot joined the call but is not recording. Check recording permissions.',
-      recording_paused:
-        'Recording was paused. Check if recording was manually stopped.',
-      low_audio_quality:
-        'Audio quality is low. Check microphone settings and network connection.',
-      transcription_delayed:
-        'Transcription is delayed. This is normal for long meetings.',
+      recording_paused: 'Recording was paused. Check if recording was manually stopped.',
+      low_audio_quality: 'Audio quality is low. Check microphone settings and network connection.',
+      transcription_delayed: 'Transcription is delayed. This is normal for long meetings.',
     };
 
     if (recommendations[statusChange.code]) {
@@ -882,8 +821,7 @@ export class RecallAIService {
     // Comprehensive call-ended sub-code mapping
     const recommendations: Record<string, string> = {
       call_ended_by_host: 'The call was ended by the meeting host.',
-      call_ended_by_platform_idle:
-        'The call was ended by the platform due to inactivity.',
+      call_ended_by_platform_idle: 'The call was ended by the platform due to inactivity.',
       call_ended_by_platform_max_length:
         'The call reached the maximum meeting length (e.g., 40 minutes on free Zoom).',
       call_ended_by_platform_waiting_room_timeout:
@@ -891,25 +829,18 @@ export class RecallAIService {
       timeout_exceeded_waiting_room:
         'Bot left due to waiting room timeout (automatic_leave.waiting_room_timeout).',
       timeout_exceeded_noone_joined: 'Bot left because nobody joined the call.',
-      timeout_exceeded_everyone_left:
-        'Bot left because everyone else left the call.',
-      timeout_exceeded_silence_detected:
-        'Bot left due to continuous silence detection.',
+      timeout_exceeded_everyone_left: 'Bot left because everyone else left the call.',
+      timeout_exceeded_silence_detected: 'Bot left due to continuous silence detection.',
       timeout_exceeded_only_bots_detected_using_participant_names:
         'Bot left because only bots detected by name patterns.',
       timeout_exceeded_only_bots_detected_using_participant_events:
         'Bot left because only bots detected by activity patterns.',
-      timeout_exceeded_in_call_not_recording:
-        'Bot left because it never started recording.',
-      timeout_exceeded_in_call_recording:
-        'Bot exceeded maximum recording duration.',
-      timeout_exceeded_recording_permission_denied:
-        'Bot left due to recording permission timeout.',
-      timeout_exceeded_max_duration:
-        'Bot exceeded maximum duration (pay-as-you-go).',
+      timeout_exceeded_in_call_not_recording: 'Bot left because it never started recording.',
+      timeout_exceeded_in_call_recording: 'Bot exceeded maximum recording duration.',
+      timeout_exceeded_recording_permission_denied: 'Bot left due to recording permission timeout.',
+      timeout_exceeded_max_duration: 'Bot exceeded maximum duration (pay-as-you-go).',
       bot_kicked_from_call: 'Bot was removed from the call by the host.',
-      bot_kicked_from_waiting_room:
-        'Bot was removed from the waiting room by the host.',
+      bot_kicked_from_waiting_room: 'Bot was removed from the waiting room by the host.',
       bot_received_leave_call: 'Bot received a leave call request.',
       timeout_exceeded_only_bots_in_call:
         'Bot left because only bot participants remained in the call.',
@@ -923,8 +854,7 @@ export class RecallAIService {
       type: 'info',
       code: statusChange.code,
       sub_code: subCode,
-      message:
-        statusChange.message || `Call ended: ${subCode || 'Unknown reason'}`,
+      message: statusChange.message || `Call ended: ${subCode || 'Unknown reason'}`,
       recommendation,
       timestamp: statusChange.created_at,
     };
@@ -975,8 +905,7 @@ export class RecallAIService {
       const webhookUrl = `${process.env.API_GATEWAY_URL}/api/v1/meeting-intelligence/webhooks/recall-ai`;
 
       // Determine if this should be a scheduled bot (>=10 minutes in advance)
-      const isScheduled =
-        scheduledTime && scheduledTime.getTime() - Date.now() >= 10 * 60 * 1000;
+      const isScheduled = scheduledTime && scheduledTime.getTime() - Date.now() >= 10 * 60 * 1000;
 
       const bot = await this.createBot(meetingUrl, botName, {
         clientId,
@@ -1190,10 +1119,7 @@ export class RecallAIService {
   /**
    * Cleanup inactive bots for a client
    */
-  async cleanupInactiveBots(
-    clientId: string,
-    olderThanHours: number = 24,
-  ): Promise<number> {
+  async cleanupInactiveBots(clientId: string, olderThanHours: number = 24): Promise<number> {
     try {
       const bots = await this.getBotsForClient(clientId);
       const cutoffTime = new Date(Date.now() - olderThanHours * 60 * 60 * 1000);
@@ -1415,9 +1341,7 @@ export class RecallAIService {
     }>
   > {
     try {
-      const response = await this.client.get(
-        `/video_separate?recording_id=${recordingId}`,
-      );
+      const response = await this.client.get(`/video_separate?recording_id=${recordingId}`);
       const separateVideos = response.data.results || [];
 
       logger.info('Separate videos retrieved', {
@@ -1549,9 +1473,7 @@ export class RecallAIService {
     }>
   > {
     try {
-      const response = await this.client.get(
-        `/audio_separate?recording_id=${recordingId}`,
-      );
+      const response = await this.client.get(`/audio_separate?recording_id=${recordingId}`);
       const separateAudios = response.data.results || [];
 
       logger.info('Separate audios retrieved', {
@@ -1849,9 +1771,7 @@ export class RecallAIService {
       const transcriptData = await response.json();
 
       logger.info('Transcript downloaded', {
-        participantsCount: Array.isArray(transcriptData)
-          ? transcriptData.length
-          : 0,
+        participantsCount: Array.isArray(transcriptData) ? transcriptData.length : 0,
       });
 
       return transcriptData as Array<{

@@ -124,13 +124,13 @@ export interface ApiResponse<T = any> {
 export type MiddlewareFunction = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => void | Promise<void>;
 
 export type AuthMiddlewareFunction = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => void | Promise<void>;
 
 // Service discovery

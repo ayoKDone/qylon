@@ -15,10 +15,7 @@ import {
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 const recallAIService = new RecallAIService();
 
 /**
@@ -106,8 +103,7 @@ router.post(
         } catch (botError) {
           logger.warn('Failed to create Recall.ai bot', {
             meetingId: meeting.id,
-            error:
-              botError instanceof Error ? botError.message : 'Unknown error',
+            error: botError instanceof Error ? botError.message : 'Unknown error',
           });
           // Don't fail the meeting creation if bot creation fails
         }
@@ -365,13 +361,10 @@ router.put(
       };
 
       if (updateData.title) updatePayload.title = updateData.title;
-      if (updateData.description !== undefined)
-        updatePayload.description = updateData.description;
-      if (updateData.end_time)
-        updatePayload.end_time = updateData.end_time.toISOString();
+      if (updateData.description !== undefined) updatePayload.description = updateData.description;
+      if (updateData.end_time) updatePayload.end_time = updateData.end_time.toISOString();
       if (updateData.status) updatePayload.status = updateData.status;
-      if (updateData.recording_url)
-        updatePayload.recording_url = updateData.recording_url;
+      if (updateData.recording_url) updatePayload.recording_url = updateData.recording_url;
       if (updateData.metadata)
         updatePayload.metadata = {
           ...existingMeeting.metadata,
@@ -414,9 +407,7 @@ router.put(
           title: updatedMeeting.title,
           description: updatedMeeting.description,
           start_time: new Date(updatedMeeting.start_time),
-          end_time: updatedMeeting.end_time
-            ? new Date(updatedMeeting.end_time)
-            : undefined,
+          end_time: updatedMeeting.end_time ? new Date(updatedMeeting.end_time) : undefined,
           platform: updatedMeeting.platform as MeetingPlatform,
           meeting_url: updatedMeeting.meeting_url,
           recording_url: updatedMeeting.recording_url,
@@ -489,18 +480,14 @@ router.delete(
           logger.warn('Failed to delete Recall.ai bot', {
             meetingId,
             botId: meeting.metadata.recall_bot_id,
-            error:
-              botError instanceof Error ? botError.message : 'Unknown error',
+            error: botError instanceof Error ? botError.message : 'Unknown error',
           });
           // Continue with meeting deletion even if bot deletion fails
         }
       }
 
       // Delete meeting
-      const { error } = await supabase
-        .from('meetings')
-        .delete()
-        .eq('id', meetingId);
+      const { error } = await supabase.from('meetings').delete().eq('id', meetingId);
 
       if (error) {
         logger.error('Failed to delete meeting', {

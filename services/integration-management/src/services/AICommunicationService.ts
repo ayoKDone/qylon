@@ -177,10 +177,7 @@ export class AICommunicationService {
         content: aiContent,
         sentiment: sentiment,
         confidence: this.calculateResponseConfidence(aiContent, sentiment),
-        suggestedActions: this.generateSuggestedActions(
-          sentiment,
-          context.platform,
-        ),
+        suggestedActions: this.generateSuggestedActions(sentiment, context.platform),
         metadata: {
           model: 'gpt-4',
           tokens: response.usage?.total_tokens,
@@ -234,10 +231,7 @@ export class AICommunicationService {
 
       // Personalize based on user context
       if (userContext.preferences) {
-        content = await this.personalizeContent(
-          content,
-          userContext.preferences,
-        );
+        content = await this.personalizeContent(content, userContext.preferences);
       }
 
       await this.logOperation('personalized_response_generated', {
@@ -418,10 +412,7 @@ Optimized response:`;
     });
   }
 
-  async getChatContext(
-    userId: string,
-    sessionId: string,
-  ): Promise<ChatContext | null> {
+  async getChatContext(userId: string, sessionId: string): Promise<ChatContext | null> {
     const sessionKey = `${userId}_${sessionId}`;
     return this.chatContexts.get(sessionKey) || null;
   }
@@ -465,10 +456,7 @@ Guidelines:
     }
   }
 
-  private calculateResponseConfidence(
-    content: string,
-    sentiment: SentimentAnalysis,
-  ): number {
+  private calculateResponseConfidence(content: string, sentiment: SentimentAnalysis): number {
     // Base confidence on sentiment analysis confidence and content quality
     let confidence = sentiment.confidence;
 
@@ -485,10 +473,7 @@ Guidelines:
     return Math.min(confidence, 1.0);
   }
 
-  private generateSuggestedActions(
-    sentiment: SentimentAnalysis,
-    platform: string,
-  ): string[] {
+  private generateSuggestedActions(sentiment: SentimentAnalysis, platform: string): string[] {
     const actions: string[] = [];
 
     if (sentiment.sentiment === 'negative') {
@@ -526,10 +511,7 @@ Guidelines:
     if (preferences['communicationStyle'] === 'formal') {
       personalizedContent = personalizedContent.replace(/hey|hi/g, 'Hello');
     } else if (preferences['communicationStyle'] === 'casual') {
-      personalizedContent = personalizedContent.replace(
-        /Hello|Good morning/g,
-        'Hey',
-      );
+      personalizedContent = personalizedContent.replace(/Hello|Good morning/g, 'Hey');
     }
 
     return personalizedContent;
@@ -539,10 +521,7 @@ Guidelines:
     return `template_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private async logOperation(
-    operation: string,
-    data: Record<string, any> = {},
-  ): Promise<void> {
+  private async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_SLACK, // Using a generic type for AI service

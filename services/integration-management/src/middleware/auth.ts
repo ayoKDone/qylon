@@ -159,11 +159,7 @@ export const authenticateToken = async (
 
 // Role-based authorization
 export const requireRole = (allowedRoles: string[]) => {
-  return (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction,
-  ): void => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
         success: false,

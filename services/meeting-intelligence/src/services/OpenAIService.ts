@@ -36,10 +36,7 @@ export class OpenAIService {
     meetingTitle: string,
   ): Promise<ActionItem[]> {
     try {
-      const prompt = this.buildActionItemPrompt(
-        transcription.content,
-        meetingTitle,
-      );
+      const prompt = this.buildActionItemPrompt(transcription.content, meetingTitle);
 
       const response = await this.client.chat.completions.create({
         model: this.model,
@@ -104,10 +101,7 @@ export class OpenAIService {
     meetingTitle: string,
   ): Promise<MeetingSummary> {
     try {
-      const prompt = this.buildSummaryPrompt(
-        transcription.content,
-        meetingTitle,
-      );
+      const prompt = this.buildSummaryPrompt(transcription.content, meetingTitle);
 
       const response = await this.client.chat.completions.create({
         model: this.model,
@@ -165,9 +159,7 @@ export class OpenAIService {
   /**
    * Perform sentiment analysis on meeting transcription
    */
-  async analyzeSentiment(
-    transcription: MeetingTranscription,
-  ): Promise<SentimentAnalysis> {
+  async analyzeSentiment(transcription: MeetingTranscription): Promise<SentimentAnalysis> {
     try {
       const prompt = this.buildSentimentPrompt(transcription.content);
 
@@ -176,8 +168,7 @@ export class OpenAIService {
         messages: [
           {
             role: 'system',
-            content:
-              'You are an expert sentiment analysis assistant. Return only valid JSON.',
+            content: 'You are an expert sentiment analysis assistant. Return only valid JSON.',
           },
           {
             role: 'user',
@@ -217,9 +208,7 @@ export class OpenAIService {
   /**
    * Enhance speaker diarization with AI
    */
-  async enhanceSpeakerDiarization(
-    speakerSegments: SpeakerSegment[],
-  ): Promise<SpeakerSegment[]> {
+  async enhanceSpeakerDiarization(speakerSegments: SpeakerSegment[]): Promise<SpeakerSegment[]> {
     try {
       const prompt = this.buildSpeakerEnhancementPrompt(speakerSegments);
 
@@ -368,9 +357,7 @@ Guidelines:
    * Build prompt for speaker enhancement
    */
   private buildSpeakerEnhancementPrompt(segments: SpeakerSegment[]): string {
-    const segmentsText = segments
-      .map(seg => `Speaker ${seg.speaker_id}: ${seg.text}`)
-      .join('\n');
+    const segmentsText = segments.map(seg => `Speaker ${seg.speaker_id}: ${seg.text}`).join('\n');
 
     return `
 Enhance the speaker diarization for the following meeting segments. Return a JSON array with enhanced speaker information:

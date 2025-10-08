@@ -9,11 +9,7 @@ interface RequestWithUser extends Request {
   };
 }
 
-export const requestLogger = (
-  req: RequestWithUser,
-  res: Response,
-  next: NextFunction,
-): void => {
+export const requestLogger = (req: RequestWithUser, res: Response, next: NextFunction): void => {
   const startTime = Date.now();
   const requestId =
     (req.headers['x-request-id'] as string) ||

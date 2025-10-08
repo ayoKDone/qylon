@@ -288,10 +288,7 @@ export class EventSubscriber {
         case 'not_equals':
           return fieldValue !== condition.value;
         case 'contains':
-          return (
-            typeof fieldValue === 'string' &&
-            fieldValue.includes(condition.value)
-          );
+          return typeof fieldValue === 'string' && fieldValue.includes(condition.value);
         case 'greater_than':
           return typeof fieldValue === 'number' && fieldValue > condition.value;
         case 'less_than':
@@ -305,10 +302,7 @@ export class EventSubscriber {
   /**
    * Get nested field value from object using dot notation
    */
-  private getNestedFieldValue(
-    obj: Record<string, any>,
-    fieldPath: string,
-  ): any {
+  private getNestedFieldValue(obj: Record<string, any>, fieldPath: string): any {
     return fieldPath.split('.').reduce((current, key) => {
       return current && current[key] !== undefined ? current[key] : undefined;
     }, obj);
@@ -317,10 +311,7 @@ export class EventSubscriber {
   /**
    * Execute a workflow for a trigger
    */
-  private async executeWorkflow(
-    trigger: WorkflowTrigger,
-    event: Event,
-  ): Promise<void> {
+  private async executeWorkflow(trigger: WorkflowTrigger, event: Event): Promise<void> {
     const startTime = Date.now();
 
     try {

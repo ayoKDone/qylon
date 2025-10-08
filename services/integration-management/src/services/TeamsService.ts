@@ -1,9 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import {
-  CommunicationMessage,
-  IntegrationConfig,
-  IntegrationType,
-} from '../types';
+import { CommunicationMessage, IntegrationConfig, IntegrationType } from '../types';
 import { logIntegrationEvent } from '../utils/logger';
 
 interface TeamsMessage {
@@ -109,8 +105,7 @@ export class TeamsService {
 
   async authenticate(credentials: Record<string, any>): Promise<boolean> {
     try {
-      const { clientId, clientSecret, tenantId, accessToken, refreshToken } =
-        credentials;
+      const { clientId, clientSecret, tenantId, accessToken, refreshToken } = credentials;
 
       if (!clientId || !clientSecret || !tenantId) {
         throw new Error('Missing required Microsoft Teams credentials');
@@ -119,8 +114,7 @@ export class TeamsService {
       // If we have an access token, use it directly
       if (accessToken) {
         this.accessToken = accessToken;
-        this.apiClient.defaults.headers.common['Authorization'] =
-          `Bearer ${this.accessToken}`;
+        this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
 
         // Test the connection
         try {
@@ -135,12 +129,7 @@ export class TeamsService {
         } catch (error) {
           // If access token is invalid, try to refresh
           if (refreshToken) {
-            return await this.refreshAccessToken(
-              clientId,
-              clientSecret,
-              tenantId,
-              refreshToken,
-            );
+            return await this.refreshAccessToken(clientId, clientSecret, tenantId, refreshToken);
           }
           throw error;
         }
@@ -148,12 +137,7 @@ export class TeamsService {
 
       // If we have a refresh token, use it to get a new access token
       if (refreshToken) {
-        return await this.refreshAccessToken(
-          clientId,
-          clientSecret,
-          tenantId,
-          refreshToken,
-        );
+        return await this.refreshAccessToken(clientId, clientSecret, tenantId, refreshToken);
       }
 
       throw new Error('No valid authentication method provided');
@@ -194,8 +178,7 @@ export class TeamsService {
 
       this.accessToken = tokenData.access_token;
       this.refreshToken = tokenData.refresh_token || refreshToken;
-      this.apiClient.defaults.headers.common['Authorization'] =
-        `Bearer ${this.accessToken}`;
+      this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
 
       this.authenticated = true;
 
@@ -250,10 +233,7 @@ export class TeamsService {
         message.attachments = options.attachments;
       }
 
-      const response = await this.apiClient.post(
-        `/chats/${chatId}/messages`,
-        message,
-      );
+      const response = await this.apiClient.post(`/chats/${chatId}/messages`, message);
 
       const sentMessage: CommunicationMessage = {
         id: response.data.id,
@@ -462,11 +442,7 @@ export class TeamsService {
     }
   }
 
-  async updateMessage(
-    chatId: string,
-    messageId: string,
-    content: string,
-  ): Promise<boolean> {
+  async updateMessage(chatId: string, messageId: string, content: string): Promise<boolean> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Microsoft Teams');
@@ -607,15 +583,7 @@ export class TeamsService {
     }
   }
 
-  private async logOperation(
-    operation: string,
-    data: Record<string, any> = {},
-  ): Promise<void> {
-    logIntegrationEvent(
-      operation,
-      IntegrationType.COMMUNICATION_TEAMS,
-      this.config.userId,
-      data,
-    );
+  private async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
+    logIntegrationEvent(operation, IntegrationType.COMMUNICATION_TEAMS, this.config.userId, data);
   }
 }

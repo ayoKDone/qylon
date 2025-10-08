@@ -6,13 +6,8 @@ import logger from '../utils/logger';
 let supabase: any = null;
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-    );
-    logger.info(
-      'Supabase client initialized successfully in security auth middleware',
-    );
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+    logger.info('Supabase client initialized successfully in security auth middleware');
   } else {
     logger.warn(
       'Supabase not configured in security auth middleware - running in local development mode',
@@ -124,11 +119,7 @@ export const authenticateToken = async (
 };
 
 export const requireRole = (roles: string[]) => {
-  return (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction,
-  ): void => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',

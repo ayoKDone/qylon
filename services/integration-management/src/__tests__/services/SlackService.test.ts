@@ -4,9 +4,7 @@ import { IntegrationStatus, IntegrationType } from '../../types';
 // Mock the entire SlackService class
 jest.mock('../../services/SlackService');
 
-const MockedSlackService = SlackService as jest.MockedClass<
-  typeof SlackService
->;
+const MockedSlackService = SlackService as jest.MockedClass<typeof SlackService>;
 
 describe('SlackService', () => {
   let service: jest.Mocked<SlackService>;
@@ -48,23 +46,17 @@ describe('SlackService', () => {
     });
 
     it('should throw error for missing credentials', async () => {
-      service.authenticate.mockRejectedValue(
-        new Error('Slack credentials are missing'),
-      );
+      service.authenticate.mockRejectedValue(new Error('Slack credentials are missing'));
 
-      await expect(service.authenticate({})).rejects.toThrow(
-        'Slack credentials are missing',
-      );
+      await expect(service.authenticate({})).rejects.toThrow('Slack credentials are missing');
     });
 
     it('should throw error for authentication failure', async () => {
-      service.authenticate.mockRejectedValue(
-        new Error('Authentication failed'),
-      );
+      service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
-      await expect(
-        service.authenticate(mockConfig.credentials),
-      ).rejects.toThrow('Authentication failed');
+      await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow(
+        'Authentication failed',
+      );
     });
   });
 
@@ -96,9 +88,9 @@ describe('SlackService', () => {
     it('should handle send message errors gracefully', async () => {
       service.sendMessage.mockRejectedValue(new Error('API Error'));
 
-      await expect(
-        service.sendMessage('C1234567890', 'Hello, World!'),
-      ).rejects.toThrow('API Error');
+      await expect(service.sendMessage('C1234567890', 'Hello, World!')).rejects.toThrow(
+        'API Error',
+      );
     });
   });
 

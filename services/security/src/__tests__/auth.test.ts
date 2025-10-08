@@ -1,10 +1,6 @@
 import express from 'express';
 import request from 'supertest';
-import {
-  authenticateToken,
-  requireClientAccess,
-  requireRole,
-} from '../middleware/auth';
+import { authenticateToken, requireClientAccess, requireRole } from '../middleware/auth';
 
 // Mock Supabase client
 jest.mock('@supabase/supabase-js', () => ({
@@ -77,9 +73,7 @@ describe('Authentication Middleware', () => {
         res.json({ success: true, user: req.user });
       });
 
-      const response = await request(app)
-        .get('/test')
-        .set('Authorization', 'Bearer valid-token');
+      const response = await request(app).get('/test').set('Authorization', 'Bearer valid-token');
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -112,9 +106,7 @@ describe('Authentication Middleware', () => {
         res.json({ success: true });
       });
 
-      const response = await request(app)
-        .get('/test')
-        .set('Authorization', 'Bearer invalid-token');
+      const response = await request(app).get('/test').set('Authorization', 'Bearer invalid-token');
 
       expect(response.status).toBe(401);
       expect(response.body.error).toBe('Unauthorized');
@@ -140,9 +132,7 @@ describe('Authentication Middleware', () => {
         res.json({ success: true });
       });
 
-      const response = await request(app)
-        .get('/test')
-        .set('Authorization', 'Bearer valid-token');
+      const response = await request(app).get('/test').set('Authorization', 'Bearer valid-token');
 
       expect(response.status).toBe(403);
       expect(response.body.error).toBe('Forbidden');
@@ -166,18 +156,11 @@ describe('Authentication Middleware', () => {
         error: null,
       });
 
-      app.use(
-        '/test',
-        authenticateToken,
-        requireRole(['admin']),
-        (req, res) => {
-          res.json({ success: true });
-        },
-      );
+      app.use('/test', authenticateToken, requireRole(['admin']), (req, res) => {
+        res.json({ success: true });
+      });
 
-      const response = await request(app)
-        .get('/test')
-        .set('Authorization', 'Bearer valid-token');
+      const response = await request(app).get('/test').set('Authorization', 'Bearer valid-token');
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -198,18 +181,11 @@ describe('Authentication Middleware', () => {
         error: null,
       });
 
-      app.use(
-        '/test',
-        authenticateToken,
-        requireRole(['admin']),
-        (req, res) => {
-          res.json({ success: true });
-        },
-      );
+      app.use('/test', authenticateToken, requireRole(['admin']), (req, res) => {
+        res.json({ success: true });
+      });
 
-      const response = await request(app)
-        .get('/test')
-        .set('Authorization', 'Bearer valid-token');
+      const response = await request(app).get('/test').set('Authorization', 'Bearer valid-token');
 
       expect(response.status).toBe(403);
       expect(response.body.error).toBe('Forbidden');
@@ -244,14 +220,9 @@ describe('Authentication Middleware', () => {
         })),
       });
 
-      app.use(
-        '/test/:clientId',
-        authenticateToken,
-        requireClientAccess,
-        (req, res) => {
-          res.json({ success: true });
-        },
-      );
+      app.use('/test/:clientId', authenticateToken, requireClientAccess, (req, res) => {
+        res.json({ success: true });
+      });
 
       const response = await request(app)
         .get('/test/client-123')
@@ -287,14 +258,9 @@ describe('Authentication Middleware', () => {
         })),
       });
 
-      app.use(
-        '/test/:clientId',
-        authenticateToken,
-        requireClientAccess,
-        (req, res) => {
-          res.json({ success: true });
-        },
-      );
+      app.use('/test/:clientId', authenticateToken, requireClientAccess, (req, res) => {
+        res.json({ success: true });
+      });
 
       const response = await request(app)
         .get('/test/client-456')
@@ -342,9 +308,7 @@ describe('Auth Routes', () => {
         error: null,
       });
 
-      const response = await request(app)
-        .post('/auth/validate')
-        .send({ token: 'valid-token' });
+      const response = await request(app).post('/auth/validate').send({ token: 'valid-token' });
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -362,9 +326,7 @@ describe('Auth Routes', () => {
         error: { message: 'Invalid token' },
       });
 
-      const response = await request(app)
-        .post('/auth/validate')
-        .send({ token: 'invalid-token' });
+      const response = await request(app).post('/auth/validate').send({ token: 'invalid-token' });
 
       expect(response.status).toBe(401);
       expect(response.body.error).toBe('Unauthorized');

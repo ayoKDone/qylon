@@ -69,11 +69,7 @@ export const errorHandler = (
 /**
  * 404 handler for unmatched routes
  */
-export const notFoundHandler = (
-  req: Request,
-  _res: Response,
-  _next: NextFunction,
-): void => {
+export const notFoundHandler = (req: Request, _res: Response, _next: NextFunction): void => {
   const error = new Error(`Route ${req.originalUrl} not found`);
   (error as any).statusCode = 404;
   _next(error);

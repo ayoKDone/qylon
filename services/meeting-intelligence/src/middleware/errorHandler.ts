@@ -1,9 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import {
-  MeetingIntelligenceError,
-  RecallAIError,
-  TranscriptionError,
-} from '../types';
+import { MeetingIntelligenceError, RecallAIError, TranscriptionError } from '../types';
 import { logger } from '../utils/logger';
 
 /**
@@ -137,10 +133,7 @@ export const errorHandler = (
   res.status(500).json({
     success: false,
     error: 'InternalServerError',
-    message:
-      process.env.NODE_ENV === 'production'
-        ? 'An unexpected error occurred'
-        : error.message,
+    message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : error.message,
     timestamp: new Date().toISOString(),
     requestId,
   });

@@ -12,9 +12,7 @@ const supabaseUrl = process.env.SUPABASE_URL as string;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error(
-    'SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in .env',
-  );
+  throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in .env');
 }
 
 const supabase: SupabaseClient = createClient(supabaseUrl, supabaseKey);

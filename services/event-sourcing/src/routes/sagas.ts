@@ -44,12 +44,7 @@ router.post(
         return;
       }
 
-      const saga = await sagaManager.startSaga(
-        definition,
-        correlationId,
-        userId,
-        metadata,
-      );
+      const saga = await sagaManager.startSaga(definition, correlationId, userId, metadata);
 
       logger.info('Saga started successfully', {
         sagaId: saga.id,

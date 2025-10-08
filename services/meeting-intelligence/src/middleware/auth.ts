@@ -11,10 +11,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 // Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 /**
  * Authentication middleware that validates JWT tokens
@@ -114,11 +111,7 @@ export const authMiddleware = async (
  * Role-based authorization middleware
  */
 export const requireRole = (roles: string | string[]) => {
-  return (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction,
-  ): void => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
         error: 'Unauthorized',

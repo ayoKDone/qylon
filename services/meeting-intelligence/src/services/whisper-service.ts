@@ -100,10 +100,7 @@ export class WhisperService extends EventEmitter {
         if (options.model && !this.isValidModel(options.model)) {
           return { success: false, error: 'Invalid transcription options' };
         }
-        if (
-          options.responseFormat &&
-          !this.isValidResponseFormat(options.responseFormat)
-        ) {
+        if (options.responseFormat && !this.isValidResponseFormat(options.responseFormat)) {
           return { success: false, error: 'Invalid transcription options' };
         }
       }
@@ -176,8 +173,7 @@ export class WhisperService extends EventEmitter {
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Stream processing failed',
+        error: error instanceof Error ? error.message : 'Stream processing failed',
       };
     }
   }
@@ -269,8 +265,7 @@ export class WhisperService extends EventEmitter {
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to get languages',
+        error: error instanceof Error ? error.message : 'Failed to get languages',
       };
     }
   }
@@ -302,18 +297,7 @@ export class WhisperService extends EventEmitter {
   }
 
   private isValidLanguage(language: string): boolean {
-    const validLanguages = [
-      'en',
-      'es',
-      'fr',
-      'de',
-      'it',
-      'pt',
-      'ru',
-      'ja',
-      'ko',
-      'zh',
-    ];
+    const validLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'];
     return validLanguages.includes(language);
   }
 
@@ -448,10 +432,7 @@ export class WhisperService extends EventEmitter {
   /**
    * Perform the actual transcription
    */
-  private async performTranscription(
-    chunk: any,
-    retryCount: number,
-  ): Promise<TranscriptionResult> {
+  private async performTranscription(chunk: any, retryCount: number): Promise<TranscriptionResult> {
     // Simulate Whisper API call
     // In a real implementation, this would call the actual OpenAI Whisper API
 
@@ -477,10 +458,7 @@ export class WhisperService extends EventEmitter {
       text: mockTranscription.text,
       language: mockTranscription.language,
       confidence: 0.85,
-      segments: this.formatTranscriptionWithTimestamps(
-        mockTranscription.segments,
-        0,
-      ),
+      segments: this.formatTranscriptionWithTimestamps(mockTranscription.segments, 0),
       processing_time_ms: 100,
       metadata: {
         model_used: this.config.model,

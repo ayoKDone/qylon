@@ -9,15 +9,10 @@ const router: Router = Router();
 let supabase: any = null;
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-    );
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     logger.info('Supabase client initialized successfully in RLS routes');
   } else {
-    logger.warn(
-      'Supabase not configured in RLS routes - running in local development mode',
-    );
+    logger.warn('Supabase not configured in RLS routes - running in local development mode');
   }
 } catch (error) {
   logger.warn(
@@ -107,11 +102,7 @@ router.post(
       }
 
       // Test access to the record
-      const { data, error } = await supabase
-        .from(table!)
-        .select('*')
-        .eq('id', recordId)
-        .single();
+      const { data, error } = await supabase.from(table!).select('*').eq('id', recordId).single();
 
       if (error) {
         logger.warn('RLS policy test failed', {

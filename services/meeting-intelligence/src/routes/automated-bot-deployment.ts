@@ -161,8 +161,7 @@ router.get(
     try {
       const { clientId } = req.params;
 
-      const config =
-        await botDeploymentService.getBotDeploymentConfig(clientId);
+      const config = await botDeploymentService.getBotDeploymentConfig(clientId);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -252,10 +251,7 @@ router.post(
       const { clientId } = req.params;
       const olderThanHours = req.body.older_than_hours || 24;
 
-      const deletedCount = await botDeploymentService.cleanupInactiveBots(
-        clientId,
-        olderThanHours,
-      );
+      const deletedCount = await botDeploymentService.cleanupInactiveBots(clientId, olderThanHours);
 
       logger.info('Bot cleanup completed', {
         clientId,
@@ -303,22 +299,15 @@ router.get(
       const teamId = req.query.team_id as string;
 
       // Get upcoming meetings
-      const upcomingMeetings = await botDeploymentService.getUpcomingMeetings(
-        clientId,
-        teamId,
-        24,
-      );
+      const upcomingMeetings = await botDeploymentService.getUpcomingMeetings(clientId, teamId, 24);
 
       // Get deployment config
-      const config =
-        await botDeploymentService.getBotDeploymentConfig(clientId);
+      const config = await botDeploymentService.getBotDeploymentConfig(clientId);
 
       // Count meetings with bots
       let meetingsWithBots = 0;
       for (const meeting of upcomingMeetings) {
-        const existingBot = await botDeploymentService.getExistingBotForMeeting(
-          meeting.id,
-        );
+        const existingBot = await botDeploymentService.getExistingBotForMeeting(meeting.id);
         if (existingBot) {
           meetingsWithBots++;
         }

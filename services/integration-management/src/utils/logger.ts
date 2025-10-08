@@ -24,10 +24,7 @@ export const logger = winston.createLogger({
   defaultMeta: { service: 'integration-management' },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -41,12 +38,8 @@ export const logger = winston.createLogger({
       maxFiles: 5,
     }),
   ],
-  exceptionHandlers: [
-    new winston.transports.File({ filename: 'logs/exceptions.log' }),
-  ],
-  rejectionHandlers: [
-    new winston.transports.File({ filename: 'logs/rejections.log' }),
-  ],
+  exceptionHandlers: [new winston.transports.File({ filename: 'logs/exceptions.log' })],
+  rejectionHandlers: [new winston.transports.File({ filename: 'logs/rejections.log' })],
 });
 
 // Request logging middleware

@@ -31,9 +31,7 @@ export class StateMachine {
    */
   async start(): Promise<void> {
     try {
-      const startState = this.definition.states.find(
-        state => state.type === StateType.START,
-      );
+      const startState = this.definition.states.find(state => state.type === StateType.START);
       if (!startState) {
         throw new StateMachineError(
           'No start state found in workflow definition',
@@ -62,18 +60,12 @@ export class StateMachine {
    */
   async executeCurrentState(): Promise<void> {
     if (!this.currentState) {
-      throw new StateMachineError(
-        'No current state to execute',
-        'NO_CURRENT_STATE',
-      );
+      throw new StateMachineError('No current state to execute', 'NO_CURRENT_STATE');
     }
 
     const state = this.getState(this.currentState);
     if (!state) {
-      throw new StateMachineError(
-        `State not found: ${this.currentState}`,
-        'STATE_NOT_FOUND',
-      );
+      throw new StateMachineError(`State not found: ${this.currentState}`, 'STATE_NOT_FOUND');
     }
 
     try {
@@ -93,10 +85,7 @@ export class StateMachine {
    */
   async transition(event?: string): Promise<boolean> {
     if (!this.currentState) {
-      throw new StateMachineError(
-        'No current state to transition from',
-        'NO_CURRENT_STATE',
-      );
+      throw new StateMachineError('No current state to transition from', 'NO_CURRENT_STATE');
     }
 
     const transitions = this.getTransitionsFromState(this.currentState);
@@ -283,8 +272,7 @@ export class StateMachine {
     } catch (error) {
       actionResult.status = 'failed';
       actionResult.completed_at = new Date();
-      actionResult.error =
-        error instanceof Error ? error.message : 'Unknown error';
+      actionResult.error = error instanceof Error ? error.message : 'Unknown error';
 
       logger.error('Action execution failed', {
         workflowId: this.definition.id,
@@ -293,10 +281,7 @@ export class StateMachine {
       });
 
       // Handle retry policy
-      if (
-        action.retry_policy &&
-        actionResult.retry_count < action.retry_policy.max_retries
-      ) {
+      if (action.retry_policy && actionResult.retry_count < action.retry_policy.max_retries) {
         await this.retryAction(action, actionResult);
       } else {
         throw error;
@@ -330,10 +315,7 @@ export class StateMachine {
       case ActionType.AI_PROCESS:
         return await this.executeAiProcess(action);
       default:
-        throw new StateMachineError(
-          `Unknown action type: ${action.type}`,
-          'UNKNOWN_ACTION_TYPE',
-        );
+        throw new StateMachineError(`Unknown action type: ${action.type}`, 'UNKNOWN_ACTION_TYPE');
     }
   }
 
@@ -377,12 +359,7 @@ export class StateMachine {
    * Execute email send action
    */
   private async executeEmailSend(action: WorkflowAction): Promise<any> {
-    const {
-      to: _to,
-      subject: _subject,
-      body: _body,
-      template: _template,
-    } = action.config;
+    const { to: _to, subject: _subject, body: _body, template: _template } = action.config;
 
     // Implementation would use email service
     // This is a placeholder
@@ -406,11 +383,7 @@ export class StateMachine {
    * Execute file upload action
    */
   private async executeFileUpload(action: WorkflowAction): Promise<any> {
-    const {
-      file: _file,
-      destination: _destination,
-      options: _options,
-    } = action.config;
+    const { file: _file, destination: _destination, options: _options } = action.config;
 
     // Implementation would use file storage service
     // This is a placeholder
@@ -422,8 +395,7 @@ export class StateMachine {
    * Execute data transform action
    */
   private async executeDataTransform(action: WorkflowAction): Promise<any> {
-    const { input_data: _input_data, transform_script: _transform_script } =
-      action.config;
+    const { input_data: _input_data, transform_script: _transform_script } = action.config;
 
     // Implementation would execute transformation logic
     // This is a placeholder
@@ -460,12 +432,7 @@ export class StateMachine {
    * Execute webhook call action
    */
   private async executeWebhookCall(action: WorkflowAction): Promise<any> {
-    const {
-      url: _url,
-      method: _method,
-      headers: _headers,
-      body: _body,
-    } = action.config;
+    const { url: _url, method: _method, headers: _headers, body: _body } = action.config;
 
     // Implementation would call webhook
     // This is a placeholder
@@ -482,11 +449,7 @@ export class StateMachine {
    * Execute AI process action
    */
   private async executeAiProcess(action: WorkflowAction): Promise<any> {
-    const {
-      process_type: _process_type,
-      input_data: _input_data,
-      model: _model,
-    } = action.config;
+    const { process_type: _process_type, input_data: _input_data, model: _model } = action.config;
 
     // Implementation would call AI service
     // This is a placeholder
@@ -501,19 +464,13 @@ export class StateMachine {
   /**
    * Retry an action
    */
-  private async retryAction(
-    action: WorkflowAction,
-    actionResult: ActionResult,
-  ): Promise<void> {
+  private async retryAction(action: WorkflowAction, actionResult: ActionResult): Promise<void> {
     if (!action.retry_policy) return;
 
     actionResult.retry_count++;
     const delay = Math.min(
       action.retry_policy.backoff_ms *
-        Math.pow(
-          action.retry_policy.backoff_multiplier,
-          actionResult.retry_count - 1,
-        ),
+        Math.pow(action.retry_policy.backoff_multiplier, actionResult.retry_count - 1),
       action.retry_policy.max_backoff_ms || 30000,
     );
 
@@ -615,10 +572,7 @@ export class StateMachine {
   private async transitionToState(stateId: string): Promise<void> {
     const state = this.getState(stateId);
     if (!state) {
-      throw new StateMachineError(
-        `State not found: ${stateId}`,
-        'STATE_NOT_FOUND',
-      );
+      throw new StateMachineError(`State not found: ${stateId}`, 'STATE_NOT_FOUND');
     }
 
     await this.exitCurrentState();
@@ -637,9 +591,7 @@ export class StateMachine {
    * Get transitions from a state
    */
   private getTransitionsFromState(stateId: string): WorkflowTransition[] {
-    return this.definition.transitions.filter(
-      transition => transition.from_state === stateId,
-    );
+    return this.definition.transitions.filter(transition => transition.from_state === stateId);
   }
 
   /**

@@ -70,9 +70,7 @@ jest.mock('../../config/database', () => {
   };
 });
 
-const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
-  typeof authMiddleware
->;
+const mockAuthMiddleware = authMiddleware as jest.MockedFunction<typeof authMiddleware>;
 
 describe('Transcriptions Routes', () => {
   let app: express.Application;
@@ -336,10 +334,7 @@ describe('Transcriptions Routes', () => {
         error: null,
       });
 
-      await request(app)
-        .post('/api/v1/transcriptions/process')
-        .send(processData)
-        .expect(201);
+      await request(app).post('/api/v1/transcriptions/process').send(processData).expect(201);
 
       // Verify user context was passed
       expect(mockAuthMiddleware).toHaveBeenCalled();
@@ -384,10 +379,7 @@ describe('Transcriptions Routes', () => {
         error: null,
       });
 
-      await request(app)
-        .post('/api/v1/transcriptions/process')
-        .send(processData)
-        .expect(201);
+      await request(app).post('/api/v1/transcriptions/process').send(processData).expect(201);
 
       expect(logger.info).toHaveBeenCalledWith(
         'Transcription processing started',
@@ -405,9 +397,7 @@ describe('Transcriptions Routes', () => {
         error: { message: 'Database error' },
       });
 
-      await request(app)
-        .get('/api/v1/transcriptions/meeting/invalid-id')
-        .expect(404);
+      await request(app).get('/api/v1/transcriptions/meeting/invalid-id').expect(404);
 
       expect(logger.error).toHaveBeenCalledWith(
         'Transcription retrieval failed',

@@ -127,9 +127,10 @@ const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
   // Find matching service
   let targetService: string | null = null;
 
-  for (const [serviceName, serviceConfig] of Object.entries(
-    serviceRegistry,
-  ) as [string, ServiceEndpoint][]) {
+  for (const [serviceName, serviceConfig] of Object.entries(serviceRegistry) as [
+    string,
+    ServiceEndpoint,
+  ][]) {
     for (const route of serviceConfig.routes) {
       if (path.startsWith(`/api/v1${route}`)) {
         targetService = serviceName;
@@ -171,11 +172,7 @@ const routeDiscovery = (req: Request, _res: Response, next: NextFunction) => {
 /**
  * Service health check middleware
  */
-const serviceHealthCheck = async (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
+const serviceHealthCheck = async (req: Request, _res: Response, next: NextFunction) => {
   const targetService = (req as any).targetService;
 
   if (!targetService) {
@@ -229,15 +226,13 @@ Object.entries(serviceRegistry).forEach(
  * Service discovery endpoint
  */
 router.get('/services', (req: Request, _res: Response) => {
-  const services = Object.values(serviceRegistry).map(
-    (service: ServiceEndpoint) => ({
-      name: service.name,
-      url: service.url,
-      port: service.port,
-      routes: service.routes,
-      healthCheck: service.healthCheck,
-    }),
-  );
+  const services = Object.values(serviceRegistry).map((service: ServiceEndpoint) => ({
+    name: service.name,
+    url: service.url,
+    port: service.port,
+    routes: service.routes,
+    healthCheck: service.healthCheck,
+  }));
 
   _res.json({
     services,
@@ -255,12 +250,9 @@ router.get('/services/status', async (req: Request, _res: Response) => {
     Object.entries(serviceRegistry).map(
       async ([serviceName, serviceConfig]: [string, ServiceEndpoint]) => {
         try {
-          const response = await axios.get(
-            `${serviceConfig.url}${serviceConfig.healthCheck}`,
-            {
-              timeout: 5000,
-            },
-          );
+          const response = await axios.get(`${serviceConfig.url}${serviceConfig.healthCheck}`, {
+            timeout: 5000,
+          });
 
           return {
             name: serviceName,
@@ -288,10 +280,7 @@ router.get('/services/status', async (req: Request, _res: Response) => {
       return {
         name: serviceName,
         status: 'unhealthy',
-        error:
-          result.reason instanceof Error
-            ? result.reason.message
-            : 'Unknown error',
+        error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
         lastCheck: new Date().toISOString(),
       };
     }

@@ -5,10 +5,7 @@ import { ApiResponse } from '../types';
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 /**
  * Get meeting summary
@@ -140,8 +137,7 @@ router.post(
         res.status(400).json({
           success: false,
           error: 'BadRequest',
-          message:
-            'Meeting transcription not found. Please process the recording first.',
+          message: 'Meeting transcription not found. Please process the recording first.',
           timestamp: new Date().toISOString(),
         });
         return;
@@ -178,10 +174,7 @@ router.post(
 /**
  * Async function to generate meeting summary
  */
-async function generateSummaryAsync(
-  meetingId: string,
-  transcriptionId: string,
-): Promise<void> {
+async function generateSummaryAsync(meetingId: string, transcriptionId: string): Promise<void> {
   try {
     logger.info('Starting async summary generation', {
       meetingId,

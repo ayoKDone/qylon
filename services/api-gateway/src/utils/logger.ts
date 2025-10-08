@@ -8,19 +8,17 @@ const logFormat = winston.format.combine(
   }),
   winston.format.errors({ stack: true }),
   winston.format.json(),
-  winston.format.printf(
-    ({ timestamp, level, message, service, requestId, userId, ...meta }) => {
-      return JSON.stringify({
-        timestamp,
-        level,
-        message,
-        service: service || 'api-gateway',
-        requestId,
-        userId,
-        ...meta,
-      });
-    },
-  ),
+  winston.format.printf(({ timestamp, level, message, service, requestId, userId, ...meta }) => {
+    return JSON.stringify({
+      timestamp,
+      level,
+      message,
+      service: service || 'api-gateway',
+      requestId,
+      userId,
+      ...meta,
+    });
+  }),
 );
 
 // Create logger instance
@@ -31,10 +29,7 @@ export const logger = winston.createLogger({
   transports: [
     // Console transport
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
 
     // File transport for errors
@@ -103,11 +98,7 @@ export const logError = (error: Error, req?: any, additionalInfo?: any) => {
 };
 
 // Add performance logging helper
-export const logPerformance = (
-  operation: string,
-  duration: number,
-  metadata?: any,
-) => {
+export const logPerformance = (operation: string, duration: number, metadata?: any) => {
   const logEntry: LogEntry = {
     level: 'info',
     message: `Performance: ${operation} completed in ${duration}ms`,

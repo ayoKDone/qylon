@@ -93,13 +93,7 @@ export class AudioProcessor extends EventEmitter {
     if (!file.mimetype) {
       errors.push('File type is required');
     } else {
-      const validMimeTypes = [
-        'audio/wav',
-        'audio/mp3',
-        'audio/mpeg',
-        'audio/ogg',
-        'audio/webm',
-      ];
+      const validMimeTypes = ['audio/wav', 'audio/mp3', 'audio/mpeg', 'audio/ogg', 'audio/webm'];
       if (!validMimeTypes.includes(file.mimetype)) {
         errors.push(
           'Invalid audio format. Supported formats: audio/wav, audio/mp3, audio/mpeg, audio/ogg, audio/webm',
@@ -205,8 +199,7 @@ export class AudioProcessor extends EventEmitter {
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to combine chunks',
+        error: error instanceof Error ? error.message : 'Failed to combine chunks',
       };
     }
   }
@@ -238,8 +231,7 @@ export class AudioProcessor extends EventEmitter {
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Failed to extract metadata',
+        error: error instanceof Error ? error.message : 'Failed to extract metadata',
       };
     }
   }
@@ -247,9 +239,7 @@ export class AudioProcessor extends EventEmitter {
   /**
    * Process an audio chunk (original method)
    */
-  async processAudioChunkOriginal(
-    chunk: AudioChunk,
-  ): Promise<ProcessedAudioChunk> {
+  async processAudioChunkOriginal(chunk: AudioChunk): Promise<ProcessedAudioChunk> {
     const startTime = Date.now();
 
     try {
@@ -304,9 +294,7 @@ export class AudioProcessor extends EventEmitter {
   /**
    * Process multiple audio chunks in batch
    */
-  async processAudioChunks(
-    chunks: AudioChunk[],
-  ): Promise<ProcessedAudioChunk[]> {
+  async processAudioChunks(chunks: AudioChunk[]): Promise<ProcessedAudioChunk[]> {
     logger.debug('Processing audio chunks in batch', {
       chunkCount: chunks.length,
     });
@@ -409,10 +397,7 @@ export class AudioProcessor extends EventEmitter {
       sequence_number: chunk.sequence_number,
       processing_metadata: {
         processing_time_ms: processingTime,
-        quality_improvement: this.calculateQualityImprovement(
-          chunk,
-          processedData,
-        ),
+        quality_improvement: this.calculateQualityImprovement(chunk, processedData),
         noise_reduction_applied: this.config.enable_noise_reduction,
         compression_applied: false,
       },
@@ -449,10 +434,7 @@ export class AudioProcessor extends EventEmitter {
   /**
    * Calculate quality improvement score
    */
-  private calculateQualityImprovement(
-    originalChunk: AudioChunk,
-    _processedData: Buffer,
-  ): number {
+  private calculateQualityImprovement(originalChunk: AudioChunk, _processedData: Buffer): number {
     // Simulate quality improvement calculation
     // In a real implementation, this would analyze audio quality metrics
     return Math.min(100, originalChunk.metadata.quality_score + 10);
@@ -464,8 +446,7 @@ export class AudioProcessor extends EventEmitter {
   private updateStats(processingTime: number): void {
     this.stats.chunksProcessed++;
     this.stats.totalProcessingTime += processingTime;
-    this.stats.averageProcessingTime =
-      this.stats.totalProcessingTime / this.stats.chunksProcessed;
+    this.stats.averageProcessingTime = this.stats.totalProcessingTime / this.stats.chunksProcessed;
   }
 
   /**
@@ -509,8 +490,7 @@ export class AudioProcessor extends EventEmitter {
       logger.debug('Audio chunk processed', {
         originalChunkId: data.originalChunk.id,
         processedChunkId: data.processedChunk.id,
-        processingTime:
-          data.processedChunk.processing_metadata.processing_time_ms,
+        processingTime: data.processedChunk.processing_metadata.processing_time_ms,
       });
     });
 

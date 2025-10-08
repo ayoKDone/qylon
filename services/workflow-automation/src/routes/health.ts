@@ -6,10 +6,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 
 // Initialize services for health checks
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 const workflowEngine = new WorkflowEngine();
 

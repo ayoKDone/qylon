@@ -5,12 +5,7 @@
  * Tests authentication, authorization, JWT handling, and security middleware.
  */
 
-import {
-  MockCreator,
-  TestAssertions,
-  TestDataGenerator,
-  TestUtils,
-} from '../utils/test-helpers';
+import { MockCreator, TestAssertions, TestDataGenerator, TestUtils } from '../utils/test-helpers';
 
 describe('Security Service Comprehensive Unit Tests', () => {
   // let mockLogger: any;
@@ -115,9 +110,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
           }),
         };
 
-        await expect(authService.register(userData)).rejects.toThrow(
-          'Invalid email format',
-        );
+        await expect(authService.register(userData)).rejects.toThrow('Invalid email format');
       });
 
       it('should reject registration with weak password', async () => {
@@ -168,9 +161,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
           }),
         };
 
-        await expect(authService.register(userData)).rejects.toThrow(
-          'User already registered',
-        );
+        await expect(authService.register(userData)).rejects.toThrow('User already registered');
       });
     });
 
@@ -255,9 +246,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
           }),
         };
 
-        await expect(authService.login(credentials)).rejects.toThrow(
-          'Invalid login credentials',
-        );
+        await expect(authService.login(credentials)).rejects.toThrow('Invalid login credentials');
       });
 
       it('should handle account lockout after failed attempts', async () => {
@@ -277,9 +266,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
             const failedAttempts = await mockRedis.get(failedAttemptsKey);
 
             if (parseInt(failedAttempts) >= 5) {
-              throw new Error(
-                'Account temporarily locked due to too many failed attempts',
-              );
+              throw new Error('Account temporarily locked due to too many failed attempts');
             }
 
             const { data, error } = await mockSupabase.auth.signInWithPassword({
@@ -304,9 +291,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         await expect(authService.login(credentials)).rejects.toThrow(
           'Account temporarily locked due to too many failed attempts',
         );
-        expect(mockRedis.get).toHaveBeenCalledWith(
-          `failed_attempts:${credentials.email}`,
-        );
+        expect(mockRedis.get).toHaveBeenCalledWith(`failed_attempts:${credentials.email}`);
       });
     });
 
@@ -539,10 +524,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
           next();
         };
 
-        const moderatorOrAdminMiddleware = requireAnyRole([
-          'moderator',
-          'admin',
-        ]);
+        const moderatorOrAdminMiddleware = requireAnyRole(['moderator', 'admin']);
         moderatorOrAdminMiddleware(req, res, next);
 
         expect(next).toHaveBeenCalled();
@@ -570,29 +552,28 @@ describe('Security Service Comprehensive Unit Tests', () => {
           }),
         });
 
-        const requireOwnership =
-          (resource, resourceIdParam) => async (req, res, next) => {
-            if (!req.user) {
-              return res.status(401).json({ error: 'Authentication required' });
-            }
+        const requireOwnership = (resource, resourceIdParam) => async (req, res, next) => {
+          if (!req.user) {
+            return res.status(401).json({ error: 'Authentication required' });
+          }
 
-            const resourceId = req.params[resourceIdParam];
-            const { data, error } = await mockSupabase
-              .from(resource)
-              .select('user_id')
-              .eq('id', resourceId)
-              .single();
+          const resourceId = req.params[resourceIdParam];
+          const { data, error } = await mockSupabase
+            .from(resource)
+            .select('user_id')
+            .eq('id', resourceId)
+            .single();
 
-            if (error || !data) {
-              return res.status(404).json({ error: 'Resource not found' });
-            }
+          if (error || !data) {
+            return res.status(404).json({ error: 'Resource not found' });
+          }
 
-            if (data.user_id !== req.user.id) {
-              return res.status(403).json({ error: 'Access denied' });
-            }
+          if (data.user_id !== req.user.id) {
+            return res.status(403).json({ error: 'Access denied' });
+          }
 
-            next();
-          };
+          next();
+        };
 
         const requireClientOwnership = requireOwnership('clients', 'clientId');
         await requireClientOwnership(req, res, next);
@@ -623,29 +604,28 @@ describe('Security Service Comprehensive Unit Tests', () => {
           }),
         });
 
-        const requireOwnership =
-          (resource, resourceIdParam) => async (req, res, next) => {
-            if (!req.user) {
-              return res.status(401).json({ error: 'Authentication required' });
-            }
+        const requireOwnership = (resource, resourceIdParam) => async (req, res, next) => {
+          if (!req.user) {
+            return res.status(401).json({ error: 'Authentication required' });
+          }
 
-            const resourceId = req.params[resourceIdParam];
-            const { data, error } = await mockSupabase
-              .from(resource)
-              .select('user_id')
-              .eq('id', resourceId)
-              .single();
+          const resourceId = req.params[resourceIdParam];
+          const { data, error } = await mockSupabase
+            .from(resource)
+            .select('user_id')
+            .eq('id', resourceId)
+            .single();
 
-            if (error || !data) {
-              return res.status(404).json({ error: 'Resource not found' });
-            }
+          if (error || !data) {
+            return res.status(404).json({ error: 'Resource not found' });
+          }
 
-            if (data.user_id !== req.user.id) {
-              return res.status(403).json({ error: 'Access denied' });
-            }
+          if (data.user_id !== req.user.id) {
+            return res.status(403).json({ error: 'Access denied' });
+          }
 
-            next();
-          };
+          next();
+        };
 
         const requireClientOwnership = requireOwnership('clients', 'clientId');
         await requireClientOwnership(req, res, next);
@@ -667,10 +647,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         res.set('X-Content-Type-Options', 'nosniff');
         res.set('X-Frame-Options', 'DENY');
         res.set('X-XSS-Protection', '1; mode=block');
-        res.set(
-          'Strict-Transport-Security',
-          'max-age=31536000; includeSubDomains',
-        );
+        res.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         res.set('Content-Security-Policy', "default-src 'self'");
         res.set('Referrer-Policy', 'strict-origin-when-cross-origin');
         next();
@@ -685,40 +662,23 @@ describe('Security Service Comprehensive Unit Tests', () => {
         'Strict-Transport-Security',
         'max-age=31536000; includeSubDomains',
       );
-      expect(res.set).toHaveBeenCalledWith(
-        'Content-Security-Policy',
-        "default-src 'self'",
-      );
-      expect(res.set).toHaveBeenCalledWith(
-        'Referrer-Policy',
-        'strict-origin-when-cross-origin',
-      );
+      expect(res.set).toHaveBeenCalledWith('Content-Security-Policy', "default-src 'self'");
+      expect(res.set).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin');
       expect(next).toHaveBeenCalled();
     });
   });
 
   describe('Input Validation', () => {
     it('should validate email format', () => {
-      const validEmails = [
-        'test@example.com',
-        'user.name@domain.co.uk',
-        'user+tag@example.org',
-      ];
+      const validEmails = ['test@example.com', 'user.name@domain.co.uk', 'user+tag@example.org'];
 
-      const invalidEmails = [
-        'invalid-email',
-        '@example.com',
-        'user@',
-        'user..name@example.com',
-      ];
+      const invalidEmails = ['invalid-email', '@example.com', 'user@', 'user..name@example.com'];
 
       const validateEmail = email => {
         // More comprehensive email validation
         const emailRegex =
           /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-        return (
-          emailRegex.test(email) && email.length > 0 && !email.includes('..')
-        );
+        return emailRegex.test(email) && email.length > 0 && !email.includes('..');
       };
 
       validEmails.forEach(email => {
@@ -746,21 +706,11 @@ describe('Security Service Comprehensive Unit Tests', () => {
             hasNumbers &&
             hasSpecialChar,
           errors: [
-            ...(password.length < minLength
-              ? ['Password must be at least 8 characters long']
-              : []),
-            ...(!hasUpperCase
-              ? ['Password must contain at least one uppercase letter']
-              : []),
-            ...(!hasLowerCase
-              ? ['Password must contain at least one lowercase letter']
-              : []),
-            ...(!hasNumbers
-              ? ['Password must contain at least one number']
-              : []),
-            ...(!hasSpecialChar
-              ? ['Password must contain at least one special character']
-              : []),
+            ...(password.length < minLength ? ['Password must be at least 8 characters long'] : []),
+            ...(!hasUpperCase ? ['Password must contain at least one uppercase letter'] : []),
+            ...(!hasLowerCase ? ['Password must contain at least one lowercase letter'] : []),
+            ...(!hasNumbers ? ['Password must contain at least one number'] : []),
+            ...(!hasSpecialChar ? ['Password must contain at least one special character'] : []),
           ],
         };
       };
@@ -817,10 +767,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
             lastAccessed: TestDataGenerator.generateTimestamp(),
           };
 
-          await mockRedis.set(
-            `session:${sessionId}`,
-            JSON.stringify(sessionData),
-          );
+          await mockRedis.set(`session:${sessionId}`, JSON.stringify(sessionData));
           await mockRedis.expire(`session:${sessionId}`, 3600); // 1 hour
 
           return {
@@ -840,10 +787,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
         `session:${result.sessionId}`,
         expect.stringContaining(user.id),
       );
-      expect(mockRedis.expire).toHaveBeenCalledWith(
-        `session:${result.sessionId}`,
-        3600,
-      );
+      expect(mockRedis.expire).toHaveBeenCalledWith(`session:${result.sessionId}`, 3600);
     });
 
     it('should validate active session', async () => {
@@ -872,10 +816,7 @@ describe('Security Service Comprehensive Unit Tests', () => {
 
           // Update last accessed time
           sessionData.lastAccessed = TestDataGenerator.generateTimestamp();
-          await mockRedis.set(
-            `session:${sessionId}`,
-            JSON.stringify(sessionData),
-          );
+          await mockRedis.set(`session:${sessionId}`, JSON.stringify(sessionData));
           await mockRedis.expire(`session:${sessionId}`, 3600);
 
           return { valid: true, data: sessionData };

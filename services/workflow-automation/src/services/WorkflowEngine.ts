@@ -14,10 +14,7 @@ export class WorkflowEngine {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   /**
@@ -34,11 +31,7 @@ export class WorkflowEngine {
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
       if (!workflow) {
-        throw new WorkflowError(
-          `Workflow not found: ${workflowId}`,
-          'WORKFLOW_NOT_FOUND',
-          404,
-        );
+        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
       }
 
       // Create execution context
@@ -81,20 +74,12 @@ export class WorkflowEngine {
     },
   ): Promise<WorkflowExecution> {
     try {
-      logWorkflow(
-        'event_driven_workflow_execution_started',
-        workflowId,
-        triggeredBy.eventId,
-      );
+      logWorkflow('event_driven_workflow_execution_started', workflowId, triggeredBy.eventId);
 
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
       if (!workflow) {
-        throw new WorkflowError(
-          `Workflow not found: ${workflowId}`,
-          'WORKFLOW_NOT_FOUND',
-          404,
-        );
+        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
       }
 
       // Create execution context with event information
@@ -124,15 +109,10 @@ export class WorkflowEngine {
       // Execute workflow asynchronously
       this.executeWorkflowAsync(execution.id, workflow, executionContext);
 
-      logWorkflow(
-        'event_driven_workflow_execution_created',
-        workflowId,
-        execution.id,
-        {
-          eventId: triggeredBy.eventId,
-          eventType: triggeredBy.eventType,
-        },
-      );
+      logWorkflow('event_driven_workflow_execution_created', workflowId, execution.id, {
+        eventId: triggeredBy.eventId,
+        eventType: triggeredBy.eventType,
+      });
 
       return execution;
     } catch (error) {
@@ -222,9 +202,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -286,9 +264,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -424,9 +400,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -472,9 +446,7 @@ export class WorkflowEngine {
           current_state: exec.current_state,
           context: exec.context,
           started_at: new Date(exec.started_at),
-          completed_at: exec.completed_at
-            ? new Date(exec.completed_at)
-            : undefined,
+          completed_at: exec.completed_at ? new Date(exec.completed_at) : undefined,
           error: exec.error,
           metadata: exec.metadata,
         })) || [];
@@ -511,10 +483,7 @@ export class WorkflowEngine {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const { error } = await this.supabase
-        .from('workflows')
-        .select('id')
-        .limit(1);
+      const { error } = await this.supabase.from('workflows').select('id').limit(1);
 
       return !error;
     } catch (error) {

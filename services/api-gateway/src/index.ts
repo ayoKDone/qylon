@@ -102,9 +102,7 @@ process.on('SIGINT', () => {
 app.listen(PORT, () => {
   logger.info(`🚀 API Gateway running on port ${PORT}`);
   logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(
-    `🔒 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`,
-  );
+  logger.info(`🔒 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`);
 });
 
 export default app;

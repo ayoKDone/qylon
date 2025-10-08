@@ -15,29 +15,20 @@ const logger = winston.createLogger({
   transports: [
     // Console transport
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
 
     // File transport for errors
     new winston.transports.File({
       filename: 'logs/security-error.log',
       level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     }),
 
     // File transport for all logs
     new winston.transports.File({
       filename: 'logs/security-combined.log',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json(),
-      ),
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
     }),
   ],
 });

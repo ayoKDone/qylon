@@ -17,10 +17,7 @@ const logger = winston.createLogger({
   },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple(),
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
   ],
 });
@@ -59,11 +56,7 @@ export const logSecurity = (message: string, req?: any, metadata?: any) => {
 };
 
 // Performance logging function
-export const logPerformance = (
-  operation: string,
-  duration: number,
-  metadata?: any,
-) => {
+export const logPerformance = (operation: string, duration: number, metadata?: any) => {
   logger.info('PERFORMANCE', {
     operation,
     duration,

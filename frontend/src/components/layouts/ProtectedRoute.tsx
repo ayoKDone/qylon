@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
 
   if (!user) {
     // not logged in → redirect to login
-    return <Navigate to="/login" replace />;
+    return <Navigate to='/login' replace />;
   }
 
   return children; // logged in → show the protected page

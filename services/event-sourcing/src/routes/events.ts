@@ -45,17 +45,14 @@ router.post(
       if (!aggregateId || !aggregateType || !eventType || !eventData) {
         res.status(400).json({
           error: 'Bad Request',
-          message:
-            'Missing required fields: aggregateId, aggregateType, eventType, eventData',
+          message: 'Missing required fields: aggregateId, aggregateType, eventType, eventData',
           timestamp: new Date().toISOString(),
         });
         return;
       }
 
       // Validate event type
-      if (
-        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
-      ) {
+      if (!Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',
@@ -210,9 +207,7 @@ router.get(
       }
 
       // Validate event type
-      if (
-        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
-      ) {
+      if (!Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',

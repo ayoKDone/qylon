@@ -49,11 +49,7 @@ export const authRateLimiter = createRateLimiter(
 );
 
 // User-specific rate limiter
-export const userRateLimiter = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+export const userRateLimiter = (req: Request, res: Response, next: NextFunction): void => {
   const userId = (req as any).user?.id;
 
   if (!userId) {

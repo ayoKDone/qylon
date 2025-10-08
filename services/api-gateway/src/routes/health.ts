@@ -88,30 +88,22 @@ router.get('/', async (req: Request, res: Response) => {
       services.map(service => checkServiceHealth(service)),
     );
 
-    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
-      (result, index) => {
-        if (result.status === 'fulfilled') {
-          return result.value;
-        } else {
-          return {
-            name: services[index].name,
-            status: 'unhealthy',
-            lastCheck: new Date().toISOString(),
-            error:
-              result.reason instanceof Error
-                ? result.reason.message
-                : 'Unknown error',
-          };
-        }
-      },
-    );
+    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
+      if (result.status === 'fulfilled') {
+        return result.value;
+      } else {
+        return {
+          name: services[index].name,
+          status: 'unhealthy',
+          lastCheck: new Date().toISOString(),
+          error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
+        };
+      }
+    });
 
     // Determine overall health
-    const unhealthyServices = serviceHealths.filter(
-      service => service.status === 'unhealthy',
-    );
-    const overallStatus =
-      unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
+    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
+    const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
 
     const response: HealthCheckResponse = {
       status: overallStatus,
@@ -157,23 +149,18 @@ router.get('/detailed', async (req: Request, res: Response) => {
       services.map(service => checkServiceHealth(service)),
     );
 
-    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
-      (result, index) => {
-        if (result.status === 'fulfilled') {
-          return result.value;
-        } else {
-          return {
-            name: services[index].name,
-            status: 'unhealthy',
-            lastCheck: new Date().toISOString(),
-            error:
-              result.reason instanceof Error
-                ? result.reason.message
-                : 'Unknown error',
-          };
-        }
-      },
-    );
+    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
+      if (result.status === 'fulfilled') {
+        return result.value;
+      } else {
+        return {
+          name: services[index].name,
+          status: 'unhealthy',
+          lastCheck: new Date().toISOString(),
+          error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
+        };
+      }
+    });
 
     // Get system information
     const systemInfo = {
@@ -187,11 +174,8 @@ router.get('/detailed', async (req: Request, res: Response) => {
     };
 
     // Determine overall health
-    const unhealthyServices = serviceHealths.filter(
-      service => service.status === 'unhealthy',
-    );
-    const overallStatus =
-      unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
+    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
+    const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
 
     const response = {
       status: overallStatus,

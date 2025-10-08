@@ -7,9 +7,7 @@ const router: Router = Router();
 // EventSubscriber will be injected from the main service
 let eventSubscriber: EventSubscriber | null = null;
 
-export function setEventSubscriberForMonitoring(
-  subscriber: EventSubscriber,
-): void {
+export function setEventSubscriberForMonitoring(subscriber: EventSubscriber): void {
   eventSubscriber = subscriber;
 }
 
@@ -103,12 +101,7 @@ router.get('/health', (req: Request, res: Response) => {
     const health = eventSubscriber.getSystemHealth();
 
     // Set appropriate HTTP status based on health
-    const statusCode =
-      health.status === 'healthy'
-        ? 200
-        : health.status === 'degraded'
-          ? 200
-          : 503;
+    const statusCode = health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503;
 
     res.status(statusCode).json({
       success: true,

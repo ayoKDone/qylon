@@ -3,10 +3,7 @@ module.exports = {
   testEnvironment: 'node',
 
   // Test file patterns
-  testMatch: [
-    '**/__tests__/**/*.(js|jsx|ts|tsx)',
-    '**/*.(test|spec).(js|jsx|ts|tsx)',
-  ],
+  testMatch: ['**/__tests__/**/*.(js|jsx|ts|tsx)', '**/*.(test|spec).(js|jsx|ts|tsx)'],
 
   // Exclude Cypress files
   testPathIgnorePatterns: [

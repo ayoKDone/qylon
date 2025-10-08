@@ -40,13 +40,9 @@ export class APIKeyManager {
           process.env.SUPABASE_URL,
           process.env.SUPABASE_SERVICE_ROLE_KEY,
         );
-        logger.info(
-          'Supabase client initialized successfully in APIKeyManager',
-        );
+        logger.info('Supabase client initialized successfully in APIKeyManager');
       } else {
-        logger.warn(
-          'Supabase not configured in APIKeyManager - running in local development mode',
-        );
+        logger.warn('Supabase not configured in APIKeyManager - running in local development mode');
         this.supabase = null;
       }
     } catch (error) {
@@ -78,10 +74,7 @@ export class APIKeyManager {
   /**
    * Create a new API key for a user
    */
-  async createAPIKey(
-    userId: string,
-    request: CreateAPIKeyRequest,
-  ): Promise<APIKeyResponse> {
+  async createAPIKey(userId: string, request: CreateAPIKeyRequest): Promise<APIKeyResponse> {
     try {
       const key = this.generateAPIKey();
       const keyHash = this.hashAPIKey(key);

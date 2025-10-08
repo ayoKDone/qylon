@@ -9,15 +9,10 @@ const router: Router = Router();
 let supabase: any = null;
 try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-    );
+    supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
     logger.info('Supabase client initialized successfully in auth routes');
   } else {
-    logger.warn(
-      'Supabase not configured in auth routes - running in local development mode',
-    );
+    logger.warn('Supabase not configured in auth routes - running in local development mode');
   }
 } catch (error) {
   logger.warn(

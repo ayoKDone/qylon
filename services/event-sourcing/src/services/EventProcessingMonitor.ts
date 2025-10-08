@@ -96,9 +96,7 @@ export class EventProcessingMonitor {
 
     // Update processing times
     this.processingTimes.push(processingTime);
-    this.eventMetrics.averageProcessingTime = this.calculateAverage(
-      this.processingTimes,
-    );
+    this.eventMetrics.averageProcessingTime = this.calculateAverage(this.processingTimes);
 
     logger.debug('Event processing completed successfully', {
       eventId: event.id,
@@ -111,11 +109,7 @@ export class EventProcessingMonitor {
   /**
    * Record failed event processing
    */
-  recordEventProcessingError(
-    event: Event,
-    error: Error,
-    processingTime: number,
-  ): void {
+  recordEventProcessingError(event: Event, error: Error, processingTime: number): void {
     this.eventMetrics.totalEventsProcessed++;
     this.eventMetrics.failedEvents++;
     this.eventMetrics.lastProcessedAt = new Date().toISOString();
@@ -129,15 +123,12 @@ export class EventProcessingMonitor {
 
     // Keep only last 100 errors
     if (this.eventMetrics.processingErrors.length > 100) {
-      this.eventMetrics.processingErrors =
-        this.eventMetrics.processingErrors.slice(-100);
+      this.eventMetrics.processingErrors = this.eventMetrics.processingErrors.slice(-100);
     }
 
     // Update processing times
     this.processingTimes.push(processingTime);
-    this.eventMetrics.averageProcessingTime = this.calculateAverage(
-      this.processingTimes,
-    );
+    this.eventMetrics.averageProcessingTime = this.calculateAverage(this.processingTimes);
 
     logger.error('Event processing failed', {
       eventId: event.id,
@@ -164,9 +155,7 @@ export class EventProcessingMonitor {
 
     // Update trigger times
     this.triggerTimes.push(triggerTime);
-    this.workflowMetrics.averageTriggerTime = this.calculateAverage(
-      this.triggerTimes,
-    );
+    this.workflowMetrics.averageTriggerTime = this.calculateAverage(this.triggerTimes);
 
     logger.debug('Workflow trigger executed successfully', {
       triggerId,
@@ -178,11 +167,7 @@ export class EventProcessingMonitor {
   /**
    * Record failed workflow trigger execution
    */
-  recordWorkflowTriggerError(
-    triggerId: string,
-    error: Error,
-    triggerTime: number,
-  ): void {
+  recordWorkflowTriggerError(triggerId: string, error: Error, triggerTime: number): void {
     this.workflowMetrics.totalTriggersExecuted++;
     this.workflowMetrics.failedTriggers++;
 
@@ -195,15 +180,12 @@ export class EventProcessingMonitor {
 
     // Keep only last 100 errors
     if (this.workflowMetrics.triggerErrors.length > 100) {
-      this.workflowMetrics.triggerErrors =
-        this.workflowMetrics.triggerErrors.slice(-100);
+      this.workflowMetrics.triggerErrors = this.workflowMetrics.triggerErrors.slice(-100);
     }
 
     // Update trigger times
     this.triggerTimes.push(triggerTime);
-    this.workflowMetrics.averageTriggerTime = this.calculateAverage(
-      this.triggerTimes,
-    );
+    this.workflowMetrics.averageTriggerTime = this.calculateAverage(this.triggerTimes);
 
     logger.error('Workflow trigger execution failed', {
       triggerId,
@@ -233,15 +215,12 @@ export class EventProcessingMonitor {
   getSystemHealth(): SystemHealth {
     const eventSuccessRate =
       this.eventMetrics.totalEventsProcessed > 0
-        ? (this.eventMetrics.successfulEvents /
-            this.eventMetrics.totalEventsProcessed) *
-          100
+        ? (this.eventMetrics.successfulEvents / this.eventMetrics.totalEventsProcessed) * 100
         : 100;
 
     const triggerSuccessRate =
       this.workflowMetrics.totalTriggersExecuted > 0
-        ? (this.workflowMetrics.successfulTriggers /
-            this.workflowMetrics.totalTriggersExecuted) *
+        ? (this.workflowMetrics.successfulTriggers / this.workflowMetrics.totalTriggersExecuted) *
           100
         : 100;
 
@@ -254,10 +233,7 @@ export class EventProcessingMonitor {
       this.workflowMetrics.averageTriggerTime,
     );
 
-    const overallStatus = this.getOverallHealthStatus(
-      eventProcessingStatus,
-      workflowTriggerStatus,
-    );
+    const overallStatus = this.getOverallHealthStatus(eventProcessingStatus, workflowTriggerStatus);
 
     const recommendations = this.generateRecommendations(
       eventSuccessRate,
