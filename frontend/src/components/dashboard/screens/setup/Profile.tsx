@@ -2,20 +2,25 @@ import { CameraIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 interface FormValues {
   image: FileList;
-  name: string;
-  title: string;
-  description: string;
+  names: string;
+  company_name: string;
+  role_selection: string;
+  team_size: string;
+  industry_selection: string;
 }
 
 export default function Profile() {
   const {
     register,
+    handleSubmit,
     formState: { errors, isSubmitting },
     watch,
   } = useForm<FormValues>();
+  const navigate = useNavigate();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [fileSizeErr, setFileSizeErr] = useState<boolean>(false);
   const [acceptedTypeErr, setAcceptedTypeErr] = useState<boolean>(false);
@@ -59,8 +64,12 @@ export default function Profile() {
     } else {
       setPreviewUrl(null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageFiles]);
+
+  const submitProfile = (files: FormValues) => {
+    console.log(files);
+    navigate('/setup/add-calendar');
+  };
 
   return (
     <>
@@ -71,7 +80,11 @@ export default function Profile() {
           you.
         </p>
       </div>
-      <form className='xui-max-w-800 xui-mt-2 xui-mx-auto xui-w-fluid-100 xui-form'>
+      <form
+        onSubmit={handleSubmit(submitProfile)}
+        className='xui-max-w-800 xui-mt-2 xui-mx-auto xui-w-fluid-100 xui-form'
+        noValidate
+      >
         <div className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-[16px] xui-mb-2'>
           <label
             className='xui-w-[120px] xui-h-[120px] xui-bg-light xui-bdr-rad-circle xui-overflow-hidden xui-pos-relative xui-cursor-pointer'
@@ -139,46 +152,93 @@ export default function Profile() {
           accept='image/*'
         />
         <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-[12px]'>
-          <div className='xui-form-box'>
-            <label htmlFor='fullname'>Full Names</label>
-            <input type='text' name='fullname' id='fullname' placeholder='Billy Jones' />
+          <div className='xui-form-box' xui-error={errors.names ? 'true' : 'false'}>
+            <label htmlFor='names'>Full Names</label>
+            <input
+              {...register('names', {
+                required: 'This field is required',
+              })}
+              type='text'
+              name='names'
+              id='names'
+              placeholder='Billy Jones'
+            />
+            {errors.names && <span className='xui-form-error-msg'>{errors.names.message}</span>}
           </div>
-          <div className='xui-form-box'>
+          <div className='xui-form-box' xui-error={errors.company_name ? 'true' : 'false'}>
             <label htmlFor='company_name'>Company Name</label>
-            <input type='text' name='company_name' id='company_name' placeholder='XYZ Limited' />
+            <input
+              {...register('company_name', {
+                required: 'This field is required',
+              })}
+              type='text'
+              name='company_name'
+              id='company_name'
+              placeholder='XYZ Limited'
+            />
+            {errors.company_name && (
+              <span className='xui-form-error-msg'>{errors.company_name.message}</span>
+            )}
           </div>
         </div>
         <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-[12px]'>
-          <div className='xui-form-box'>
-            <label htmlFor='roles'>Role Selection</label>
-            <select name='roles' id='roles'>
+          <div className='xui-form-box' xui-error={errors.role_selection ? 'true' : 'false'}>
+            <label htmlFor='role_selection'>Role Selection</label>
+            <select
+              {...register('role_selection', {
+                required: 'This field is required',
+              })}
+              name='role_selection'
+              id='role_selection'
+            >
               <option value=''>--Select your role--</option>
               <option value='Project Manager'>Project Manager</option>
               <option value='Team Lead'>Team Lead</option>
               <option value='Executive'>Executive</option>
               <option value='HR'>HR</option>
             </select>
+            {errors.role_selection && (
+              <span className='xui-form-error-msg'>{errors.role_selection.message}</span>
+            )}
           </div>
-          <div className='xui-form-box'>
-            <label htmlFor='size'>Team Size</label>
-            <select name='size' id='size'>
+          <div className='xui-form-box' xui-error={errors.team_size ? 'true' : 'false'}>
+            <label htmlFor='team_size'>Team Size</label>
+            <select
+              {...register('team_size', {
+                required: 'This field is required',
+              })}
+              name='team_size'
+              id='team_size'
+            >
               <option value=''>--Select your team size--</option>
               <option value='1 - 10'>1 - 10</option>
               <option value='11 - 50'>11 - 50</option>
               <option value='51 - 99'>51 - 99</option>
               <option value='100 and above'>100 and above</option>
             </select>
+            {errors.team_size && (
+              <span className='xui-form-error-msg'>{errors.team_size.message}</span>
+            )}
           </div>
         </div>
-        <div className='xui-form-box'>
-          <label htmlFor='industry'>Industry Selection</label>
-          <select name='industry' id='industry'>
+        <div className='xui-form-box' xui-error={errors.industry_selection ? 'true' : 'false'}>
+          <label htmlFor='industry_selection'>Industry Selection</label>
+          <select
+            {...register('industry_selection', {
+              required: 'This field is required',
+            })}
+            name='industry_selection'
+            id='industry_selection'
+          >
             <option value=''>--Select your company's industry--</option>
             <option value='Project Manager'>Project Manager</option>
             <option value='Team Lead'>Team Lead</option>
             <option value='Executive'>Executive</option>
             <option value='HR'>HR</option>
           </select>
+          {errors.industry_selection && (
+            <span className='xui-form-error-msg'>{errors.industry_selection.message}</span>
+          )}
         </div>
         <button
           type='submit'

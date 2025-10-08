@@ -1,8 +1,38 @@
+import { useEffect, useState } from 'react';
+import Confetti from 'react-confetti';
 import { Link } from 'react-router-dom';
+import { useWindowSize } from 'react-use';
 
 export default function Completed() {
+  const { width, height } = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(true);
+  const [confettiKey, setConfettiKey] = useState(0);
+
+  const handleStart = () => {
+    // trigger a single burst
+    setConfettiKey(k => k + 1);
+    setShowConfetti(true);
+
+    // let it play for ~1.8s then navigate
+    setTimeout(() => {
+      setShowConfetti(false);
+    }, 5200);
+  };
+  useEffect(() => {
+    handleStart();
+  }, []);
   return (
     <>
+      {showConfetti && (
+        <Confetti
+          key={confettiKey}
+          width={width || window.innerWidth}
+          height={height || window.innerHeight}
+          numberOfPieces={300}
+          recycle={false} // run once then stop
+          style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999, pointerEvents: 'none' }}
+        />
+      )}
       <div className='xui-text-center xui-max-w-500 xui-w-fluid-100 xui-mx-auto'>
         <h2 className='xui-font-sz-[24px] xui-md-font-sz-[24px] xui-font-w-bold'>
           Welcome to Qylon!
