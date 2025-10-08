@@ -45,7 +45,7 @@ const Label: React.FC<LabelProps> = ({
       {...props}
     >
       {children}
-      {required && <span className="text-red-500 ml-1">*</span>}
+      {required && <span className='text-red-500 ml-1'>*</span>}
     </label>
   );
 };

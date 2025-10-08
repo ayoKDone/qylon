@@ -51,16 +51,11 @@ describe('User Onboarding Flow', () => {
 
       // Should redirect to email verification
       cy.shouldBeOnPage('/verify-email');
-      cy.shouldShowInfoNotification(
-        'Please check your email to verify your account'
-      );
+      cy.shouldShowInfoNotification('Please check your email to verify your account');
 
       // Verify email verification page elements
       cy.get('[data-testid="email-verification-title"]').should('be.visible');
-      cy.get('[data-testid="email-verification-message"]').should(
-        'contain',
-        userData.email
-      );
+      cy.get('[data-testid="email-verification-message"]').should('contain', userData.email);
       cy.get('[data-testid="resend-verification-button"]').should('be.visible');
     });
 
@@ -283,9 +278,7 @@ describe('User Onboarding Flow', () => {
 
       // Should redirect to dashboard
       cy.shouldBeOnPage('/dashboard');
-      cy.shouldShowSuccessNotification(
-        'Welcome to Qylon! Your setup is complete.'
-      );
+      cy.shouldShowSuccessNotification('Welcome to Qylon! Your setup is complete.');
     });
 
     it('should allow skipping optional steps', () => {
@@ -348,8 +341,7 @@ describe('User Onboarding Flow', () => {
         'meeting-time-input': '14:00',
         'duration-select': '60',
         'meeting-type-select': 'video_call',
-        'description-textarea':
-          'Initial meeting to discuss project requirements',
+        'description-textarea': 'Initial meeting to discuss project requirements',
       };
 
       // Fill meeting form
@@ -365,10 +357,7 @@ describe('User Onboarding Flow', () => {
       cy.shouldBeOnPage('/meetings');
 
       // Should show meeting in list
-      cy.get('[data-testid="meetings-table"]').should(
-        'contain',
-        'Initial Client Meeting'
-      );
+      cy.get('[data-testid="meetings-table"]').should('contain', 'Initial Client Meeting');
     });
 
     it('should show onboarding tips for first meeting', () => {
@@ -439,12 +428,8 @@ describe('User Onboarding Flow', () => {
 
       // Should track step completion
       cy.waitForAPI('POST_/api/v1/analytics/events').then(interception => {
-        expect(interception.request.body.event_type).to.equal(
-          'onboarding_step_completed'
-        );
-        expect(interception.request.body.properties.step).to.equal(
-          'company_profile'
-        );
+        expect(interception.request.body.event_type).to.equal('onboarding_step_completed');
+        expect(interception.request.body.properties.step).to.equal('company_profile');
       });
     });
 
@@ -472,12 +457,8 @@ describe('User Onboarding Flow', () => {
 
       // Should track abandonment
       cy.waitForAPI('POST_/api/v1/analytics/events').then(interception => {
-        expect(interception.request.body.event_type).to.equal(
-          'onboarding_abandoned'
-        );
-        expect(interception.request.body.properties.step).to.equal(
-          'company_profile'
-        );
+        expect(interception.request.body.event_type).to.equal('onboarding_abandoned');
+        expect(interception.request.body.properties.step).to.equal('company_profile');
       });
     });
   });

@@ -78,9 +78,7 @@ router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
       },
       externalServices: {
         openai: {
-          status: process.env['OPENAI_API_KEY']
-            ? 'configured'
-            : 'not_configured',
+          status: process.env['OPENAI_API_KEY'] ? 'configured' : 'not_configured',
           lastCheck: new Date().toISOString(),
         },
         supabase: {
@@ -188,15 +186,9 @@ router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
 router.get('/ready', async (_req: Request, res: Response): Promise<void> => {
   try {
     // Check if all required services are available
-    const requiredServices = [
-      'SUPABASE_URL',
-      'SUPABASE_SERVICE_ROLE_KEY',
-      'JWT_SECRET',
-    ];
+    const requiredServices = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'JWT_SECRET'];
 
-    const missingServices = requiredServices.filter(
-      service => !process.env[service],
-    );
+    const missingServices = requiredServices.filter(service => !process.env[service]);
 
     if (missingServices.length > 0) {
       const response: ApiResponse<null> = {

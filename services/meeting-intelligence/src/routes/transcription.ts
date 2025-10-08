@@ -42,7 +42,7 @@ router.post(
       const transcript = await recallAIService.createAsyncTranscript(
         recordingId,
         provider,
-        diarization,
+        diarization
       );
 
       const response: ApiResponse<any> = {
@@ -66,7 +66,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -112,7 +112,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -150,9 +150,7 @@ router.get(
       }
 
       // Download the transcript data
-      const transcriptData = await recallAIService.downloadTranscript(
-        transcript.data.download_url,
-      );
+      const transcriptData = await recallAIService.downloadTranscript(transcript.data.download_url);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -182,7 +180,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -205,8 +203,7 @@ router.get(
         return;
       }
 
-      const separateAudios =
-        await recallAIService.getSeparateAudios(recordingId);
+      const separateAudios = await recallAIService.getSeparateAudios(recordingId);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -233,7 +230,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -257,8 +254,7 @@ router.get(
       }
 
       // First get the separate audios
-      const separateAudios =
-        await recallAIService.getSeparateAudios(recordingId);
+      const separateAudios = await recallAIService.getSeparateAudios(recordingId);
 
       // Then get the audio parts
       const audioParts = await recallAIService.getSeparateAudioParts({
@@ -290,7 +286,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -313,8 +309,7 @@ router.get(
         return;
       }
 
-      const separateVideos =
-        await recallAIService.getSeparateVideos(recordingId);
+      const separateVideos = await recallAIService.getSeparateVideos(recordingId);
 
       const response: ApiResponse<any> = {
         success: true,
@@ -341,7 +336,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -365,8 +360,7 @@ router.get(
       }
 
       // First get the separate videos
-      const separateVideos =
-        await recallAIService.getSeparateVideos(recordingId);
+      const separateVideos = await recallAIService.getSeparateVideos(recordingId);
 
       // Then get the video parts
       const videoParts = await recallAIService.getSeparateVideoParts({
@@ -398,7 +392,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 export default router;

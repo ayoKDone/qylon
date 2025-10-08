@@ -1,11 +1,11 @@
-version: '3.8'
+version: "3.8"
 
 services:
   supabase-db:
     image: postgres:15
     container_name: supabase-db
     ports:
-      - '54322:5432'
+      - "54322:5432"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
@@ -18,9 +18,9 @@ services:
     image: kong:2.8.1
     container_name: supabase-kong
     ports:
-      - '54321:8000'
+      - "54321:8000"
     environment:
-      KONG_DATABASE: 'off'
+      KONG_DATABASE: "off"
       KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
     volumes:
       - ./supabase/kong.yml:/var/lib/kong/kong.yml:ro

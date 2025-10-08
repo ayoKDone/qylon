@@ -128,7 +128,7 @@ export const rateLimiter = (configKey: string = 'default') => {
       if (config.burst && entry.count >= config.burst) {
         const timeSinceFirstRequest = now - (entry.resetTime - config.window);
         const expectedRequests = Math.floor(
-          timeSinceFirstRequest / (config.window / config.requests),
+          timeSinceFirstRequest / (config.window / config.requests)
         );
 
         if (entry.count > expectedRequests) {
@@ -159,10 +159,7 @@ export const rateLimiter = (configKey: string = 'default') => {
       // Add rate limit headers
       res.set({
         'X-RateLimit-Limit': config.requests.toString(),
-        'X-RateLimit-Remaining': Math.max(
-          0,
-          config.requests - entry.count,
-        ).toString(),
+        'X-RateLimit-Remaining': Math.max(0, config.requests - entry.count).toString(),
         'X-RateLimit-Reset': Math.ceil(entry.resetTime / 1000).toString(),
         'X-RateLimit-Window': config.window.toString(),
       });
@@ -202,9 +199,7 @@ export const integrationRateLimiter = (integrationType: string) => {
 
       const config = limits[integrationType] || limits['salesforce'];
       if (!config) {
-        res
-          .status(500)
-          .json({ error: 'Integration rate limit configuration not found' });
+        res.status(500).json({ error: 'Integration rate limit configuration not found' });
         return;
       }
 
@@ -251,13 +246,8 @@ export const integrationRateLimiter = (integrationType: string) => {
       // Add rate limit headers
       res.set({
         'X-Integration-RateLimit-Limit': config.requests.toString(),
-        'X-Integration-RateLimit-Remaining': Math.max(
-          0,
-          config.requests - entry.count,
-        ).toString(),
-        'X-Integration-RateLimit-Reset': Math.ceil(
-          entry.resetTime / 1000,
-        ).toString(),
+        'X-Integration-RateLimit-Remaining': Math.max(0, config.requests - entry.count).toString(),
+        'X-Integration-RateLimit-Reset': Math.ceil(entry.resetTime / 1000).toString(),
         'X-Integration-RateLimit-Type': integrationType,
       });
 

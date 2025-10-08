@@ -66,14 +66,7 @@ export interface Demographics {
 export interface Condition {
   type: 'user_property' | 'behavior' | 'demographic' | 'custom';
   field: string;
-  operator:
-    | 'equals'
-    | 'not_equals'
-    | 'greater_than'
-    | 'less_than'
-    | 'contains'
-    | 'in'
-    | 'not_in';
+  operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'in' | 'not_in';
   value: any;
 }
 
@@ -256,23 +249,11 @@ export interface UserSegmentTemplate {
 export interface ConditionTemplate {
   type: 'user_property' | 'behavior' | 'demographic' | 'custom';
   field: string;
-  operator:
-    | 'equals'
-    | 'not_equals'
-    | 'greater_than'
-    | 'less_than'
-    | 'contains'
-    | 'in'
-    | 'not_in';
+  operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'in' | 'not_in';
   value: any;
 }
 
-export type ExperimentStatus =
-  | 'draft'
-  | 'running'
-  | 'paused'
-  | 'completed'
-  | 'cancelled';
+export type ExperimentStatus = 'draft' | 'running' | 'paused' | 'completed' | 'cancelled';
 
 export interface ExperimentFilters {
   status?: ExperimentStatus[];
@@ -284,13 +265,7 @@ export interface ExperimentFilters {
 }
 
 export interface ExperimentSort {
-  field:
-    | 'name'
-    | 'status'
-    | 'startDate'
-    | 'endDate'
-    | 'createdAt'
-    | 'updatedAt';
+  field: 'name' | 'status' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt';
   direction: 'asc' | 'desc';
 }
 

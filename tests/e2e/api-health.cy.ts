@@ -44,9 +44,7 @@ describe('API Health Tests', () => {
         failOnStatusCode: false,
       }).then(response => {
         expect([200, 503]).to.include(response.status);
-        expect(response.headers).to.have.property(
-          'access-control-allow-origin'
-        );
+        expect(response.headers).to.have.property('access-control-allow-origin');
       });
     });
 

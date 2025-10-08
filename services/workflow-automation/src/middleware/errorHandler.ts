@@ -18,7 +18,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction,
+  _next: NextFunction
 ): void => {
   const requestId = (req as any).requestId;
 
@@ -133,10 +133,7 @@ export const errorHandler = (
   res.status(500).json({
     success: false,
     error: 'InternalServerError',
-    message:
-      process.env.NODE_ENV === 'production'
-        ? 'An unexpected error occurred'
-        : error.message,
+    message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : error.message,
     timestamp: new Date().toISOString(),
     requestId,
   });

@@ -7,10 +7,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 
 // Initialize services for health checks
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 const recallAIService = new RecallAIService();
 const openAIService = new OpenAIService();
@@ -104,7 +101,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
 
     // Determine overall health
     const allHealthy = Object.values(healthChecks.dependencies).every(
-      dep => dep.status === 'healthy',
+      dep => dep.status === 'healthy'
     );
 
     healthChecks.status = allHealthy ? 'healthy' : 'degraded';

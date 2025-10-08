@@ -12,10 +12,7 @@ import {
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 // const workflowEngine = new WorkflowEngine();
 
 /**
@@ -104,7 +101,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**
@@ -185,7 +182,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**
@@ -204,7 +201,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `,
+      `
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -249,7 +246,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**
@@ -269,7 +266,7 @@ router.put(
           `
         *,
         clients!inner(user_id)
-      `,
+      `
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -296,8 +293,7 @@ router.put(
       };
 
       if (req.body.name) updateData.name = req.body.name;
-      if (req.body.description !== undefined)
-        updateData.description = req.body.description;
+      if (req.body.description !== undefined) updateData.description = req.body.description;
       if (req.body.definition) updateData.definition = req.body.definition;
       if (req.body.status) updateData.status = req.body.status;
 
@@ -353,7 +349,7 @@ router.put(
       });
       throw error;
     }
-  }),
+  })
 );
 
 /**
@@ -373,7 +369,7 @@ router.delete(
           `
         *,
         clients!inner(user_id)
-      `,
+      `
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -434,7 +430,7 @@ router.delete(
       });
       throw error;
     }
-  }),
+  })
 );
 
 export default router;

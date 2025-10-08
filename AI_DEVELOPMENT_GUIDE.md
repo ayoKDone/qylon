@@ -6,7 +6,9 @@
 
 ## 🎯 Purpose
 
-This guide provides comprehensive rules and best practices for using AI tools (Cursor, GitHub Copilot, ChatGPT, etc.) in the Qylon project to avoid common pitfalls and ensure production-ready code.
+This guide provides comprehensive rules and best practices for using AI tools
+(Cursor, GitHub Copilot, ChatGPT, etc.) in the Qylon project to avoid common
+pitfalls and ensure production-ready code.
 
 ## 🚫 Critical Anti-Patterns to Avoid
 
@@ -599,4 +601,6 @@ git push
 
 ---
 
-**Remember**: This is a production system handling real user data. Every line of code must be secure, tested, and production-ready. When in doubt, ask for clarification rather than making assumptions.
+**Remember**: This is a production system handling real user data. Every line of
+code must be secure, tested, and production-ready. When in doubt, ask for
+clarification rather than making assumptions.

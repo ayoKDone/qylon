@@ -74,7 +74,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // List user's API keys
@@ -106,7 +106,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Validate an API key
@@ -151,7 +151,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Revoke an API key
@@ -198,7 +198,7 @@ router.delete(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Rotate an API key
@@ -239,11 +239,7 @@ router.post(
         return;
       }
 
-      const newAPIKey = await apiKeyManager.rotateAPIKey(
-        keyId,
-        userId,
-        validationResult.data,
-      );
+      const newAPIKey = await apiKeyManager.rotateAPIKey(keyId, userId, validationResult.data);
 
       logger.info('API key rotated', {
         userId,
@@ -262,7 +258,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Cleanup expired API keys (admin only)
@@ -310,7 +306,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 export default router;

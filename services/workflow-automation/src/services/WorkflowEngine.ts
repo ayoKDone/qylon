@@ -14,10 +14,7 @@ export class WorkflowEngine {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   /**
@@ -26,7 +23,7 @@ export class WorkflowEngine {
   async executeWorkflow(
     workflowId: string,
     inputData: Record<string, any>,
-    context?: Record<string, any>,
+    context?: Record<string, any>
   ): Promise<WorkflowExecution> {
     try {
       logWorkflow('workflow_execution_started', workflowId);
@@ -34,11 +31,7 @@ export class WorkflowEngine {
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
       if (!workflow) {
-        throw new WorkflowError(
-          `Workflow not found: ${workflowId}`,
-          'WORKFLOW_NOT_FOUND',
-          404,
-        );
+        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
       }
 
       // Create execution context
@@ -113,7 +106,7 @@ export class WorkflowEngine {
    */
   private async createExecution(
     workflow: Workflow,
-    context: ExecutionContext,
+    context: ExecutionContext
   ): Promise<WorkflowExecution> {
     try {
       const { data, error } = await this.supabase
@@ -131,7 +124,7 @@ export class WorkflowEngine {
       if (error) {
         throw new ExecutionError(
           `Failed to create execution: ${error.message}`,
-          'EXECUTION_CREATION_FAILED',
+          'EXECUTION_CREATION_FAILED'
         );
       }
 
@@ -143,9 +136,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -164,7 +155,7 @@ export class WorkflowEngine {
   private async executeWorkflowAsync(
     executionId: string,
     workflow: Workflow,
-    context: ExecutionContext,
+    context: ExecutionContext
   ): Promise<void> {
     try {
       logWorkflow('workflow_execution_running', workflow.id, executionId);
@@ -220,7 +211,7 @@ export class WorkflowEngine {
   private async updateExecutionStatus(
     executionId: string,
     status: ExecutionStatus,
-    updates?: any,
+    updates?: any
   ): Promise<void> {
     try {
       const updateData: any = {
@@ -280,9 +271,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -301,7 +290,7 @@ export class WorkflowEngine {
   async getExecutions(
     workflowId: string,
     page: number = 1,
-    limit: number = 20,
+    limit: number = 20
   ): Promise<{ executions: WorkflowExecution[]; total: number }> {
     try {
       const { data, error, count } = await this.supabase
@@ -328,9 +317,7 @@ export class WorkflowEngine {
           current_state: exec.current_state,
           context: exec.context,
           started_at: new Date(exec.started_at),
-          completed_at: exec.completed_at
-            ? new Date(exec.completed_at)
-            : undefined,
+          completed_at: exec.completed_at ? new Date(exec.completed_at) : undefined,
           error: exec.error,
           metadata: exec.metadata,
         })) || [];
@@ -367,10 +354,7 @@ export class WorkflowEngine {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const { error } = await this.supabase
-        .from('workflows')
-        .select('id')
-        .limit(1);
+      const { error } = await this.supabase.from('workflows').select('id').limit(1);
 
       return !error;
     } catch (error) {

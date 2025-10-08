@@ -79,8 +79,7 @@ export class HubSpotService extends BaseCRMService {
       }
 
       this.accessToken = accessToken;
-      this.apiClient.defaults.headers.common['Authorization'] =
-        `Bearer ${this.accessToken}`;
+      this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
 
       // Test the connection by fetching account info
       await this.apiClient.get('/crm/v3/objects/contacts?limit=1');
@@ -121,17 +120,17 @@ export class HubSpotService extends BaseCRMService {
       while (hasMore) {
         const params: any = {
           limit: 100,
-          properties:
-            'email,firstname,lastname,phone,company,jobtitle,createdate,lastmodifieddate',
+          properties: 'email,firstname,lastname,phone,company,jobtitle,createdate,lastmodifieddate',
         };
 
         if (after) {
           params.after = after;
         }
 
-        const response = await this.apiClient.get<
-          HubSpotSearchResponse<HubSpotContact>
-        >('/crm/v3/objects/contacts', { params });
+        const response = await this.apiClient.get<HubSpotSearchResponse<HubSpotContact>>(
+          '/crm/v3/objects/contacts',
+          { params }
+        );
 
         const hubspotContacts = response.data.results;
         recordsProcessed += hubspotContacts.length;
@@ -142,10 +141,7 @@ export class HubSpotService extends BaseCRMService {
             const contact = this.transformContactFromCRM(hubspotContact);
 
             // Check if contact exists in our system
-            const existingContact = await this.getContactFromDatabase(
-              contact.id,
-              userId,
-            );
+            const existingContact = await this.getContactFromDatabase(contact.id, userId);
 
             if (existingContact) {
               // Update existing contact
@@ -159,7 +155,7 @@ export class HubSpotService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Contact ${hubspotContact.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Contact ${hubspotContact.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -177,7 +173,7 @@ export class HubSpotService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -199,10 +195,7 @@ export class HubSpotService extends BaseCRMService {
     }
   }
 
-  async syncOpportunities(
-    userId: string,
-    clientId: string,
-  ): Promise<SyncResult> {
+  async syncOpportunities(userId: string, clientId: string): Promise<SyncResult> {
     const startTime = Date.now();
     let recordsProcessed = 0;
     let recordsCreated = 0;
@@ -234,9 +227,10 @@ export class HubSpotService extends BaseCRMService {
           params.after = after;
         }
 
-        const response = await this.apiClient.get<
-          HubSpotSearchResponse<HubSpotDeal>
-        >('/crm/v3/objects/deals', { params });
+        const response = await this.apiClient.get<HubSpotSearchResponse<HubSpotDeal>>(
+          '/crm/v3/objects/deals',
+          { params }
+        );
 
         const hubspotDeals = response.data.results;
         recordsProcessed += hubspotDeals.length;
@@ -249,30 +243,22 @@ export class HubSpotService extends BaseCRMService {
             // Check if opportunity exists in our system
             const existingOpportunity = await this.getOpportunityFromDatabase(
               opportunity.id,
-              userId,
+              userId
             );
 
             if (existingOpportunity) {
               // Update existing opportunity
-              await this.updateOpportunityInDatabase(
-                opportunity.id,
-                opportunity,
-                userId,
-              );
+              await this.updateOpportunityInDatabase(opportunity.id, opportunity, userId);
               recordsUpdated++;
             } else {
               // Create new opportunity
-              await this.createOpportunityInDatabase(
-                opportunity,
-                userId,
-                clientId,
-              );
+              await this.createOpportunityInDatabase(opportunity, userId, clientId);
               recordsCreated++;
             }
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Deal ${hubspotDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+              `Deal ${hubspotDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
             );
           }
         }
@@ -290,7 +276,7 @@ export class HubSpotService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration,
+        duration
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -342,10 +328,7 @@ export class HubSpotService extends BaseCRMService {
     }
   }
 
-  async updateContact(
-    contactId: string,
-    contact: Partial<CRMContact>,
-  ): Promise<CRMContact> {
+  async updateContact(contactId: string, contact: Partial<CRMContact>): Promise<CRMContact> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with HubSpot');
@@ -373,9 +356,7 @@ export class HubSpotService extends BaseCRMService {
     }
   }
 
-  async createOpportunity(
-    opportunity: CRMOpportunity,
-  ): Promise<CRMOpportunity> {
+  async createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity> {
     try {
       this.validateOpportunity(opportunity);
 
@@ -407,16 +388,14 @@ export class HubSpotService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>,
+    opportunity: Partial<CRMOpportunity>
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with HubSpot');
       }
 
-      const hubspotDeal = this.transformOpportunityToCRM(
-        opportunity as CRMOpportunity,
-      );
+      const hubspotDeal = this.transformOpportunityToCRM(opportunity as CRMOpportunity);
 
       await this.apiClient.patch(`/crm/v3/objects/deals/${opportunityId}`, {
         properties: hubspotDeal,
@@ -445,7 +424,7 @@ export class HubSpotService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<HubSpotContact>(
-        `/crm/v3/objects/contacts/${contactId}`,
+        `/crm/v3/objects/contacts/${contactId}`
       );
 
       return this.transformContactFromCRM(response.data);
@@ -464,7 +443,7 @@ export class HubSpotService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<HubSpotDeal>(
-        `/crm/v3/objects/deals/${opportunityId}`,
+        `/crm/v3/objects/deals/${opportunityId}`
       );
 
       return this.transformOpportunityFromCRM(response.data);
@@ -482,89 +461,82 @@ export class HubSpotService extends BaseCRMService {
         throw new Error('Not authenticated with HubSpot');
       }
 
-      const response = await this.apiClient.post<
-        HubSpotSearchResponse<HubSpotContact>
-      >('/crm/v3/objects/contacts/search', {
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: 'email',
-                operator: 'CONTAINS_TOKEN',
-                value: query,
-              },
-            ],
-          },
-        ],
-        properties: [
-          'email',
-          'firstname',
-          'lastname',
-          'phone',
-          'company',
-          'jobtitle',
-          'createdate',
-          'lastmodifieddate',
-        ],
-        limit: 50,
-      });
-
-      return response.data.results.map(contact =>
-        this.transformContactFromCRM(contact),
+      const response = await this.apiClient.post<HubSpotSearchResponse<HubSpotContact>>(
+        '/crm/v3/objects/contacts/search',
+        {
+          filterGroups: [
+            {
+              filters: [
+                {
+                  propertyName: 'email',
+                  operator: 'CONTAINS_TOKEN',
+                  value: query,
+                },
+              ],
+            },
+          ],
+          properties: [
+            'email',
+            'firstname',
+            'lastname',
+            'phone',
+            'company',
+            'jobtitle',
+            'createdate',
+            'lastmodifieddate',
+          ],
+          limit: 50,
+        }
       );
+
+      return response.data.results.map(contact => this.transformContactFromCRM(contact));
     } catch (error) {
       throw await this.handleApiError(error, 'Search Contacts');
     }
   }
 
-  async searchOpportunities(
-    query: string,
-    _userId: string,
-  ): Promise<CRMOpportunity[]> {
+  async searchOpportunities(query: string, _userId: string): Promise<CRMOpportunity[]> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with HubSpot');
       }
 
-      const response = await this.apiClient.post<
-        HubSpotSearchResponse<HubSpotDeal>
-      >('/crm/v3/objects/deals/search', {
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: 'dealname',
-                operator: 'CONTAINS_TOKEN',
-                value: query,
-              },
-            ],
-          },
-        ],
-        properties: [
-          'dealname',
-          'amount',
-          'dealstage',
-          'closedate',
-          'hubspot_owner_id',
-          'associatedcontactids',
-          'createdate',
-          'lastmodifieddate',
-        ],
-        limit: 50,
-      });
-
-      return response.data.results.map(deal =>
-        this.transformOpportunityFromCRM(deal),
+      const response = await this.apiClient.post<HubSpotSearchResponse<HubSpotDeal>>(
+        '/crm/v3/objects/deals/search',
+        {
+          filterGroups: [
+            {
+              filters: [
+                {
+                  propertyName: 'dealname',
+                  operator: 'CONTAINS_TOKEN',
+                  value: query,
+                },
+              ],
+            },
+          ],
+          properties: [
+            'dealname',
+            'amount',
+            'dealstage',
+            'closedate',
+            'hubspot_owner_id',
+            'associatedcontactids',
+            'createdate',
+            'lastmodifieddate',
+          ],
+          limit: 50,
+        }
       );
+
+      return response.data.results.map(deal => this.transformOpportunityFromCRM(deal));
     } catch (error) {
       throw await this.handleApiError(error, 'Search Opportunities');
     }
   }
 
   // HubSpot-specific transformation methods
-  protected override transformContactFromCRM(
-    hubspotContact: HubSpotContact,
-  ): CRMContact {
+  protected override transformContactFromCRM(hubspotContact: HubSpotContact): CRMContact {
     const properties = hubspotContact.properties;
     return {
       id: hubspotContact.id,
@@ -581,9 +553,7 @@ export class HubSpotService extends BaseCRMService {
     };
   }
 
-  protected override transformOpportunityFromCRM(
-    hubspotDeal: HubSpotDeal,
-  ): CRMOpportunity {
+  protected override transformOpportunityFromCRM(hubspotDeal: HubSpotDeal): CRMOpportunity {
     const properties = hubspotDeal.properties;
     return {
       id: hubspotDeal.id,
@@ -600,9 +570,7 @@ export class HubSpotService extends BaseCRMService {
     };
   }
 
-  protected override transformContactToCRM(
-    contact: CRMContact,
-  ): Record<string, any> {
+  protected override transformContactToCRM(contact: CRMContact): Record<string, any> {
     return {
       email: contact.email,
       firstname: contact.firstName,
@@ -614,9 +582,7 @@ export class HubSpotService extends BaseCRMService {
     };
   }
 
-  protected override transformOpportunityToCRM(
-    opportunity: CRMOpportunity,
-  ): Record<string, any> {
+  protected override transformOpportunityToCRM(opportunity: CRMOpportunity): Record<string, any> {
     return {
       dealname: opportunity.name,
       amount: opportunity.amount?.toString(),
@@ -630,7 +596,7 @@ export class HubSpotService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -639,7 +605,7 @@ export class HubSpotService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -647,14 +613,14 @@ export class HubSpotService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string,
+    _userId: string
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -663,7 +629,7 @@ export class HubSpotService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string,
+    _clientId: string
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -671,7 +637,7 @@ export class HubSpotService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string,
+    _userId: string
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

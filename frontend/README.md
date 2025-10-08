@@ -1,6 +1,8 @@
 # Qylon Frontend
 
-The Qylon frontend is a React-based web application built with Vite, TypeScript, and Tailwind CSS. It provides the user interface for the Qylon AI automation platform.
+The Qylon frontend is a React-based web application built with Vite, TypeScript,
+and Tailwind CSS. It provides the user interface for the Qylon AI automation
+platform.
 
 ## 🚀 Quick Start
 
@@ -30,8 +32,8 @@ The Qylon frontend is a React-based web application built with Vite, TypeScript,
    cp env.example .env.local
    ```
 
-4. **Configure environment variables:**
-   Edit `.env.local` with your actual configuration values:
+4. **Configure environment variables:** Edit `.env.local` with your actual
+   configuration values:
 
    ```bash
    # API Configuration

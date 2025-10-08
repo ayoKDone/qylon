@@ -1,10 +1,6 @@
 import request from 'supertest';
 import express from 'express';
-import {
-  rateLimiter,
-  authRateLimiter,
-  userRateLimiter,
-} from '../middleware/rateLimiter';
+import { rateLimiter, authRateLimiter, userRateLimiter } from '../middleware/rateLimiter';
 
 describe('Rate Limiter Middleware', () => {
   let app: express.Application;
@@ -74,9 +70,7 @@ describe('Rate Limiter Middleware', () => {
 
       expect(response.status).toBe(429);
       expect(response.body.error).toBe('Too Many Requests');
-      expect(response.body.message).toContain(
-        'Too many authentication attempts',
-      );
+      expect(response.body.message).toContain('Too many authentication attempts');
       expect(response.body.retryAfter).toBeDefined();
     });
   });

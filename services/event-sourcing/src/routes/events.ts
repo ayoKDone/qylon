@@ -37,17 +37,14 @@ router.post(
       if (!aggregateId || !aggregateType || !eventType || !eventData) {
         res.status(400).json({
           error: 'Bad Request',
-          message:
-            'Missing required fields: aggregateId, aggregateType, eventType, eventData',
+          message: 'Missing required fields: aggregateId, aggregateType, eventType, eventData',
           timestamp: new Date().toISOString(),
         });
         return;
       }
 
       // Validate event type
-      if (
-        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
-      ) {
+      if (!Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',
@@ -111,7 +108,7 @@ router.post(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get events for an aggregate
@@ -134,7 +131,7 @@ router.get(
 
       const events = await eventStore.getEvents(
         aggregateId,
-        fromVersion ? parseInt(fromVersion as string) : 0,
+        fromVersion ? parseInt(fromVersion as string) : 0
       );
 
       logger.info('Events retrieved for aggregate', {
@@ -166,7 +163,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get events by type
@@ -188,9 +185,7 @@ router.get(
       }
 
       // Validate event type
-      if (
-        !Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)
-      ) {
+      if (!Object.values(QylonEventTypes).includes(eventType as QylonEventTypes)) {
         res.status(400).json({
           error: 'Bad Request',
           message: 'Invalid event type',
@@ -201,7 +196,7 @@ router.get(
 
       const events = await eventStore.getEventsByType(
         eventType,
-        limit ? parseInt(limit as string) : 100,
+        limit ? parseInt(limit as string) : 100
       );
 
       logger.info('Events retrieved by type', {
@@ -234,7 +229,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get events by correlation ID
@@ -285,7 +280,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 // Get available event types
@@ -317,7 +312,7 @@ router.get(
       });
       throw error;
     }
-  }),
+  })
 );
 
 export default router;

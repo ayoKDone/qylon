@@ -5,12 +5,7 @@
  * Tests authentication, rate limiting, routing, and error handling.
  */
 
-import {
-  MockCreator,
-  TestAssertions,
-  TestDataGenerator,
-  TestUtils,
-} from '../utils/test-helpers';
+import { MockCreator, TestAssertions, TestDataGenerator, TestUtils } from '../utils/test-helpers';
 
 // Mock the API Gateway app (not used in tests but kept for reference)
 // const mockApp = {
@@ -497,20 +492,14 @@ describe('API Gateway Comprehensive Unit Tests', () => {
       const res = mockResponse();
 
       const corsMiddleware = jest.fn((req, res, next) => {
-        const allowedOrigins = [
-          'https://app.qylon.com',
-          'https://staging.qylon.com',
-        ];
+        const allowedOrigins = ['https://app.qylon.com', 'https://staging.qylon.com'];
         const origin = req.headers.origin;
 
         if (allowedOrigins.includes(origin)) {
           res.set('Access-Control-Allow-Origin', origin);
         }
 
-        res.set(
-          'Access-Control-Allow-Methods',
-          'GET, POST, PUT, DELETE, OPTIONS',
-        );
+        res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.set('Access-Control-Allow-Credentials', 'true');
 
@@ -523,22 +512,16 @@ describe('API Gateway Comprehensive Unit Tests', () => {
 
       corsMiddleware(req, res, jest.fn());
 
-      expect(res.set).toHaveBeenCalledWith(
-        'Access-Control-Allow-Origin',
-        'https://app.qylon.com',
-      );
+      expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Origin', 'https://app.qylon.com');
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS',
+        'GET, POST, PUT, DELETE, OPTIONS'
       );
       expect(res.set).toHaveBeenCalledWith(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization',
+        'Content-Type, Authorization'
       );
-      expect(res.set).toHaveBeenCalledWith(
-        'Access-Control-Allow-Credentials',
-        'true',
-      );
+      expect(res.set).toHaveBeenCalledWith('Access-Control-Allow-Credentials', 'true');
       expect(res.status).toHaveBeenCalledWith(200);
     });
 
@@ -548,10 +531,7 @@ describe('API Gateway Comprehensive Unit Tests', () => {
       const res = mockResponse();
 
       const corsMiddleware = jest.fn((req, res, next) => {
-        const allowedOrigins = [
-          'https://app.qylon.com',
-          'https://staging.qylon.com',
-        ];
+        const allowedOrigins = ['https://app.qylon.com', 'https://staging.qylon.com'];
         const origin = req.headers.origin;
 
         if (allowedOrigins.includes(origin)) {

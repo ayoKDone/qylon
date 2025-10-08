@@ -14,17 +14,14 @@ export class SupabaseSagaManager implements ISagaManager {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   async startSaga(
     definition: SagaDefinition,
     correlationId: string,
     userId: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, any>
   ): Promise<Saga> {
     try {
       const sagaId = uuidv4();
@@ -121,11 +118,9 @@ export class SupabaseSagaManager implements ISagaManager {
 
       // Check dependencies
       if (step.dependsOn) {
-        const dependencies = saga.steps.filter(s =>
-          step.dependsOn!.includes(s.name),
-        );
+        const dependencies = saga.steps.filter(s => step.dependsOn!.includes(s.name));
         const incompleteDependencies = dependencies.filter(
-          d => d.status !== SagaStepStatus.COMPLETED,
+          d => d.status !== SagaStepStatus.COMPLETED
         );
 
         if (incompleteDependencies.length > 0) {
@@ -295,9 +290,7 @@ export class SupabaseSagaManager implements ISagaManager {
         .order('started_at', { ascending: false });
 
       if (error) {
-        throw new Error(
-          `Failed to get sagas by correlation ID: ${error.message}`,
-        );
+        throw new Error(`Failed to get sagas by correlation ID: ${error.message}`);
       }
 
       return data?.map(this.mapToSaga) || [];
@@ -342,10 +335,7 @@ export class SupabaseSagaManager implements ISagaManager {
       error: saga.error,
     };
 
-    const { error } = await this.supabase
-      .from('sagas')
-      .update(sagaRecord)
-      .eq('id', saga.id);
+    const { error } = await this.supabase.from('sagas').update(sagaRecord).eq('id', saga.id);
 
     if (error) {
       throw new Error(`Failed to update saga: ${error.message}`);
@@ -363,10 +353,7 @@ export class SupabaseSagaManager implements ISagaManager {
     return { success: true, action };
   }
 
-  private async handleStepFailure(
-    saga: Saga,
-    _failedStep: SagaStep,
-  ): Promise<void> {
+  private async handleStepFailure(saga: Saga, _failedStep: SagaStep): Promise<void> {
     // Determine compensation strategy based on saga definition
     // For now, we'll use backward recovery
     await this.compensateSaga(saga.id);
@@ -382,9 +369,7 @@ export class SupabaseSagaManager implements ISagaManager {
       correlationId: record.correlation_id,
       userId: record.user_id,
       startedAt: new Date(record.started_at),
-      completedAt: record.completed_at
-        ? new Date(record.completed_at)
-        : undefined,
+      completedAt: record.completed_at ? new Date(record.completed_at) : undefined,
       failedAt: record.failed_at ? new Date(record.failed_at) : undefined,
       error: record.error,
       metadata: record.metadata,

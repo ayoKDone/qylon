@@ -76,38 +76,32 @@ const ProblemsVsSolutions: React.FC = () => {
   ];
 
   return (
-    <section
-      className={`py-24 transition-colors duration-300 ${
-        isDark ? 'bg-black' : 'bg-white'
-      }`}
-    >
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full text-red-400 text-sm font-medium tracking-wide mb-6">
-            <span className="w-2 h-2 bg-gradient-to-r from-red-400 to-orange-400 rounded-full mr-2 animate-pulse"></span>
+    <section className={`py-24 transition-colors duration-300 ${isDark ? 'bg-black' : 'bg-white'}`}>
+      <div className='container mx-auto px-6'>
+        <div className='text-center mb-16'>
+          <div className='inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-full text-red-400 text-sm font-medium tracking-wide mb-6'>
+            <span className='w-2 h-2 bg-gradient-to-r from-red-400 to-orange-400 rounded-full mr-2 animate-pulse'></span>
             Why Existing Tools Fail
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 px-4">
+          <h2 className='text-3xl sm:text-4xl md:text-5xl font-bold mb-6 px-4'>
             <span className={`${isDark ? 'text-white' : 'text-gray-900'}`}>
               Stop fighting broken workflows
             </span>
           </h2>
         </div>
 
-        <div className="max-w-6xl mx-auto space-y-12 md:space-y-16 px-4">
+        <div className='max-w-6xl mx-auto space-y-12 md:space-y-16 px-4'>
           {comparisons.map((comparison, index) => (
             <div
               key={index}
               className={`p-6 md:p-8 rounded-xl border ${
-                isDark
-                  ? 'bg-gray-950 border-gray-800'
-                  : 'bg-gray-50 border-gray-200'
+                isDark ? 'bg-gray-950 border-gray-800' : 'bg-gray-50 border-gray-200'
               }`}
             >
               {/* Header */}
-              <div className="text-center mb-8 md:mb-12">
-                <div className="w-12 md:w-16 h-12 md:h-16 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 md:mb-6 mx-auto">
-                  <comparison.icon className="w-6 md:w-8 h-6 md:h-8 text-white" />
+              <div className='text-center mb-8 md:mb-12'>
+                <div className='w-12 md:w-16 h-12 md:h-16 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 md:mb-6 mx-auto'>
+                  <comparison.icon className='w-6 md:w-8 h-6 md:h-8 text-white' />
                 </div>
                 <h3
                   className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 ${
@@ -116,33 +110,23 @@ const ProblemsVsSolutions: React.FC = () => {
                 >
                   {comparison.title}
                 </h3>
-                <p
-                  className={`text-base md:text-lg ${
-                    isDark ? 'text-gray-400' : 'text-gray-600'
-                  }`}
-                >
+                <p className={`text-base md:text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                   {comparison.subtitle}
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+              <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8'>
                 {/* Problem Side */}
                 <div
                   className={`p-4 md:p-6 rounded-xl border ${
-                    isDark
-                      ? 'border-red-500/20 bg-red-950/20'
-                      : 'border-red-200 bg-red-50'
+                    isDark ? 'border-red-500/20 bg-red-950/20' : 'border-red-200 bg-red-50'
                   }`}
                 >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3">
-                      <X className="w-5 h-5 text-white" />
+                  <div className='flex items-center mb-4'>
+                    <div className='w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-3'>
+                      <X className='w-5 h-5 text-white' />
                     </div>
-                    <span
-                      className={`font-semibold ${
-                        isDark ? 'text-red-400' : 'text-red-700'
-                      }`}
-                    >
+                    <span className={`font-semibold ${isDark ? 'text-red-400' : 'text-red-700'}`}>
                       The Problem
                     </span>
                   </div>
@@ -155,7 +139,7 @@ const ProblemsVsSolutions: React.FC = () => {
                     "{comparison.problem.quote}"
                   </div>
 
-                  <ul className="space-y-3">
+                  <ul className='space-y-3'>
                     {comparison.problem.issues.map((issue, issueIndex) => (
                       <li
                         key={issueIndex}
@@ -163,7 +147,7 @@ const ProblemsVsSolutions: React.FC = () => {
                           isDark ? 'text-gray-300' : 'text-gray-700'
                         }`}
                       >
-                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div className='w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0'></div>
                         {issue}
                       </li>
                     ))}
@@ -173,20 +157,14 @@ const ProblemsVsSolutions: React.FC = () => {
                 {/* Solution Side */}
                 <div
                   className={`p-4 md:p-6 rounded-xl border ${
-                    isDark
-                      ? 'border-cyan-500/20 bg-cyan-950/20'
-                      : 'border-cyan-200 bg-cyan-50'
+                    isDark ? 'border-cyan-500/20 bg-cyan-950/20' : 'border-cyan-200 bg-cyan-50'
                   }`}
                 >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
-                      <Check className="w-5 h-5 text-white" />
+                  <div className='flex items-center mb-4'>
+                    <div className='w-8 h-8 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center mr-3'>
+                      <Check className='w-5 h-5 text-white' />
                     </div>
-                    <span
-                      className={`font-semibold ${
-                        isDark ? 'text-cyan-400' : 'text-cyan-700'
-                      }`}
-                    >
+                    <span className={`font-semibold ${isDark ? 'text-cyan-400' : 'text-cyan-700'}`}>
                       The Qylon Way
                     </span>
                   </div>
@@ -199,27 +177,25 @@ const ProblemsVsSolutions: React.FC = () => {
                     {comparison.solution.title}
                   </div>
 
-                  <ul className="space-y-3">
-                    {comparison.solution.benefits.map(
-                      (benefit, benefitIndex) => (
-                        <li
-                          key={benefitIndex}
-                          className={`flex items-start text-sm ${
-                            isDark ? 'text-gray-300' : 'text-gray-700'
-                          }`}
-                        >
-                          <div className="w-2 h-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                          {benefit}
-                        </li>
-                      ),
-                    )}
+                  <ul className='space-y-3'>
+                    {comparison.solution.benefits.map((benefit, benefitIndex) => (
+                      <li
+                        key={benefitIndex}
+                        className={`flex items-start text-sm ${
+                          isDark ? 'text-gray-300' : 'text-gray-700'
+                        }`}
+                      >
+                        <div className='w-2 h-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full mt-2 mr-3 flex-shrink-0'></div>
+                        {benefit}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
 
               {/* Arrow */}
-              <div className="flex justify-center my-4 md:my-6">
-                <div className="text-4xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              <div className='flex justify-center my-4 md:my-6'>
+                <div className='text-4xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent'>
                   ↓
                 </div>
               </div>

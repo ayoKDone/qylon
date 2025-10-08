@@ -11,12 +11,7 @@ import { logRequest, logger } from './utils/logger';
 dotenv.config();
 
 // Validate required environment variables
-const requiredEnvVars = [
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'JWT_SECRET',
-  'PORT',
-];
+const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'JWT_SECRET', 'PORT'];
 
 const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
 
@@ -43,24 +38,17 @@ app.use(
       },
     },
     crossOriginEmbedderPolicy: false,
-  }),
+  })
 );
 
 // CORS configuration
 app.use(
   cors({
-    origin: process.env['ALLOWED_ORIGINS']?.split(',') || [
-      'http://localhost:3000',
-    ],
+    origin: process.env['ALLOWED_ORIGINS']?.split(',') || ['http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Request-ID',
-      'X-API-Key',
-    ],
-  }),
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-API-Key'],
+  })
 );
 
 // Body parsing middleware
@@ -73,8 +61,7 @@ app.use(logRequest);
 // Add request ID to all requests
 app.use((req, res, next) => {
   req.headers['x-request-id'] =
-    req.headers['x-request-id'] ||
-    `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   res.setHeader('X-Request-ID', req.headers['x-request-id']);
   next();
 });

@@ -70,9 +70,7 @@ jest.mock('@supabase/supabase-js', () => ({
     };
 
     // Make the query chainable and resolve to the expected result
-    mockQuery.then = jest
-      .fn()
-      .mockResolvedValue({ data: [], error: null, count: 0 });
+    mockQuery.then = jest.fn().mockResolvedValue({ data: [], error: null, count: 0 });
 
     return {
       from: jest.fn(() => mockQuery),
@@ -105,9 +103,7 @@ jest.mock('@supabase/supabase-js', () => ({
           download: jest.fn().mockResolvedValue({ data: null, error: null }),
           remove: jest.fn().mockResolvedValue({ data: null, error: null }),
           list: jest.fn().mockResolvedValue({ data: [], error: null }),
-          getPublicUrl: jest
-            .fn()
-            .mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
+          getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
         })),
       },
     };
@@ -117,19 +113,13 @@ jest.mock('@supabase/supabase-js', () => ({
 // Mock RecallAIService
 jest.mock('../../services/RecallAIService', () => ({
   RecallAIService: jest.fn().mockImplementation(() => ({
-    createBot: jest
-      .fn()
-      .mockResolvedValue({ success: true, data: { bot_id: 'test-bot-id' } }),
-    getBot: jest
-      .fn()
-      .mockResolvedValue({ success: true, data: { id: 'test-bot-id' } }),
+    createBot: jest.fn().mockResolvedValue({ success: true, data: { bot_id: 'test-bot-id' } }),
+    getBot: jest.fn().mockResolvedValue({ success: true, data: { id: 'test-bot-id' } }),
     deleteBot: jest.fn().mockResolvedValue({ success: true }),
   })),
 }));
 
-const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
-  typeof authMiddleware
->;
+const mockAuthMiddleware = authMiddleware as jest.MockedFunction<typeof authMiddleware>;
 const mockRequireClientAccess = requireClientAccess as jest.MockedFunction<
   typeof requireClientAccess
 >;
@@ -143,8 +133,7 @@ describe('Meetings Routes', () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
     process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
     process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
-    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL =
-      'https://test.recall.ai/api/v1';
+    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL = 'https://test.recall.ai/api/v1';
 
     app = express();
     app.use(express.json());
@@ -188,9 +177,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.get('/api/v1/meetings/client/:clientId', mockHandler);
 
-      const response = await request(app)
-        .get('/api/v1/meetings/client/test-client-id')
-        .expect(200);
+      const response = await request(app).get('/api/v1/meetings/client/test-client-id').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
@@ -218,9 +205,7 @@ describe('Meetings Routes', () => {
       app.get('/api/v1/meetings/client/:clientId', mockHandler);
 
       const response = await request(app)
-        .get(
-          '/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1',
-        )
+        .get('/api/v1/meetings/client/test-client-id?status=active&limit=10&page=1')
         .expect(200);
 
       expect(response.body.success).toBe(true);
@@ -240,15 +225,9 @@ describe('Meetings Routes', () => {
         res.status(200).json({ success: true });
       });
 
-      app.get(
-        '/api/v1/meetings/client/:clientId',
-        mockAuthMiddleware,
-        mockHandler,
-      );
+      app.get('/api/v1/meetings/client/:clientId', mockAuthMiddleware, mockHandler);
 
-      await request(app)
-        .get('/api/v1/meetings/client/test-client-id')
-        .expect(401);
+      await request(app).get('/api/v1/meetings/client/test-client-id').expect(401);
     });
   });
 
@@ -272,9 +251,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.get('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .get(`/api/v1/meetings/${meetingId}`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/meetings/${meetingId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
@@ -294,9 +271,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.get('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .get('/api/v1/meetings/invalid-id')
-        .expect(404);
+      const response = await request(app).get('/api/v1/meetings/invalid-id').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Meeting not found');
@@ -315,9 +290,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.get('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .get('/api/v1/meetings/not-a-uuid')
-        .expect(400);
+      const response = await request(app).get('/api/v1/meetings/not-a-uuid').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Invalid meeting ID format');
@@ -351,10 +324,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.post('/api/v1/meetings', mockHandler);
 
-      const response = await request(app)
-        .post('/api/v1/meetings')
-        .send(meetingData)
-        .expect(201);
+      const response = await request(app).post('/api/v1/meetings').send(meetingData).expect(201);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
@@ -380,10 +350,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.post('/api/v1/meetings', mockHandler);
 
-      const response = await request(app)
-        .post('/api/v1/meetings')
-        .send(invalidData)
-        .expect(400);
+      const response = await request(app).post('/api/v1/meetings').send(invalidData).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('ValidationError');
@@ -409,10 +376,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.post('/api/v1/meetings', mockHandler);
 
-      const response = await request(app)
-        .post('/api/v1/meetings')
-        .send(invalidData)
-        .expect(400);
+      const response = await request(app).post('/api/v1/meetings').send(invalidData).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('ValidationError');
@@ -438,10 +402,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.post('/api/v1/meetings', mockHandler);
 
-      const response = await request(app)
-        .post('/api/v1/meetings')
-        .send(invalidData)
-        .expect(400);
+      const response = await request(app).post('/api/v1/meetings').send(invalidData).expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('ValidationError');
@@ -547,9 +508,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.delete('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .delete(`/api/v1/meetings/${meetingId}`)
-        .expect(200);
+      const response = await request(app).delete(`/api/v1/meetings/${meetingId}`).expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('Meeting deleted');
@@ -568,9 +527,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.delete('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .delete('/api/v1/meetings/non-existent-id')
-        .expect(404);
+      const response = await request(app).delete('/api/v1/meetings/non-existent-id').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Meeting not found');
@@ -589,9 +546,7 @@ describe('Meetings Routes', () => {
       // Replace the route handler
       app.delete('/api/v1/meetings/:meetingId', mockHandler);
 
-      const response = await request(app)
-        .delete('/api/v1/meetings/not-a-uuid')
-        .expect(400);
+      const response = await request(app).delete('/api/v1/meetings/not-a-uuid').expect(400);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('Invalid meeting ID format');
@@ -634,7 +589,7 @@ describe('Meetings Routes', () => {
         'Meetings retrieved',
         expect.objectContaining({
           userId: 'test-user-id',
-        }),
+        })
       );
     });
 
@@ -662,7 +617,7 @@ describe('Meetings Routes', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        }),
+        })
       );
     });
   });

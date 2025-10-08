@@ -108,7 +108,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       previousMessages?: CommunicationMessage[];
-    },
+    }
   ): Promise<AIResponse> {
     try {
       const sessionKey = `${context.userId}_${context.sessionId}`;
@@ -177,10 +177,7 @@ export class AICommunicationService {
         content: aiContent,
         sentiment: sentiment,
         confidence: this.calculateResponseConfidence(aiContent, sentiment),
-        suggestedActions: this.generateSuggestedActions(
-          sentiment,
-          context.platform,
-        ),
+        suggestedActions: this.generateSuggestedActions(sentiment, context.platform),
         metadata: {
           model: 'gpt-4',
           tokens: response.usage?.total_tokens,
@@ -216,7 +213,7 @@ export class AICommunicationService {
       userId: string;
       preferences?: Record<string, any>;
       history?: CommunicationMessage[];
-    },
+    }
   ): Promise<string> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -234,10 +231,7 @@ export class AICommunicationService {
 
       // Personalize based on user context
       if (userContext.preferences) {
-        content = await this.personalizeContent(
-          content,
-          userContext.preferences,
-        );
+        content = await this.personalizeContent(content, userContext.preferences);
       }
 
       await this.logOperation('personalized_response_generated', {
@@ -265,7 +259,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       audience?: string;
-    },
+    }
   ): Promise<string> {
     try {
       const currentSentiment = await this.analyzeSentiment(originalResponse);
@@ -328,7 +322,7 @@ Optimized response:`;
     category: string,
     content: string,
     variables: string[],
-    sentiment?: 'positive' | 'negative' | 'neutral',
+    sentiment?: 'positive' | 'negative' | 'neutral'
   ): Promise<ResponseTemplate> {
     try {
       const template: ResponseTemplate = {
@@ -367,7 +361,7 @@ Optimized response:`;
 
   async updateResponseTemplate(
     templateId: string,
-    updates: Partial<ResponseTemplate>,
+    updates: Partial<ResponseTemplate>
   ): Promise<ResponseTemplate> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -418,10 +412,7 @@ Optimized response:`;
     });
   }
 
-  async getChatContext(
-    userId: string,
-    sessionId: string,
-  ): Promise<ChatContext | null> {
+  async getChatContext(userId: string, sessionId: string): Promise<ChatContext | null> {
     const sessionKey = `${userId}_${sessionId}`;
     return this.chatContexts.get(sessionKey) || null;
   }
@@ -465,10 +456,7 @@ Guidelines:
     }
   }
 
-  private calculateResponseConfidence(
-    content: string,
-    sentiment: SentimentAnalysis,
-  ): number {
+  private calculateResponseConfidence(content: string, sentiment: SentimentAnalysis): number {
     // Base confidence on sentiment analysis confidence and content quality
     let confidence = sentiment.confidence;
 
@@ -485,10 +473,7 @@ Guidelines:
     return Math.min(confidence, 1.0);
   }
 
-  private generateSuggestedActions(
-    sentiment: SentimentAnalysis,
-    platform: string,
-  ): string[] {
+  private generateSuggestedActions(sentiment: SentimentAnalysis, platform: string): string[] {
     const actions: string[] = [];
 
     if (sentiment.sentiment === 'negative') {
@@ -517,7 +502,7 @@ Guidelines:
 
   private async personalizeContent(
     content: string,
-    preferences: Record<string, any>,
+    preferences: Record<string, any>
   ): Promise<string> {
     // Simple personalization based on preferences
     // In a real implementation, this would use AI to personalize content
@@ -526,10 +511,7 @@ Guidelines:
     if (preferences['communicationStyle'] === 'formal') {
       personalizedContent = personalizedContent.replace(/hey|hi/g, 'Hello');
     } else if (preferences['communicationStyle'] === 'casual') {
-      personalizedContent = personalizedContent.replace(
-        /Hello|Good morning/g,
-        'Hey',
-      );
+      personalizedContent = personalizedContent.replace(/Hello|Good morning/g, 'Hey');
     }
 
     return personalizedContent;
@@ -539,15 +521,12 @@ Guidelines:
     return `template_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private async logOperation(
-    operation: string,
-    data: Record<string, any> = {},
-  ): Promise<void> {
+  private async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_SLACK, // Using a generic type for AI service
       this.config.userId,
-      data,
+      data
     );
   }
 }

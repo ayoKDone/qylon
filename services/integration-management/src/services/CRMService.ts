@@ -1,7 +1,4 @@
-import {
-  createExternalServiceError,
-  createIntegrationError,
-} from '../middleware/errorHandler';
+import { createExternalServiceError, createIntegrationError } from '../middleware/errorHandler';
 import {
   CRMContact,
   CRMOpportunity,
@@ -9,12 +6,7 @@ import {
   IntegrationType,
   SyncResult,
 } from '../types';
-import {
-  logIntegrationError,
-  logIntegrationEvent,
-  logSyncResult,
-  logger,
-} from '../utils/logger';
+import { logIntegrationError, logIntegrationEvent, logSyncResult, logger } from '../utils/logger';
 
 // Base CRM Service interface
 export interface ICRMService {
@@ -22,10 +14,7 @@ export interface ICRMService {
   syncContacts(userId: string, clientId: string): Promise<SyncResult>;
   syncOpportunities(userId: string, clientId: string): Promise<SyncResult>;
   createContact(contact: CRMContact): Promise<CRMContact>;
-  updateContact(
-    contactId: string,
-    contact: Partial<CRMContact>
-  ): Promise<CRMContact>;
+  updateContact(contactId: string, contact: Partial<CRMContact>): Promise<CRMContact>;
   createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity>;
   updateOpportunity(
     opportunityId: string,
@@ -51,31 +40,18 @@ export abstract class BaseCRMService implements ICRMService {
   // Abstract methods to be implemented by specific CRM services
   abstract authenticate(credentials: Record<string, any>): Promise<boolean>;
   abstract syncContacts(userId: string, clientId: string): Promise<SyncResult>;
-  abstract syncOpportunities(
-    userId: string,
-    clientId: string
-  ): Promise<SyncResult>;
+  abstract syncOpportunities(userId: string, clientId: string): Promise<SyncResult>;
   abstract createContact(contact: CRMContact): Promise<CRMContact>;
-  abstract updateContact(
-    contactId: string,
-    contact: Partial<CRMContact>
-  ): Promise<CRMContact>;
-  abstract createOpportunity(
-    opportunity: CRMOpportunity
-  ): Promise<CRMOpportunity>;
+  abstract updateContact(contactId: string, contact: Partial<CRMContact>): Promise<CRMContact>;
+  abstract createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity>;
   abstract updateOpportunity(
     opportunityId: string,
     opportunity: Partial<CRMOpportunity>
   ): Promise<CRMOpportunity>;
   abstract getContact(contactId: string): Promise<CRMContact | null>;
-  abstract getOpportunity(
-    opportunityId: string
-  ): Promise<CRMOpportunity | null>;
+  abstract getOpportunity(opportunityId: string): Promise<CRMOpportunity | null>;
   abstract searchContacts(query: string, userId: string): Promise<CRMContact[]>;
-  abstract searchOpportunities(
-    query: string,
-    userId: string
-  ): Promise<CRMOpportunity[]>;
+  abstract searchOpportunities(query: string, userId: string): Promise<CRMOpportunity[]>;
 
   // Common utility methods
   protected validateCredentials(credentials: Record<string, any>): void {
@@ -83,7 +59,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid credentials provided',
         this.integrationType,
-        this.config.userId,
+        this.config.userId
       );
     }
   }
@@ -93,7 +69,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid contact email',
         this.integrationType,
-        this.config.userId,
+        this.config.userId
       );
     }
 
@@ -101,7 +77,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Contact must have at least first name or last name',
         this.integrationType,
-        this.config.userId,
+        this.config.userId
       );
     }
   }
@@ -111,7 +87,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity name is required',
         this.integrationType,
-        this.config.userId,
+        this.config.userId
       );
     }
 
@@ -119,42 +95,33 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity must be associated with a contact',
         this.integrationType,
-        this.config.userId,
+        this.config.userId
       );
     }
   }
 
-  protected async handleApiError(
-    error: any,
-    operation: string,
-  ): Promise<never> {
-    const errorMessage =
-      error.response?.data?.message || error.message || 'Unknown API error';
+  protected async handleApiError(error: any, operation: string): Promise<never> {
+    const errorMessage = error.response?.data?.message || error.message || 'Unknown API error';
     const statusCode = error.response?.status || 500;
 
-    logIntegrationError(
-      new Error(errorMessage),
-      this.integrationType,
-      this.config.userId,
-      {
-        operation,
-        statusCode,
-        url: error.config?.url,
-        method: error.config?.method,
-      },
-    );
+    logIntegrationError(new Error(errorMessage), this.integrationType, this.config.userId, {
+      operation,
+      statusCode,
+      url: error.config?.url,
+      method: error.config?.method,
+    });
 
     throw createExternalServiceError(
       `${operation} failed: ${errorMessage}`,
       this.integrationType,
-      this.config.userId,
+      this.config.userId
     );
   }
 
   protected async retryOperation<T>(
     operation: () => Promise<T>,
     maxRetries: number = 3,
-    delay: number = 1000,
+    delay: number = 1000
   ): Promise<T> {
     let lastError: Error;
 
@@ -165,11 +132,7 @@ export abstract class BaseCRMService implements ICRMService {
         lastError = error as Error;
 
         // Don't retry on authentication or validation errors
-        if (
-          error instanceof Error &&
-          'retryable' in error &&
-          !(error as any).retryable
-        ) {
+        if (error instanceof Error && 'retryable' in error && !(error as any).retryable) {
           throw error;
         }
 
@@ -202,7 +165,7 @@ export abstract class BaseCRMService implements ICRMService {
     recordsUpdated: number,
     recordsFailed: number,
     errors?: string[],
-    duration?: number,
+    duration?: number
   ): SyncResult {
     const result: SyncResult = {
       success,
@@ -219,16 +182,8 @@ export abstract class BaseCRMService implements ICRMService {
     return result;
   }
 
-  protected async logOperation(
-    operation: string,
-    data: Record<string, any> = {},
-  ): Promise<void> {
-    logIntegrationEvent(
-      operation,
-      this.integrationType,
-      this.config.userId,
-      data,
-    );
+  protected async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
+    logIntegrationEvent(operation, this.integrationType, this.config.userId, data);
   }
 
   // Common data transformation methods
@@ -236,62 +191,35 @@ export abstract class BaseCRMService implements ICRMService {
     return {
       id: crmContact.id || crmContact.Id,
       email: crmContact.email || crmContact.Email,
-      firstName:
-        crmContact.firstName || crmContact.FirstName || crmContact.first_name,
-      lastName:
-        crmContact.lastName || crmContact.LastName || crmContact.last_name,
+      firstName: crmContact.firstName || crmContact.FirstName || crmContact.first_name,
+      lastName: crmContact.lastName || crmContact.LastName || crmContact.last_name,
       phone: crmContact.phone || crmContact.Phone || crmContact.phone_number,
-      company:
-        crmContact.company || crmContact.Company || crmContact.company_name,
+      company: crmContact.company || crmContact.Company || crmContact.company_name,
       title: crmContact.title || crmContact.Title || crmContact.job_title,
       source: this.integrationType,
       customFields: this.extractCustomFields(crmContact),
-      createdAt:
-        crmContact.createdAt ||
-        crmContact.CreatedDate ||
-        new Date().toISOString(),
-      updatedAt:
-        crmContact.updatedAt ||
-        crmContact.LastModifiedDate ||
-        new Date().toISOString(),
+      createdAt: crmContact.createdAt || crmContact.CreatedDate || new Date().toISOString(),
+      updatedAt: crmContact.updatedAt || crmContact.LastModifiedDate || new Date().toISOString(),
     };
   }
 
   protected transformOpportunityFromCRM(crmOpportunity: any): CRMOpportunity {
     return {
       id: crmOpportunity.id || crmOpportunity.Id,
-      name:
-        crmOpportunity.name ||
-        crmOpportunity.Name ||
-        crmOpportunity.opportunity_name,
-      amount:
-        crmOpportunity.amount || crmOpportunity.Amount || crmOpportunity.value,
-      stage:
-        crmOpportunity.stage ||
-        crmOpportunity.StageName ||
-        crmOpportunity.stage_name,
+      name: crmOpportunity.name || crmOpportunity.Name || crmOpportunity.opportunity_name,
+      amount: crmOpportunity.amount || crmOpportunity.Amount || crmOpportunity.value,
+      stage: crmOpportunity.stage || crmOpportunity.StageName || crmOpportunity.stage_name,
       probability:
         crmOpportunity.probability ||
         crmOpportunity.Probability ||
         crmOpportunity.probability_percent,
-      closeDate:
-        crmOpportunity.closeDate ||
-        crmOpportunity.CloseDate ||
-        crmOpportunity.close_date,
-      contactId:
-        crmOpportunity.contactId ||
-        crmOpportunity.ContactId ||
-        crmOpportunity.contact_id,
+      closeDate: crmOpportunity.closeDate || crmOpportunity.CloseDate || crmOpportunity.close_date,
+      contactId: crmOpportunity.contactId || crmOpportunity.ContactId || crmOpportunity.contact_id,
       source: this.integrationType,
       customFields: this.extractCustomFields(crmOpportunity),
-      createdAt:
-        crmOpportunity.createdAt ||
-        crmOpportunity.CreatedDate ||
-        new Date().toISOString(),
+      createdAt: crmOpportunity.createdAt || crmOpportunity.CreatedDate || new Date().toISOString(),
       updatedAt:
-        crmOpportunity.updatedAt ||
-        crmOpportunity.LastModifiedDate ||
-        new Date().toISOString(),
+        crmOpportunity.updatedAt || crmOpportunity.LastModifiedDate || new Date().toISOString(),
     };
   }
 
@@ -365,11 +293,7 @@ export abstract class BaseCRMService implements ICRMService {
     ];
 
     for (const [key, value] of Object.entries(crmObject)) {
-      if (
-        !excludeFields.includes(key) &&
-        value !== null &&
-        value !== undefined
-      ) {
+      if (!excludeFields.includes(key) && value !== null && value !== undefined) {
         customFields[key] = value;
       }
     }

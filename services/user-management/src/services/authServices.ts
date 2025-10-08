@@ -4,10 +4,7 @@ import { pool } from '../database';
 import supabase from '../supabaseClient';
 import { LoginResponse, RegisterResponse, User } from '../types';
 
-export async function registerUser(
-  req: Request,
-  res: Response<RegisterResponse>,
-) {
+export async function registerUser(req: Request, res: Response<RegisterResponse>) {
   const {
     email,
     password,
@@ -22,18 +19,14 @@ export async function registerUser(
   if (error) {
     // Check if user already exists
     if (error.message.includes('already registered')) {
-      return res
-        .status(409)
-        .json({ message: 'User already registered', user: null });
+      return res.status(409).json({ message: 'User already registered', user: null });
     }
     return res.status(400).json({ message: error.message, user: null });
   }
 
   const supabaseUser = data.user;
   if (!supabaseUser) {
-    return res
-      .status(500)
-      .json({ message: 'Failed to create user', user: null });
+    return res.status(500).json({ message: 'Failed to create user', user: null });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,14 +37,7 @@ export async function registerUser(
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id, email
     `;
-    const values = [
-      email,
-      hashedPassword,
-      full_name,
-      company_name,
-      industry,
-      company_size,
-    ];
+    const values = [email, hashedPassword, full_name, company_name, industry, company_size];
     const result = await pool.query(query, values);
 
     const user: User = {
@@ -78,23 +64,16 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
     });
 
     if (error) {
-      return res
-        .status(401)
-        .json({ message: error.message, token: '', user: null });
+      return res.status(401).json({ message: error.message, token: '', user: null });
     }
 
     const token = data.session?.access_token || '';
 
-    const user: User | null = data.user
-      ? { id: data.user.id, email: data.user.email || '' }
-      : null;
+    const user: User | null = data.user ? { id: data.user.id, email: data.user.email || '' } : null;
 
     // Update last_login_at in Postgres
     if (user) {
-      await pool.query(
-        'UPDATE users SET last_login_at = NOW() WHERE email = $1',
-        [email],
-      );
+      await pool.query('UPDATE users SET last_login_at = NOW() WHERE email = $1', [email]);
     }
 
     res.json({ message: 'Login successful', token, user });

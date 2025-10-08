@@ -83,9 +83,7 @@ describe('A/B Testing Framework', () => {
       it('should throw error for invalid experiment data', async () => {
         const request = {} as ExperimentCreateRequest;
 
-        await expect(
-          experimentService.createExperiment(request),
-        ).rejects.toThrow();
+        await expect(experimentService.createExperiment(request)).rejects.toThrow();
       });
     });
 
@@ -114,8 +112,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
 
         // Update the experiment
         const updateRequest: ExperimentUpdateRequest = {
@@ -128,15 +125,13 @@ describe('A/B Testing Framework', () => {
 
         const updatedExperiment = await experimentService.updateExperiment(
           experiment.id,
-          updateRequest,
+          updateRequest
         );
 
         expect(updatedExperiment.name).toBe('Updated Test Experiment');
-        expect(updatedExperiment.description).toBe(
-          'An updated test experiment',
-        );
+        expect(updatedExperiment.description).toBe('An updated test experiment');
         expect(updatedExperiment.updatedAt.getTime()).toBeGreaterThanOrEqual(
-          experiment.updatedAt.getTime(),
+          experiment.updatedAt.getTime()
         );
       });
 
@@ -146,7 +141,7 @@ describe('A/B Testing Framework', () => {
         };
 
         await expect(
-          experimentService.updateExperiment('non-existent-id', updateRequest),
+          experimentService.updateExperiment('non-existent-id', updateRequest)
         ).rejects.toThrow('Experiment non-existent-id not found');
       });
     });
@@ -175,11 +170,8 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
-        const startedExperiment = await experimentService.startExperiment(
-          experiment.id,
-        );
+        const experiment = await experimentService.createExperiment(createRequest);
+        const startedExperiment = await experimentService.startExperiment(experiment.id);
 
         expect(startedExperiment.status).toBe('running');
         expect(startedExperiment.startDate).toBeDefined();
@@ -208,14 +200,13 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         // Try to start again
-        await expect(
-          experimentService.startExperiment(experiment.id),
-        ).rejects.toThrow('Experiment');
+        await expect(experimentService.startExperiment(experiment.id)).rejects.toThrow(
+          'Experiment'
+        );
       });
     });
 
@@ -250,8 +241,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const assignmentRequest: ExperimentAssignmentRequest = {
@@ -260,8 +250,7 @@ describe('A/B Testing Framework', () => {
           sessionId: 'session-123',
         };
 
-        const assignment =
-          await experimentService.assignUser(assignmentRequest);
+        const assignment = await experimentService.assignUser(assignmentRequest);
 
         expect(assignment.userId).toBe('user-123');
         expect(assignment.experimentId).toBe(experiment.id);
@@ -293,8 +282,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const assignmentRequest: ExperimentAssignmentRequest = {
@@ -303,10 +291,8 @@ describe('A/B Testing Framework', () => {
           sessionId: 'session-123',
         };
 
-        const assignment1 =
-          await experimentService.assignUser(assignmentRequest);
-        const assignment2 =
-          await experimentService.assignUser(assignmentRequest);
+        const assignment1 = await experimentService.assignUser(assignmentRequest);
+        const assignment2 = await experimentService.assignUser(assignmentRequest);
 
         expect(assignment1.variantId).toBe(assignment2.variantId);
         expect(assignment1.assignedAt).toEqual(assignment2.assignedAt);
@@ -335,8 +321,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
 
         const assignmentRequest: ExperimentAssignmentRequest = {
           userId: 'user-123',
@@ -344,9 +329,7 @@ describe('A/B Testing Framework', () => {
           sessionId: 'session-123',
         };
 
-        await expect(
-          experimentService.assignUser(assignmentRequest),
-        ).rejects.toThrow('Experiment');
+        await expect(experimentService.assignUser(assignmentRequest)).rejects.toThrow('Experiment');
       });
     });
 
@@ -374,8 +357,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const assignmentRequest: ExperimentAssignmentRequest = {
@@ -384,8 +366,7 @@ describe('A/B Testing Framework', () => {
           sessionId: 'session-123',
         };
 
-        const assignment =
-          await experimentService.assignUser(assignmentRequest);
+        const assignment = await experimentService.assignUser(assignmentRequest);
 
         const eventRequest: ExperimentEventRequest = {
           userId: 'user-123',
@@ -400,9 +381,7 @@ describe('A/B Testing Framework', () => {
           },
         };
 
-        await expect(
-          experimentService.recordEvent(eventRequest),
-        ).resolves.not.toThrow();
+        await expect(experimentService.recordEvent(eventRequest)).resolves.not.toThrow();
       });
 
       it('should throw error for unassigned user', async () => {
@@ -428,8 +407,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const eventRequest: ExperimentEventRequest = {
@@ -445,9 +423,9 @@ describe('A/B Testing Framework', () => {
           },
         };
 
-        await expect(
-          experimentService.recordEvent(eventRequest),
-        ).rejects.toThrow('User user-123 is not assigned to experiment');
+        await expect(experimentService.recordEvent(eventRequest)).rejects.toThrow(
+          'User user-123 is not assigned to experiment'
+        );
       });
     });
 
@@ -475,16 +453,14 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const analyticsRequest = {
           experimentId: experiment.id,
         };
 
-        const analytics =
-          await experimentService.getAnalytics(analyticsRequest);
+        const analytics = await experimentService.getAnalytics(analyticsRequest);
 
         expect(analytics).toBeDefined();
         expect(analytics.experimentId).toBe(experiment.id);
@@ -518,8 +494,7 @@ describe('A/B Testing Framework', () => {
           endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         };
 
-        const experiment =
-          await experimentService.createExperiment(createRequest);
+        const experiment = await experimentService.createExperiment(createRequest);
         await experimentService.startExperiment(experiment.id);
 
         const report = await experimentService.generateReport(experiment.id);
@@ -587,7 +562,7 @@ describe('A/B Testing Framework', () => {
               name: 'API Test Experiment',
             }),
             message: 'Experiment created successfully',
-          }),
+          })
         );
       });
 
@@ -601,7 +576,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: false,
             error: expect.any(String),
-          }),
+          })
         );
       });
     });
@@ -647,7 +622,7 @@ describe('A/B Testing Framework', () => {
               id: createdExperiment.id,
               name: 'API Test Experiment',
             }),
-          }),
+          })
         );
       });
 
@@ -661,7 +636,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: false,
             error: 'Experiment not found',
-          }),
+          })
         );
       });
     });
@@ -717,7 +692,7 @@ describe('A/B Testing Framework', () => {
               variantId: expect.any(String),
             }),
             message: 'User assigned to experiment successfully',
-          }),
+          })
         );
       });
     });
@@ -762,9 +737,7 @@ describe('A/B Testing Framework', () => {
         await api.assignUser(mockRequest, mockResponse);
 
         const assignment =
-          mockResponse.json.mock.calls[
-            mockResponse.json.mock.calls.length - 1
-          ][0].data;
+          mockResponse.json.mock.calls[mockResponse.json.mock.calls.length - 1][0].data;
         // Now record event
         mockRequest.body = {
           userId: 'user-123',
@@ -790,7 +763,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: true,
             message: 'Event recorded successfully',
-          }),
+          })
         );
       });
     });
@@ -837,7 +810,7 @@ describe('A/B Testing Framework', () => {
               analytics: expect.any(Array),
               summary: expect.any(Object),
             }),
-          }),
+          })
         );
       });
     });
@@ -886,7 +859,7 @@ describe('A/B Testing Framework', () => {
               summary: expect.any(Object),
               recommendations: expect.any(Array),
             }),
-          }),
+          })
         );
       });
     });
@@ -900,7 +873,7 @@ describe('A/B Testing Framework', () => {
           expect.objectContaining({
             success: true,
             data: expect.any(Array),
-          }),
+          })
         );
       });
     });
@@ -918,7 +891,7 @@ describe('A/B Testing Framework', () => {
               timestamp: expect.any(String),
               version: '1.0.0',
             }),
-          }),
+          })
         );
       });
     });

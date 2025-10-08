@@ -55,7 +55,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -105,7 +105,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -155,7 +155,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -205,7 +205,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 /**
@@ -251,7 +251,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  }),
+  })
 );
 
 export default router;

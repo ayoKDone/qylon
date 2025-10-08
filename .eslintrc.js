@@ -6,18 +6,13 @@ module.exports = {
     es2022: true,
     jest: true,
   },
-  extends: [
-    'eslint:recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint',
-  ],
+  plugins: ['@typescript-eslint'],
   rules: {
     // Basic rules - relaxed for development
     'no-console': 'off', // Allow console statements in development
@@ -25,8 +20,8 @@ module.exports = {
     'no-unused-vars': 'off', // Allow unused vars in development
     'prefer-const': 'error',
     'no-var': 'error',
-    'semi': ['error', 'always'],
-    'comma-dangle': ['error', 'always-multiline'],
+    semi: ['error', 'always'],
+    'comma-dangle': 'off', // Let Prettier handle this
   },
   overrides: [
     {
