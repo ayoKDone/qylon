@@ -12,7 +12,7 @@ interface RequestWithUser extends Request {
 export const requestLogger = (
   req: RequestWithUser,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const startTime = Date.now();
   const requestId =

@@ -102,7 +102,7 @@ describe('WhisperService', () => {
 
       const result = await whisperService.transcribeAudio(
         audioBuffer,
-        invalidOptions
+        invalidOptions,
       );
 
       expect(result.success).toBe(false);
@@ -304,7 +304,7 @@ describe('WhisperService', () => {
         expect.objectContaining({
           duration: expect.any(Number),
           language: expect.any(String),
-        })
+        }),
       );
     });
 
@@ -314,7 +314,7 @@ describe('WhisperService', () => {
         Buffer.from('test audio'),
         {
           language: 'invalid-language',
-        }
+        },
       );
 
       // The service should handle validation errors gracefully

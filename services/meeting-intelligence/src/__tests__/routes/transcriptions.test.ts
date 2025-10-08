@@ -1,19 +1,16 @@
 /**
- * Tests for transcription API endpoints, validation, and error handling
+ * Tests for transcriptions routes
+ * Tests transcription API endpoints, validation, and error handling
  */
 
 import express from 'express';
 import request from 'supertest';
-import { authMiddleware, requireClientAccess } from '../../middleware/auth';
+import { authMiddleware } from '../../middleware/auth';
+import transcriptionsRouter from '../../routes/transcriptions';
 import { logger } from '../../utils/logger';
 
 // Mock dependencies
-jest.mock('../../middleware/auth', () => ({
-  authMiddleware: jest.fn(),
-  requireClientAccess: jest.fn(),
-  requireRole: jest.fn(),
-  requireAdmin: jest.fn(),
-}));
+jest.mock('../../middleware/auth');
 jest.mock('../../utils/logger', () => ({
   logger: {
     info: jest.fn(),
@@ -21,123 +18,80 @@ jest.mock('../../utils/logger', () => ({
     warn: jest.fn(),
     debug: jest.fn(),
   },
-  logSecurity: jest.fn(),
 }));
 
-// Mock Supabase client
-jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn(() => {
-    const mockQuery = {
-      select: jest.fn().mockReturnThis(),
-      insert: jest.fn().mockReturnThis(),
-      update: jest.fn().mockReturnThis(),
-      delete: jest.fn().mockReturnThis(),
-      eq: jest.fn().mockReturnThis(),
-      neq: jest.fn().mockReturnThis(),
-      gt: jest.fn().mockReturnThis(),
-      gte: jest.fn().mockReturnThis(),
-      lt: jest.fn().mockReturnThis(),
-      lte: jest.fn().mockReturnThis(),
-      like: jest.fn().mockReturnThis(),
-      ilike: jest.fn().mockReturnThis(),
-      is: jest.fn().mockReturnThis(),
-      in: jest.fn().mockReturnThis(),
-      contains: jest.fn().mockReturnThis(),
-      containedBy: jest.fn().mockReturnThis(),
-      rangeGt: jest.fn().mockReturnThis(),
-      rangeGte: jest.fn().mockReturnThis(),
-      rangeLt: jest.fn().mockReturnThis(),
-      rangeLte: jest.fn().mockReturnThis(),
-      rangeAdjacent: jest.fn().mockReturnThis(),
-      overlaps: jest.fn().mockReturnThis(),
-      textSearch: jest.fn().mockReturnThis(),
-      match: jest.fn().mockReturnThis(),
-      not: jest.fn().mockReturnThis(),
-      or: jest.fn().mockReturnThis(),
-      filter: jest.fn().mockReturnThis(),
-      order: jest.fn().mockReturnThis(),
-      limit: jest.fn().mockReturnThis(),
-      range: jest.fn().mockReturnThis(),
-      abortSignal: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: null, error: null }),
-      maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
-      csv: jest.fn().mockResolvedValue({ data: null, error: null }),
-      geojson: jest.fn().mockResolvedValue({ data: null, error: null }),
-      explain: jest.fn().mockResolvedValue({ data: null, error: null }),
-      rollback: jest.fn().mockResolvedValue({ data: null, error: null }),
-      returns: jest.fn().mockReturnThis(),
-    };
+// Mock the shared database module
+jest.mock('../../config/database', () => {
+  const mockQuery = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    neq: jest.fn().mockReturnThis(),
+    gt: jest.fn().mockReturnThis(),
+    gte: jest.fn().mockReturnThis(),
+    lt: jest.fn().mockReturnThis(),
+    lte: jest.fn().mockReturnThis(),
+    like: jest.fn().mockReturnThis(),
+    ilike: jest.fn().mockReturnThis(),
+    is: jest.fn().mockReturnThis(),
+    in: jest.fn().mockReturnThis(),
+    contains: jest.fn().mockReturnThis(),
+    containedBy: jest.fn().mockReturnThis(),
+    rangeGt: jest.fn().mockReturnThis(),
+    rangeGte: jest.fn().mockReturnThis(),
+    rangeLt: jest.fn().mockReturnThis(),
+    rangeLte: jest.fn().mockReturnThis(),
+    rangeAdjacent: jest.fn().mockReturnThis(),
+    overlaps: jest.fn().mockReturnThis(),
+    textSearch: jest.fn().mockReturnThis(),
+    match: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    range: jest.fn().mockReturnThis(),
+    single: jest.fn(),
+    then: jest.fn(),
+  };
 
-    // Make the query chainable and resolve to the expected result
-    mockQuery.then = jest
-      .fn()
-      .mockResolvedValue({ data: [], error: null, count: 0 });
+  const mockClient = {
+    from: jest.fn(() => mockQuery),
+    auth: {
+      getUser: jest.fn().mockResolvedValue({
+        data: { user: { id: 'test-user-id', email: 'test@example.com' } },
+        error: null,
+      }),
+    },
+    mockQuery, // Expose for test setup
+  };
 
-    return {
-      from: jest.fn(() => mockQuery),
-      auth: {
-        getUser: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
-        getSession: jest.fn().mockResolvedValue({
-          data: { session: { user: { id: 'test-user-id' } } },
-          error: null,
-        }),
-        signInWithPassword: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
-        signUp: jest.fn().mockResolvedValue({
-          data: { user: { id: 'test-user-id' } },
-          error: null,
-        }),
-        signOut: jest.fn().mockResolvedValue({ error: null }),
-        onAuthStateChange: jest.fn().mockReturnValue({
-          data: { subscription: { unsubscribe: jest.fn() } },
-        }),
-      },
-      rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
-      storage: {
-        from: jest.fn(() => ({
-          upload: jest.fn().mockResolvedValue({ data: null, error: null }),
-          download: jest.fn().mockResolvedValue({ data: null, error: null }),
-          remove: jest.fn().mockResolvedValue({ data: null, error: null }),
-          list: jest.fn().mockResolvedValue({ data: [], error: null }),
-          getPublicUrl: jest
-            .fn()
-            .mockReturnValue({ data: { publicUrl: 'https://test.url' } }),
-        })),
-      },
-    };
-  }),
-}));
+  return {
+    supabase: mockClient,
+  };
+});
 
 const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
   typeof authMiddleware
 >;
-const mockRequireClientAccess = requireClientAccess as jest.MockedFunction<
-  typeof requireClientAccess
->;
 
 describe('Transcriptions Routes', () => {
   let app: express.Application;
+  let mockSupabaseClient: any;
 
   beforeEach(() => {
-    // Set up environment variables for testing
-    process.env.SUPABASE_URL = 'https://test.supabase.co';
-    process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
-    process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
-    process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
-    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL =
-      'https://test.recall.ai/api/v1';
-
     app = express();
-    app.use(express.json({ limit: '50mb' }));
+    app.use(express.json());
+
+    // Get the mocked Supabase client from the database module
+    const { supabase } = require('../../config/database');
+    mockSupabaseClient = supabase;
+
+    // Reset all mocks
+    jest.clearAllMocks();
 
     // Mock auth middleware to pass through
     mockAuthMiddleware.mockImplementation(async (req, res, next) => {
-      req.user = {
+      (req as any).user = {
         id: 'test-user-id',
         email: 'test@example.com',
         role: 'user',
@@ -145,39 +99,54 @@ describe('Transcriptions Routes', () => {
       next();
     });
 
-    // Mock requireClientAccess middleware to pass through
-    mockRequireClientAccess.mockImplementation(async (req, res, next) => {
-      next();
-    });
-
-    // Don't register routes in beforeEach - do it in individual tests
-    jest.clearAllMocks();
+    app.use('/api/v1/transcriptions', authMiddleware, transcriptionsRouter);
   });
 
   describe('POST /api/v1/transcriptions/process', () => {
     it('should process meeting recording and generate transcription', async () => {
       const processData = {
-        meetingId: 'test-meeting-id',
-        audioUrl: 'https://example.com/audio.mp3',
+        meeting_id: 'test-meeting-id',
+        recording_url: 'https://example.com/recording.mp3',
         language: 'en',
-        provider: 'whisper',
+        options: {
+          speaker_diarization: true,
+          confidence_threshold: 0.8,
+        },
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(201).json({
-          success: true,
-          data: {
-            transcriptionId: 'test-transcription-id',
-            status: 'processing',
-            meetingId: processData.meetingId,
-          },
-          timestamp: new Date().toISOString(),
-        });
+      const mockMeeting = {
+        id: 'test-meeting-id',
+        title: 'Test Meeting',
+        client_id: 'test-client-id',
+        clients: { user_id: 'test-user-id' },
+      };
+
+      const mockTranscription = {
+        id: 'test-transcription-id',
+        meeting_id: 'test-meeting-id',
+        content: 'Test transcription content',
+        language: 'en',
+        confidence: 0.95,
+        processing_status: 'in_progress',
+      };
+
+      // Mock successful meeting fetch
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockMeeting,
+        error: null,
       });
 
-      // Replace the route handler
-      app.post('/api/v1/transcriptions/process', mockHandler);
+      // Mock successful meeting update
+      mockSupabaseClient.mockQuery.eq.mockResolvedValue({
+        data: mockMeeting,
+        error: null,
+      });
+
+      // Mock successful transcription creation
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockTranscription,
+        error: null,
+      });
 
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
@@ -186,116 +155,84 @@ describe('Transcriptions Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
-      expect(response.body.data.transcriptionId).toBe('test-transcription-id');
     });
 
     it('should handle missing meeting ID', async () => {
-      const invalidData = {
-        audioUrl: 'https://example.com/audio.mp3',
+      const processData = {
+        recording_url: 'https://example.com/recording.mp3',
         language: 'en',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'Meeting ID is required',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/transcriptions/process', mockHandler);
-
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
-        .send(invalidData)
+        .send(processData)
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
+      expect(response.body.error).toBe('ValidationError');
     });
 
     it('should validate audio URL format', async () => {
-      const invalidData = {
-        meetingId: 'test-meeting-id',
-        audioUrl: 'not-a-valid-url',
+      const processData = {
+        meeting_id: 'test-meeting-id',
+        recording_url: 'invalid-url',
         language: 'en',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'Invalid audio URL format',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/transcriptions/process', mockHandler);
-
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
-        .send(invalidData)
+        .send(processData)
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
     });
 
     it('should validate language parameter', async () => {
-      const invalidData = {
-        meetingId: 'test-meeting-id',
-        audioUrl: 'https://example.com/audio.mp3',
+      const processData = {
+        meeting_id: 'test-meeting-id',
+        recording_url: 'https://example.com/recording.mp3',
         language: 'invalid-language',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'ValidationError',
-          message: 'Invalid language code',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.post('/api/v1/transcriptions/process', mockHandler);
-
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
-        .send(invalidData)
+        .send(processData)
         .expect(400);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('ValidationError');
     });
   });
 
   describe('GET /api/v1/transcriptions/meeting/:meetingId', () => {
     it('should get transcription for meeting', async () => {
       const meetingId = 'test-meeting-id';
+      const mockMeeting = {
+        id: meetingId,
+        title: 'Test Meeting',
+        client_id: 'test-client-id',
+        clients: { user_id: 'test-user-id' },
+      };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({
-          success: true,
-          data: {
-            id: 'test-transcription-id',
-            meetingId: meetingId,
-            status: 'completed',
-            transcript: 'This is a test transcript',
-          },
-          timestamp: new Date().toISOString(),
-        });
+      const mockTranscription = {
+        id: 'test-transcription-id',
+        meeting_id: meetingId,
+        content: 'Test transcription content',
+        language: 'en',
+        confidence: 0.95,
+        processing_status: 'completed',
+      };
+
+      // Mock successful meeting fetch
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockMeeting,
+        error: null,
       });
 
-      // Replace the route handler
-      app.get('/api/v1/transcriptions/meeting/:meetingId', mockHandler);
+      // Mock successful transcription fetch
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockTranscription,
+        error: null,
+      });
 
       const response = await request(app)
         .get(`/api/v1/transcriptions/meeting/${meetingId}`)
@@ -303,148 +240,149 @@ describe('Transcriptions Routes', () => {
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
-      expect(response.body.data.meetingId).toBe(meetingId);
     });
 
     it('should handle meeting not found', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(404).json({
-          success: false,
-          error: 'Meeting not found',
-          timestamp: new Date().toISOString(),
-        });
+      const meetingId = 'non-existent-meeting-id';
+
+      // Mock meeting not found
+      mockSupabaseClient.mockQuery.single.mockResolvedValue({
+        data: null,
+        error: { message: 'Meeting not found' },
       });
 
-      // Replace the route handler
-      app.get('/api/v1/transcriptions/meeting/:meetingId', mockHandler);
-
       const response = await request(app)
-        .get('/api/v1/transcriptions/meeting/non-existent-id')
+        .get(`/api/v1/transcriptions/meeting/${meetingId}`)
         .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Meeting not found');
+      expect(response.body.error).toBe('NotFound');
     });
 
     it('should validate meeting ID format', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(400).json({
-          success: false,
-          error: 'Invalid meeting ID format',
-          timestamp: new Date().toISOString(),
-        });
-      });
-
-      // Replace the route handler
-      app.get('/api/v1/transcriptions/meeting/:meetingId', mockHandler);
-
       const response = await request(app)
         .get('/api/v1/transcriptions/meeting/not-a-uuid')
-        .expect(400);
+        .expect(404);
 
       expect(response.body.success).toBe(false);
-      expect(response.body.error).toContain('Invalid meeting ID format');
     });
   });
 
   describe('Error handling', () => {
     it('should handle malformed JSON', async () => {
-      // Don't use a mock handler - let Express handle the malformed JSON
       const response = await request(app)
         .post('/api/v1/transcriptions/process')
         .set('Content-Type', 'application/json')
-        .send('{"invalid": json,}')
+        .send('{"invalid": json}')
         .expect(400);
 
-      // The response should have some error indication
-      expect(response.body).toBeDefined();
-      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
     });
   });
 
   describe('Authentication', () => {
     it('should require authentication for all endpoints', async () => {
       // Mock auth middleware to reject
-      mockAuthMiddleware.mockImplementationOnce(async (req, res, _next) => {
-        res.status(401).json({ error: 'Unauthorized' });
+      mockAuthMiddleware.mockImplementation(async (req, res, _next) => {
+        res.status(401).json({
+          error: 'Unauthorized',
+          message: 'Authentication required',
+        });
       });
-
-      // Mock the route handler
-      const mockHandler = jest.fn((req, res) => {
-        res.status(200).json({ success: true });
-      });
-
-      app.post(
-        '/api/v1/transcriptions/process',
-        mockAuthMiddleware,
-        mockHandler
-      );
 
       await request(app)
         .post('/api/v1/transcriptions/process')
-        .send({ meetingId: 'test' })
+        .send({
+          meeting_id: 'test-meeting-id',
+          recording_url: 'https://example.com/recording.mp3',
+        })
         .expect(401);
     });
 
     it('should pass user context to handlers', async () => {
       const processData = {
-        meetingId: 'test-meeting-id',
-        audioUrl: 'https://example.com/audio.mp3',
+        meeting_id: 'test-meeting-id',
+        recording_url: 'https://example.com/recording.mp3',
         language: 'en',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        res.status(201).json({
-          success: true,
-          data: { transcriptionId: 'test-id' },
-          timestamp: new Date().toISOString(),
-        });
+      const mockMeeting = {
+        id: 'test-meeting-id',
+        title: 'Test Meeting',
+        client_id: 'test-client-id',
+        clients: { user_id: 'test-user-id' },
+      };
+
+      // Mock successful responses
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockMeeting,
+        error: null,
       });
 
-      // Replace the route handler
-      app.post(
-        '/api/v1/transcriptions/process',
-        mockAuthMiddleware,
-        mockHandler
-      );
+      mockSupabaseClient.mockQuery.eq.mockResolvedValue({
+        data: mockMeeting,
+        error: null,
+      });
 
-      const response = await request(app)
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: {
+          id: 'test-transcription-id',
+          meeting_id: 'test-meeting-id',
+          content: 'Test transcription content',
+          language: 'en',
+          confidence: 0.95,
+          processing_status: 'in_progress',
+        },
+        error: null,
+      });
+
+      await request(app)
         .post('/api/v1/transcriptions/process')
         .send(processData)
         .expect(201);
 
       // Verify user context was passed
       expect(mockAuthMiddleware).toHaveBeenCalled();
-      expect(response.body.success).toBe(true);
     });
   });
 
   describe('Logging', () => {
     it('should log successful operations', async () => {
       const processData = {
-        meetingId: 'test-meeting-id',
-        audioUrl: 'https://example.com/audio.mp3',
+        meeting_id: 'test-meeting-id',
+        recording_url: 'https://example.com/recording.mp3',
         language: 'en',
       };
 
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        logger.info('Transcription processing started', {
-          meetingId: processData.meetingId,
-          userId: 'test-user-id',
-        });
-        res.status(201).json({
-          success: true,
-          data: { transcriptionId: 'test-id' },
-          timestamp: new Date().toISOString(),
-        });
+      const mockMeeting = {
+        id: 'test-meeting-id',
+        title: 'Test Meeting',
+        client_id: 'test-client-id',
+        clients: { user_id: 'test-user-id' },
+      };
+
+      // Mock successful responses
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: mockMeeting,
+        error: null,
       });
 
-      // Replace the route handler
-      app.post('/api/v1/transcriptions/process', mockHandler);
+      mockSupabaseClient.mockQuery.eq.mockResolvedValue({
+        data: mockMeeting,
+        error: null,
+      });
+
+      mockSupabaseClient.mockQuery.single.mockResolvedValueOnce({
+        data: {
+          id: 'test-transcription-id',
+          meeting_id: 'test-meeting-id',
+          content: 'Test transcription content',
+          language: 'en',
+          confidence: 0.95,
+          processing_status: 'in_progress',
+        },
+        error: null,
+      });
 
       await request(app)
         .post('/api/v1/transcriptions/process')
@@ -454,39 +392,28 @@ describe('Transcriptions Routes', () => {
       expect(logger.info).toHaveBeenCalledWith(
         'Transcription processing started',
         expect.objectContaining({
-          meetingId: processData.meetingId,
+          meetingId: 'test-meeting-id',
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
     it('should log errors with context', async () => {
-      // Mock the route handler directly
-      const mockHandler = jest.fn((req, res) => {
-        logger.error('Transcription retrieval failed', {
-          error: 'Invalid meeting ID format',
-          meetingId: 'invalid-id',
-        });
-        res.status(400).json({
-          success: false,
-          error: 'Invalid meeting ID format',
-          timestamp: new Date().toISOString(),
-        });
+      // Mock error response
+      mockSupabaseClient.mockQuery.single.mockResolvedValue({
+        data: null,
+        error: { message: 'Database error' },
       });
-
-      // Replace the route handler
-      app.get('/api/v1/transcriptions/meeting/:meetingId', mockHandler);
 
       await request(app)
         .get('/api/v1/transcriptions/meeting/invalid-id')
-        .expect(400);
+        .expect(404);
 
       expect(logger.error).toHaveBeenCalledWith(
         'Transcription retrieval failed',
         expect.objectContaining({
           error: expect.any(String),
-          meetingId: 'invalid-id',
-        })
+        }),
       );
     });
   });

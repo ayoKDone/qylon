@@ -9,7 +9,7 @@ const logger = winston.createLogger({
     }),
     winston.format.errors({ stack: true }),
     winston.format.json(),
-    winston.format.prettyPrint()
+    winston.format.prettyPrint(),
   ),
   defaultMeta: {
     service: 'meeting-intelligence',
@@ -19,7 +19,7 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
+        winston.format.simple(),
       ),
     }),
   ],
@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'production') {
       level: 'error',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    })
+    }),
   );
 
   logger.add(
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
       filename: 'logs/combined.log',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
-    })
+    }),
   );
 }
 
@@ -62,7 +62,7 @@ export const logSecurity = (message: string, req?: any, metadata?: any) => {
 export const logPerformance = (
   operation: string,
   duration: number,
-  metadata?: any
+  metadata?: any,
 ) => {
   logger.info('PERFORMANCE', {
     operation,

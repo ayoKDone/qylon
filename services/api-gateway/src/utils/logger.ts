@@ -19,8 +19,8 @@ const logFormat = winston.format.combine(
         userId,
         ...meta,
       });
-    }
-  )
+    },
+  ),
 );
 
 // Create logger instance
@@ -33,7 +33,7 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.simple()
+        winston.format.simple(),
       ),
     }),
 
@@ -106,7 +106,7 @@ export const logError = (error: Error, req?: any, additionalInfo?: any) => {
 export const logPerformance = (
   operation: string,
   duration: number,
-  metadata?: any
+  metadata?: any,
 ) => {
   const logEntry: LogEntry = {
     level: 'info',

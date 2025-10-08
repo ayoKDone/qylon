@@ -38,7 +38,7 @@ export class ExperimentService {
    * Create a new experiment
    */
   async createExperiment(
-    request: ExperimentCreateRequest
+    request: ExperimentCreateRequest,
   ): Promise<Experiment> {
     const experiment: Experiment = {
       id: this.generateId(),
@@ -64,7 +64,7 @@ export class ExperimentService {
    */
   async updateExperiment(
     experimentId: string,
-    request: ExperimentUpdateRequest
+    request: ExperimentUpdateRequest,
   ): Promise<Experiment> {
     const experiment = this.experiments.get(experimentId);
     if (!experiment) {
@@ -93,7 +93,7 @@ export class ExperimentService {
    */
   async listExperiments(
     filters?: any,
-    pagination?: any
+    pagination?: any,
   ): Promise<Experiment[]> {
     let experiments = Array.from(this.experiments.values());
 
@@ -101,12 +101,12 @@ export class ExperimentService {
     if (filters) {
       if (filters.status) {
         experiments = experiments.filter(e =>
-          filters.status.includes(e.status)
+          filters.status.includes(e.status),
         );
       }
       if (filters.createdBy) {
         experiments = experiments.filter(e =>
-          filters.createdBy.includes(e.createdBy)
+          filters.createdBy.includes(e.createdBy),
         );
       }
       if (filters.startDate) {
@@ -138,7 +138,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'draft') {
       throw new Error(
-        `Experiment ${experimentId} cannot be started from status ${experiment.status}`
+        `Experiment ${experimentId} cannot be started from status ${experiment.status}`,
       );
     }
 
@@ -164,7 +164,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'running') {
       throw new Error(
-        `Experiment ${experimentId} cannot be paused from status ${experiment.status}`
+        `Experiment ${experimentId} cannot be paused from status ${experiment.status}`,
       );
     }
 
@@ -189,7 +189,7 @@ export class ExperimentService {
 
     if (experiment.status !== 'running' && experiment.status !== 'paused') {
       throw new Error(
-        `Experiment ${experimentId} cannot be completed from status ${experiment.status}`
+        `Experiment ${experimentId} cannot be completed from status ${experiment.status}`,
       );
     }
 
@@ -208,7 +208,7 @@ export class ExperimentService {
    * Assign a user to an experiment variant
    */
   async assignUser(
-    request: ExperimentAssignmentRequest
+    request: ExperimentAssignmentRequest,
   ): Promise<ExperimentAssignmentResponse> {
     const experiment = this.experiments.get(request.experimentId);
     if (!experiment) {
@@ -221,7 +221,7 @@ export class ExperimentService {
 
     // Check if user is already assigned
     const existingAssignment = this.assignments.get(
-      `${request.userId}:${request.experimentId}`
+      `${request.userId}:${request.experimentId}`,
     );
     if (existingAssignment) {
       return {
@@ -239,7 +239,7 @@ export class ExperimentService {
       !this.isUserInTargetAudience(request.userId, experiment.targetAudience)
     ) {
       throw new Error(
-        `User ${request.userId} does not meet target audience criteria`
+        `User ${request.userId} does not meet target audience criteria`,
       );
     }
 
@@ -257,7 +257,7 @@ export class ExperimentService {
 
     this.assignments.set(
       `${request.userId}:${request.experimentId}`,
-      assignment
+      assignment,
     );
 
     return {
@@ -275,17 +275,17 @@ export class ExperimentService {
    */
   async recordEvent(request: ExperimentEventRequest): Promise<void> {
     const assignment = this.assignments.get(
-      `${request.userId}:${request.experimentId}`
+      `${request.userId}:${request.experimentId}`,
     );
     if (!assignment) {
       throw new Error(
-        `User ${request.userId} is not assigned to experiment ${request.experimentId}`
+        `User ${request.userId} is not assigned to experiment ${request.experimentId}`,
       );
     }
 
     if (assignment.variantId !== request.variantId) {
       throw new Error(
-        `Variant mismatch for user ${request.userId} in experiment ${request.experimentId}`
+        `Variant mismatch for user ${request.userId} in experiment ${request.experimentId}`,
       );
     }
 
@@ -309,7 +309,7 @@ export class ExperimentService {
    * Get experiment analytics
    */
   async getAnalytics(
-    request: ExperimentAnalyticsRequest
+    request: ExperimentAnalyticsRequest,
   ): Promise<ExperimentAnalyticsResponse> {
     const experiment = this.experiments.get(request.experimentId);
     if (!experiment) {
@@ -344,7 +344,7 @@ export class ExperimentService {
     const recommendations = this.generateRecommendations(
       experiment,
       analytics,
-      summary
+      summary,
     );
 
     return {
@@ -365,7 +365,7 @@ export class ExperimentService {
    */
   private isUserInTargetAudience(
     _userId: string,
-    _targetAudience: TargetAudience
+    _targetAudience: TargetAudience,
   ): boolean {
     // TODO: Implement user segmentation logic
     // This would check user properties, behavior patterns, demographics, etc.
@@ -378,7 +378,7 @@ export class ExperimentService {
   private selectVariant(variants: Variant[]): Variant {
     const totalWeight = variants.reduce(
       (sum, variant) => sum + variant.weight,
-      0
+      0,
     );
     const random = Math.random() * totalWeight;
 
@@ -399,7 +399,7 @@ export class ExperimentService {
   private calculateAnalytics(
     experiment: Experiment,
     results: ExperimentResult[],
-    _request?: ExperimentAnalyticsRequest
+    _request?: ExperimentAnalyticsRequest,
   ): ExperimentAnalytics[] {
     const analytics: ExperimentAnalytics[] = [];
 
@@ -408,11 +408,11 @@ export class ExperimentService {
       const users = new Set(variantResults.map(r => r.userId));
       const sessions = new Set(variantResults.map(r => r.sessionId));
       const conversions = variantResults.filter(r =>
-        r.events.some(e => e.type === 'conversion')
+        r.events.some(e => e.type === 'conversion'),
       );
       const revenue = variantResults.reduce(
         (sum, r) => sum + (r.conversionValue || 0),
-        0
+        0,
       );
 
       const analyticsData: ExperimentAnalytics = {
@@ -430,7 +430,7 @@ export class ExperimentService {
         confidence: this.calculateConfidence(variantResults),
         statisticalSignificance: this.calculateStatisticalSignificance(
           experiment,
-          variantResults
+          variantResults,
         ),
         startDate: experiment.startDate,
         endDate: experiment.endDate,
@@ -447,27 +447,27 @@ export class ExperimentService {
    */
   private calculateSummary(
     experiment: Experiment,
-    analytics: ExperimentAnalytics[]
+    analytics: ExperimentAnalytics[],
   ): ExperimentSummary {
     const totalUsers = analytics.reduce((sum, a) => sum + a.totalUsers, 0);
     const totalSessions = analytics.reduce(
       (sum, a) => sum + a.totalSessions,
-      0
+      0,
     );
     const totalConversions = analytics.reduce(
       (sum, a) => sum + a.conversions,
-      0
+      0,
     );
     const overallConversionRate =
       totalUsers > 0 ? (totalConversions / totalUsers) * 100 : 0;
 
     const bestPerformingVariant = analytics.reduce((best, current) =>
-      current.conversionRate > best.conversionRate ? current : best
+      current.conversionRate > best.conversionRate ? current : best,
     );
 
     const duration = Math.ceil(
       (experiment.endDate.getTime() - experiment.startDate.getTime()) /
-        (1000 * 60 * 60 * 24)
+        (1000 * 60 * 60 * 24),
     );
 
     return {
@@ -488,7 +488,7 @@ export class ExperimentService {
    */
   private calculateVariantReports(
     experiment: Experiment,
-    analytics: ExperimentAnalytics[]
+    analytics: ExperimentAnalytics[],
   ): VariantReport[] {
     const controlVariant = experiment.variants.find(v => v.isControl);
     const controlAnalytics = controlVariant
@@ -497,7 +497,7 @@ export class ExperimentService {
 
     return analytics.map(analyticsData => {
       const variant = experiment.variants.find(
-        v => v.id === analyticsData.variantId
+        v => v.id === analyticsData.variantId,
       )!;
       const improvement =
         controlAnalytics && controlAnalytics.conversionRate > 0
@@ -530,35 +530,35 @@ export class ExperimentService {
   private generateRecommendations(
     experiment: Experiment,
     analytics: ExperimentAnalytics[],
-    summary: ExperimentSummary
+    summary: ExperimentSummary,
   ): string[] {
     const recommendations: string[] = [];
 
     if (!summary.statisticalSignificance) {
       recommendations.push(
-        'Experiment needs more data to reach statistical significance'
+        'Experiment needs more data to reach statistical significance',
       );
     }
 
     if (summary.totalUsers < 100) {
       recommendations.push(
-        'Consider increasing sample size for more reliable results'
+        'Consider increasing sample size for more reliable results',
       );
     }
 
     const bestVariant = analytics.reduce((best, current) =>
-      current.conversionRate > best.conversionRate ? current : best
+      current.conversionRate > best.conversionRate ? current : best,
     );
 
     if (bestVariant.conversionRate > 0) {
       recommendations.push(
-        `Variant ${bestVariant.variantId} shows the best performance`
+        `Variant ${bestVariant.variantId} shows the best performance`,
       );
     }
 
     if (summary.duration < 7) {
       recommendations.push(
-        'Consider running the experiment for at least 7 days'
+        'Consider running the experiment for at least 7 days',
       );
     }
 
@@ -594,7 +594,7 @@ export class ExperimentService {
    */
   private calculateStatisticalSignificance(
     experiment: Experiment,
-    results: ExperimentResult[]
+    results: ExperimentResult[],
   ): boolean {
     // Simplified calculation
     return results.length > 1000;

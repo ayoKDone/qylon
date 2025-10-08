@@ -211,7 +211,7 @@ const ProblemsVsSolutions: React.FC = () => {
                           <div className="w-2 h-2 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
                           {benefit}
                         </li>
-                      )
+                      ),
                     )}
                   </ul>
                 </div>

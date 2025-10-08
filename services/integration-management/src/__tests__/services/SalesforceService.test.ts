@@ -35,7 +35,7 @@ describe('SalesforceService', () => {
 
     // Create a mock instance
     service = new SalesforceService(
-      mockConfig
+      mockConfig,
     ) as jest.Mocked<SalesforceService>;
   });
 
@@ -64,7 +64,7 @@ describe('SalesforceService', () => {
 
       expect(result).toBe(true);
       expect(service.authenticate).toHaveBeenCalledWith(
-        sandboxConfig.credentials
+        sandboxConfig.credentials,
       );
     });
 
@@ -72,21 +72,21 @@ describe('SalesforceService', () => {
       const invalidCredentials = {};
 
       service.authenticate.mockRejectedValue(
-        new Error('Missing required Salesforce credentials')
+        new Error('Missing required Salesforce credentials'),
       );
 
       await expect(service.authenticate(invalidCredentials)).rejects.toThrow(
-        'Missing required Salesforce credentials'
+        'Missing required Salesforce credentials',
       );
     });
 
     it('should throw error for authentication failure', async () => {
       service.authenticate.mockRejectedValue(
-        new Error('Authentication failed')
+        new Error('Authentication failed'),
       );
 
       await expect(
-        service.authenticate(mockConfig.credentials)
+        service.authenticate(mockConfig.credentials),
       ).rejects.toThrow();
     });
   });
@@ -108,14 +108,14 @@ describe('SalesforceService', () => {
 
       const result = await service.syncContacts(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(2);
       expect(service.syncContacts).toHaveBeenCalledWith(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
     });
 
@@ -123,7 +123,7 @@ describe('SalesforceService', () => {
       service.syncContacts.mockRejectedValue(new Error('Sync failed'));
 
       await expect(
-        service.syncContacts('test-user-id', 'test-client-id')
+        service.syncContacts('test-user-id', 'test-client-id'),
       ).rejects.toThrow();
     });
   });
@@ -145,14 +145,14 @@ describe('SalesforceService', () => {
 
       const result = await service.syncOpportunities(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(1);
       expect(service.syncOpportunities).toHaveBeenCalledWith(
         'test-user-id',
-        'test-client-id'
+        'test-client-id',
       );
     });
   });
@@ -198,11 +198,11 @@ describe('SalesforceService', () => {
       };
 
       service.createContact.mockRejectedValue(
-        new Error('Invalid contact email')
+        new Error('Invalid contact email'),
       );
 
       await expect(service.createContact(invalidContact)).rejects.toThrow(
-        'Invalid contact email'
+        'Invalid contact email',
       );
     });
   });
@@ -234,7 +234,7 @@ describe('SalesforceService', () => {
       expect(result[0]?.lastName).toBe('Doe');
       expect(service.searchContacts).toHaveBeenCalledWith(
         'John',
-        'test-user-id'
+        'test-user-id',
       );
     });
   });
@@ -257,7 +257,7 @@ describe('SalesforceService', () => {
       expect(result.status).toBe('healthy');
       expect(result.details.authenticated).toBe(true);
       expect(result.details.integrationType).toBe(
-        IntegrationType.CRM_SALESFORCE
+        IntegrationType.CRM_SALESFORCE,
       );
     });
 

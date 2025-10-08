@@ -49,21 +49,21 @@ describe('SlackService', () => {
 
     it('should throw error for missing credentials', async () => {
       service.authenticate.mockRejectedValue(
-        new Error('Slack credentials are missing')
+        new Error('Slack credentials are missing'),
       );
 
       await expect(service.authenticate({})).rejects.toThrow(
-        'Slack credentials are missing'
+        'Slack credentials are missing',
       );
     });
 
     it('should throw error for authentication failure', async () => {
       service.authenticate.mockRejectedValue(
-        new Error('Authentication failed')
+        new Error('Authentication failed'),
       );
 
       await expect(
-        service.authenticate(mockConfig.credentials)
+        service.authenticate(mockConfig.credentials),
       ).rejects.toThrow('Authentication failed');
     });
   });
@@ -89,7 +89,7 @@ describe('SlackService', () => {
         expect.objectContaining({
           channelId: 'C1234567890',
           text: 'Hello, World!',
-        })
+        }),
       );
     });
 
@@ -97,7 +97,7 @@ describe('SlackService', () => {
       service.sendMessage.mockRejectedValue(new Error('API Error'));
 
       await expect(
-        service.sendMessage('C1234567890', 'Hello, World!')
+        service.sendMessage('C1234567890', 'Hello, World!'),
       ).rejects.toThrow('API Error');
     });
   });
@@ -133,7 +133,7 @@ describe('SlackService', () => {
           id: 'C1234567890',
           name: 'general',
           isMember: true,
-        })
+        }),
       );
     });
 
@@ -170,7 +170,7 @@ describe('SlackService', () => {
           username: 'john.doe',
           realName: 'John Doe',
           email: 'john@example.com',
-        })
+        }),
       );
     });
 
@@ -200,7 +200,7 @@ describe('SlackService', () => {
         expect.objectContaining({
           teamId: 'T1234567890',
           teamName: 'Test Team',
-        })
+        }),
       );
     });
 
@@ -220,7 +220,7 @@ describe('SlackService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        })
+        }),
       );
     });
   });

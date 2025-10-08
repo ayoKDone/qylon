@@ -33,7 +33,7 @@ router.post(
       const results = await botDeploymentService.deployBotsForUpcomingMeetings(
         clientId,
         teamId,
-        hoursAhead
+        hoursAhead,
       );
 
       const successCount = results.filter(r => r.success).length;
@@ -73,7 +73,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -100,7 +100,7 @@ router.post(
         meeting_url,
         client_id,
         team_id,
-        host_name
+        host_name,
       );
 
       if (!result.success) {
@@ -148,7 +148,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -185,7 +185,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -238,7 +238,7 @@ router.put(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -254,7 +254,7 @@ router.post(
 
       const deletedCount = await botDeploymentService.cleanupInactiveBots(
         clientId,
-        olderThanHours
+        olderThanHours,
       );
 
       logger.info('Bot cleanup completed', {
@@ -288,7 +288,7 @@ router.post(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 /**
@@ -306,7 +306,7 @@ router.get(
       const upcomingMeetings = await botDeploymentService.getUpcomingMeetings(
         clientId,
         teamId,
-        24
+        24,
       );
 
       // Get deployment config
@@ -317,7 +317,7 @@ router.get(
       let meetingsWithBots = 0;
       for (const meeting of upcomingMeetings) {
         const existingBot = await botDeploymentService.getExistingBotForMeeting(
-          meeting.id
+          meeting.id,
         );
         if (existingBot) {
           meetingsWithBots++;
@@ -353,7 +353,7 @@ router.get(
         timestamp: new Date().toISOString(),
       });
     }
-  })
+  }),
 );
 
 export default router;

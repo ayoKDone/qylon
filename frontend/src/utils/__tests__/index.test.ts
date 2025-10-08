@@ -94,7 +94,7 @@ describe('API utilities', () => {
   it('builds query string correctly', () => {
     expect(buildQueryString({ page: 1, limit: 10 })).toBe('page=1&limit=10');
     expect(buildQueryString({ search: 'test', filter: undefined })).toBe(
-      'search=test'
+      'search=test',
     );
     expect(buildQueryString({})).toBe('');
   });

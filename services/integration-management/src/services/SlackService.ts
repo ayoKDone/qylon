@@ -109,7 +109,7 @@ export class SlackService {
       blocks?: any[];
       attachments?: any[];
       replyBroadcast?: boolean;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -164,7 +164,7 @@ export class SlackService {
   async sendDirectMessage(
     userId: string,
     text: string,
-    options: any = {}
+    options: any = {},
   ): Promise<CommunicationMessage> {
     try {
       // Open a direct message channel with the user
@@ -301,7 +301,7 @@ export class SlackService {
 
   async createChannel(
     name: string,
-    isPrivate: boolean = false
+    isPrivate: boolean = false,
   ): Promise<SlackChannel> {
     try {
       if (!this.authenticated) {
@@ -340,7 +340,7 @@ export class SlackService {
     channelId: string,
     messageTs: string,
     text: string,
-    options: { blocks?: any[]; attachments?: any[] } = {}
+    options: { blocks?: any[]; attachments?: any[] } = {},
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -412,7 +412,7 @@ export class SlackService {
       oldest?: string;
       latest?: string;
       inclusive?: boolean;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -431,7 +431,7 @@ export class SlackService {
 
       if (!response.data.ok) {
         throw new Error(
-          `Failed to fetch channel history: ${response.data.error}`
+          `Failed to fetch channel history: ${response.data.error}`,
         );
       }
 
@@ -506,13 +506,13 @@ export class SlackService {
 
   private async logOperation(
     operation: string,
-    data: Record<string, any> = {}
+    data: Record<string, any> = {},
   ): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_SLACK,
       this.config.userId,
-      data
+      data,
     );
   }
 }

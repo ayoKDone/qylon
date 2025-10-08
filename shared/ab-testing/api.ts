@@ -90,7 +90,7 @@ export class ABTestingAPI {
 
       const experiments = await this.experimentService.listExperiments(
         filters,
-        pagination
+        pagination,
       );
 
       res.status(200).json({
@@ -117,7 +117,7 @@ export class ABTestingAPI {
 
       const experiment = await this.experimentService.updateExperiment(
         experimentId,
-        request
+        request,
       );
 
       res.status(200).json({
@@ -467,15 +467,15 @@ export function setupABTestingRoutes(app: any): void {
   app.put('/api/v1/experiments/:experimentId', api.updateExperiment.bind(api));
   app.post(
     '/api/v1/experiments/:experimentId/start',
-    api.startExperiment.bind(api)
+    api.startExperiment.bind(api),
   );
   app.post(
     '/api/v1/experiments/:experimentId/pause',
-    api.pauseExperiment.bind(api)
+    api.pauseExperiment.bind(api),
   );
   app.post(
     '/api/v1/experiments/:experimentId/complete',
-    api.completeExperiment.bind(api)
+    api.completeExperiment.bind(api),
   );
 
   // User assignment and events
@@ -485,24 +485,24 @@ export function setupABTestingRoutes(app: any): void {
   // Analytics and reporting
   app.get(
     '/api/v1/experiments/:experimentId/analytics',
-    api.getAnalytics.bind(api)
+    api.getAnalytics.bind(api),
   );
   app.get(
     '/api/v1/experiments/:experimentId/report',
-    api.generateReport.bind(api)
+    api.generateReport.bind(api),
   );
 
   // Templates
   app.get('/api/v1/experiments/templates', api.getTemplates.bind(api));
   app.post(
     '/api/v1/experiments/templates/:templateId/create',
-    api.createFromTemplate.bind(api)
+    api.createFromTemplate.bind(api),
   );
 
   // User assignments
   app.get(
     '/api/v1/users/:userId/experiments',
-    api.getUserAssignments.bind(api)
+    api.getUserAssignments.bind(api),
   );
 
   // Health check

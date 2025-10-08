@@ -157,7 +157,7 @@ describe('RLS Routes', () => {
       });
 
       const response = await request(app).get(
-        '/rls/accessible/meetings?limit=10&offset=0'
+        '/rls/accessible/meetings?limit=10&offset=0',
       );
 
       expect(response.status).toBe(200);
@@ -185,7 +185,7 @@ describe('RLS Routes', () => {
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Internal Server Error');
       expect(response.body.message).toBe(
-        'Failed to retrieve accessible records'
+        'Failed to retrieve accessible records',
       );
     });
   });
@@ -238,7 +238,7 @@ describe('RLS Routes', () => {
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Bad Request');
       expect(response.body.message).toBe(
-        'Table, policy, and operation are required'
+        'Table, policy, and operation are required',
       );
     });
   });

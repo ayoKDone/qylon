@@ -32,12 +32,12 @@ export class StateMachine {
   async start(): Promise<void> {
     try {
       const startState = this.definition.states.find(
-        state => state.type === StateType.START
+        state => state.type === StateType.START,
       );
       if (!startState) {
         throw new StateMachineError(
           'No start state found in workflow definition',
-          'NO_START_STATE'
+          'NO_START_STATE',
         );
       }
 
@@ -64,7 +64,7 @@ export class StateMachine {
     if (!this.currentState) {
       throw new StateMachineError(
         'No current state to execute',
-        'NO_CURRENT_STATE'
+        'NO_CURRENT_STATE',
       );
     }
 
@@ -72,7 +72,7 @@ export class StateMachine {
     if (!state) {
       throw new StateMachineError(
         `State not found: ${this.currentState}`,
-        'STATE_NOT_FOUND'
+        'STATE_NOT_FOUND',
       );
     }
 
@@ -95,7 +95,7 @@ export class StateMachine {
     if (!this.currentState) {
       throw new StateMachineError(
         'No current state to transition from',
-        'NO_CURRENT_STATE'
+        'NO_CURRENT_STATE',
       );
     }
 
@@ -107,7 +107,7 @@ export class StateMachine {
         if (!nextState) {
           throw new StateMachineError(
             `Next state not found: ${transition.to_state}`,
-            'NEXT_STATE_NOT_FOUND'
+            'NEXT_STATE_NOT_FOUND',
           );
         }
 
@@ -222,7 +222,7 @@ export class StateMachine {
     if (!this.currentState) return;
 
     const stateExecution = this.stateHistory.find(
-      se => se.state_id === this.currentState && !se.exited_at
+      se => se.state_id === this.currentState && !se.exited_at,
     );
 
     if (stateExecution) {
@@ -332,7 +332,7 @@ export class StateMachine {
       default:
         throw new StateMachineError(
           `Unknown action type: ${action.type}`,
-          'UNKNOWN_ACTION_TYPE'
+          'UNKNOWN_ACTION_TYPE',
         );
     }
   }
@@ -503,7 +503,7 @@ export class StateMachine {
    */
   private async retryAction(
     action: WorkflowAction,
-    actionResult: ActionResult
+    actionResult: ActionResult,
   ): Promise<void> {
     if (!action.retry_policy) return;
 
@@ -512,9 +512,9 @@ export class StateMachine {
       action.retry_policy.backoff_ms *
         Math.pow(
           action.retry_policy.backoff_multiplier,
-          actionResult.retry_count - 1
+          actionResult.retry_count - 1,
         ),
-      action.retry_policy.max_backoff_ms || 30000
+      action.retry_policy.max_backoff_ms || 30000,
     );
 
     logger.info('Retrying action', {
@@ -617,7 +617,7 @@ export class StateMachine {
     if (!state) {
       throw new StateMachineError(
         `State not found: ${stateId}`,
-        'STATE_NOT_FOUND'
+        'STATE_NOT_FOUND',
       );
     }
 
@@ -638,7 +638,7 @@ export class StateMachine {
    */
   private getTransitionsFromState(stateId: string): WorkflowTransition[] {
     return this.definition.transitions.filter(
-      transition => transition.from_state === stateId
+      transition => transition.from_state === stateId,
     );
   }
 
@@ -647,7 +647,7 @@ export class StateMachine {
    */
   private async evaluateTransition(
     transition: WorkflowTransition,
-    event?: string
+    event?: string,
   ): Promise<boolean> {
     // Check if event matches
     if (transition.event && transition.event !== event) {

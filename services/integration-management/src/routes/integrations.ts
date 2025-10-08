@@ -78,8 +78,8 @@ router.get(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Get specific integration
@@ -130,8 +130,8 @@ router.get(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Create new integration
@@ -149,7 +149,7 @@ router.post(
         // Validate required fields
         if (!type || !name || !credentials) {
           throw createValidationError(
-            'Missing required fields: type, name, credentials'
+            'Missing required fields: type, name, credentials',
           );
         }
 
@@ -189,8 +189,8 @@ router.post(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Update integration
@@ -251,8 +251,8 @@ router.put(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Delete integration
@@ -306,8 +306,8 @@ router.delete(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Test integration connection
@@ -454,8 +454,8 @@ router.post(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Sync integration data
@@ -503,12 +503,12 @@ router.post(
             if (syncType === 'contacts' || syncType === 'all') {
               syncResult = await salesforceService.syncContacts(
                 _userId,
-                clientId
+                clientId,
               );
             } else if (syncType === 'opportunities') {
               syncResult = await salesforceService.syncOpportunities(
                 _userId,
-                clientId
+                clientId,
               );
             } else {
               throw createValidationError('Invalid sync type for Salesforce');
@@ -523,7 +523,7 @@ router.post(
             } else if (syncType === 'opportunities') {
               syncResult = await hubspotService.syncOpportunities(
                 _userId,
-                clientId
+                clientId,
               );
             } else {
               throw createValidationError('Invalid sync type for HubSpot');
@@ -536,12 +536,12 @@ router.post(
             if (syncType === 'contacts' || syncType === 'all') {
               syncResult = await pipedriveService.syncContacts(
                 _userId,
-                clientId
+                clientId,
               );
             } else if (syncType === 'opportunities') {
               syncResult = await pipedriveService.syncOpportunities(
                 _userId,
-                clientId
+                clientId,
               );
             } else {
               throw createValidationError('Invalid sync type for Pipedrive');
@@ -551,7 +551,7 @@ router.post(
 
           default:
             throw createValidationError(
-              'Sync not supported for this integration type'
+              'Sync not supported for this integration type',
             );
         }
 
@@ -571,8 +571,8 @@ router.post(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 // Get integration metrics
@@ -638,8 +638,8 @@ router.get(
         });
         throw error;
       }
-    }
-  )
+    },
+  ),
 );
 
 export default router;

@@ -59,7 +59,7 @@ export class SDKConnection {
       userId: string;
       platform: SDKPlatform;
       apiKey: string;
-    }
+    },
   ) {
     // Validate required fields
     if (!data.userId) {
@@ -98,7 +98,7 @@ export class SDKConnection {
         const r = (Math.random() * 16) | 0;
         const v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
-      }
+      },
     );
   }
 

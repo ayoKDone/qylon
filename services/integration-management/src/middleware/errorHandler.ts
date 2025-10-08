@@ -16,7 +16,7 @@ export class IntegrationServiceError extends Error {
     statusCode: number = 500,
     retryable: boolean = false,
     integrationType?: string,
-    userId?: string
+    userId?: string,
   ) {
     super(message);
     this.name = 'IntegrationServiceError';
@@ -36,7 +36,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   // Log the error
   logger.error('Unhandled error', {
@@ -180,7 +180,7 @@ export const createIntegrationError = (
   message: string,
   integrationType: IntegrationType,
   userId: string,
-  retryable: boolean = false
+  retryable: boolean = false,
 ): IntegrationError => {
   const error = new Error(message) as IntegrationError;
   error.code = 'INTEGRATION_ERROR';
@@ -192,47 +192,47 @@ export const createIntegrationError = (
 };
 
 export const createValidationError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(message, 'VALIDATION_ERROR', 400, false);
 };
 
 export const createAuthenticationError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(
     message,
     'AUTHENTICATION_ERROR',
     401,
-    false
+    false,
   );
 };
 
 export const createAuthorizationError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(
     message,
     'AUTHORIZATION_ERROR',
     403,
-    false
+    false,
   );
 };
 
 export const createNotFoundError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(message, 'NOT_FOUND_ERROR', 404, false);
 };
 
 export const createConflictError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(message, 'CONFLICT_ERROR', 409, false);
 };
 
 export const createRateLimitError = (
-  message: string
+  message: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(message, 'RATE_LIMIT_ERROR', 429, true);
 };
@@ -240,7 +240,7 @@ export const createRateLimitError = (
 export const createExternalServiceError = (
   message: string,
   integrationType: string,
-  userId: string
+  userId: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(
     message,
@@ -248,14 +248,14 @@ export const createExternalServiceError = (
     503,
     true,
     integrationType,
-    userId
+    userId,
   );
 };
 
 export const createSyncError = (
   message: string,
   integrationType: string,
-  userId: string
+  userId: string,
 ): IntegrationServiceError => {
   return new IntegrationServiceError(
     message,
@@ -263,6 +263,6 @@ export const createSyncError = (
     500,
     true,
     integrationType,
-    userId
+    userId,
   );
 };

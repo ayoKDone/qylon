@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const requestLogger = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Generate unique request ID
   const requestId = uuidv4();
@@ -53,7 +53,7 @@ export const requestLogger = (
 export const responseTime = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const startTime = Date.now();
 
@@ -72,7 +72,7 @@ export const responseTime = (
 export const requestId = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const requestId = req.get('X-Request-ID') || uuidv4();
   (req as any).requestId = requestId;

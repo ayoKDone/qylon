@@ -158,7 +158,7 @@ export class PipedriveService extends BaseCRMService {
             // Check if contact exists in our system
             const existingContact = await this.getContactFromDatabase(
               contact.id,
-              userId
+              userId,
             );
 
             if (existingContact) {
@@ -173,7 +173,7 @@ export class PipedriveService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
           }
         }
@@ -193,7 +193,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -217,7 +217,7 @@ export class PipedriveService extends BaseCRMService {
 
   async syncOpportunities(
     userId: string,
-    clientId: string
+    clientId: string,
   ): Promise<SyncResult> {
     const startTime = Date.now();
     let recordsProcessed = 0;
@@ -266,7 +266,7 @@ export class PipedriveService extends BaseCRMService {
             // Check if opportunity exists in our system
             const existingOpportunity = await this.getOpportunityFromDatabase(
               opportunity.id,
-              userId
+              userId,
             );
 
             if (existingOpportunity) {
@@ -274,7 +274,7 @@ export class PipedriveService extends BaseCRMService {
               await this.updateOpportunityInDatabase(
                 opportunity.id,
                 opportunity,
-                userId
+                userId,
               );
               recordsUpdated++;
             } else {
@@ -282,14 +282,14 @@ export class PipedriveService extends BaseCRMService {
               await this.createOpportunityInDatabase(
                 opportunity,
                 userId,
-                clientId
+                clientId,
               );
               recordsCreated++;
             }
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
           }
         }
@@ -309,7 +309,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -368,7 +368,7 @@ export class PipedriveService extends BaseCRMService {
 
   async updateContact(
     contactId: string,
-    contact: Partial<CRMContact>
+    contact: Partial<CRMContact>,
   ): Promise<CRMContact> {
     try {
       if (!this.authenticated) {
@@ -403,7 +403,7 @@ export class PipedriveService extends BaseCRMService {
   }
 
   async createOpportunity(
-    opportunity: CRMOpportunity
+    opportunity: CRMOpportunity,
   ): Promise<CRMOpportunity> {
     try {
       this.validateOpportunity(opportunity);
@@ -441,7 +441,7 @@ export class PipedriveService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>
+    opportunity: Partial<CRMOpportunity>,
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
@@ -449,7 +449,7 @@ export class PipedriveService extends BaseCRMService {
       }
 
       const pipedriveDeal = this.transformOpportunityToCRM(
-        opportunity as CRMOpportunity
+        opportunity as CRMOpportunity,
       );
 
       const response = await this.apiClient.put(`/deals/${opportunityId}`, {
@@ -549,7 +549,7 @@ export class PipedriveService extends BaseCRMService {
       }
 
       return response.data.data.items.map(person =>
-        this.transformContactFromCRM(person)
+        this.transformContactFromCRM(person),
       );
     } catch (error) {
       throw await this.handleApiError(error, 'Search Contacts');
@@ -558,7 +558,7 @@ export class PipedriveService extends BaseCRMService {
 
   async searchOpportunities(
     query: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMOpportunity[]> {
     try {
       if (!this.authenticated) {
@@ -581,7 +581,7 @@ export class PipedriveService extends BaseCRMService {
       }
 
       return response.data.data.items.map(deal =>
-        this.transformOpportunityFromCRM(deal)
+        this.transformOpportunityFromCRM(deal),
       );
     } catch (error) {
       throw await this.handleApiError(error, 'Search Opportunities');
@@ -590,7 +590,7 @@ export class PipedriveService extends BaseCRMService {
 
   // Pipedrive-specific transformation methods
   protected override transformContactFromCRM(
-    pipedrivePerson: PipedrivePerson
+    pipedrivePerson: PipedrivePerson,
   ): CRMContact {
     const primaryEmail =
       pipedrivePerson.email?.find(e => e.primary)?.value ||
@@ -615,7 +615,7 @@ export class PipedriveService extends BaseCRMService {
   }
 
   protected override transformOpportunityFromCRM(
-    pipedriveDeal: PipedriveDeal
+    pipedriveDeal: PipedriveDeal,
   ): CRMOpportunity {
     return {
       id: pipedriveDeal.id.toString(),
@@ -633,7 +633,7 @@ export class PipedriveService extends BaseCRMService {
   }
 
   protected override transformContactToCRM(
-    contact: CRMContact
+    contact: CRMContact,
   ): Record<string, any> {
     return {
       name: `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
@@ -651,7 +651,7 @@ export class PipedriveService extends BaseCRMService {
   }
 
   protected override transformOpportunityToCRM(
-    opportunity: CRMOpportunity
+    opportunity: CRMOpportunity,
   ): Record<string, any> {
     return {
       title: opportunity.name,
@@ -668,7 +668,7 @@ export class PipedriveService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -677,7 +677,7 @@ export class PipedriveService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -685,14 +685,14 @@ export class PipedriveService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -701,7 +701,7 @@ export class PipedriveService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -709,7 +709,7 @@ export class PipedriveService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

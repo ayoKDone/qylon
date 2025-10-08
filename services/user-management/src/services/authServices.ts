@@ -6,7 +6,7 @@ import { LoginResponse, RegisterResponse, User } from '../types';
 
 export async function registerUser(
   req: Request,
-  res: Response<RegisterResponse>
+  res: Response<RegisterResponse>,
 ) {
   const {
     email,
@@ -93,7 +93,7 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
     if (user) {
       await pool.query(
         'UPDATE users SET last_login_at = NOW() WHERE email = $1',
-        [email]
+        [email],
       );
     }
 

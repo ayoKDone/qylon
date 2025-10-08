@@ -85,7 +85,7 @@ router.get('/', async (req: Request, res: Response) => {
 
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
-      services.map(service => checkServiceHealth(service))
+      services.map(service => checkServiceHealth(service)),
     );
 
     const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
@@ -103,12 +103,12 @@ router.get('/', async (req: Request, res: Response) => {
                 : 'Unknown error',
           };
         }
-      }
+      },
     );
 
     // Determine overall health
     const unhealthyServices = serviceHealths.filter(
-      service => service.status === 'unhealthy'
+      service => service.status === 'unhealthy',
     );
     const overallStatus =
       unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
@@ -154,7 +154,7 @@ router.get('/detailed', async (req: Request, res: Response) => {
 
     // Check all services in parallel
     const serviceHealthChecks = await Promise.allSettled(
-      services.map(service => checkServiceHealth(service))
+      services.map(service => checkServiceHealth(service)),
     );
 
     const serviceHealths: ServiceHealth[] = serviceHealthChecks.map(
@@ -172,7 +172,7 @@ router.get('/detailed', async (req: Request, res: Response) => {
                 : 'Unknown error',
           };
         }
-      }
+      },
     );
 
     // Get system information
@@ -188,7 +188,7 @@ router.get('/detailed', async (req: Request, res: Response) => {
 
     // Determine overall health
     const unhealthyServices = serviceHealths.filter(
-      service => service.status === 'unhealthy'
+      service => service.status === 'unhealthy',
     );
     const overallStatus =
       unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';

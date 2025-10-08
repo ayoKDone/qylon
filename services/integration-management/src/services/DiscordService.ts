@@ -154,7 +154,7 @@ export class DiscordService {
         roles?: string[];
         users?: string[];
       };
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -178,7 +178,7 @@ export class DiscordService {
 
       const response = await this.apiClient.post(
         `/channels/${channelId}/messages`,
-        message
+        message,
       );
 
       const sentMessage: CommunicationMessage = {
@@ -215,7 +215,7 @@ export class DiscordService {
   async sendDirectMessage(
     userId: string,
     content: string,
-    options: any = {}
+    options: any = {},
   ): Promise<CommunicationMessage> {
     try {
       // Create a DM channel with the user
@@ -293,7 +293,7 @@ export class DiscordService {
       nsfw?: boolean;
       parent_id?: string;
       permission_overwrites?: any[];
-    } = {}
+    } = {},
   ): Promise<DiscordChannel> {
     try {
       if (!this.authenticated) {
@@ -306,7 +306,7 @@ export class DiscordService {
           name,
           type,
           ...options,
-        }
+        },
       );
 
       const channel = response.data;
@@ -338,7 +338,7 @@ export class DiscordService {
       embeds?: any[];
       components?: any[];
       files?: any[];
-    } = {}
+    } = {},
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -352,7 +352,7 @@ export class DiscordService {
           embeds: options.embeds,
           components: options.components,
           files: options.files,
-        }
+        },
       );
 
       await this.logOperation('message_updated', {
@@ -378,7 +378,7 @@ export class DiscordService {
       }
 
       await this.apiClient.delete(
-        `/channels/${channelId}/messages/${messageId}`
+        `/channels/${channelId}/messages/${messageId}`,
       );
 
       await this.logOperation('message_deleted', {
@@ -404,7 +404,7 @@ export class DiscordService {
       before?: string;
       after?: string;
       around?: string;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -421,7 +421,7 @@ export class DiscordService {
         `/channels/${channelId}/messages`,
         {
           params,
-        }
+        },
       );
 
       const messages = response.data.map((msg: any) => ({
@@ -463,7 +463,7 @@ export class DiscordService {
   async addReaction(
     channelId: string,
     messageId: string,
-    emoji: string
+    emoji: string,
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -474,7 +474,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.put(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_added', {
@@ -498,7 +498,7 @@ export class DiscordService {
   async removeReaction(
     channelId: string,
     messageId: string,
-    emoji: string
+    emoji: string,
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -509,7 +509,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.delete(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_removed', {
@@ -570,13 +570,13 @@ export class DiscordService {
 
   private async logOperation(
     operation: string,
-    data: Record<string, any> = {}
+    data: Record<string, any> = {},
   ): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_DISCORD,
       this.config.userId,
-      data
+      data,
     );
   }
 }

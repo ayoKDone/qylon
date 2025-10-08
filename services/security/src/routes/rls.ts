@@ -11,18 +11,18 @@ try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
     );
     logger.info('Supabase client initialized successfully in RLS routes');
   } else {
     logger.warn(
-      'Supabase not configured in RLS routes - running in local development mode'
+      'Supabase not configured in RLS routes - running in local development mode',
     );
   }
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in RLS routes - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -76,7 +76,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Test RLS policy for a specific record
@@ -142,7 +142,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get user's accessible records for a table
@@ -204,7 +204,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Validate RLS policy configuration
@@ -278,7 +278,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

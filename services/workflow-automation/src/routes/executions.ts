@@ -12,7 +12,7 @@ const router: Router = Router();
 const workflowEngine = new WorkflowEngine();
 
 /**
- * Execute a workflow (supports both manual and event-driven execution)
+ * Execute a workflow
  */
 router.post(
   '/execute',
@@ -20,104 +20,55 @@ router.post(
     try {
       const _userId = (req as any).user?.id;
 
-      // Check if this is an event-driven execution request
-      if (req.body.triggeredBy) {
-        // Event-driven execution
-        const { workflowId, inputData, context, triggeredBy } = req.body;
-
-        if (!workflowId || !inputData || !triggeredBy) {
-          res.status(400).json({
-            success: false,
-            error: 'ValidationError',
-            message:
-              'Missing required fields: workflowId, inputData, triggeredBy',
-            timestamp: new Date().toISOString(),
-          });
-          return;
-        }
-
-        // Execute event-driven workflow
-        const execution = await workflowEngine.executeWorkflowFromEvent(
-          workflowId,
-          inputData,
-          context || {},
-          triggeredBy
-        );
-
-        logger.info('Event-driven workflow execution started', {
-          workflowId,
-          executionId: execution.id,
-          eventId: triggeredBy.eventId,
-          eventType: triggeredBy.eventType,
-          userId: _userId,
-        });
-
-        const response: ApiResponse<any> = {
-          success: true,
-          data: {
-            id: execution.id,
-            workflow_id: execution.workflow_id,
-            status: execution.status,
-            current_state: execution.current_state,
-            started_at: execution.started_at,
-            estimated_completion: execution.completed_at,
-            triggered_by: triggeredBy,
-          },
+      // Validate request body
+      const validationResult = ExecuteWorkflowSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        res.status(400).json({
+          success: false,
+          error: 'ValidationError',
+          message: 'Invalid request data',
+          details: validationResult.error.errors,
           timestamp: new Date().toISOString(),
-        };
-
-        res.status(202).json(response);
-      } else {
-        // Legacy execution (existing logic)
-        const validationResult = ExecuteWorkflowSchema.safeParse(req.body);
-        if (!validationResult.success) {
-          res.status(400).json({
-            success: false,
-            error: 'ValidationError',
-            message: 'Invalid request data',
-            details: validationResult.error.errors,
-            timestamp: new Date().toISOString(),
-          });
-          return;
-        }
-
-        const { workflow_id, input_data, context } = validationResult.data;
-
-        // Execute workflow
-        const execution = await workflowEngine.executeWorkflow(
-          workflow_id,
-          input_data,
-          context
-        );
-
-        logger.info('Workflow execution started', {
-          workflowId: workflow_id,
-          executionId: execution.id,
-          userId: _userId,
         });
-
-        const response: ApiResponse<any> = {
-          success: true,
-          data: {
-            id: execution.id,
-            workflow_id: execution.workflow_id,
-            status: execution.status,
-            current_state: execution.current_state,
-            started_at: execution.started_at,
-            estimated_completion: execution.completed_at,
-          },
-          timestamp: new Date().toISOString(),
-        };
-
-        res.status(202).json(response);
+        return;
       }
+
+      const { workflow_id, input_data, context } = validationResult.data;
+
+      // Execute workflow
+      const execution = await workflowEngine.executeWorkflow(
+        workflow_id,
+        input_data,
+        context,
+      );
+
+      logger.info('Workflow execution started', {
+        workflowId: workflow_id,
+        executionId: execution.id,
+        userId: _userId,
+      });
+
+      const response: ApiResponse<any> = {
+        success: true,
+        data: {
+          id: execution.id,
+          workflow_id: execution.workflow_id,
+          status: execution.status,
+          current_state: execution.current_state,
+          started_at: execution.started_at,
+          estimated_completion: execution.completed_at,
+        },
+        timestamp: new Date().toISOString(),
+      };
+
+      res.status(202).json(response);
     } catch (error) {
       logger.error('Workflow execution error', {
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -158,7 +109,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -184,7 +135,7 @@ router.get(
       const { executions, total } = await workflowEngine.getExecutions(
         workflowId,
         page,
-        limit
+        limit,
       );
 
       const totalPages = Math.ceil(total / limit);
@@ -208,7 +159,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -239,7 +190,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

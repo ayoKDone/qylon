@@ -7,7 +7,7 @@ import { logger } from '../utils/logger';
 const router: Router = Router();
 const supabase = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 /**
@@ -27,7 +27,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -88,7 +88,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -108,7 +108,7 @@ router.post(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -172,7 +172,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -180,7 +180,7 @@ router.post(
  */
 async function generateSummaryAsync(
   meetingId: string,
-  transcriptionId: string
+  transcriptionId: string,
 ): Promise<void> {
   try {
     logger.info('Starting async summary generation', {

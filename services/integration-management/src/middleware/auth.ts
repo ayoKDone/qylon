@@ -33,7 +33,7 @@ export interface AuthenticatedRequest extends Request {
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     // In test mode, skip authentication and use mock user
@@ -94,7 +94,7 @@ export const authenticateToken = async (
         email,
         role,
         clients!inner(id, name)
-      `
+      `,
       )
       .eq('id', user.user.id)
       .single();
@@ -162,7 +162,7 @@ export const requireRole = (allowedRoles: string[]) => {
   return (
     req: AuthenticatedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): void => {
     if (!req.user) {
       res.status(401).json({
@@ -195,7 +195,7 @@ export const requireRole = (allowedRoles: string[]) => {
 export const requireClientAccess = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     if (!req.user) {
@@ -266,7 +266,7 @@ export const requireClientAccess = async (
 export const validateApiKey = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const apiKey = req.headers['x-api-key'] as string;

@@ -65,7 +65,7 @@ export class WhisperService extends EventEmitter {
       max_retries: 3,
       retry_delay_ms: 1000,
       timeout_ms: 30000,
-    }
+    },
   ) {
     super();
     this.config = config;
@@ -77,7 +77,7 @@ export class WhisperService extends EventEmitter {
    */
   async transcribeAudio(
     audioBuffer: Buffer,
-    options?: { language?: string; model?: string; responseFormat?: string }
+    options?: { language?: string; model?: string; responseFormat?: string },
   ): Promise<{
     success: boolean;
     transcription?: string;
@@ -146,7 +146,7 @@ export class WhisperService extends EventEmitter {
    */
   async transcribeAudioStream(
     audioStream: Buffer,
-    options?: { language?: string; model?: string }
+    options?: { language?: string; model?: string },
   ): Promise<{
     success: boolean;
     transcription?: string;
@@ -225,7 +225,7 @@ export class WhisperService extends EventEmitter {
    * Cancel transcription
    */
   async cancelTranscription(
-    jobId: string
+    jobId: string,
   ): Promise<{ success: boolean; message?: string; error?: string }> {
     try {
       if (!jobId) {
@@ -332,7 +332,7 @@ export class WhisperService extends EventEmitter {
    */
   async transcribeAudioChunk(chunk: any): Promise<TranscriptionResult> {
     const startTime = Date.now();
-    let retryCount = 0;
+    const retryCount = 0;
 
     try {
       logger.debug('Starting audio transcription', {
@@ -450,7 +450,7 @@ export class WhisperService extends EventEmitter {
    */
   private async performTranscription(
     chunk: any,
-    retryCount: number
+    retryCount: number,
   ): Promise<TranscriptionResult> {
     // Simulate Whisper API call
     // In a real implementation, this would call the actual OpenAI Whisper API
@@ -479,7 +479,7 @@ export class WhisperService extends EventEmitter {
       confidence: 0.85,
       segments: this.formatTranscriptionWithTimestamps(
         mockTranscription.segments,
-        0
+        0,
       ),
       processing_time_ms: 100,
       metadata: {
@@ -495,7 +495,7 @@ export class WhisperService extends EventEmitter {
    */
   private formatTranscriptionWithTimestamps(
     segments: any[],
-    _wordIndex: number
+    _wordIndex: number,
   ): TranscriptionSegment[] {
     return segments.map(segment => ({
       start_time_ms: Math.round((segment.start || 0) * 1000),

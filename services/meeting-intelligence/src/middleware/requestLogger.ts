@@ -18,7 +18,7 @@ declare global {
 export const requestLogger = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Generate unique request ID
   req.requestId = uuidv4();

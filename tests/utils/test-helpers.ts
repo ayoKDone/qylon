@@ -267,7 +267,7 @@ export class TestDataGenerator {
   }
 
   static generateNotification(
-    overrides: Partial<MockNotification> = {}
+    overrides: Partial<MockNotification> = {},
   ): MockNotification {
     return {
       id: this.generateId(),
@@ -285,7 +285,7 @@ export class TestDataGenerator {
   static generateEvent(
     type: string,
     data: any = {},
-    overrides: Partial<MockEvent> = {}
+    overrides: Partial<MockEvent> = {},
   ): MockEvent {
     return {
       id: this.generateId(),
@@ -389,7 +389,7 @@ export class TestUtils {
       .fn()
       .mockImplementation(
         () =>
-          new Promise(resolve => setTimeout(() => resolve(returnValue), delay))
+          new Promise(resolve => setTimeout(() => resolve(returnValue), delay)),
       );
   }
 
@@ -397,7 +397,7 @@ export class TestUtils {
     return jest
       .fn()
       .mockImplementation(
-        () => new Promise((_, reject) => setTimeout(() => reject(error), delay))
+        () => new Promise((_, reject) => setTimeout(() => reject(error), delay)),
       );
   }
 

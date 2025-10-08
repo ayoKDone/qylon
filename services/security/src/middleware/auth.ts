@@ -8,20 +8,20 @@ try {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
     );
     logger.info(
-      'Supabase client initialized successfully in security auth middleware'
+      'Supabase client initialized successfully in security auth middleware',
     );
   } else {
     logger.warn(
-      'Supabase not configured in security auth middleware - running in local development mode'
+      'Supabase not configured in security auth middleware - running in local development mode',
     );
   }
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in security auth middleware - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -38,7 +38,7 @@ interface AuthenticatedRequest extends Request {
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
@@ -127,7 +127,7 @@ export const requireRole = (roles: string[]) => {
   return (
     req: AuthenticatedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): void => {
     if (!req.user) {
       res.status(401).json({
@@ -161,7 +161,7 @@ export const requireRole = (roles: string[]) => {
 export const requireClientAccess = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     if (!req.user) {

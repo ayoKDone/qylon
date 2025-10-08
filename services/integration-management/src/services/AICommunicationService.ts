@@ -108,7 +108,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       previousMessages?: CommunicationMessage[];
-    }
+    },
   ): Promise<AIResponse> {
     try {
       const sessionKey = `${context.userId}_${context.sessionId}`;
@@ -179,7 +179,7 @@ export class AICommunicationService {
         confidence: this.calculateResponseConfidence(aiContent, sentiment),
         suggestedActions: this.generateSuggestedActions(
           sentiment,
-          context.platform
+          context.platform,
         ),
         metadata: {
           model: 'gpt-4',
@@ -216,7 +216,7 @@ export class AICommunicationService {
       userId: string;
       preferences?: Record<string, any>;
       history?: CommunicationMessage[];
-    }
+    },
   ): Promise<string> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -236,7 +236,7 @@ export class AICommunicationService {
       if (userContext.preferences) {
         content = await this.personalizeContent(
           content,
-          userContext.preferences
+          userContext.preferences,
         );
       }
 
@@ -265,7 +265,7 @@ export class AICommunicationService {
       platform: string;
       channel?: string;
       audience?: string;
-    }
+    },
   ): Promise<string> {
     try {
       const currentSentiment = await this.analyzeSentiment(originalResponse);
@@ -328,7 +328,7 @@ Optimized response:`;
     category: string,
     content: string,
     variables: string[],
-    sentiment?: 'positive' | 'negative' | 'neutral'
+    sentiment?: 'positive' | 'negative' | 'neutral',
   ): Promise<ResponseTemplate> {
     try {
       const template: ResponseTemplate = {
@@ -367,7 +367,7 @@ Optimized response:`;
 
   async updateResponseTemplate(
     templateId: string,
-    updates: Partial<ResponseTemplate>
+    updates: Partial<ResponseTemplate>,
   ): Promise<ResponseTemplate> {
     try {
       const template = this.responseTemplates.get(templateId);
@@ -420,7 +420,7 @@ Optimized response:`;
 
   async getChatContext(
     userId: string,
-    sessionId: string
+    sessionId: string,
   ): Promise<ChatContext | null> {
     const sessionKey = `${userId}_${sessionId}`;
     return this.chatContexts.get(sessionKey) || null;
@@ -467,7 +467,7 @@ Guidelines:
 
   private calculateResponseConfidence(
     content: string,
-    sentiment: SentimentAnalysis
+    sentiment: SentimentAnalysis,
   ): number {
     // Base confidence on sentiment analysis confidence and content quality
     let confidence = sentiment.confidence;
@@ -487,7 +487,7 @@ Guidelines:
 
   private generateSuggestedActions(
     sentiment: SentimentAnalysis,
-    platform: string
+    platform: string,
   ): string[] {
     const actions: string[] = [];
 
@@ -517,7 +517,7 @@ Guidelines:
 
   private async personalizeContent(
     content: string,
-    preferences: Record<string, any>
+    preferences: Record<string, any>,
   ): Promise<string> {
     // Simple personalization based on preferences
     // In a real implementation, this would use AI to personalize content
@@ -528,7 +528,7 @@ Guidelines:
     } else if (preferences['communicationStyle'] === 'casual') {
       personalizedContent = personalizedContent.replace(
         /Hello|Good morning/g,
-        'Hey'
+        'Hey',
       );
     }
 
@@ -541,13 +541,13 @@ Guidelines:
 
   private async logOperation(
     operation: string,
-    data: Record<string, any> = {}
+    data: Record<string, any> = {},
   ): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_SLACK, // Using a generic type for AI service
       this.config.userId,
-      data
+      data,
     );
   }
 }

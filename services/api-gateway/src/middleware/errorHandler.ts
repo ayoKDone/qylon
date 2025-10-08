@@ -9,7 +9,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   // Log the error
   logError(error, req);
@@ -72,7 +72,7 @@ export const errorHandler = (
 export const notFoundHandler = (
   req: Request,
   _res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ): void => {
   const error = new Error(`Route ${req.originalUrl} not found`);
   (error as any).statusCode = 404;
@@ -97,7 +97,7 @@ export class ValidationError extends Error {
 
   constructor(
     message: string,
-    public details?: any
+    public details?: any,
   ) {
     super(message);
   }

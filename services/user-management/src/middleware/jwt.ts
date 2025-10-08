@@ -9,7 +9,7 @@ interface AuthRequest extends Request {
 export async function verifyJWT(
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const authHeader = req.headers['authorization'];
   if (!authHeader) return res.status(401).json({ error: 'No token provided' });

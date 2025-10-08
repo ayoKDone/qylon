@@ -9,7 +9,7 @@ export class SupabaseEventStore implements IEventStore {
   constructor() {
     this.supabase = createClient(
       process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
   }
 
@@ -58,7 +58,7 @@ export class SupabaseEventStore implements IEventStore {
 
   async getEvents(
     aggregateId: string,
-    fromVersion: number = 0
+    fromVersion: number = 0,
   ): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
@@ -98,7 +98,7 @@ export class SupabaseEventStore implements IEventStore {
 
   async getEventsByType(
     eventType: string,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<Event[]> {
     try {
       const { data, error } = await this.supabase
@@ -150,7 +150,7 @@ export class SupabaseEventStore implements IEventStore {
           error: error.message,
         });
         throw new Error(
-          `Failed to get events by correlation ID: ${error.message}`
+          `Failed to get events by correlation ID: ${error.message}`,
         );
       }
 

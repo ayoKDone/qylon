@@ -33,12 +33,12 @@ export class OpenAIService {
    */
   async extractActionItems(
     transcription: MeetingTranscription,
-    meetingTitle: string
+    meetingTitle: string,
   ): Promise<ActionItem[]> {
     try {
       const prompt = this.buildActionItemPrompt(
         transcription.content,
-        meetingTitle
+        meetingTitle,
       );
 
       const response = await this.client.chat.completions.create({
@@ -91,7 +91,7 @@ export class OpenAIService {
       throw new TranscriptionError(
         `Failed to extract action items: ${error.message}`,
         'ACTION_ITEM_EXTRACTION_FAILED',
-        500
+        500,
       );
     }
   }
@@ -101,12 +101,12 @@ export class OpenAIService {
    */
   async generateMeetingSummary(
     transcription: MeetingTranscription,
-    meetingTitle: string
+    meetingTitle: string,
   ): Promise<MeetingSummary> {
     try {
       const prompt = this.buildSummaryPrompt(
         transcription.content,
-        meetingTitle
+        meetingTitle,
       );
 
       const response = await this.client.chat.completions.create({
@@ -157,7 +157,7 @@ export class OpenAIService {
       throw new TranscriptionError(
         `Failed to generate meeting summary: ${error.message}`,
         'SUMMARY_GENERATION_FAILED',
-        500
+        500,
       );
     }
   }
@@ -166,7 +166,7 @@ export class OpenAIService {
    * Perform sentiment analysis on meeting transcription
    */
   async analyzeSentiment(
-    transcription: MeetingTranscription
+    transcription: MeetingTranscription,
   ): Promise<SentimentAnalysis> {
     try {
       const prompt = this.buildSentimentPrompt(transcription.content);
@@ -209,7 +209,7 @@ export class OpenAIService {
       throw new TranscriptionError(
         `Failed to analyze sentiment: ${error.message}`,
         'SENTIMENT_ANALYSIS_FAILED',
-        500
+        500,
       );
     }
   }
@@ -218,7 +218,7 @@ export class OpenAIService {
    * Enhance speaker diarization with AI
    */
   async enhanceSpeakerDiarization(
-    speakerSegments: SpeakerSegment[]
+    speakerSegments: SpeakerSegment[],
   ): Promise<SpeakerSegment[]> {
     try {
       const prompt = this.buildSpeakerEnhancementPrompt(speakerSegments);
@@ -260,7 +260,7 @@ export class OpenAIService {
       throw new TranscriptionError(
         `Failed to enhance speaker diarization: ${error.message}`,
         'SPEAKER_ENHANCEMENT_FAILED',
-        500
+        500,
       );
     }
   }

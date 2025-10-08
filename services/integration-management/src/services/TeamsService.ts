@@ -139,7 +139,7 @@ export class TeamsService {
               clientId,
               clientSecret,
               tenantId,
-              refreshToken
+              refreshToken,
             );
           }
           throw error;
@@ -152,7 +152,7 @@ export class TeamsService {
           clientId,
           clientSecret,
           tenantId,
-          refreshToken
+          refreshToken,
         );
       }
 
@@ -169,7 +169,7 @@ export class TeamsService {
     clientId: string,
     clientSecret: string,
     tenantId: string,
-    refreshToken: string
+    refreshToken: string,
   ): Promise<boolean> {
     try {
       const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
@@ -187,7 +187,7 @@ export class TeamsService {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        }
+        },
       );
 
       const tokenData: TeamsAuthResponse = response.data;
@@ -219,7 +219,7 @@ export class TeamsService {
     options: {
       mentions?: Array<{ userId: string; displayName: string }>;
       attachments?: any[];
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -252,7 +252,7 @@ export class TeamsService {
 
       const response = await this.apiClient.post(
         `/chats/${chatId}/messages`,
-        message
+        message,
       );
 
       const sentMessage: CommunicationMessage = {
@@ -292,7 +292,7 @@ export class TeamsService {
     options: {
       mentions?: Array<{ userId: string; displayName: string }>;
       attachments?: any[];
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -325,7 +325,7 @@ export class TeamsService {
 
       const response = await this.apiClient.post(
         `/teams/${teamId}/channels/${channelId}/messages`,
-        message
+        message,
       );
 
       const sentMessage: CommunicationMessage = {
@@ -429,7 +429,7 @@ export class TeamsService {
     teamId: string,
     displayName: string,
     description?: string,
-    membershipType: string = 'standard'
+    membershipType: string = 'standard',
   ): Promise<TeamsChannel> {
     try {
       if (!this.authenticated) {
@@ -465,7 +465,7 @@ export class TeamsService {
   async updateMessage(
     chatId: string,
     messageId: string,
-    content: string
+    content: string,
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -524,7 +524,7 @@ export class TeamsService {
     options: {
       top?: number;
       skip?: number;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -609,13 +609,13 @@ export class TeamsService {
 
   private async logOperation(
     operation: string,
-    data: Record<string, any> = {}
+    data: Record<string, any> = {},
   ): Promise<void> {
     logIntegrationEvent(
       operation,
       IntegrationType.COMMUNICATION_TEAMS,
       this.config.userId,
-      data
+      data,
     );
   }
 }

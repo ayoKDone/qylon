@@ -195,7 +195,7 @@ router.get('/ready', async (_req: Request, res: Response): Promise<void> => {
     ];
 
     const missingServices = requiredServices.filter(
-      service => !process.env[service]
+      service => !process.env[service],
     );
 
     if (missingServices.length > 0) {
