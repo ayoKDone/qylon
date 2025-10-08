@@ -212,6 +212,11 @@ scripts/
 !scripts/stop-services.sh
 !scripts/test-docker-compose.sh
 !scripts/clear-jest-cache.sh
+!scripts/test-runner.sh
+!scripts/link-checker.sh
+!scripts/validate-branch.sh
+!scripts/setup-git-hooks.sh
+!scripts/setup.sh
 !tests/utils/test-helpers.ts
 
 # Logs and temporary files
