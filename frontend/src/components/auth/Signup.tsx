@@ -1,12 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import type { SignUpFormInputs } from '../../types/auth';
-import { Divider } from '../UI/Divider';
-import { SocialLogin } from '../UI/SocialLogin';
-import Icon from '../icons/Icon';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -57,7 +53,8 @@ export default function Signup() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              <Icon name="arrowLeft" size={16} />
+              {/* <Icon name="arrowLeft" size={16} /> */}
+              ←
               <span className='text-sm'>Back to Home</span>
             </a>
           </div>
@@ -73,13 +70,7 @@ export default function Signup() {
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               <label>Work Email</label>
               <input
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Please enter a valid email',
-                  },
-                })}
+                {...register('email')}
                 type='email'
                 placeholder='olivia@untitledui.com'
                 id='email'
@@ -92,13 +83,7 @@ export default function Signup() {
               <label>Password</label>
               <div className='xui-pos-relative'>
                 <input
-                  {...register('password', {
-                    required: 'Password is required',
-                    minLength: {
-                      value: 6,
-                      message: 'Password must be at least 6 characters',
-                    },
-                  })}
+                  {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   placeholder='Create a strong password'
                   className='pr-10 w-full'
@@ -109,11 +94,7 @@ export default function Signup() {
                   onClick={() => setShowPassword(!showPassword)}
                   className='xui-pos-absolute inset-y-0 right-0 xui-d-flex xui-flex-ai-center px-2 text-gray-600'
                 >
-                  {showPassword ? (
-                    <FaEyeSlash className='h-5 w-5' />
-                  ) : (
-                    <FaEye className='h-5 w-5' />
-                  )}
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
               {errors.password && <span className='message'>{errors.password.message}</span>}
@@ -143,11 +124,11 @@ export default function Signup() {
               className='w-full outline:none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white'
               disabled={isSubmitting}
             >
-              {isSubmitting ? <FaSpinner className='animate-spin h-6 w-6' /> : 'Create Account'}
+              {isSubmitting ? '⏳' : 'Create Account'}
             </button>
           </form>
-          <Divider label='or' />
-          <SocialLogin />
+          {/* <Divider label='or' />
+          <SocialLogin /> */}
           <p className='text-sm text-gray-500 xui-my-2'>
             Already have an account?{' '}
             <a href='/login' className='text-purple-600 font-medium'>
