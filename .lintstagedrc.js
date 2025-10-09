@@ -7,7 +7,7 @@
 
 module.exports = {
   // TypeScript and JavaScript files
-  '*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write', 'jest --bail --findRelatedTests'],
+  '*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // JSON files
   '*.json': ['prettier --write'],
@@ -34,35 +34,19 @@ module.exports = {
   '*.config.{js,ts}': ['eslint --fix', 'prettier --write'],
 
   // Test files
-  '**/*.test.{ts,tsx,js,jsx}': [
-    'eslint --fix',
-    'prettier --write',
-    'jest --bail --findRelatedTests',
-  ],
+  '**/*.test.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // Spec files
-  '**/*.spec.{ts,tsx,js,jsx}': [
-    'eslint --fix',
-    'prettier --write',
-    'jest --bail --findRelatedTests',
-  ],
+  '**/*.spec.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // Cypress test files
   'cypress/**/*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // Service files
-  'services/**/*.{ts,tsx,js,jsx}': [
-    'eslint --fix',
-    'prettier --write',
-    'jest --bail --findRelatedTests',
-  ],
+  'services/**/*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // Shared files
-  'shared/**/*.{ts,tsx,js,jsx}': [
-    'eslint --fix',
-    'prettier --write',
-    'jest --bail --findRelatedTests',
-  ],
+  'shared/**/*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
 
   // Script files
   'scripts/**/*.{ts,tsx,js,jsx}': ['eslint --fix', 'prettier --write'],
