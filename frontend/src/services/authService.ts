@@ -8,12 +8,10 @@ import type {
 
 export const authService = {
   async login(data: LoginFormInputs): Promise<LoginResponse> {
-    const { data: sessionData, error } = await supabase.auth.signInWithPassword(
-      {
-        email: data.email,
-        password: data.password,
-      }
-    );
+    const { data: sessionData, error } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
     if (error) {
       throw new Error(error.message);

@@ -252,9 +252,7 @@ describe('Integrations Routes - Bypass Test', () => {
 
   describe('GET /api/v1/integrations', () => {
     it('should return list of integrations', async () => {
-      const response = await request(app)
-        .get('/api/v1/integrations')
-        .expect(200);
+      const response = await request(app).get('/api/v1/integrations').expect(200);
 
       expect(response.body.success).toBe(true);
       expect(response.body.data).toBeDefined();
@@ -270,9 +268,7 @@ describe('Integrations Routes - Bypass Test', () => {
     });
 
     it('should filter integrations by status', async () => {
-      const response = await request(app)
-        .get('/api/v1/integrations?status=active')
-        .expect(200);
+      const response = await request(app).get('/api/v1/integrations?status=active').expect(200);
 
       expect(response.body.success).toBe(true);
     });
@@ -288,9 +284,7 @@ describe('Integrations Routes - Bypass Test', () => {
     });
 
     it('should return 404 for non-existent integration', async () => {
-      const response = await request(app)
-        .get('/api/v1/integrations/non-existent-id')
-        .expect(404);
+      const response = await request(app).get('/api/v1/integrations/non-existent-id').expect(404);
 
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('not found');

@@ -1,9 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import {
-  CommunicationMessage,
-  IntegrationConfig,
-  IntegrationType,
-} from '../types';
+import { CommunicationMessage, IntegrationConfig, IntegrationType } from '../types';
 import { logIntegrationEvent } from '../utils/logger';
 
 interface DiscordMessage {
@@ -115,8 +111,7 @@ export class DiscordService {
       }
 
       this.botToken = botToken;
-      this.apiClient.defaults.headers.common['Authorization'] =
-        `Bot ${this.botToken}`;
+      this.apiClient.defaults.headers.common['Authorization'] = `Bot ${this.botToken}`;
 
       // Test the connection by fetching bot info
       const response = await this.apiClient.get('/users/@me');
@@ -154,7 +149,7 @@ export class DiscordService {
         roles?: string[];
         users?: string[];
       };
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -176,10 +171,7 @@ export class DiscordService {
         };
       }
 
-      const response = await this.apiClient.post(
-        `/channels/${channelId}/messages`,
-        message
-      );
+      const response = await this.apiClient.post(`/channels/${channelId}/messages`, message);
 
       const sentMessage: CommunicationMessage = {
         id: response.data.id,
@@ -215,7 +207,7 @@ export class DiscordService {
   async sendDirectMessage(
     userId: string,
     content: string,
-    options: any = {}
+    options: any = {},
   ): Promise<CommunicationMessage> {
     try {
       // Create a DM channel with the user
@@ -293,21 +285,18 @@ export class DiscordService {
       nsfw?: boolean;
       parent_id?: string;
       permission_overwrites?: any[];
-    } = {}
+    } = {},
   ): Promise<DiscordChannel> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Discord');
       }
 
-      const response = await this.apiClient.post(
-        `/guilds/${guildId}/channels`,
-        {
-          name,
-          type,
-          ...options,
-        }
-      );
+      const response = await this.apiClient.post(`/guilds/${guildId}/channels`, {
+        name,
+        type,
+        ...options,
+      });
 
       const channel = response.data;
 
@@ -338,22 +327,19 @@ export class DiscordService {
       embeds?: any[];
       components?: any[];
       files?: any[];
-    } = {}
+    } = {},
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Discord');
       }
 
-      await this.apiClient.patch(
-        `/channels/${channelId}/messages/${messageId}`,
-        {
-          content,
-          embeds: options.embeds,
-          components: options.components,
-          files: options.files,
-        }
-      );
+      await this.apiClient.patch(`/channels/${channelId}/messages/${messageId}`, {
+        content,
+        embeds: options.embeds,
+        components: options.components,
+        files: options.files,
+      });
 
       await this.logOperation('message_updated', {
         channelId,
@@ -377,9 +363,7 @@ export class DiscordService {
         throw new Error('Not authenticated with Discord');
       }
 
-      await this.apiClient.delete(
-        `/channels/${channelId}/messages/${messageId}`
-      );
+      await this.apiClient.delete(`/channels/${channelId}/messages/${messageId}`);
 
       await this.logOperation('message_deleted', {
         channelId,
@@ -404,7 +388,7 @@ export class DiscordService {
       before?: string;
       after?: string;
       around?: string;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -417,12 +401,9 @@ export class DiscordService {
       if (options.after) params.after = options.after;
       if (options.around) params.around = options.around;
 
-      const response = await this.apiClient.get(
-        `/channels/${channelId}/messages`,
-        {
-          params,
-        }
-      );
+      const response = await this.apiClient.get(`/channels/${channelId}/messages`, {
+        params,
+      });
 
       const messages = response.data.map((msg: any) => ({
         id: msg.id,
@@ -460,11 +441,7 @@ export class DiscordService {
     }
   }
 
-  async addReaction(
-    channelId: string,
-    messageId: string,
-    emoji: string
-  ): Promise<boolean> {
+  async addReaction(channelId: string, messageId: string, emoji: string): Promise<boolean> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Discord');
@@ -474,7 +451,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.put(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_added', {
@@ -495,11 +472,7 @@ export class DiscordService {
     }
   }
 
-  async removeReaction(
-    channelId: string,
-    messageId: string,
-    emoji: string
-  ): Promise<boolean> {
+  async removeReaction(channelId: string, messageId: string, emoji: string): Promise<boolean> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Discord');
@@ -509,7 +482,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.delete(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_removed', {
@@ -568,15 +541,7 @@ export class DiscordService {
     }
   }
 
-  private async logOperation(
-    operation: string,
-    data: Record<string, any> = {}
-  ): Promise<void> {
-    logIntegrationEvent(
-      operation,
-      IntegrationType.COMMUNICATION_DISCORD,
-      this.config.userId,
-      data
-    );
+  private async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
+    logIntegrationEvent(operation, IntegrationType.COMMUNICATION_DISCORD, this.config.userId, data);
   }
 }

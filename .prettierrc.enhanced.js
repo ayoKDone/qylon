@@ -73,20 +73,10 @@ module.exports = {
   ],
 
   // Plugins for additional language support
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-organize-imports',
-  ],
+  plugins: ['@trivago/prettier-plugin-sort-imports', 'prettier-plugin-organize-imports'],
 
   // Import sorting configuration
-  importOrder: [
-    '^react$',
-    '^react-dom$',
-    '^next$',
-    '^@?\\w',
-    '^@/(.*)$',
-    '^[./]',
-  ],
+  importOrder: ['^react$', '^react-dom$', '^next$', '^@?\\w', '^@/(.*)$', '^[./]'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   importOrderCaseInsensitive: true,

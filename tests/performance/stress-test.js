@@ -71,8 +71,7 @@ function generateRandomUser() {
 }
 
 function generateRandomString(length) {
-  const chars =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -82,9 +81,7 @@ function generateRandomString(length) {
 
 function generateRandomDate() {
   const now = new Date();
-  const future = new Date(
-    now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000
-  );
+  const future = new Date(now.getTime() + (Math.random() * 30 + 1) * 24 * 60 * 60 * 1000);
   return future.toISOString();
 }
 
@@ -245,14 +242,10 @@ function testHeavyWriteOperations(headers) {
       description: 'Stress test meeting description',
     });
 
-    const createResponse = http.post(
-      `${API_BASE_URL}/meetings`,
-      meetingPayload,
-      {
-        headers,
-        tags: { endpoint: 'meetings_create', operation: 'heavy_write' },
-      }
-    );
+    const createResponse = http.post(`${API_BASE_URL}/meetings`, meetingPayload, {
+      headers,
+      tags: { endpoint: 'meetings_create', operation: 'heavy_write' },
+    });
 
     const createSuccess = check(createResponse, {
       'create meeting status is 201': r => r.status === 201,
@@ -291,13 +284,10 @@ function testComplexQueries(headers) {
   });
 
   // Aggregation queries
-  const aggregationResponse = http.get(
-    `${API_BASE_URL}/analytics/aggregations`,
-    {
-      headers,
-      tags: { endpoint: 'aggregations', operation: 'complex_query' },
-    }
-  );
+  const aggregationResponse = http.get(`${API_BASE_URL}/analytics/aggregations`, {
+    headers,
+    tags: { endpoint: 'aggregations', operation: 'complex_query' },
+  });
 
   const aggregationSuccess = check(aggregationResponse, {
     'aggregation status is 200': r => r.status === 200,
@@ -317,14 +307,10 @@ function testFileOperations(headers) {
     type: 'text/plain',
   });
 
-  const uploadResponse = http.post(
-    `${API_BASE_URL}/files/upload`,
-    filePayload,
-    {
-      headers,
-      tags: { endpoint: 'file_upload', operation: 'file_ops' },
-    }
-  );
+  const uploadResponse = http.post(`${API_BASE_URL}/files/upload`, filePayload, {
+    headers,
+    tags: { endpoint: 'file_upload', operation: 'file_ops' },
+  });
 
   const uploadSuccess = check(uploadResponse, {
     'file upload status is 200': r => r.status === 200,
@@ -336,13 +322,10 @@ function testFileOperations(headers) {
   requestCount.add(1);
 
   // File download simulation
-  const downloadResponse = http.get(
-    `${API_BASE_URL}/files/download/test-file-id`,
-    {
-      headers,
-      tags: { endpoint: 'file_download', operation: 'file_ops' },
-    }
-  );
+  const downloadResponse = http.get(`${API_BASE_URL}/files/download/test-file-id`, {
+    headers,
+    tags: { endpoint: 'file_download', operation: 'file_ops' },
+  });
 
   const downloadSuccess = check(downloadResponse, {
     'file download status is 200': r => r.status === 200,
@@ -424,8 +407,7 @@ function testConcurrentOperations(headers) {
     const response = operation();
 
     const success = check(response, {
-      'concurrent operation status is 200 or 201': r =>
-        r.status === 200 || r.status === 201,
+      'concurrent operation status is 200 or 201': r => r.status === 200 || r.status === 201,
       'concurrent operation response time < 5s': r => r.timings.duration < 5000,
     });
 
@@ -440,10 +422,6 @@ export function teardown(data) {
   console.log(`Total requests: ${requestCount.count}`);
   console.log(`Error rate: ${errorRate.rate}`);
   console.log(`Average response time: ${responseTime.avg}ms`);
-  console.log(
-    `95th percentile response time: ${responseTime.percentile(95)}ms`
-  );
-  console.log(
-    `99th percentile response time: ${responseTime.percentile(99)}ms`
-  );
+  console.log(`95th percentile response time: ${responseTime.percentile(95)}ms`);
+  console.log(`99th percentile response time: ${responseTime.percentile(99)}ms`);
 }

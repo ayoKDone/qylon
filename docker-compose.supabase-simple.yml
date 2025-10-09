@@ -1,11 +1,11 @@
-version: '3.8'
+version: "3.8"
 
 services:
   supabase-db:
     image: postgres:15
     container_name: supabase-db
     ports:
-      - '54322:5432'
+      - "54322:5432"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
@@ -18,7 +18,7 @@ services:
     image: supabase/studio:latest
     container_name: supabase-studio
     ports:
-      - '54323:3000'
+      - "54323:3000"
     environment:
       STUDIO_PG_META_URL: http://supabase-meta:8080
       POSTGRES_PASSWORD: postgres
@@ -37,7 +37,7 @@ services:
     image: supabase/postgres-meta:latest
     container_name: supabase-meta
     ports:
-      - '54324:8080'
+      - "54324:8080"
     environment:
       PG_META_PORT: 8080
       PG_META_DB_HOST: supabase-db

@@ -13,7 +13,7 @@ interface UseApiOptions {
 
 export function useApi<T>(
   apiCall: () => Promise<ApiResponse<T>>,
-  options: UseApiOptions = { immediate: true }
+  options: UseApiOptions = { immediate: true },
 ) {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
@@ -61,9 +61,7 @@ export function useApi<T>(
   };
 }
 
-export function useApiMutation<T, P = unknown>(
-  apiCall: (params: P) => Promise<ApiResponse<T>>
-) {
+export function useApiMutation<T, P = unknown>(apiCall: (params: P) => Promise<ApiResponse<T>>) {
   const [state, setState] = useState<UseApiState<T>>({
     data: null,
     loading: false,
@@ -92,8 +90,7 @@ export function useApiMutation<T, P = unknown>(
           throw new Error(response.error || 'An error occurred');
         }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'An error occurred';
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred';
         setState({
           data: null,
           loading: false,
@@ -102,7 +99,7 @@ export function useApiMutation<T, P = unknown>(
         throw error;
       }
     },
-    [apiCall]
+    [apiCall],
   );
 
   return {

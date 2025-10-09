@@ -4,9 +4,7 @@ import { IntegrationStatus, IntegrationType } from '../../types';
 // Mock the entire HubSpotService class
 jest.mock('../../services/HubSpotService');
 
-const MockedHubSpotService = HubSpotService as jest.MockedClass<
-  typeof HubSpotService
->;
+const MockedHubSpotService = HubSpotService as jest.MockedClass<typeof HubSpotService>;
 
 describe('HubSpotService', () => {
   let service: jest.Mocked<HubSpotService>;
@@ -31,9 +29,7 @@ describe('HubSpotService', () => {
       updatedAt: new Date().toISOString(),
     };
 
-    service = new MockedHubSpotService(
-      mockConfig
-    ) as jest.Mocked<HubSpotService>;
+    service = new MockedHubSpotService(mockConfig) as jest.Mocked<HubSpotService>;
 
     // Reset all mocks
     jest.clearAllMocks();
@@ -50,23 +46,17 @@ describe('HubSpotService', () => {
     });
 
     it('should throw error for missing credentials', async () => {
-      service.authenticate.mockRejectedValue(
-        new Error('HubSpot credentials are missing')
-      );
+      service.authenticate.mockRejectedValue(new Error('HubSpot credentials are missing'));
 
-      await expect(service.authenticate({})).rejects.toThrow(
-        'HubSpot credentials are missing'
-      );
+      await expect(service.authenticate({})).rejects.toThrow('HubSpot credentials are missing');
     });
 
     it('should throw error for authentication failure', async () => {
-      service.authenticate.mockRejectedValue(
-        new Error('Authentication failed')
-      );
+      service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
-      await expect(
-        service.authenticate(mockConfig.credentials)
-      ).rejects.toThrow('Authentication failed');
+      await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow(
+        'Authentication failed',
+      );
     });
   });
 
@@ -83,10 +73,7 @@ describe('HubSpotService', () => {
 
       service.syncContacts.mockResolvedValue(mockResult);
 
-      const result = await service.syncContacts(
-        'test-user-id',
-        'test-client-id'
-      );
+      const result = await service.syncContacts('test-user-id', 'test-client-id');
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(1);
@@ -107,10 +94,7 @@ describe('HubSpotService', () => {
 
       service.syncContacts.mockResolvedValue(mockResult);
 
-      const result = await service.syncContacts(
-        'test-user-id',
-        'test-client-id'
-      );
+      const result = await service.syncContacts('test-user-id', 'test-client-id');
 
       expect(result.success).toBe(false);
       expect(result.recordsProcessed).toBe(0);
@@ -131,10 +115,7 @@ describe('HubSpotService', () => {
 
       service.syncOpportunities.mockResolvedValue(mockResult);
 
-      const result = await service.syncOpportunities(
-        'test-user-id',
-        'test-client-id'
-      );
+      const result = await service.syncOpportunities('test-user-id', 'test-client-id');
 
       expect(result.success).toBe(true);
       expect(result.recordsProcessed).toBe(1);
@@ -175,14 +156,12 @@ describe('HubSpotService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        })
+        }),
       );
     });
 
     it('should throw error for invalid contact data', async () => {
-      service.createContact.mockRejectedValue(
-        new Error('Invalid contact data')
-      );
+      service.createContact.mockRejectedValue(new Error('Invalid contact data'));
 
       const invalidContactData = {
         id: 'contact1',
@@ -195,7 +174,7 @@ describe('HubSpotService', () => {
       };
 
       await expect(service.createContact(invalidContactData)).rejects.toThrow(
-        'Invalid contact data'
+        'Invalid contact data',
       );
     });
   });
@@ -226,7 +205,7 @@ describe('HubSpotService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        })
+        }),
       );
     });
   });
@@ -249,7 +228,7 @@ describe('HubSpotService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           portalId: '12345678',
-        })
+        }),
       );
     });
 
@@ -269,7 +248,7 @@ describe('HubSpotService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        })
+        }),
       );
     });
   });

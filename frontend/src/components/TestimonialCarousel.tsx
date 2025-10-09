@@ -37,8 +37,8 @@ export function TestimonialCarousel() {
   const testimonial = testimonials[index];
 
   return (
-    <div className="max-w-lg text-center">
-      <AnimatePresence mode="wait">
+    <div className='max-w-lg text-center'>
+      <AnimatePresence mode='wait'>
         <motion.div
           key={index}
           initial={{ opacity: 0, y: 20 }}
@@ -46,12 +46,10 @@ export function TestimonialCarousel() {
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
         >
-          <span className="text-6xl font-serif leading-none">“</span>
-          <p className="text-lg md:text-xl font-medium mb-6">
-            {testimonial.quote}
-          </p>
-          <p className="font-semibold">{testimonial.name}</p>
-          <p className="text-sm opacity-80">{testimonial.role}</p>
+          <span className='text-6xl font-serif leading-none'>“</span>
+          <p className='text-lg md:text-xl font-medium mb-6'>{testimonial.quote}</p>
+          <p className='font-semibold'>{testimonial.name}</p>
+          <p className='text-sm opacity-80'>{testimonial.role}</p>
         </motion.div>
       </AnimatePresence>
     </div>

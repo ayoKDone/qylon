@@ -44,7 +44,7 @@ const directories = [
   'database/backups',
   'infrastructure/terraform/state',
   'tests/coverage',
-  'docs/generated'
+  'docs/generated',
 ];
 
 console.log('📁 Creating project directories...');
@@ -87,7 +87,7 @@ const requiredTools = [
   { name: 'Python', command: 'python --version', minVersion: '3.11' },
   { name: 'Docker', command: 'docker --version' },
   { name: 'Docker Compose', command: 'docker-compose --version' },
-  { name: 'Git', command: 'git --version' }
+  { name: 'Git', command: 'git --version' },
 ];
 
 requiredTools.forEach(tool => {
@@ -145,7 +145,7 @@ const devConfig = {
     version: '1.0.0',
     description: 'AI Automation Platform',
     author: 'KD Squares Development Team',
-    architect: 'Bill (siwale)'
+    architect: 'Bill (siwale)',
   },
   services: {
     'api-gateway': { port: 3000, health: '/health' },
@@ -156,19 +156,19 @@ const devConfig = {
     'workflow-automation': { port: 3005, health: '/health' },
     'integration-management': { port: 3006, health: '/health' },
     'notification-service': { port: 3007, health: '/health' },
-    'analytics-reporting': { port: 3008, health: '/health' }
+    'analytics-reporting': { port: 3008, health: '/health' },
   },
   databases: {
     postgres: { port: 5432, database: 'qylon_dev' },
     redis: { port: 6379 },
-    mongodb: { port: 27017, database: 'qylon_analytics' }
+    mongodb: { port: 27017, database: 'qylon_analytics' },
   },
   infrastructure: {
     provider: 'DigitalOcean',
     platform: 'App Platform',
     database: 'Supabase',
-    monitoring: 'DigitalOcean Monitoring + Supabase Analytics'
-  }
+    monitoring: 'DigitalOcean Monitoring + Supabase Analytics',
+  },
 };
 
 const configPath = path.join(process.cwd(), 'qylon.config.json');

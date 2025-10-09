@@ -186,11 +186,7 @@ test('Saga definitions validation', () => {
     };
 
     // Validate saga definition
-    if (
-      !sagaDefinition.name ||
-      !sagaDefinition.steps ||
-      !Array.isArray(sagaDefinition.steps)
-    ) {
+    if (!sagaDefinition.name || !sagaDefinition.steps || !Array.isArray(sagaDefinition.steps)) {
       throw new Error('Invalid saga definition structure');
     }
 

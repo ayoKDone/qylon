@@ -77,7 +77,7 @@ export interface SagaManager {
     definition: SagaDefinition,
     correlationId: string,
     userId: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<Saga>;
   executeStep(sagaId: string, stepId: string): Promise<void>;
   compensateSaga(sagaId: string): Promise<void>;

@@ -52,7 +52,7 @@ class TestContentCreation:
         return {
             "name": "Business Article Template",
             "content_type": "article",
-            "template_content": ("Template content with {variable1} and {variable2}"),
+            "template_content": "Template content with {variable1} and {variable2}",
             "variables": ["variable1", "variable2"],
             "description": "Template for business articles",
             "client_id": "client-123",
@@ -69,9 +69,7 @@ class TestContentCreation:
 
     @patch("index.generate_ai_content")
     @patch("index.save_content")
-    def test_create_content_success(
-        self, mock_save, mock_generate, sample_content_request
-    ):
+    def test_create_content_success(self, mock_save, mock_generate, sample_content_request):
         """Test successful content creation"""
         # Mock AI content generation
         mock_generate.return_value = "Generated article content"

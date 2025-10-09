@@ -238,7 +238,7 @@ export const CreateWorkflowSchema = z.object({
         name: z.string(),
         config: z.record(z.any()),
         enabled: z.boolean(),
-      })
+      }),
     ),
     states: z.array(
       z.object({
@@ -261,7 +261,7 @@ export const CreateWorkflowSchema = z.object({
                   max_backoff_ms: z.number().optional(),
                 })
                 .optional(),
-            })
+            }),
           )
           .optional(),
         conditions: z
@@ -272,7 +272,7 @@ export const CreateWorkflowSchema = z.object({
               expression: z.string(),
               on_true: z.string().optional(),
               on_false: z.string().optional(),
-            })
+            }),
           )
           .optional(),
         timeout: z.number().optional(),
@@ -285,7 +285,7 @@ export const CreateWorkflowSchema = z.object({
           })
           .optional(),
         metadata: z.record(z.any()).optional(),
-      })
+      }),
     ),
     transitions: z.array(
       z.object({
@@ -294,7 +294,7 @@ export const CreateWorkflowSchema = z.object({
         to_state: z.string(),
         condition: z.string().optional(),
         event: z.string().optional(),
-      })
+      }),
     ),
     variables: z.record(z.any()).optional(),
     settings: z
@@ -341,7 +341,7 @@ export class WorkflowError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500
+    public statusCode: number = 500,
   ) {
     super(message);
     this.name = 'WorkflowError';
@@ -352,7 +352,7 @@ export class ExecutionError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500
+    public statusCode: number = 500,
   ) {
     super(message);
     this.name = 'ExecutionError';
@@ -363,7 +363,7 @@ export class StateMachineError extends Error {
   constructor(
     message: string,
     public code: string,
-    public statusCode: number = 500
+    public statusCode: number = 500,
   ) {
     super(message);
     this.name = 'StateMachineError';

@@ -1,13 +1,18 @@
 # 🚀 Qylon AI Automation Platform
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main)
+[![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines)
+[![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary) ](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-**Qylon** is an AI automation platform that transforms manual business processes into intelligent, self-running systems. Built with a microservices architecture on DigitalOcean + Supabase.
+**Qylon** is an AI automation platform that transforms manual business processes
+into intelligent, self-running systems. Built with a microservices architecture
+on DigitalOcean + Supabase.
 
 ## 🏗️ Architecture Overview
 
-- **8 Microservices**: API Gateway, Security, User Management, Client Management, Meeting Intelligence, Content Creation, Workflow Automation, Integration Management, Notification Service, Analytics & Reporting
+- **8 Microservices**: API Gateway, Security, User Management, Client
+  Management, Meeting Intelligence, Content Creation, Workflow Automation,
+  Integration Management, Notification Service, Analytics & Reporting
 - **Event-Driven**: Asynchronous communication via Supabase Realtime
 - **Cloud-Native**: DigitalOcean App Platform + Supabase Backend-as-a-Service
 - **Security-First**: Supabase Auth + Row Level Security (RLS)
@@ -16,7 +21,8 @@
 
 ### Prerequisites
 
-- **Node.js 18+** (use [nvm](https://github.com/nvm-sh/nvm) for version management)
+- **Node.js 18+** (use [nvm](https://github.com/nvm-sh/nvm) for version
+  management)
 - **Python 3.9+** (for Python microservices)
 - **Docker** (for local Supabase development)
 - **Git** (for version control)
@@ -299,4 +305,5 @@ curl http://localhost:3001/health
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for
+details.

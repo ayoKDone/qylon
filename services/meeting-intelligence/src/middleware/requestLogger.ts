@@ -15,11 +15,7 @@ declare global {
 /**
  * Request logging middleware
  */
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   // Generate unique request ID
   req.requestId = uuidv4();
   req.startTime = Date.now();

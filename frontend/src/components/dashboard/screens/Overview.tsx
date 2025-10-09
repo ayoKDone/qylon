@@ -1,12 +1,5 @@
 // src/pages/DashboardOverview.tsx
-import {
-  Download,
-  Headphones,
-  Monitor,
-  Plus,
-  Smartphone,
-  Upload,
-} from 'lucide-react';
+import { Download, Headphones, Monitor, Plus, Smartphone, Upload } from 'lucide-react';
 import { useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import AIProcessingLive from '../widgets/AIProcessingLive';
@@ -50,19 +43,19 @@ export default function DashboardOverview() {
     });
   }, [setNavbar]);
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div className="lg:col-span-8">
+    <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
+      <div className='lg:col-span-8'>
         <StatsHeader
-          title="AI Command Center"
+          title='AI Command Center'
           rightContent={
-            <div className="flex items-center gap-3">
-              <Monitor className="w-5 h-5 text-gray-600" />
-              <Smartphone className="w-5 h-5 text-gray-600" />
-              <Headphones className="w-5 h-5 text-gray-600" />
+            <div className='flex items-center gap-3'>
+              <Monitor className='w-5 h-5 text-gray-600' />
+              <Smartphone className='w-5 h-5 text-gray-600' />
+              <Headphones className='w-5 h-5 text-gray-600' />
             </div>
           }
         >
-          <div className="mb-8">
+          <div className='mb-8'>
             <AIProcessingLive />
           </div>
           <div>
@@ -71,11 +64,11 @@ export default function DashboardOverview() {
         </StatsHeader>
       </div>
 
-      <div className="lg:col-span-4 flex flex-col gap-4">
-        <StatsHeader title="Quick Actions">
+      <div className='lg:col-span-4 flex flex-col gap-4'>
+        <StatsHeader title='Quick Actions'>
           <QuickActions actions={dashboardActions} />
         </StatsHeader>
-        <StatsHeader title="Recent Activity">
+        <StatsHeader title='Recent Activity'>
           {/* Recent activity content goes here */}
           <RecentActivity />
         </StatsHeader>

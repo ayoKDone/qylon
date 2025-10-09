@@ -100,10 +100,7 @@ describe('WhisperService', () => {
         responseFormat: 'invalid-format',
       } as any;
 
-      const result = await whisperService.transcribeAudio(
-        audioBuffer,
-        invalidOptions
-      );
+      const result = await whisperService.transcribeAudio(audioBuffer, invalidOptions);
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Invalid transcription options');
@@ -304,18 +301,15 @@ describe('WhisperService', () => {
         expect.objectContaining({
           duration: expect.any(Number),
           language: expect.any(String),
-        })
+        }),
       );
     });
 
     it('should log errors with context', async () => {
       // The current implementation doesn't make real API calls, so we test validation error logging
-      const result = await whisperService.transcribeAudio(
-        Buffer.from('test audio'),
-        {
-          language: 'invalid-language',
-        }
-      );
+      const result = await whisperService.transcribeAudio(Buffer.from('test audio'), {
+        language: 'invalid-language',
+      });
 
       // The service should handle validation errors gracefully
       expect(result.success).toBe(false);
