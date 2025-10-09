@@ -201,7 +201,9 @@ async def create_content(
 
 
 @app.get("/content/{content_id}", response_model=ContentResponse)
-async def get_content(content_id: str, current_user: dict = Depends(get_current_user)):
+async def get_content(
+    content_id: str, current_user: dict = Depends(get_current_user),
+):
     """Get content by ID"""
     try:
         # Retrieve content from database
@@ -483,7 +485,9 @@ async def list_content_from_db(
     return []
 
 
-async def save_template(template_request: TemplateRequest, current_user: dict) -> str:
+async def save_template(
+    template_request: TemplateRequest, current_user: dict
+) -> str:
     """Save template to database"""
     # This would integrate with Supabase
     template_id = (
