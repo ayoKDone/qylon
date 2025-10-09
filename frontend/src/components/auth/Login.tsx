@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -16,14 +16,7 @@ export default function Login() {
   const { user, loading } = useSupabaseSession();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && user) {
-      // Check if user has completed onboarding
-      checkOnboardingStatus();
-    }
-  }, [user, loading, navigate]);
-
-  const checkOnboardingStatus = async () => {
+  const checkOnboardingStatus = useCallback(async () => {
     try {
       const needsOnboarding = await authService.needsOnboarding();
       if (needsOnboarding) {
@@ -36,7 +29,14 @@ export default function Login() {
       // Default to onboarding if we can't determine status
       navigate('/setup');
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!loading && user) {
+      // Check if user has completed onboarding
+      checkOnboardingStatus();
+    }
+  }, [user, loading, checkOnboardingStatus]);
 
   const {
     register,

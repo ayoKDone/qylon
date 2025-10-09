@@ -7,8 +7,11 @@ export function useSupabaseSession() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     // Load initial session
     supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
       console.log('Initial session data:', data);
       setUser(data.session?.user ?? null);
       setLoading(false);
@@ -23,6 +26,7 @@ export function useSupabaseSession() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       setUser(session?.user ?? null);
       setLoading(false);
       if (session) {
@@ -32,7 +36,10 @@ export function useSupabaseSession() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return { user, loading };
