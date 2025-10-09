@@ -52,7 +52,7 @@ class TestContentCreation:
         return {
             "name": "Business Article Template",
             "content_type": "article",
-            "template_content": ("Template content with {variable1} and {variable2}"),
+            "template_content": "Template content with {variable1} and {variable2}",
             "variables": ["variable1", "variable2"],
             "description": "Template for business articles",
             "client_id": "client-123",
