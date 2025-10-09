@@ -54,16 +54,16 @@ app.add_middleware(
 
 
 class ContentRequest(BaseModel):
-    title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
-    topic: str = Field(..., min_length=1, max_length=100)
-    target_audience: str = Field(..., min_length=1, max_length=100)
-    tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
-    length: str = Field(..., pattern="^(short|medium|long)$")
-    keywords: Optional[List[str]] = Field(default=[], max_length=10)
-    client_id: str = Field(..., min_length=1)
-    meeting_id: Optional[str] = None
-    template_id: Optional[str] = None
+    title: str = Field(..., min_length=1, max_length=200),
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$"),
+    topic: str = Field(..., min_length=1, max_length=100),
+    target_audience: str = Field(..., min_length=1, max_length=100),
+    tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$"),
+    length: str = Field(..., pattern="^(short|medium|long)$"),
+    keywords: Optional[List[str]] = Field(default=[], max_length=10),
+    client_id: str = Field(..., min_length=1),
+    meeting_id: Optional[str] = None,
+    template_id: Optional[str] = None,
     metadata: Optional[Dict[str, Any]] = None
 
 
@@ -86,18 +86,18 @@ class ContentResponse(BaseModel):
 
 
 class ContentUpdateRequest(BaseModel):
-    title: Optional[str] = Field(None, min_length=1, max_length=200)
-    content: Optional[str] = None
-    status: Optional[str] = Field(None, pattern="^(draft|review|approved|published|archived)$")
+    title: Optional[str] = Field(None, min_length=1, max_length=200),
+    content: Optional[str] = None,
+    status: Optional[str] = Field(None, pattern="^(draft|review|approved|published|archived)$"),
     metadata: Optional[Dict[str, Any]] = None
 
 
 class TemplateRequest(BaseModel):
-    name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
-    template_content: str = Field(..., min_length=1)
-    variables: List[str] = Field(default=[])
-    description: Optional[str] = None
+    name: str = Field(..., min_length=1, max_length=100),
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$"),
+    template_content: str = Field(..., min_length=1),
+    variables: List[str] = Field(default=[]),
+    description: Optional[str] = None,
     client_id: str = Field(..., min_length=1)
 
 

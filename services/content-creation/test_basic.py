@@ -93,7 +93,11 @@ def test_ai_content_generation():
             if content_type == "article":
                 return f"# {content_request['title']}\n\nThis is a {tone} article about {topic}."
             elif content_type == "email":
-                return f"Subject: {content_request['title']}\n\nDear {content_request['target_audience']},\n\nThis email is about {topic}."
+                return (
+                    f"Subject: {content_request['title']}\n\n"
+                    f"Dear {content_request['target_audience']},\n\n"
+                    f"This email is about {topic}."
+                )
             else:
                 return f"Content about {topic} in a {tone} tone."
 
