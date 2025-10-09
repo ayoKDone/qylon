@@ -1,0 +1,177 @@
+name: qylon-production
+services:
+  - name: api-gateway
+    source_dir: /services/api-gateway
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 2
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: OPENAI_API_KEY
+        value: ${OPENAI_API_KEY}
+      - key: RECALL_AI_API_KEY
+        value: ${RECALL_AI_API_KEY}
+      - key: CORS_ORIGIN
+        value: ${CORS_ORIGIN}
+      - key: SECURITY_HEADERS
+        value: "true"
+      - key: HELMET_ENABLED
+        value: "true"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+  - name: meeting-intelligence
+    source_dir: /services/meeting-intelligence
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3003
+    routes:
+      - path: /api/meeting-intelligence
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3003"
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: OPENAI_API_KEY
+        value: ${OPENAI_API_KEY}
+      - key: RECALL_AI_API_KEY
+        value: ${RECALL_AI_API_KEY}
+      - key: RECALL_AI_BASE_URL
+        value: "https://us-east-1.recall.ai"
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+  - name: workflow-automation
+    source_dir: /services/workflow-automation
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3005
+    routes:
+      - path: /api/workflow-automation
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3005"
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+  - name: integration-management
+    source_dir: /services/integration-management
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    run_command: python -m uvicorn app.main:app --host 0.0.0.0 --port 3006
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3006
+    routes:
+      - path: /api/integration-management
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3006"
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+static_sites:
+  - name: frontend
+    source_dir: /frontend
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    build_command: npm run build
+    output_dir: /dist
+    routes:
+      - path: /
+    envs:
+      - key: VITE_SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
+      - key: VITE_API_URL
+        value: https://api-gateway-${APP_NAME}.ondigitalocean.app
+
+databases:
+  - name: qylon-production-db
+    engine: PG
+    version: "15"
+    size: db-s-2vcpu-4gb
+    num_nodes: 2
+    region: nyc3
+
+domains:
+  - domain: qylon.ai
+    type: PRIMARY
+  - domain: www.qylon.ai
+    type: ALIAS

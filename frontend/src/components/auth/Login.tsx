@@ -1,29 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { useSupabaseSession } from '../../hooks/useSupabaseSession';
 import { authService } from '../../services/authService';
 import type { LoginFormInputs } from '../../types/auth';
 import { getErrorMessage } from '../../utils/handleError';
-import { Divider } from '../UI/Divider';
-import { SocialLogin } from '../UI/SocialLogin';
-import Icon from '../icons/Icon';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { user, loading } = useSupabaseSession();
+  // const { user, loading } = useSupabaseSession();
+  const user = null;
+  const loading = false;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && user) {
-      // Check if user has completed onboarding
-      checkOnboardingStatus();
-    }
-  }, [user, loading, navigate]);
-
-  const checkOnboardingStatus = async () => {
+  const checkOnboardingStatus = useCallback(async () => {
     try {
       const needsOnboarding = await authService.needsOnboarding();
       if (needsOnboarding) {
@@ -36,7 +26,14 @@ export default function Login() {
       // Default to onboarding if we can't determine status
       navigate('/setup');
     }
-  };
+  }, [navigate]);
+
+  // useEffect(() => {
+  //   if (!loading && user) {
+  //     // Check if user has completed onboarding
+  //     checkOnboardingStatus();
+  //   }
+  // }, [user, loading, checkOnboardingStatus]);
 
   const {
     register,
@@ -69,7 +66,8 @@ export default function Login() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              <Icon name="arrowLeft" size={16} />
+              {/* <Icon name="arrowLeft" size={16} /> */}
+              ←
               <span className='text-sm'>Back to Home</span>
             </a>
           </div>
@@ -84,13 +82,7 @@ export default function Login() {
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               <label>Email</label>
               <input
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Please enter a valid email',
-                  },
-                })}
+                {...register('email')}
                 type='email'
                 id='email'
                 placeholder='olivia@untitledui.com'
@@ -103,9 +95,7 @@ export default function Login() {
               <label>Password</label>
               <div className='relative'>
                 <input
-                  {...register('password', {
-                    required: 'Password is required',
-                  })}
+                  {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id='password'
                   className='pr-10 w-full'
@@ -116,11 +106,7 @@ export default function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   className='absolute inset-y-0 right-0 flex xui-flex-ai-center px-2 text-gray-600'
                 >
-                  {showPassword ? (
-                    <FaEyeSlash className='h-5 w-5' />
-                  ) : (
-                    <FaEye className='h-5 w-5' />
-                  )}
+                  {showPassword ? '👁️' : '👁️‍🗨️'}
                 </button>
               </div>
               {errors.password && <span className='message'>{errors.password.message}</span>}
@@ -145,11 +131,11 @@ export default function Login() {
               disabled={isSubmitting}
               className='w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center'
             >
-              {isSubmitting ? <FaSpinner className='animate-spin h-6 w-6' /> : 'Sign In'}
+              {isSubmitting ? '⏳' : 'Sign In'}
             </button>
           </form>
-          <Divider label='or' />
-          <SocialLogin />
+          {/* <Divider label='or' />
+          <SocialLogin /> */}
           <p className='text-sm text-gray-500 xui-my-2'>
             Don’t have an account?{' '}
             <a href='/signup' className='text-purple-600 font-medium xui-text-dc-underline'>

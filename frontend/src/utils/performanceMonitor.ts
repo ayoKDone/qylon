@@ -10,13 +10,13 @@ interface PerformanceMetric {
   connection?: string;
 }
 
-interface CoreWebVitals {
-  CLS: number; // Cumulative Layout Shift
-  FID: number; // First Input Delay
-  FCP: number; // First Contentful Paint
-  LCP: number; // Largest Contentful Paint
-  TTFB: number; // Time to First Byte
-}
+// interface CoreWebVitals {
+//   CLS: number; // Cumulative Layout Shift
+//   FID: number; // First Input Delay
+//   FCP: number; // First Contentful Paint
+//   LCP: number; // Largest Contentful Paint
+//   TTFB: number; // Time to First Byte
+// }
 
 interface PerformanceConfig {
   apiEndpoint: string;
@@ -242,8 +242,8 @@ class PerformanceMonitor {
 
         if (navigation) {
           this.recordMetric('TTFB', navigation.responseStart - navigation.requestStart);
-          this.recordMetric('DOMContentLoaded', navigation.domContentLoadedEventEnd - navigation.navigationStart);
-          this.recordMetric('LoadComplete', navigation.loadEventEnd - navigation.navigationStart);
+          this.recordMetric('DOMContentLoaded', navigation.domContentLoadedEventEnd - navigation.fetchStart);
+          this.recordMetric('LoadComplete', navigation.loadEventEnd - navigation.fetchStart);
         }
       }, 0);
     });
@@ -417,14 +417,16 @@ export class PerformanceDashboard {
   }
 }
 
-// Initialize performance monitor
-export const performanceMonitor = new PerformanceMonitor({
-  apiEndpoint: '/api/performance/metrics',
-  sampleRate: 0.1, // Monitor 10% of users
-  batchSize: 10,
-  flushInterval: 30000, // 30 seconds
-  enableRealUserMonitoring: true,
-  enableSyntheticMonitoring: false
-});
+// Initialize performance monitor only in production
+export const performanceMonitor = import.meta.env.PROD
+  ? new PerformanceMonitor({
+      apiEndpoint: '/api/performance/metrics',
+      sampleRate: 0.1, // Monitor 10% of users
+      batchSize: 10,
+      flushInterval: 30000, // 30 seconds
+      enableRealUserMonitoring: true,
+      enableSyntheticMonitoring: false
+    })
+  : null;
 
 export default PerformanceMonitor;

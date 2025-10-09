@@ -10,12 +10,12 @@ import { serviceWorkerManager } from './utils/serviceWorker';
 // Initialize resource hints for performance
 initializeResourceHints();
 
-// Initialize performance monitoring
+// Initialize performance monitoring only in production
 if (import.meta.env.PROD) {
   performanceMonitor;
 }
 
-// Register service worker
+// Register service worker only in production
 if (import.meta.env.PROD) {
   serviceWorkerManager.register();
 }
