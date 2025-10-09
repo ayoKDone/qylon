@@ -1,6 +1,6 @@
-import { Menu, X, Zap } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import Icon from './icons/Icon';
 
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,9 +17,8 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed w-full top-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'glass-heavy border-b border-white/20' : 'bg-transparent'
-      }`}
+      className={`fixed w-full top-0 z-50 transition-all duration-500 ${isScrolled ? 'glass-heavy border-b border-white/20' : 'bg-transparent'
+        }`}
     >
       <nav className='container mx-auto px-6 py-6'>
         <div className='flex items-center justify-between'>
@@ -27,7 +26,7 @@ const Header: React.FC = () => {
           <div className='flex items-center space-x-3'>
             <div className='flex items-center space-x-3'>
               <div className='w-10 h-10 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg'>
-                <Zap className='w-5 h-5 text-white' />
+                <Icon name="zap" size={20} className="text-white" />
               </div>
               <div className='flex flex-col hidden sm:block'>
                 <span className='text-2xl font-bold text-white drop-shadow-lg'>Qylon</span>
@@ -40,7 +39,7 @@ const Header: React.FC = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex items-center space-x-8'>
+          <div className='hidden md:flex items-center space-x-6'>
             <ThemeToggle />
             <a
               href='/demo'
@@ -60,12 +59,22 @@ const Header: React.FC = () => {
             >
               How it works
             </a>
-            <a
-              href='#waitlist'
-              className='px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 inline-block text-center shadow-lg'
-            >
-              Join waitlist
-            </a>
+
+            {/* Auth Buttons */}
+            <div className='flex items-center space-x-3'>
+              <a
+                href='/login'
+                className='px-4 py-2 text-white/80 hover:text-white font-medium transition-colors duration-200'
+              >
+                Sign In
+              </a>
+              <a
+                href='/signup'
+                className='px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 inline-block text-center shadow-lg'
+              >
+                Sign Up
+              </a>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -73,7 +82,7 @@ const Header: React.FC = () => {
             className='md:hidden transition-colors duration-200 text-white/80 hover:text-white'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className='w-6 h-6' /> : <Menu className='w-6 h-6' />}
+            {isMobileMenuOpen ? <Icon name="x" size={24} /> : <Icon name="menu" size={24} />}
           </button>
         </div>
 
@@ -105,13 +114,24 @@ const Header: React.FC = () => {
               >
                 How it works
               </a>
-              <a
-                href='#waitlist'
-                className='px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 shadow-lg'
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Join waitlist
-              </a>
+
+              {/* Mobile Auth Buttons */}
+              <div className='flex flex-col space-y-3 pt-2 border-t border-white/20'>
+                <a
+                  href='/login'
+                  className='px-4 py-2 text-white/80 hover:text-white font-medium transition-colors duration-200 text-center'
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign In
+                </a>
+                <a
+                  href='/signup'
+                  className='px-6 py-3 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl hover:scale-105 transition-all duration-200 shadow-lg text-center'
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign Up
+                </a>
+              </div>
             </div>
           </div>
         )}

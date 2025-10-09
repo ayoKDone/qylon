@@ -11,4 +11,8 @@ router.post('/login', async (req: Request, res: Response) => {
   await loginUser(req, res);
 });
 
+router.post('/onboarding/complete', async (req: Request, res: Response) => {
+  await completeOnboarding(req, res);
+});
+
 export default router;

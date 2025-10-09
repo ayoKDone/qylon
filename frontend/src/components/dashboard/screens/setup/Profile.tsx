@@ -1,8 +1,9 @@
-import { CameraIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { onboardingService } from '../../../../services/onboardingService';
+import Icon from '../../../icons/Icon';
 
 interface FormValues {
   image: FileList;
@@ -66,9 +67,25 @@ export default function Profile() {
     }
   }, [imageFiles]);
 
-  const submitProfile = (files: FormValues) => {
-    console.log(files);
-    navigate('/setup/add-calendar');
+  const submitProfile = async (data: FormValues) => {
+    try {
+      // Update onboarding progress with profile data
+      await onboardingService.updateOnboardingProgress('profile', {
+        full_name: data.names,
+        company_name: data.company_name,
+        role: data.role_selection,
+        company_size: data.team_size,
+        industry: data.industry_selection,
+        profile_image: data.image?.[0] // Store file reference
+      });
+
+      // Navigate to next step
+      navigate('/setup/add-calendar');
+    } catch (error) {
+      console.error('Error saving profile:', error);
+      // Still navigate to next step even if save fails
+      navigate('/setup/add-calendar');
+    }
   };
 
   return (
@@ -104,7 +121,7 @@ export default function Profile() {
               className='xui-w-fluid-100 xui-position-absolute xui-h-[32px] xui-bg-[#000000b8] xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-text-white'
               style={{ bottom: 0, left: 0 }}
             >
-              <CameraIcon size={16} />
+              <Icon name="camera" size={16} />
             </div>
           </label>
           <div className=''>
