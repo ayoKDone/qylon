@@ -43,7 +43,11 @@
   },
   "files.exclude": {
     "!**/.env.example": true,
+<<<<<<< HEAD
     "**/.env": true,
+=======
+    "**/.env": false,
+>>>>>>> 0e59ba2 (Initial commit excluding venv)
     "**/.env.*": true,
     "**/.pytest_cache": true,
     "**/__pycache__": true,
