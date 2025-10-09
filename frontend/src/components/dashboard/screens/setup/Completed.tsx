@@ -16,7 +16,7 @@ export default function Completed() {
     // let it play for ~1.8s then navigate
     setTimeout(() => {
       setShowConfetti(false);
-    }, 5200);
+    }, 6000);
   };
   useEffect(() => {
     handleStart();
