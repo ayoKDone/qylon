@@ -6,7 +6,9 @@
 
 ## 🎯 Purpose
 
-This guide provides comprehensive rules and best practices for using AI tools (Cursor, GitHub Copilot, ChatGPT, etc.) in the Qylon project to avoid common pitfalls and ensure production-ready code.
+This guide provides comprehensive rules and best practices for using AI tools
+(Cursor, GitHub Copilot, ChatGPT, etc.) in the Qylon project to avoid common
+pitfalls and ensure production-ready code.
 
 ## 🚫 Critical Anti-Patterns to Avoid
 
@@ -89,7 +91,7 @@ This guide provides comprehensive rules and best practices for using AI tools (C
 export const authMiddleware = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
@@ -174,7 +176,7 @@ SELECT * FROM meetings WHERE client_id = 'some-id';
 ```typescript
 // ✅ CORRECT: Comprehensive error handling
 export const processMeeting = async (
-  meetingId: string
+  meetingId: string,
 ): Promise<MeetingResult> => {
   try {
     logger.info('Processing meeting started', { meetingId });
@@ -249,7 +251,7 @@ interface MeetingResponse {
 
 export const createMeeting = async (
   request: MeetingRequest,
-  user: User
+  user: User,
 ): Promise<MeetingResponse> => {
   // Implementation with proper types
 };
@@ -294,7 +296,7 @@ describe('MeetingService', () => {
       };
 
       await expect(
-        meetingService.createMeeting(mockRequest, mockUser)
+        meetingService.createMeeting(mockRequest, mockUser),
       ).rejects.toThrow('Access denied to client');
     });
 
@@ -303,7 +305,7 @@ describe('MeetingService', () => {
       jest.spyOn(db, 'create').mockRejectedValue(new Error('Database error'));
 
       await expect(
-        meetingService.createMeeting(validRequest, validUser)
+        meetingService.createMeeting(validRequest, validUser),
       ).rejects.toThrow('Database error');
     });
   });
@@ -599,4 +601,6 @@ git push
 
 ---
 
-**Remember**: This is a production system handling real user data. Every line of code must be secure, tested, and production-ready. When in doubt, ask for clarification rather than making assumptions.
+**Remember**: This is a production system handling real user data. Every line of
+code must be secure, tested, and production-ready. When in doubt, ask for
+clarification rather than making assumptions.

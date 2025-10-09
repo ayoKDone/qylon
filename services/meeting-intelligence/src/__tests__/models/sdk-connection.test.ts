@@ -3,11 +3,7 @@
  * Tests data validation, serialization, and business logic
  */
 
-import {
-  SDKConnection,
-  SDKConnectionStatus,
-  SDKPlatform,
-} from '../../models/sdk-connection';
+import { SDKConnection, SDKConnectionStatus, SDKPlatform } from '../../models/sdk-connection';
 
 describe('SDKConnection', () => {
   describe('constructor and initialization', () => {
@@ -48,7 +44,7 @@ describe('SDKConnection', () => {
 
       expect(connection.id).toBeDefined();
       expect(connection.id).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
       );
     });
 
@@ -77,18 +73,10 @@ describe('SDKConnection', () => {
 
       expect(connection.createdAt).toBeInstanceOf(Date);
       expect(connection.updatedAt).toBeInstanceOf(Date);
-      expect(connection.createdAt.getTime()).toBeGreaterThanOrEqual(
-        beforeCreation.getTime()
-      );
-      expect(connection.createdAt.getTime()).toBeLessThanOrEqual(
-        afterCreation.getTime()
-      );
-      expect(connection.updatedAt.getTime()).toBeGreaterThanOrEqual(
-        beforeCreation.getTime()
-      );
-      expect(connection.updatedAt.getTime()).toBeLessThanOrEqual(
-        afterCreation.getTime()
-      );
+      expect(connection.createdAt.getTime()).toBeGreaterThanOrEqual(beforeCreation.getTime());
+      expect(connection.createdAt.getTime()).toBeLessThanOrEqual(afterCreation.getTime());
+      expect(connection.updatedAt.getTime()).toBeGreaterThanOrEqual(beforeCreation.getTime());
+      expect(connection.updatedAt.getTime()).toBeLessThanOrEqual(afterCreation.getTime());
     });
   });
 
@@ -100,9 +88,7 @@ describe('SDKConnection', () => {
         apiKey: 'test-api-key',
       };
 
-      expect(() => new SDKConnection(invalidData)).toThrow(
-        'User ID is required'
-      );
+      expect(() => new SDKConnection(invalidData)).toThrow('User ID is required');
     });
 
     it('should validate platform enum', () => {
@@ -133,9 +119,7 @@ describe('SDKConnection', () => {
         apiKey: '',
       };
 
-      expect(() => new SDKConnection(invalidData)).toThrow(
-        'API key is required'
-      );
+      expect(() => new SDKConnection(invalidData)).toThrow('API key is required');
     });
 
     it('should validate metadata structure', () => {
@@ -146,9 +130,7 @@ describe('SDKConnection', () => {
         metadata: 'invalid-metadata' as any,
       };
 
-      expect(() => new SDKConnection(invalidData)).toThrow(
-        'Metadata must be an object'
-      );
+      expect(() => new SDKConnection(invalidData)).toThrow('Metadata must be an object');
     });
   });
 
@@ -168,9 +150,7 @@ describe('SDKConnection', () => {
         connection.updateStatus(SDKConnectionStatus.ACTIVE);
 
         expect(connection.status).toBe(SDKConnectionStatus.ACTIVE);
-        expect(connection.updatedAt.getTime()).toBeGreaterThan(
-          originalUpdatedAt.getTime()
-        );
+        expect(connection.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
       }, 10);
     });
 
@@ -181,9 +161,7 @@ describe('SDKConnection', () => {
         apiKey: 'test-api-key',
       });
 
-      expect(() => connection.updateStatus('invalid-status' as any)).toThrow(
-        'Invalid status'
-      );
+      expect(() => connection.updateStatus('invalid-status' as any)).toThrow('Invalid status');
     });
   });
 
@@ -207,9 +185,7 @@ describe('SDKConnection', () => {
         connection.updateMetadata(newMetadata);
 
         expect(connection.metadata).toEqual(newMetadata);
-        expect(connection.updatedAt.getTime()).toBeGreaterThan(
-          originalUpdatedAt.getTime()
-        );
+        expect(connection.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
       }, 10);
     });
 
@@ -220,9 +196,9 @@ describe('SDKConnection', () => {
         apiKey: 'test-api-key',
       });
 
-      expect(() =>
-        connection.updateMetadata('invalid-metadata' as any)
-      ).toThrow('Metadata must be an object');
+      expect(() => connection.updateMetadata('invalid-metadata' as any)).toThrow(
+        'Metadata must be an object',
+      );
     });
   });
 
@@ -320,12 +296,8 @@ describe('SDKConnection', () => {
       expect(connection.apiKey).toBe('test-api-key');
       expect(connection.status).toBe(SDKConnectionStatus.ACTIVE);
       expect(connection.metadata).toEqual({ botId: 'test-bot-id' });
-      expect(connection.createdAt).toEqual(
-        new Date('2023-01-01T00:00:00.000Z')
-      );
-      expect(connection.updatedAt).toEqual(
-        new Date('2023-01-01T00:00:00.000Z')
-      );
+      expect(connection.createdAt).toEqual(new Date('2023-01-01T00:00:00.000Z'));
+      expect(connection.updatedAt).toEqual(new Date('2023-01-01T00:00:00.000Z'));
     });
 
     it('should handle missing optional fields', () => {

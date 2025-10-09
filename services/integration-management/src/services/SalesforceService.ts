@@ -78,13 +78,7 @@ export class SalesforceService extends BaseCRMService {
         sandbox = false,
       } = credentials;
 
-      if (
-        !clientId ||
-        !clientSecret ||
-        !username ||
-        !password ||
-        !securityToken
-      ) {
+      if (!clientId || !clientSecret || !username || !password || !securityToken) {
         throw new Error('Missing required Salesforce credentials');
       }
 
@@ -100,22 +94,17 @@ export class SalesforceService extends BaseCRMService {
         password: password + securityToken,
       });
 
-      const response = await this.apiClient.post<SalesforceAuthResponse>(
-        authUrl,
-        authData,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      );
+      const response = await this.apiClient.post<SalesforceAuthResponse>(authUrl, authData, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
 
       this.accessToken = response.data.access_token;
       this.instanceUrl = response.data.instance_url;
 
       this.apiClient.defaults.baseURL = this.instanceUrl;
-      this.apiClient.defaults.headers.common['Authorization'] =
-        `Bearer ${this.accessToken}`;
+      this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
 
       this.authenticated = true;
 
@@ -157,9 +146,9 @@ export class SalesforceService extends BaseCRMService {
         ORDER BY LastModifiedDate DESC
       `;
 
-      const response = await this.apiClient.get<
-        SalesforceQueryResponse<SalesforceContact>
-      >(`/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`);
+      const response = await this.apiClient.get<SalesforceQueryResponse<SalesforceContact>>(
+        `/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`,
+      );
 
       const salesforceContacts = response.data.records;
       recordsProcessed = salesforceContacts.length;
@@ -170,10 +159,7 @@ export class SalesforceService extends BaseCRMService {
           const contact = this.transformContactFromCRM(salesforceContact);
 
           // Check if contact exists in our system
-          const existingContact = await this.getContactFromDatabase(
-            contact.id,
-            userId
-          );
+          const existingContact = await this.getContactFromDatabase(contact.id, userId);
 
           if (existingContact) {
             // Update existing contact
@@ -187,7 +173,7 @@ export class SalesforceService extends BaseCRMService {
         } catch (error) {
           recordsFailed++;
           errors.push(
-            `Contact ${salesforceContact.Id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Contact ${salesforceContact.Id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -200,7 +186,7 @@ export class SalesforceService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -222,10 +208,7 @@ export class SalesforceService extends BaseCRMService {
     }
   }
 
-  async syncOpportunities(
-    userId: string,
-    clientId: string
-  ): Promise<SyncResult> {
+  async syncOpportunities(userId: string, clientId: string): Promise<SyncResult> {
     const startTime = Date.now();
     let recordsProcessed = 0;
     let recordsCreated = 0;
@@ -252,9 +235,9 @@ export class SalesforceService extends BaseCRMService {
         ORDER BY LastModifiedDate DESC
       `;
 
-      const response = await this.apiClient.get<
-        SalesforceQueryResponse<SalesforceOpportunity>
-      >(`/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`);
+      const response = await this.apiClient.get<SalesforceQueryResponse<SalesforceOpportunity>>(
+        `/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`,
+      );
 
       const salesforceOpportunities = response.data.records;
       recordsProcessed = salesforceOpportunities.length;
@@ -262,37 +245,24 @@ export class SalesforceService extends BaseCRMService {
       // Process each opportunity
       for (const salesforceOpportunity of salesforceOpportunities) {
         try {
-          const opportunity = this.transformOpportunityFromCRM(
-            salesforceOpportunity
-          );
+          const opportunity = this.transformOpportunityFromCRM(salesforceOpportunity);
 
           // Check if opportunity exists in our system
-          const existingOpportunity = await this.getOpportunityFromDatabase(
-            opportunity.id,
-            userId
-          );
+          const existingOpportunity = await this.getOpportunityFromDatabase(opportunity.id, userId);
 
           if (existingOpportunity) {
             // Update existing opportunity
-            await this.updateOpportunityInDatabase(
-              opportunity.id,
-              opportunity,
-              userId
-            );
+            await this.updateOpportunityInDatabase(opportunity.id, opportunity, userId);
             recordsUpdated++;
           } else {
             // Create new opportunity
-            await this.createOpportunityInDatabase(
-              opportunity,
-              userId,
-              clientId
-            );
+            await this.createOpportunityInDatabase(opportunity, userId, clientId);
             recordsCreated++;
           }
         } catch (error) {
           recordsFailed++;
           errors.push(
-            `Opportunity ${salesforceOpportunity.Id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `Opportunity ${salesforceOpportunity.Id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
         }
       }
@@ -305,7 +275,7 @@ export class SalesforceService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -339,7 +309,7 @@ export class SalesforceService extends BaseCRMService {
 
       const response = await this.apiClient.post(
         '/services/data/v58.0/sobjects/Contact/',
-        salesforceContact
+        salesforceContact,
       );
 
       const createdContact = {
@@ -358,22 +328,17 @@ export class SalesforceService extends BaseCRMService {
     }
   }
 
-  async updateContact(
-    contactId: string,
-    contact: Partial<CRMContact>
-  ): Promise<CRMContact> {
+  async updateContact(contactId: string, contact: Partial<CRMContact>): Promise<CRMContact> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Salesforce');
       }
 
-      const salesforceContact = this.transformContactToCRM(
-        contact as CRMContact
-      );
+      const salesforceContact = this.transformContactToCRM(contact as CRMContact);
 
       await this.apiClient.patch(
         `/services/data/v58.0/sobjects/Contact/${contactId}`,
-        salesforceContact
+        salesforceContact,
       );
 
       const updatedContact = await this.getContact(contactId);
@@ -392,9 +357,7 @@ export class SalesforceService extends BaseCRMService {
     }
   }
 
-  async createOpportunity(
-    opportunity: CRMOpportunity
-  ): Promise<CRMOpportunity> {
+  async createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity> {
     try {
       this.validateOpportunity(opportunity);
 
@@ -406,7 +369,7 @@ export class SalesforceService extends BaseCRMService {
 
       const response = await this.apiClient.post(
         '/services/data/v58.0/sobjects/Opportunity/',
-        salesforceOpportunity
+        salesforceOpportunity,
       );
 
       const createdOpportunity = {
@@ -427,20 +390,18 @@ export class SalesforceService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>
+    opportunity: Partial<CRMOpportunity>,
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Salesforce');
       }
 
-      const salesforceOpportunity = this.transformOpportunityToCRM(
-        opportunity as CRMOpportunity
-      );
+      const salesforceOpportunity = this.transformOpportunityToCRM(opportunity as CRMOpportunity);
 
       await this.apiClient.patch(
         `/services/data/v58.0/sobjects/Opportunity/${opportunityId}`,
-        salesforceOpportunity
+        salesforceOpportunity,
       );
 
       const updatedOpportunity = await this.getOpportunity(opportunityId);
@@ -466,7 +427,7 @@ export class SalesforceService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<SalesforceContact>(
-        `/services/data/v58.0/sobjects/Contact/${contactId}`
+        `/services/data/v58.0/sobjects/Contact/${contactId}`,
       );
 
       return this.transformContactFromCRM(response.data);
@@ -485,7 +446,7 @@ export class SalesforceService extends BaseCRMService {
       }
 
       const response = await this.apiClient.get<SalesforceOpportunity>(
-        `/services/data/v58.0/sobjects/Opportunity/${opportunityId}`
+        `/services/data/v58.0/sobjects/Opportunity/${opportunityId}`,
       );
 
       return this.transformOpportunityFromCRM(response.data);
@@ -511,22 +472,17 @@ export class SalesforceService extends BaseCRMService {
         LIMIT 50
       `;
 
-      const response = await this.apiClient.get<
-        SalesforceQueryResponse<SalesforceContact>
-      >(`/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`);
-
-      return response.data.records.map(contact =>
-        this.transformContactFromCRM(contact)
+      const response = await this.apiClient.get<SalesforceQueryResponse<SalesforceContact>>(
+        `/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`,
       );
+
+      return response.data.records.map(contact => this.transformContactFromCRM(contact));
     } catch (error) {
       throw await this.handleApiError(error, 'Search Contacts');
     }
   }
 
-  async searchOpportunities(
-    query: string,
-    _userId: string
-  ): Promise<CRMOpportunity[]> {
+  async searchOpportunities(query: string, _userId: string): Promise<CRMOpportunity[]> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Salesforce');
@@ -540,12 +496,12 @@ export class SalesforceService extends BaseCRMService {
         LIMIT 50
       `;
 
-      const response = await this.apiClient.get<
-        SalesforceQueryResponse<SalesforceOpportunity>
-      >(`/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`);
+      const response = await this.apiClient.get<SalesforceQueryResponse<SalesforceOpportunity>>(
+        `/services/data/v58.0/query/?q=${encodeURIComponent(soql)}`,
+      );
 
       return response.data.records.map(opportunity =>
-        this.transformOpportunityFromCRM(opportunity)
+        this.transformOpportunityFromCRM(opportunity),
       );
     } catch (error) {
       throw await this.handleApiError(error, 'Search Opportunities');
@@ -555,7 +511,7 @@ export class SalesforceService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -564,7 +520,7 @@ export class SalesforceService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -572,14 +528,14 @@ export class SalesforceService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -588,7 +544,7 @@ export class SalesforceService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -596,7 +552,7 @@ export class SalesforceService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

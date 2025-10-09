@@ -133,15 +133,16 @@ export class PipedriveService extends BaseCRMService {
       let hasMore = true;
 
       while (hasMore) {
-        const response = await this.apiClient.get<
-          PipedriveResponse<PipedrivePerson[]>
-        >('/persons', {
-          params: {
-            api_token: this.apiToken,
-            start,
-            limit,
+        const response = await this.apiClient.get<PipedriveResponse<PipedrivePerson[]>>(
+          '/persons',
+          {
+            params: {
+              api_token: this.apiToken,
+              start,
+              limit,
+            },
           },
-        });
+        );
 
         if (!response.data.success) {
           throw new Error('Failed to fetch persons from Pipedrive');
@@ -156,10 +157,7 @@ export class PipedriveService extends BaseCRMService {
             const contact = this.transformContactFromCRM(pipedrivePerson);
 
             // Check if contact exists in our system
-            const existingContact = await this.getContactFromDatabase(
-              contact.id,
-              userId
-            );
+            const existingContact = await this.getContactFromDatabase(contact.id, userId);
 
             if (existingContact) {
               // Update existing contact
@@ -173,15 +171,13 @@ export class PipedriveService extends BaseCRMService {
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              `Person ${pipedrivePerson.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
           }
         }
 
         // Check if there are more pages
-        hasMore =
-          response.data.additional_data?.pagination?.more_items_in_collection ||
-          false;
+        hasMore = response.data.additional_data?.pagination?.more_items_in_collection || false;
         start += limit;
       }
 
@@ -193,7 +189,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_contacts_completed', {
@@ -215,10 +211,7 @@ export class PipedriveService extends BaseCRMService {
     }
   }
 
-  async syncOpportunities(
-    userId: string,
-    clientId: string
-  ): Promise<SyncResult> {
+  async syncOpportunities(userId: string, clientId: string): Promise<SyncResult> {
     const startTime = Date.now();
     let recordsProcessed = 0;
     let recordsCreated = 0;
@@ -241,9 +234,7 @@ export class PipedriveService extends BaseCRMService {
       let hasMore = true;
 
       while (hasMore) {
-        const response = await this.apiClient.get<
-          PipedriveResponse<PipedriveDeal[]>
-        >('/deals', {
+        const response = await this.apiClient.get<PipedriveResponse<PipedriveDeal[]>>('/deals', {
           params: {
             api_token: this.apiToken,
             start,
@@ -266,38 +257,28 @@ export class PipedriveService extends BaseCRMService {
             // Check if opportunity exists in our system
             const existingOpportunity = await this.getOpportunityFromDatabase(
               opportunity.id,
-              userId
+              userId,
             );
 
             if (existingOpportunity) {
               // Update existing opportunity
-              await this.updateOpportunityInDatabase(
-                opportunity.id,
-                opportunity,
-                userId
-              );
+              await this.updateOpportunityInDatabase(opportunity.id, opportunity, userId);
               recordsUpdated++;
             } else {
               // Create new opportunity
-              await this.createOpportunityInDatabase(
-                opportunity,
-                userId,
-                clientId
-              );
+              await this.createOpportunityInDatabase(opportunity, userId, clientId);
               recordsCreated++;
             }
           } catch (error) {
             recordsFailed++;
             errors.push(
-              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+              `Deal ${pipedriveDeal.id}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             );
           }
         }
 
         // Check if there are more pages
-        hasMore =
-          response.data.additional_data?.pagination?.more_items_in_collection ||
-          false;
+        hasMore = response.data.additional_data?.pagination?.more_items_in_collection || false;
         start += limit;
       }
 
@@ -309,7 +290,7 @@ export class PipedriveService extends BaseCRMService {
         recordsUpdated,
         recordsFailed,
         errors,
-        duration
+        duration,
       );
 
       await this.logOperation('sync_opportunities_completed', {
@@ -366,10 +347,7 @@ export class PipedriveService extends BaseCRMService {
     }
   }
 
-  async updateContact(
-    contactId: string,
-    contact: Partial<CRMContact>
-  ): Promise<CRMContact> {
+  async updateContact(contactId: string, contact: Partial<CRMContact>): Promise<CRMContact> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Pipedrive');
@@ -402,9 +380,7 @@ export class PipedriveService extends BaseCRMService {
     }
   }
 
-  async createOpportunity(
-    opportunity: CRMOpportunity
-  ): Promise<CRMOpportunity> {
+  async createOpportunity(opportunity: CRMOpportunity): Promise<CRMOpportunity> {
     try {
       this.validateOpportunity(opportunity);
 
@@ -441,16 +417,14 @@ export class PipedriveService extends BaseCRMService {
 
   async updateOpportunity(
     opportunityId: string,
-    opportunity: Partial<CRMOpportunity>
+    opportunity: Partial<CRMOpportunity>,
   ): Promise<CRMOpportunity> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Pipedrive');
       }
 
-      const pipedriveDeal = this.transformOpportunityToCRM(
-        opportunity as CRMOpportunity
-      );
+      const pipedriveDeal = this.transformOpportunityToCRM(opportunity as CRMOpportunity);
 
       const response = await this.apiClient.put(`/deals/${opportunityId}`, {
         ...pipedriveDeal,
@@ -483,11 +457,12 @@ export class PipedriveService extends BaseCRMService {
         throw new Error('Not authenticated with Pipedrive');
       }
 
-      const response = await this.apiClient.get<
-        PipedriveResponse<PipedrivePerson>
-      >(`/persons/${contactId}`, {
-        params: { api_token: this.apiToken },
-      });
+      const response = await this.apiClient.get<PipedriveResponse<PipedrivePerson>>(
+        `/persons/${contactId}`,
+        {
+          params: { api_token: this.apiToken },
+        },
+      );
 
       if (!response.data.success) {
         return null;
@@ -508,11 +483,12 @@ export class PipedriveService extends BaseCRMService {
         throw new Error('Not authenticated with Pipedrive');
       }
 
-      const response = await this.apiClient.get<
-        PipedriveResponse<PipedriveDeal>
-      >(`/deals/${opportunityId}`, {
-        params: { api_token: this.apiToken },
-      });
+      const response = await this.apiClient.get<PipedriveResponse<PipedriveDeal>>(
+        `/deals/${opportunityId}`,
+        {
+          params: { api_token: this.apiToken },
+        },
+      );
 
       if (!response.data.success) {
         return null;
@@ -533,71 +509,62 @@ export class PipedriveService extends BaseCRMService {
         throw new Error('Not authenticated with Pipedrive');
       }
 
-      const response = await this.apiClient.get<
-        PipedriveSearchResponse<PipedrivePerson>
-      >('/persons/search', {
-        params: {
-          api_token: this.apiToken,
-          term: query,
-          fields: 'name,email',
-          limit: 50,
+      const response = await this.apiClient.get<PipedriveSearchResponse<PipedrivePerson>>(
+        '/persons/search',
+        {
+          params: {
+            api_token: this.apiToken,
+            term: query,
+            fields: 'name,email',
+            limit: 50,
+          },
         },
-      });
+      );
 
       if (!response.data.success) {
         return [];
       }
 
-      return response.data.data.items.map(person =>
-        this.transformContactFromCRM(person)
-      );
+      return response.data.data.items.map(person => this.transformContactFromCRM(person));
     } catch (error) {
       throw await this.handleApiError(error, 'Search Contacts');
     }
   }
 
-  async searchOpportunities(
-    query: string,
-    _userId: string
-  ): Promise<CRMOpportunity[]> {
+  async searchOpportunities(query: string, _userId: string): Promise<CRMOpportunity[]> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Pipedrive');
       }
 
-      const response = await this.apiClient.get<
-        PipedriveSearchResponse<PipedriveDeal>
-      >('/deals/search', {
-        params: {
-          api_token: this.apiToken,
-          term: query,
-          fields: 'title',
-          limit: 50,
+      const response = await this.apiClient.get<PipedriveSearchResponse<PipedriveDeal>>(
+        '/deals/search',
+        {
+          params: {
+            api_token: this.apiToken,
+            term: query,
+            fields: 'title',
+            limit: 50,
+          },
         },
-      });
+      );
 
       if (!response.data.success) {
         return [];
       }
 
-      return response.data.data.items.map(deal =>
-        this.transformOpportunityFromCRM(deal)
-      );
+      return response.data.data.items.map(deal => this.transformOpportunityFromCRM(deal));
     } catch (error) {
       throw await this.handleApiError(error, 'Search Opportunities');
     }
   }
 
   // Pipedrive-specific transformation methods
-  protected override transformContactFromCRM(
-    pipedrivePerson: PipedrivePerson
-  ): CRMContact {
+  protected override transformContactFromCRM(pipedrivePerson: PipedrivePerson): CRMContact {
     const primaryEmail =
-      pipedrivePerson.email?.find(e => e.primary)?.value ||
-      pipedrivePerson.email?.[0]?.value;
+      pipedrivePerson.email?.find(e => e.primary)?.value || pipedrivePerson.email?.[0]?.value;
     const primaryPhone =
-      pipedrivePerson.phone?.find(p => p.primary)?.value ||
-      pipedrivePerson.phone?.[0]?.value;
+      pipedrivePerson.phone?.find(p => p.primary)?.value || pipedrivePerson.phone?.[0]?.value;
 
     return {
       id: pipedrivePerson.id.toString(),
@@ -614,9 +581,7 @@ export class PipedriveService extends BaseCRMService {
     };
   }
 
-  protected override transformOpportunityFromCRM(
-    pipedriveDeal: PipedriveDeal
-  ): CRMOpportunity {
+  protected override transformOpportunityFromCRM(pipedriveDeal: PipedriveDeal): CRMOpportunity {
     return {
       id: pipedriveDeal.id.toString(),
       name: pipedriveDeal.title,
@@ -632,35 +597,25 @@ export class PipedriveService extends BaseCRMService {
     };
   }
 
-  protected override transformContactToCRM(
-    contact: CRMContact
-  ): Record<string, any> {
+  protected override transformContactToCRM(contact: CRMContact): Record<string, any> {
     return {
       name: `${contact.firstName || ''} ${contact.lastName || ''}`.trim(),
       first_name: contact.firstName,
       last_name: contact.lastName,
-      email: contact.email
-        ? [{ value: contact.email, primary: true }]
-        : undefined,
-      phone: contact.phone
-        ? [{ value: contact.phone, primary: true }]
-        : undefined,
+      email: contact.email ? [{ value: contact.email, primary: true }] : undefined,
+      phone: contact.phone ? [{ value: contact.phone, primary: true }] : undefined,
       org_name: contact.company,
       ...contact.customFields,
     };
   }
 
-  protected override transformOpportunityToCRM(
-    opportunity: CRMOpportunity
-  ): Record<string, any> {
+  protected override transformOpportunityToCRM(opportunity: CRMOpportunity): Record<string, any> {
     return {
       title: opportunity.name,
       value: opportunity.amount,
       stage_id: opportunity.stage ? parseInt(opportunity.stage) : undefined,
       close_time: opportunity.closeDate,
-      person_id: opportunity.contactId
-        ? parseInt(opportunity.contactId)
-        : undefined,
+      person_id: opportunity.contactId ? parseInt(opportunity.contactId) : undefined,
       ...opportunity.customFields,
     };
   }
@@ -668,7 +623,7 @@ export class PipedriveService extends BaseCRMService {
   // Database helper methods (to be implemented with Supabase)
   private async getContactFromDatabase(
     _contactId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMContact | null> {
     // TODO: Implement Supabase query
     return null;
@@ -677,7 +632,7 @@ export class PipedriveService extends BaseCRMService {
   private async createContactInDatabase(
     _contact: CRMContact,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -685,14 +640,14 @@ export class PipedriveService extends BaseCRMService {
   private async updateContactInDatabase(
     _contactId: string,
     _contact: CRMContact,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }
 
   private async getOpportunityFromDatabase(
     _opportunityId: string,
-    _userId: string
+    _userId: string,
   ): Promise<CRMOpportunity | null> {
     // TODO: Implement Supabase query
     return null;
@@ -701,7 +656,7 @@ export class PipedriveService extends BaseCRMService {
   private async createOpportunityInDatabase(
     _opportunity: CRMOpportunity,
     _userId: string,
-    _clientId: string
+    _clientId: string,
   ): Promise<void> {
     // TODO: Implement Supabase insert
   }
@@ -709,7 +664,7 @@ export class PipedriveService extends BaseCRMService {
   private async updateOpportunityInDatabase(
     _opportunityId: string,
     _opportunity: CRMOpportunity,
-    _userId: string
+    _userId: string,
   ): Promise<void> {
     // TODO: Implement Supabase update
   }

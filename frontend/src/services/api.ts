@@ -9,14 +9,13 @@ type FetchRequestInit = {
   body?: BodyInit | null;
 };
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -36,7 +35,7 @@ class ApiService {
 
   private async request<T>(
     endpoint: string,
-    options: FetchRequestInit = {}
+    options: FetchRequestInit = {},
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     const config: FetchRequestInit = {
@@ -52,11 +51,7 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new ApiError(
-          data.message || 'An error occurred',
-          response.status,
-          data.code
-        );
+        throw new ApiError(data.message || 'An error occurred', response.status, data.code);
       }
 
       return data;
@@ -95,7 +90,7 @@ class ApiService {
   async getPaginated<T>(
     endpoint: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<ApiResponse<PaginatedResponse<T>>> {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -115,10 +110,7 @@ class ApiService {
   // Remove authentication token
   clearAuthToken() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Authorization, ...headers } = this.defaultHeaders as Record<
-      string,
-      string
-    >;
+    const { Authorization, ...headers } = this.defaultHeaders as Record<string, string>;
     this.defaultHeaders = headers;
   }
 }

@@ -54,23 +54,18 @@ describe('Service Communication Integration Tests', () => {
       const apiGateway = {
         routeRequest: jest.fn(async (path, method, headers, _body) => {
           if (path.startsWith('/api/v1/users')) {
-            const response = await mockedAxios.get(
-              `${serviceUrls.userManagement}${path}`,
-              {
-                headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
-            );
+            const response = await mockedAxios.get(`${serviceUrls.userManagement}${path}`, {
+              headers: { ...headers, 'x-service-call': 'api-gateway' },
+            });
             return response.data;
           }
           throw new Error('Route not found');
         }),
       };
 
-      const result = await apiGateway.routeRequest(
-        '/api/v1/users/profile',
-        'GET',
-        { authorization: `Bearer ${token}` }
-      );
+      const result = await apiGateway.routeRequest('/api/v1/users/profile', 'GET', {
+        authorization: `Bearer ${token}`,
+      });
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(user);
@@ -81,7 +76,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -101,12 +96,9 @@ describe('Service Communication Integration Tests', () => {
       const apiGateway = {
         routeRequest: jest.fn(async (path, method, headers, _body) => {
           if (path.startsWith('/api/v1/clients')) {
-            const response = await mockedAxios.get(
-              `${serviceUrls.clientManagement}${path}`,
-              {
-                headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
-            );
+            const response = await mockedAxios.get(`${serviceUrls.clientManagement}${path}`, {
+              headers: { ...headers, 'x-service-call': 'api-gateway' },
+            });
             return response.data;
           }
           throw new Error('Route not found');
@@ -127,7 +119,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -152,7 +144,7 @@ describe('Service Communication Integration Tests', () => {
               _body,
               {
                 headers: { ...headers, 'x-service-call': 'api-gateway' },
-              }
+              },
             );
             return response.data;
           }
@@ -171,7 +163,7 @@ describe('Service Communication Integration Tests', () => {
         '/api/v1/meetings',
         'POST',
         { authorization: `Bearer ${token}` },
-        meetingData
+        meetingData,
       );
 
       expect(result.success).toBe(true);
@@ -184,7 +176,7 @@ describe('Service Communication Integration Tests', () => {
             authorization: `Bearer ${token}`,
             'x-service-call': 'api-gateway',
           }),
-        })
+        }),
       );
     });
 
@@ -200,12 +192,9 @@ describe('Service Communication Integration Tests', () => {
         routeRequest: jest.fn(async (path, method, headers, _body) => {
           try {
             if (path.startsWith('/api/v1/meetings')) {
-              const response = await mockedAxios.get(
-                `${serviceUrls.meetingIntelligence}${path}`,
-                {
-                  headers: { ...headers, 'x-service-call': 'api-gateway' },
-                }
-              );
+              const response = await mockedAxios.get(`${serviceUrls.meetingIntelligence}${path}`, {
+                headers: { ...headers, 'x-service-call': 'api-gateway' },
+              });
               return response.data;
             }
             throw new Error('Route not found');
@@ -256,7 +245,7 @@ describe('Service Communication Integration Tests', () => {
             `${serviceUrls.clientManagement}/api/v1/clients/${meetingData.client_id}`,
             {
               headers: { 'x-service-call': 'meeting-intelligence' },
-            }
+            },
           );
 
           if (!clientResponse.data.success) {
@@ -289,8 +278,7 @@ describe('Service Communication Integration Tests', () => {
         end_time: meeting.end_time,
       };
 
-      const result =
-        await meetingIntelligenceService.createMeeting(meetingData);
+      const result = await meetingIntelligenceService.createMeeting(meetingData);
 
       expect(result.success).toBe(true);
       expect(result.data.client_id).toBe(client.id);
@@ -299,7 +287,7 @@ describe('Service Communication Integration Tests', () => {
         `${serviceUrls.clientManagement}/api/v1/clients/${client.id}`,
         expect.objectContaining({
           headers: { 'x-service-call': 'meeting-intelligence' },
-        })
+        }),
       );
     });
 
@@ -326,7 +314,7 @@ describe('Service Communication Integration Tests', () => {
             `${serviceUrls.meetingIntelligence}/api/v1/meetings/${meetingId}`,
             {
               headers: { 'x-service-call': 'content-creation' },
-            }
+            },
           );
 
           if (!meetingResponse.data.success) {
@@ -356,9 +344,7 @@ describe('Service Communication Integration Tests', () => {
         }),
       };
 
-      const result = await contentCreationService.createMeetingSummary(
-        meeting.id
-      );
+      const result = await contentCreationService.createMeetingSummary(meeting.id);
 
       expect(result.success).toBe(true);
       expect(result.data.meeting_id).toBe(meeting.id);
@@ -367,7 +353,7 @@ describe('Service Communication Integration Tests', () => {
         `${serviceUrls.meetingIntelligence}/api/v1/meetings/${meeting.id}`,
         expect.objectContaining({
           headers: { 'x-service-call': 'content-creation' },
-        })
+        }),
       );
     });
 
@@ -399,7 +385,7 @@ describe('Service Communication Integration Tests', () => {
             },
             {
               headers: { 'x-service-call': 'workflow-automation' },
-            }
+            },
           );
 
           if (!notificationResponse.data.success) {
@@ -419,10 +405,7 @@ describe('Service Communication Integration Tests', () => {
         start_time: TestDataGenerator.generateTimestamp(),
       };
 
-      const result = await workflowAutomationService.triggerMeetingReminder(
-        user.id,
-        meetingData
-      );
+      const result = await workflowAutomationService.triggerMeetingReminder(user.id, meetingData);
 
       expect(result.success).toBe(true);
       expect(result.data.user_id).toBe(user.id);
@@ -436,7 +419,7 @@ describe('Service Communication Integration Tests', () => {
         }),
         expect.objectContaining({
           headers: { 'x-service-call': 'workflow-automation' },
-        })
+        }),
       );
     });
   });
@@ -444,9 +427,7 @@ describe('Service Communication Integration Tests', () => {
   describe('Database Integration', () => {
     it('should handle database connection failures gracefully', async () => {
       const mockDatabase = {
-        query: jest
-          .fn()
-          .mockRejectedValue(new Error('Database connection failed')),
+        query: jest.fn().mockRejectedValue(new Error('Database connection failed')),
         isConnected: jest.fn().mockReturnValue(false),
       };
 
@@ -513,10 +494,7 @@ describe('Service Communication Integration Tests', () => {
       const userData = TestDataGenerator.generateUser();
       const clientData = TestDataGenerator.generateClient();
 
-      const result = await serviceWithTransaction.createUserWithClient(
-        userData,
-        clientData
-      );
+      const result = await serviceWithTransaction.createUserWithClient(userData, clientData);
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('Constraint violation');
@@ -531,13 +509,9 @@ describe('Service Communication Integration Tests', () => {
         syncWithExternalAPI: jest.fn(async data => {
           try {
             // Try primary external API
-            const response = await mockedAxios.post(
-              'https://api.external-service.com/sync',
-              data,
-              {
-                timeout: 5000,
-              }
-            );
+            const response = await mockedAxios.post('https://api.external-service.com/sync', data, {
+              timeout: 5000,
+            });
             return {
               success: true,
               data: response.data,
@@ -552,7 +526,7 @@ describe('Service Communication Integration Tests', () => {
                 data,
                 {
                   timeout: 5000,
-                }
+                },
               );
               return {
                 success: true,
@@ -592,10 +566,7 @@ describe('Service Communication Integration Tests', () => {
       const integrationService = {
         callExternalAPI: jest.fn(async data => {
           try {
-            const response = await mockedAxios.post(
-              'https://api.rate-limited.com/data',
-              data
-            );
+            const response = await mockedAxios.post('https://api.rate-limited.com/data', data);
             return {
               success: true,
               data: response.data,
@@ -605,14 +576,12 @@ describe('Service Communication Integration Tests', () => {
             if (error.response?.status === 429) {
               // Rate limited - retry after delay
               const retryAfter = error.response.headers['retry-after'] || 60;
-              await new Promise(resolve =>
-                setTimeout(resolve, retryAfter * 1000)
-              );
+              await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
 
               // Retry once
               const retryResponse = await mockedAxios.post(
                 'https://api.rate-limited.com/data',
-                data
+                data,
               );
               return {
                 success: true,
@@ -720,7 +689,7 @@ describe('Service Communication Integration Tests', () => {
           type: 'meeting.created',
           aggregateId: result.data.id,
           payload: result.data,
-        })
+        }),
       );
     });
 
@@ -770,7 +739,7 @@ describe('Service Communication Integration Tests', () => {
           eventId: event.id,
           eventType: event.type,
           error: 'Invalid meeting ID',
-        })
+        }),
       );
     });
   });
@@ -784,12 +753,9 @@ describe('Service Communication Integration Tests', () => {
 
           for (const service of services) {
             try {
-              const response = await mockedAxios.get(
-                `${serviceUrls[service]}/health`,
-                {
-                  timeout: 5000,
-                }
-              );
+              const response = await mockedAxios.get(`${serviceUrls[service]}/health`, {
+                timeout: 5000,
+              });
               healthResults.push({
                 service,
                 status: 'healthy',
@@ -830,29 +796,19 @@ describe('Service Communication Integration Tests', () => {
           headers: { 'x-response-time': '40ms' },
         }) // meeting-intelligence
         .mockRejectedValueOnce(
-          new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+          new Error("Cannot read properties of undefined (reading 'x-response-time')"),
         ) // content-creation
         .mockRejectedValueOnce(
-          new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+          new Error("Cannot read properties of undefined (reading 'x-response-time')"),
         ) // workflow-automation
         .mockRejectedValueOnce(
-          new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+          new Error("Cannot read properties of undefined (reading 'x-response-time')"),
         ) // integration-management
         .mockRejectedValueOnce(
-          new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+          new Error("Cannot read properties of undefined (reading 'x-response-time')"),
         ) // notification-service
         .mockRejectedValueOnce(
-          new Error(
-            "Cannot read properties of undefined (reading 'x-response-time')"
-          )
+          new Error("Cannot read properties of undefined (reading 'x-response-time')"),
         ); // analytics-reporting
 
       const result = await healthChecker.checkAllServices();
@@ -861,9 +817,7 @@ describe('Service Communication Integration Tests', () => {
       expect(result.data).toHaveLength(9);
 
       const healthyServices = result.data.filter(s => s.status === 'healthy');
-      const unhealthyServices = result.data.filter(
-        s => s.status === 'unhealthy'
-      );
+      const unhealthyServices = result.data.filter(s => s.status === 'unhealthy');
 
       expect(healthyServices.length).toBeGreaterThan(0);
       expect(unhealthyServices.length).toBeGreaterThan(0);

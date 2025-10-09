@@ -14,19 +14,16 @@ export class WorkflowEngine {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   /**
-   * Execute a workflow
+   * Execute a workflow (legacy method)
    */
   async executeWorkflow(
     workflowId: string,
     inputData: Record<string, any>,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ): Promise<WorkflowExecution> {
     try {
       logWorkflow('workflow_execution_started', workflowId);
@@ -34,11 +31,7 @@ export class WorkflowEngine {
       // Get workflow definition
       const workflow = await this.getWorkflow(workflowId);
       if (!workflow) {
-        throw new WorkflowError(
-          `Workflow not found: ${workflowId}`,
-          'WORKFLOW_NOT_FOUND',
-          404
-        );
+        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
       }
 
       // Create execution context
@@ -61,6 +54,72 @@ export class WorkflowEngine {
     } catch (error) {
       logger.error('Workflow execution failed', {
         workflowId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute a workflow triggered by an event
+   */
+  async executeWorkflowFromEvent(
+    workflowId: string,
+    inputData: Record<string, any>,
+    context: Record<string, any>,
+    triggeredBy: {
+      eventId: string;
+      eventType: string;
+      aggregateId: string;
+    },
+  ): Promise<WorkflowExecution> {
+    try {
+      logWorkflow('event_driven_workflow_execution_started', workflowId, triggeredBy.eventId);
+
+      // Get workflow definition
+      const workflow = await this.getWorkflow(workflowId);
+      if (!workflow) {
+        throw new WorkflowError(`Workflow not found: ${workflowId}`, 'WORKFLOW_NOT_FOUND', 404);
+      }
+
+      // Create execution context with event information
+      const executionContext: ExecutionContext = {
+        variables: {
+          ...context,
+          // Add event-specific context
+          event: {
+            id: triggeredBy.eventId,
+            type: triggeredBy.eventType,
+            aggregateId: triggeredBy.aggregateId,
+            triggeredAt: new Date().toISOString(),
+          },
+        },
+        input_data: inputData,
+        state_history: [],
+        action_results: [],
+      };
+
+      // Create workflow execution record with event metadata
+      const execution = await this.createEventDrivenExecution(
+        workflow,
+        executionContext,
+        triggeredBy,
+      );
+
+      // Execute workflow asynchronously
+      this.executeWorkflowAsync(execution.id, workflow, executionContext);
+
+      logWorkflow('event_driven_workflow_execution_created', workflowId, execution.id, {
+        eventId: triggeredBy.eventId,
+        eventType: triggeredBy.eventType,
+      });
+
+      return execution;
+    } catch (error) {
+      logger.error('Event-driven workflow execution failed', {
+        workflowId,
+        eventId: triggeredBy.eventId,
+        eventType: triggeredBy.eventType,
         error: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
@@ -113,7 +172,7 @@ export class WorkflowEngine {
    */
   private async createExecution(
     workflow: Workflow,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<WorkflowExecution> {
     try {
       const { data, error } = await this.supabase
@@ -131,7 +190,7 @@ export class WorkflowEngine {
       if (error) {
         throw new ExecutionError(
           `Failed to create execution: ${error.message}`,
-          'EXECUTION_CREATION_FAILED'
+          'EXECUTION_CREATION_FAILED',
         );
       }
 
@@ -143,9 +202,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -159,12 +216,75 @@ export class WorkflowEngine {
   }
 
   /**
+   * Create event-driven workflow execution record
+   */
+  private async createEventDrivenExecution(
+    workflow: Workflow,
+    context: ExecutionContext,
+    triggeredBy: {
+      eventId: string;
+      eventType: string;
+      aggregateId: string;
+    },
+  ): Promise<WorkflowExecution> {
+    try {
+      const { data, error } = await this.supabase
+        .from('workflow_executions')
+        .insert({
+          workflow_id: workflow.id,
+          client_id: workflow.client_id,
+          status: ExecutionStatus.PENDING,
+          context: context,
+          started_at: new Date().toISOString(),
+          metadata: {
+            triggered_by_event: {
+              event_id: triggeredBy.eventId,
+              event_type: triggeredBy.eventType,
+              aggregate_id: triggeredBy.aggregateId,
+              triggered_at: new Date().toISOString(),
+            },
+            execution_type: 'event_driven',
+          },
+        })
+        .select()
+        .single();
+
+      if (error) {
+        throw new ExecutionError(
+          `Failed to create event-driven execution: ${error.message}`,
+          'EXECUTION_CREATION_FAILED',
+        );
+      }
+
+      return {
+        id: data.id,
+        workflow_id: data.workflow_id,
+        client_id: data.client_id,
+        status: data.status,
+        current_state: data.current_state,
+        context: data.context,
+        started_at: new Date(data.started_at),
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
+        error: data.error,
+        metadata: data.metadata,
+      };
+    } catch (error) {
+      logger.error('Event-driven execution creation error', {
+        workflowId: workflow.id,
+        eventId: triggeredBy.eventId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
    * Execute workflow asynchronously
    */
   private async executeWorkflowAsync(
     executionId: string,
     workflow: Workflow,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<void> {
     try {
       logWorkflow('workflow_execution_running', workflow.id, executionId);
@@ -220,7 +340,7 @@ export class WorkflowEngine {
   private async updateExecutionStatus(
     executionId: string,
     status: ExecutionStatus,
-    updates?: any
+    updates?: any,
   ): Promise<void> {
     try {
       const updateData: any = {
@@ -280,9 +400,7 @@ export class WorkflowEngine {
         current_state: data.current_state,
         context: data.context,
         started_at: new Date(data.started_at),
-        completed_at: data.completed_at
-          ? new Date(data.completed_at)
-          : undefined,
+        completed_at: data.completed_at ? new Date(data.completed_at) : undefined,
         error: data.error,
         metadata: data.metadata,
       };
@@ -301,7 +419,7 @@ export class WorkflowEngine {
   async getExecutions(
     workflowId: string,
     page: number = 1,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<{ executions: WorkflowExecution[]; total: number }> {
     try {
       const { data, error, count } = await this.supabase
@@ -328,9 +446,7 @@ export class WorkflowEngine {
           current_state: exec.current_state,
           context: exec.context,
           started_at: new Date(exec.started_at),
-          completed_at: exec.completed_at
-            ? new Date(exec.completed_at)
-            : undefined,
+          completed_at: exec.completed_at ? new Date(exec.completed_at) : undefined,
           error: exec.error,
           metadata: exec.metadata,
         })) || [];
@@ -367,10 +483,7 @@ export class WorkflowEngine {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const { error } = await this.supabase
-        .from('workflows')
-        .select('id')
-        .limit(1);
+      const { error } = await this.supabase.from('workflows').select('id').limit(1);
 
       return !error;
     } catch (error) {

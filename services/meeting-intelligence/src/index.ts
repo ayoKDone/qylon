@@ -7,10 +7,15 @@ import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import actionItemRoutes from './routes/actionItems';
+import automatedBotDeploymentRoutes from './routes/automated-bot-deployment';
+import botTroubleshootingRoutes from './routes/bot-troubleshooting';
 import healthRoutes from './routes/health';
 import meetingRoutes from './routes/meetings';
+import recordingControlRoutes from './routes/recording-control';
 import summaryRoutes from './routes/summaries';
+import transcriptionManagementRoutes from './routes/transcription';
 import transcriptionRoutes from './routes/transcriptions';
+import webhookRoutes from './routes/webhooks';
 import { logger } from './utils/logger';
 
 dotenv.config();
@@ -35,7 +40,7 @@ app.use(
         imgSrc: ["'self'", 'data:', 'https:'],
       },
     },
-  })
+  }),
 );
 
 // CORS configuration
@@ -45,7 +50,7 @@ app.use(
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  })
+  }),
 );
 
 // Rate limiting
@@ -73,6 +78,9 @@ app.use(requestLogger);
 // Health check route (no auth required)
 app.use('/health', healthRoutes);
 
+// Webhook routes (no auth required for external services)
+app.use('/api/v1/webhooks', webhookRoutes);
+
 // Authentication middleware for all other routes
 app.use('/api/v1', authMiddleware);
 
@@ -81,6 +89,10 @@ app.use('/api/v1/meetings', meetingRoutes);
 app.use('/api/v1/transcriptions', transcriptionRoutes);
 app.use('/api/v1/action-items', actionItemRoutes);
 app.use('/api/v1/summaries', summaryRoutes);
+app.use('/api/v1/bot-deployment', automatedBotDeploymentRoutes);
+app.use('/api/v1/bot-troubleshooting', botTroubleshootingRoutes);
+app.use('/api/v1/recording-control', recordingControlRoutes);
+app.use('/api/v1/transcription-management', transcriptionManagementRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

@@ -1,9 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import {
-  CommunicationMessage,
-  IntegrationConfig,
-  IntegrationType,
-} from '../types';
+import { CommunicationMessage, IntegrationConfig, IntegrationType } from '../types';
 import { logIntegrationEvent } from '../utils/logger';
 
 interface SlackMessage {
@@ -75,8 +71,7 @@ export class SlackService {
       }
 
       this.botToken = botToken;
-      this.apiClient.defaults.headers.common['Authorization'] =
-        `Bearer ${this.botToken}`;
+      this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${this.botToken}`;
 
       // Test the connection by fetching bot info
       const response = await this.apiClient.get('/auth.test');
@@ -109,7 +104,7 @@ export class SlackService {
       blocks?: any[];
       attachments?: any[];
       replyBroadcast?: boolean;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -164,7 +159,7 @@ export class SlackService {
   async sendDirectMessage(
     userId: string,
     text: string,
-    options: any = {}
+    options: any = {},
   ): Promise<CommunicationMessage> {
     try {
       // Open a direct message channel with the user
@@ -193,15 +188,16 @@ export class SlackService {
         throw new Error('Not authenticated with Slack');
       }
 
-      const response = await this.apiClient.get<
-        SlackResponse<{ channels: SlackChannel[] }>
-      >('/conversations.list', {
-        params: {
-          types: 'public_channel,private_channel',
-          exclude_archived: true,
-          limit: 1000,
+      const response = await this.apiClient.get<SlackResponse<{ channels: SlackChannel[] }>>(
+        '/conversations.list',
+        {
+          params: {
+            types: 'public_channel,private_channel',
+            exclude_archived: true,
+            limit: 1000,
+          },
         },
-      });
+      );
 
       if (!response.data.ok) {
         throw new Error(`Failed to fetch channels: ${response.data.error}`);
@@ -222,13 +218,14 @@ export class SlackService {
         throw new Error('Not authenticated with Slack');
       }
 
-      const response = await this.apiClient.get<
-        SlackResponse<{ members: SlackUser[] }>
-      >('/users.list', {
-        params: {
-          limit: 1000,
+      const response = await this.apiClient.get<SlackResponse<{ members: SlackUser[] }>>(
+        '/users.list',
+        {
+          params: {
+            limit: 1000,
+          },
         },
-      });
+      );
 
       if (!response.data.ok) {
         throw new Error(`Failed to fetch users: ${response.data.error}`);
@@ -299,10 +296,7 @@ export class SlackService {
     }
   }
 
-  async createChannel(
-    name: string,
-    isPrivate: boolean = false
-  ): Promise<SlackChannel> {
+  async createChannel(name: string, isPrivate: boolean = false): Promise<SlackChannel> {
     try {
       if (!this.authenticated) {
         throw new Error('Not authenticated with Slack');
@@ -340,7 +334,7 @@ export class SlackService {
     channelId: string,
     messageTs: string,
     text: string,
-    options: { blocks?: any[]; attachments?: any[] } = {}
+    options: { blocks?: any[]; attachments?: any[] } = {},
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -412,7 +406,7 @@ export class SlackService {
       oldest?: string;
       latest?: string;
       inclusive?: boolean;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -430,9 +424,7 @@ export class SlackService {
       });
 
       if (!response.data.ok) {
-        throw new Error(
-          `Failed to fetch channel history: ${response.data.error}`
-        );
+        throw new Error(`Failed to fetch channel history: ${response.data.error}`);
       }
 
       const messages = response.data.messages.map((msg: any) => ({
@@ -504,15 +496,7 @@ export class SlackService {
     }
   }
 
-  private async logOperation(
-    operation: string,
-    data: Record<string, any> = {}
-  ): Promise<void> {
-    logIntegrationEvent(
-      operation,
-      IntegrationType.COMMUNICATION_SLACK,
-      this.config.userId,
-      data
-    );
+  private async logOperation(operation: string, data: Record<string, any> = {}): Promise<void> {
+    logIntegrationEvent(operation, IntegrationType.COMMUNICATION_SLACK, this.config.userId, data);
   }
 }

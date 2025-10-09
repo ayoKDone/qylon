@@ -111,8 +111,8 @@ export default function TaskItem({
   const StatusIcon = statusConfig[status].icon;
 
   return (
-    <div className="bg-white xui-bdr-rad-1-half border border-gray-200 p-4">
-      <div className="xui-d-flex xui-flex-ai-flex-start gap-4">
+    <div className='bg-white xui-bdr-rad-1-half border border-gray-200 p-4'>
+      <div className='xui-d-flex xui-flex-ai-flex-start gap-4'>
         {/* Status Icon */}
         <button
           onClick={() => onStatusChange?.(id, status)}
@@ -122,33 +122,27 @@ export default function TaskItem({
         </button>
 
         {/* Content */}
-        <div className="flex-1">
+        <div className='flex-1'>
           {/* Title and Priority */}
-          <div className="xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between gap-4 mb-2">
+          <div className='xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between gap-4 mb-2'>
             <h3
               className={`text-base font-semibold text-gray-900 ${status === 'completed' ? 'line-through text-slate-300' : ''}`}
             >
               {title}
             </h3>
-            <div className="xui-d-flex xui-flex-ai-center gap-2">
-              <span
-                className={`px-2 py-1 rounded text-xs font-medium ${priorityConfig[priority]}`}
-              >
+            <div className='xui-d-flex xui-flex-ai-center gap-2'>
+              <span className={`px-2 py-1 rounded text-xs font-medium ${priorityConfig[priority]}`}>
                 {priority}
               </span>
-              <button className="p-1 hover:bg-gray-100 rounded">
-                <svg
-                  className="w-5 h-5 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+              <button className='p-1 hover:bg-gray-100 rounded'>
+                <svg className='w-5 h-5 text-gray-400' fill='currentColor' viewBox='0 0 20 20'>
+                  <path d='M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z' />
                 </svg>
               </button>
               {isExpandable && (
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="p-1 hover:bg-gray-100 rounded transition-transform"
+                  className='p-1 hover:bg-gray-100 rounded transition-transform'
                 >
                   <ChevronDown
                     className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -159,28 +153,25 @@ export default function TaskItem({
           </div>
 
           {/* Meta Info */}
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-            <div className="flex items-center gap-1">
-              <User className="w-4 h-4" />
+          <div className='flex items-center gap-4 text-sm text-gray-500 mb-3'>
+            <div className='flex items-center gap-1'>
+              <User className='w-4 h-4' />
               <span>{assignee}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="w-4 h-4" />
+            <div className='flex items-center gap-1'>
+              <Calendar className='w-4 h-4' />
               <span>{date}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Zap className="w-4 h-4" />
+            <div className='flex items-center gap-1'>
+              <Zap className='w-4 h-4' />
               <span>{meeting}</span>
             </div>
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-3">
+          <div className='flex flex-wrap gap-2 mb-3'>
             {tags.map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-              >
+              <span key={index} className='px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded'>
                 {tag}
               </span>
             ))}
@@ -188,14 +179,14 @@ export default function TaskItem({
 
           {/* Expanded Description */}
           {isExpanded && description && (
-            <p className="text-sm text-gray-600 mb-3 pb-3 border-b border-gray-100">
+            <p className='text-sm text-gray-600 mb-3 pb-3 border-b border-gray-100'>
               {description}
             </p>
           )}
 
           {/* Actions */}
           {isExpanded && (
-            <div className="flex gap-2">
+            <div className='flex gap-2'>
               {displayActions.map((action, index) => {
                 const Icon = action.icon;
                 return (
@@ -204,7 +195,7 @@ export default function TaskItem({
                     onClick={action.onClick}
                     className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${action.bgColor || 'bg-gray-100'} ${action.iconColor || 'text-gray-700'}`}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className='w-4 h-4' />
                     {action.label}
                   </button>
                 );

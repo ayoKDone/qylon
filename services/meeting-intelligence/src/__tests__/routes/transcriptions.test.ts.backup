@@ -1,0 +1,316 @@
+/**
+ * Tests for transcriptions routes
+ * Tests transcription API endpoints, validation, and error handling
+ */
+
+import express from 'express';
+import request from 'supertest';
+import { authMiddleware } from '../../middleware/auth';
+import transcriptionsRouter from '../../routes/transcriptions';
+import { logger } from '../../utils/logger';
+
+// Mock dependencies
+jest.mock('../../middleware/auth', () => ({
+  authMiddleware: jest.fn(),
+  requireClientAccess: jest.fn(),
+  requireRole: jest.fn(),
+  requireAdmin: jest.fn(),
+}));
+jest.mock('../../utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+  },
+  logSecurity: jest.fn(),
+}));
+
+// Mock Supabase client
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => {
+    const mockQuery = {
+      select: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      delete: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      neq: jest.fn().mockReturnThis(),
+      gt: jest.fn().mockReturnThis(),
+      gte: jest.fn().mockReturnThis(),
+      lt: jest.fn().mockReturnThis(),
+      lte: jest.fn().mockReturnThis(),
+      like: jest.fn().mockReturnThis(),
+      ilike: jest.fn().mockReturnThis(),
+      is: jest.fn().mockReturnThis(),
+      in: jest.fn().mockReturnThis(),
+      contains: jest.fn().mockReturnThis(),
+      containedBy: jest.fn().mockReturnThis(),
+      rangeGt: jest.fn().mockReturnThis(),
+      rangeGte: jest.fn().mockReturnThis(),
+      rangeLt: jest.fn().mockReturnThis(),
+      rangeLte: jest.fn().mockReturnThis(),
+      rangeAdjacent: jest.fn().mockReturnThis(),
+      overlaps: jest.fn().mockReturnThis(),
+      textSearch: jest.fn().mockReturnThis(),
+      match: jest.fn().mockReturnThis(),
+      not: jest.fn().mockReturnThis(),
+      or: jest.fn().mockReturnThis(),
+      filter: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      range: jest.fn().mockReturnThis(),
+      abortSignal: jest.fn().mockReturnThis(),
+      single: jest.fn().mockResolvedValue({ data: null, error: null }),
+      maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
+      csv: jest.fn().mockResolvedValue({ data: null, error: null }),
+      geojson: jest.fn().mockResolvedValue({ data: null, error: null }),
+      explain: jest.fn().mockResolvedValue({ data: null, error: null }),
+      rollback: jest.fn().mockResolvedValue({ data: null, error: null }),
+      returns: jest.fn().mockReturnThis(),
+    };
+
+    // Make the query chainable and resolve to the expected result
+    mockQuery.then = jest.fn().mockResolvedValue({ data: [], error: null, count: 0 });
+
+    return {
+      from: jest.fn(() => mockQuery),
+      auth: {
+        getUser: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+        getSession: jest.fn().mockResolvedValue({ data: { session: { user: { id: 'test-user-id' } } }, error: null }),
+        signInWithPassword: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+        signUp: jest.fn().mockResolvedValue({ data: { user: { id: 'test-user-id' } }, error: null }),
+        signOut: jest.fn().mockResolvedValue({ error: null }),
+        onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } })
+      },
+      rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
+      storage: {
+        from: jest.fn(() => ({
+          upload: jest.fn().mockResolvedValue({ data: null, error: null }),
+          download: jest.fn().mockResolvedValue({ data: null, error: null }),
+          remove: jest.fn().mockResolvedValue({ data: null, error: null }),
+          list: jest.fn().mockResolvedValue({ data: [], error: null }),
+          getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://test.url' } })
+        }))
+      }
+    };
+  })
+}));
+
+const mockAuthMiddleware = authMiddleware as jest.MockedFunction<
+  typeof authMiddleware
+>;
+const mockRequireClientAccess = requireClientAccess as jest.MockedFunction<
+  typeof requireClientAccess
+>;
+
+describe('Transcriptions Routes', () => {
+  let app: express.Application;
+
+  beforeEach(() => {
+    // Set up environment variables for testing
+    process.env.SUPABASE_URL = 'https://test.supabase.co';
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
+    process.env.RECALL_AI_API_KEY = 'test-recall-api-key';
+    process.env.MEETING_INTELLIGENCE_RECALL_AI_API_KEY = 'test-recall-api-key';
+    process.env.MEETING_INTELLIGENCE_RECALL_AI_BASE_URL = 'https://test.recall.ai/api/v1';
+
+    app = express();
+    app.use(express.json({ limit: '50mb' }));
+
+    // Mock auth middleware to pass through
+    mockAuthMiddleware.mockImplementation(async (req, res, next) => {
+      req.user = {
+        id: 'test-user-id',
+        email: 'test@example.com',
+        role: 'user',
+      };
+      next();
+    });
+
+    // Mock requireClientAccess middleware to pass through
+    mockRequireClientAccess.mockImplementation(async (req, res, next) => {
+      next();
+    });
+
+    app.use('/api/v1/transcriptions', authMiddleware, transcriptionsRouter);
+    jest.clearAllMocks();
+  });
+
+  describe('POST /api/v1/transcriptions/process', () => {
+    it('should process meeting recording and generate transcription', async () => {
+      const processData = {
+        meetingId: 'test-meeting-id',
+        audioUrl: 'https://example.com/audio.wav',
+        language: 'en',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(201);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeDefined();
+    });
+
+    it('should handle missing meeting ID', async () => {
+      const processData = {
+        audioUrl: 'https://example.com/audio.wav',
+        language: 'en',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('ValidationError');
+    });
+
+    it('should validate audio URL format', async () => {
+      const processData = {
+        meetingId: 'test-meeting-id',
+        audioUrl: 'invalid-url',
+        language: 'en',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('ValidationError');
+    });
+
+    it('should validate language parameter', async () => {
+      const processData = {
+        meetingId: 'test-meeting-id',
+        audioUrl: 'https://example.com/audio.wav',
+        language: 'invalid-language',
+      };
+
+      const response = await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('ValidationError');
+    });
+  });
+
+  describe('GET /api/v1/transcriptions/meeting/:meetingId', () => {
+    it('should get transcription for meeting', async () => {
+      const meetingId = 'test-meeting-id';
+
+      const response = await request(app)
+        .get(`/api/v1/transcriptions/meeting/${meetingId}`)
+        .expect(200);
+
+      expect(response.body.success).toBe(true);
+      expect(response.body.data).toBeDefined();
+    });
+
+    it('should handle meeting not found', async () => {
+      const meetingId = 'non-existent-meeting-id';
+
+      const response = await request(app)
+        .get(`/api/v1/transcriptions/meeting/${meetingId}`)
+        .expect(404);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Meeting not found');
+    });
+
+    it('should validate meeting ID format', async () => {
+      const response = await request(app)
+        .get('/api/v1/transcriptions/meeting/not-a-uuid')
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Invalid meeting ID format');
+    });
+  });
+
+  describe('Error handling', () => {
+    it('should handle malformed JSON', async () => {
+      const response = await request(app)
+        .post('/api/v1/transcriptions/process')
+        .set('Content-Type', 'application/json')
+        .send('invalid json')
+        .expect(400);
+
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toContain('Invalid JSON');
+    });
+  });
+
+  describe('Authentication', () => {
+    it('should require authentication for all endpoints', async () => {
+      // Mock auth middleware to reject
+      mockAuthMiddleware.mockImplementationOnce(async (req, res, _next) => {
+        res.status(401).json({ error: 'Unauthorized' });
+      });
+
+      await request(app)
+        .get('/api/v1/transcriptions/meeting/test-meeting-id')
+        .expect(401);
+    });
+
+    it('should pass user context to handlers', async () => {
+      const processData = {
+        meetingId: 'test-meeting-id',
+        audioUrl: 'https://example.com/audio.wav',
+        language: 'en',
+      };
+
+      await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(201);
+
+      // Verify user context was passed
+      expect(mockAuthMiddleware).toHaveBeenCalled();
+    });
+  });
+
+  describe('Logging', () => {
+    it('should log successful operations', async () => {
+      const processData = {
+        meetingId: 'test-meeting-id',
+        audioUrl: 'https://example.com/audio.wav',
+        language: 'en',
+      };
+
+      await request(app)
+        .post('/api/v1/transcriptions/process')
+        .send(processData)
+        .expect(201);
+
+      expect(logger.info).toHaveBeenCalledWith(
+        'Transcription processing started',
+        expect.objectContaining({
+          userId: 'test-user-id',
+          meetingId: 'test-meeting-id',
+        })
+      );
+    });
+
+    it('should log errors with context', async () => {
+      await request(app)
+        .get('/api/v1/transcriptions/meeting/invalid-id')
+        .expect(400);
+
+      expect(logger.error).toHaveBeenCalledWith(
+        'Transcription retrieval failed',
+        expect.objectContaining({
+          error: expect.any(String),
+          meetingId: 'invalid-id',
+        })
+      );
+    });
+  });
+});

@@ -1,9 +1,4 @@
-import {
-  Calendar,
-  Monitor,
-  Smartphone,
-  FolderSync as Sync,
-} from 'lucide-react';
+import { Calendar, Monitor, Smartphone, FolderSync as Sync } from 'lucide-react';
 
 export const faqs = [
   {
