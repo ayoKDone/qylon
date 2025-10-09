@@ -160,6 +160,18 @@ const icons = {
             <polygon points="13,2 3,14 12,14 11,22 21,10 12,10" />
         </svg>
     ),
+    mail: (props: React.SVGProps<SVGSVGElement>) => (
+        <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-10 5L2 7" />
+        </svg>
+    ),
+    arrowRight: (props: React.SVGProps<SVGSVGElement>) => (
+        <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+        </svg>
+    ),
 };
 
 export type IconName = keyof typeof icons;
