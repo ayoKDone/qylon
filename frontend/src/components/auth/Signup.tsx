@@ -6,6 +6,7 @@ import { authService } from '../../services/authService';
 import type { SignUpFormInputs } from '../../types/auth';
 import { Divider } from '../UI/Divider';
 import { SocialLogin } from '../UI/SocialLogin';
+import Icon from '../icons/Icon';
 
 export default function Signup() {
   const navigate = useNavigate();
