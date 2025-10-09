@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const testimonials = [
   {
@@ -38,20 +37,15 @@ export function TestimonialCarousel() {
 
   return (
     <div className='max-w-lg text-center'>
-      <AnimatePresence mode='wait'>
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className='text-6xl font-serif leading-none'>“</span>
-          <p className='text-lg md:text-xl font-medium mb-6'>{testimonial.quote}</p>
-          <p className='font-semibold'>{testimonial.name}</p>
-          <p className='text-sm opacity-80'>{testimonial.role}</p>
-        </motion.div>
-      </AnimatePresence>
+      <div
+        key={index}
+        className='transition-all duration-500 ease-in-out opacity-100 transform translate-y-0'
+      >
+        <span className='text-6xl font-serif leading-none'>"</span>
+        <p className='text-lg md:text-xl font-medium mb-6'>{testimonial.quote}</p>
+        <p className='font-semibold'>{testimonial.name}</p>
+        <p className='text-sm opacity-80'>{testimonial.role}</p>
+      </div>
     </div>
   );
 }

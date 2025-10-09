@@ -1,9 +1,9 @@
-import { apply } from '@richaadgigi/stylexui';
 import { useEffect } from 'react';
 
 export default function Stylexui() {
   useEffect(() => {
-    apply();
+    // StylexUI is loaded from CDN in index.html
+    // No additional initialization needed
   }, []);
   return <></>;
 }
