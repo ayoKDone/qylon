@@ -91,7 +91,10 @@ def test_ai_content_generation():
             tone = content_request.get("tone", "professional")
 
             if content_type == "article":
-                return f"# {content_request['title']}\n\nThis is a {tone} article about {topic}."
+                return (
+                    f"# {content_request['title']}\n\n"
+                    f"This is a {tone} article about {topic}."
+                )
             elif content_type == "email":
                 return (
                     f"Subject: {content_request['title']}\n\n"
