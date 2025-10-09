@@ -92,8 +92,7 @@ def test_ai_content_generation():
 
             if content_type == "article":
                 return (
-                    f"# {content_request['title']}\n\n"
-                    f"This is a {tone} article about {topic}."
+                    f"# {content_request['title']}\n\n" f"This is a {tone} article about {topic}."
                 )
             elif content_type == "email":
                 return (

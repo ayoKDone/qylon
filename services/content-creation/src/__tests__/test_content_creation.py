@@ -69,9 +69,7 @@ class TestContentCreation:
 
     @patch("index.generate_ai_content")
     @patch("index.save_content")
-    def test_create_content_success(
-        self, mock_save, mock_generate, sample_content_request
-    ):
+    def test_create_content_success(self, mock_save, mock_generate, sample_content_request):
         """Test successful content creation"""
         # Mock AI content generation
         mock_generate.return_value = "Generated article content"
