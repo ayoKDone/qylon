@@ -257,10 +257,6 @@ run_retire_scan() {
     print_section "Retire.js Vulnerability Scan"
 
     if ! check_tool "retire" "npm install -g retire"; then
-<<<<<<< HEAD
-        print_warning "Retire.js not found. Skipping retire.js scan."
-=======
->>>>>>> origin/dev
         return 0
     fi
 
