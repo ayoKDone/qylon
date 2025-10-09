@@ -82,7 +82,7 @@ class ContentResponse(BaseModel):
     client_id: str
     meeting_id: Optional[str]
     template_id: Optional[str]
-    metadata: Optional[Dict[str, Any]]
+    metadata: Optional[Dict[str, Any]],
 
 
 class ContentUpdateRequest(BaseModel):
@@ -110,7 +110,7 @@ class TemplateResponse(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: datetime
-    client_id: str
+    client_id: str,
 
 
 # Authentication dependency
@@ -442,14 +442,23 @@ async def retrieve_content(content_id: str, current_user: dict) -> Optional[Cont
     return None
 
 
-async def update_content_in_db(content_id: str, update_request: ContentUpdateRequest, current_user: dict) -> Optional[ContentResponse]:
+async def update_content_in_db(
+    content_id: str, update_request: ContentUpdateRequest, current_user: dict
+) -> Optional[ContentResponse]:
     """Update content in database"""
     # This would integrate with Supabase
     # For now, return None to simulate not found
     return None
 
 
-async def list_content_from_db(client_id: str, content_type: Optional[str], status: Optional[str], limit: int, offset: int, current_user: dict) -> List[ContentResponse]:
+async def list_content_from_db(
+    client_id: str,
+    content_type: Optional[str],
+    status: Optional[str],
+    limit: int,
+    offset: int,
+    current_user: dict,
+) -> List[ContentResponse]:
     """List content from database"""
     # This would integrate with Supabase
     return []
@@ -463,7 +472,9 @@ async def save_template(template_request: TemplateRequest, current_user: dict) -
     return template_id
 
 
-async def list_templates_from_db(client_id: str, content_type: Optional[str], current_user: dict) -> List[TemplateResponse]:
+async def list_templates_from_db(
+    client_id: str, content_type: Optional[str], current_user: dict
+) -> List[TemplateResponse]:
     """List templates from database"""
     # This would integrate with Supabase
     return []
