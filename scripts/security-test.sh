@@ -275,10 +275,6 @@ run_audit_ci() {
     print_section "Audit-CI Security Scan"
 
     if ! check_tool "audit-ci" "npm install -g audit-ci"; then
-<<<<<<< HEAD
-        print_warning "Audit-ci not found. Skipping audit-ci scan."
-=======
->>>>>>> origin/dev
         return 0
     fi
 
@@ -297,10 +293,6 @@ run_bandit_scan() {
     print_section "Bandit Python Security Scan"
 
     if ! check_tool "bandit" "pip install bandit"; then
-<<<<<<< HEAD
-        print_warning "Bandit not found. Skipping Bandit scan."
-=======
->>>>>>> origin/dev
         return 0
     fi
 
@@ -331,10 +323,6 @@ run_trivy_scan() {
     print_section "Trivy Container Security Scan"
 
     if ! check_tool "trivy" "Install Trivy from https://aquasecurity.github.io/trivy/"; then
-<<<<<<< HEAD
-        print_warning "Trivy not found. Skipping Trivy scan."
-=======
->>>>>>> origin/dev
         return 0
     fi
 
