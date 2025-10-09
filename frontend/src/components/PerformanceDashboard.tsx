@@ -15,7 +15,7 @@ interface PerformanceStats {
 const PerformanceDashboardComponent: React.FC = () => {
     const [stats, setStats] = useState<Record<string, PerformanceStats>>({});
     const [isVisible, setIsVisible] = useState(false);
-    const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
+    const [refreshInterval, setRefreshInterval] = useState<number | null>(null);
 
     useEffect(() => {
         if (isVisible) {

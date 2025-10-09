@@ -12,7 +12,8 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 router.post('/onboarding/complete', async (req: Request, res: Response) => {
-  await completeOnboarding(req, res);
+  // TODO: Implement completeOnboarding function
+  res.status(501).json({ error: 'Onboarding completion not implemented yet' });
 });
 
 export default router;
