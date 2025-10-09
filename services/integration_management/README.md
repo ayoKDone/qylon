@@ -1,17 +1,25 @@
 # Qylon Integration Management Service
 
-This service handles third-party integrations with video conferencing platforms like Zoom, Google Meet, and Microsoft Teams. It provides a unified API to manage OAuth 2.0 authentication, store tokens, and fetch data such as upcoming meetings.
+This service handles third-party integrations with video conferencing platforms
+like Zoom, Google Meet, and Microsoft Teams. It provides a unified API to manage
+OAuth 2.0 authentication, store tokens, and fetch data such as upcoming
+meetings.
 
 ## Features
 
-- **OAuth 2.0 Flows:** Manages the complete OAuth 2.0 authorization code flow for Zoom, Google, and Microsoft Teams.
-- **Secure Token Storage:** Stores access and refresh tokens in a PostgreSQL database.
-- **Unified API:** Provides a consistent API to initiate authentication and retrieve data from different platforms.
-- **Extensible:** Designed to be easily extensible with other third-party services.
+- **OAuth 2.0 Flows:** Manages the complete OAuth 2.0 authorization code flow
+  for Zoom, Google, and Microsoft Teams.
+- **Secure Token Storage:** Stores access and refresh tokens in a PostgreSQL
+  database.
+- **Unified API:** Provides a consistent API to initiate authentication and
+  retrieve data from different platforms.
+- **Extensible:** Designed to be easily extensible with other third-party
+  services.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes.
 
 ### Prerequisites
 
@@ -36,8 +44,8 @@ These instructions will get you a copy of the project up and running on your loc
     pip install -r requirements.txt
     ```
 
-3.  **Set up the database:**
-    The service uses a PostgreSQL database. You can either set one up manually or use the provided Docker Compose file.
+3.  **Set up the database:** The service uses a PostgreSQL database. You can
+    either set one up manually or use the provided Docker Compose file.
 
     To start a PostgreSQL container:
 
@@ -47,7 +55,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Environment Variables
 
-Create a `.env` file in the root directory and add the following environment variables. Replace the placeholder values with your actual credentials.
+Create a `.env` file in the root directory and add the following environment
+variables. Replace the placeholder values with your actual credentials.
 
 ```env
 # ------------------------------
@@ -111,7 +120,8 @@ The API will be available at `http://localhost:8000`.
 
 #### With Docker
 
-To build and run the entire stack (application and database) using Docker Compose:
+To build and run the entire stack (application and database) using Docker
+Compose:
 
 ```bash
 docker-compose up --build
@@ -129,31 +139,37 @@ Here is a summary of the available API endpoints:
 
 ### Zoom Integration
 
-- `GET /auth/zoom/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Zoom.
+- `GET /auth/zoom/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for
+  Zoom.
 - `GET /auth/zoom/callback`: Handles the OAuth 2.0 callback from Zoom.
 - `GET /auth/zoom/meetings/{user_id}`: Fetches upcoming meetings for a user.
 
 ### Google Integration
 
-- `GET /google/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Google.
+- `GET /google/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for
+  Google.
 - `GET /google/callback`: Handles the OAuth 2.0 callback from Google.
 - `GET /google/calendar/{user_id}`: Fetches calendar events for a user.
-- `POST /google/recall/webhook`: Webhook to receive transcriptions from Recall.ai.
+- `POST /google/recall/webhook`: Webhook to receive transcriptions from
+  Recall.ai.
 - `GET /google/transcripts/{bot_id}/{user_id}`: Retrieves a meeting transcript.
 
 ### Microsoft Teams Integration
 
-- `GET /teams/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for Microsoft Teams.
+- `GET /teams/auth/{user_id}`: Generates the OAuth 2.0 authorization URL for
+  Microsoft Teams.
 - `GET /teams/callback`: Handles the OAuth 2.0 callback from Microsoft Teams.
 - `GET /teams/meetings/{user_id}`: Fetches upcoming meetings for a user.
 
 ### General Integrations
 
-- `GET /integrations/me`: Lists all active integrations for the currently authenticated user.
+- `GET /integrations/me`: Lists all active integrations for the currently
+  authenticated user.
 
 ## Running Tests
 
-The project includes placeholders for unit and integration tests. To run them, you can use `pytest`:
+The project includes placeholders for unit and integration tests. To run them,
+you can use `pytest`:
 
 ```bash
 pytest

@@ -18,11 +18,11 @@ jobs:
       - name: Fix Registry Credentials
         run: |
           echo "🔧 Fixing DigitalOcean Container Registry Authentication"
-          
+
           # Get registry info
           echo "🔍 Getting registry information..."
           REGISTRY_INFO=$(doctl registry get 2>/dev/null || echo "No registry found")
-          
+
           if [ "$REGISTRY_INFO" = "No registry found" ]; then
             echo "❌ No registry found. Creating one..."
             doctl registry create qylon --region nyc3
@@ -31,11 +31,11 @@ jobs:
           else
             echo "✅ Registry exists"
           fi
-          
+
           # Get registry credentials
           echo "🔑 Getting registry credentials..."
           CREDENTIALS=$(doctl registry docker-config 2>/dev/null)
-          
+
           if [ -n "$CREDENTIALS" ]; then
             echo "✅ Got registry credentials!"
             
@@ -60,7 +60,7 @@ jobs:
       - name: Trigger Deployment
         run: |
           echo "🚀 Triggering deployment..."
-          
+
           # Check if we have an app
           APPS=$(doctl apps list --format ID,Name --no-header 2>/dev/null)
           if [ -n "$APPS" ]; then

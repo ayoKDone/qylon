@@ -13,8 +13,8 @@ export default function SetUpLayout() {
         preferences: {
           notifications: true,
           email_updates: true,
-          data_sharing: false
-        }
+          data_sharing: false,
+        },
       });
 
       // Navigate to dashboard

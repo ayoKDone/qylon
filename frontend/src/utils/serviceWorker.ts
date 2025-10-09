@@ -25,7 +25,7 @@ class ServiceWorkerManager {
       console.log('[SW] Registering service worker...');
 
       this.registration = await navigator.serviceWorker.register('/sw.js', {
-        scope: '/'
+        scope: '/',
       });
 
       console.log('[SW] Service worker registered successfully');
@@ -58,7 +58,6 @@ class ServiceWorkerManager {
 
       this.config.onSuccess?.(this.registration);
       return this.registration;
-
     } catch (error) {
       console.error('[SW] Service worker registration failed:', error);
       return null;
@@ -115,9 +114,7 @@ export class CacheManager {
 
     try {
       const cacheNames = await caches.keys();
-      await Promise.all(
-        cacheNames.map(cacheName => caches.delete(cacheName))
-      );
+      await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
       console.log('[SW] All caches cleared');
     } catch (error) {
       console.error('[SW] Failed to clear caches:', error);
@@ -158,11 +155,7 @@ export class CacheManager {
       return;
     }
 
-    const criticalResources = [
-      '/',
-      '/index.html',
-      '/manifest.json'
-    ];
+    const criticalResources = ['/', '/index.html', '/manifest.json'];
 
     try {
       const cache = await caches.open('qylon-static-v1.0.0');
@@ -202,18 +195,18 @@ export class ServiceWorkerMetrics {
 
 // Export the main service worker manager
 export const serviceWorkerManager = new ServiceWorkerManager({
-  onUpdate: (registration) => {
+  onUpdate: registration => {
     // Show update notification to user
     if (confirm('New version available! Reload to update?')) {
       window.location.reload();
     }
   },
-  onSuccess: (registration) => {
+  onSuccess: registration => {
     console.log('[SW] Service worker ready');
   },
   onOfflineReady: () => {
     console.log('[SW] App is ready for offline use');
-  }
+  },
 });
 
 export default ServiceWorkerManager;

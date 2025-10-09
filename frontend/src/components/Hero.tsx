@@ -138,14 +138,14 @@ const Hero: React.FC = () => {
               className='px-8 py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-semibold rounded-2xl hover:scale-105 transition-all duration-200 inline-flex items-center gap-2 shadow-lg text-lg'
             >
               Get Started Free
-              <Icon name="arrowRight" size={20} />
+              <Icon name='arrowRight' size={20} />
             </a>
             <a
               href='/login'
               className='px-8 py-4 glass text-white font-semibold rounded-2xl hover:scale-105 transition-all duration-200 inline-flex items-center gap-2 text-lg'
             >
               Sign In
-              <Icon name="arrowRight" size={20} />
+              <Icon name='arrowRight' size={20} />
             </a>
           </div>
 
@@ -153,7 +153,11 @@ const Hero: React.FC = () => {
           <div id='waitlist' className='max-w-md mx-auto mb-8 md:mb-12 px-4'>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
               <div className='relative flex-1'>
-                <Icon name="mail" size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60" />
+                <Icon
+                  name='mail'
+                  size={20}
+                  className='absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60'
+                />
                 <input
                   type='email'
                   value={email}
@@ -167,12 +171,17 @@ const Hero: React.FC = () => {
               <button
                 type='submit'
                 disabled={isSubmitting}
-                className={`px-6 sm:px-8 py-3 md:py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group text-base shadow-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
-                  }`}
+                className={`px-6 sm:px-8 py-3 md:py-4 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 text-white font-medium rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group text-base shadow-lg ${
+                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                }`}
               >
                 {isSubmitting ? 'Joining...' : 'Join waitlist'}
                 {!isSubmitting && (
-                  <Icon name="arrowRight" size={20} className="group-hover:translate-x-1 transition-transform duration-200" />
+                  <Icon
+                    name='arrowRight'
+                    size={20}
+                    className='group-hover:translate-x-1 transition-transform duration-200'
+                  />
                 )}
               </button>
             </form>
@@ -180,12 +189,13 @@ const Hero: React.FC = () => {
             {/* Submit Message */}
             {submitMessage && (
               <div
-                className={`mt-4 p-3 rounded-lg text-center text-sm ${submitMessage.includes('🎉')
-                  ? 'glass-heavy text-emerald-200 border-emerald-300/30'
-                  : submitMessage.includes('already')
-                    ? 'glass-heavy text-amber-200 border-amber-300/30'
-                    : 'glass-heavy text-red-200 border-red-300/30'
-                  }`}
+                className={`mt-4 p-3 rounded-lg text-center text-sm ${
+                  submitMessage.includes('🎉')
+                    ? 'glass-heavy text-emerald-200 border-emerald-300/30'
+                    : submitMessage.includes('already')
+                      ? 'glass-heavy text-amber-200 border-amber-300/30'
+                      : 'glass-heavy text-red-200 border-red-300/30'
+                }`}
               >
                 {submitMessage}
               </div>

@@ -1,0 +1,20 @@
+name: qylon-production
+
+services:
+  - name: api-gateway
+    image:
+      registry_type: DOCR
+      repository: qylon-api-gateway
+      tag: latest
+    run_command: npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    routes:
+      - path: /api
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: '3000'

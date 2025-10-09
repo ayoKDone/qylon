@@ -16,7 +16,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: "3000"
+        value: '3000'
       - key: JWT_SECRET
         value: ${JWT_SECRET}
       - key: SUPABASE_URL
@@ -30,13 +30,13 @@ services:
       - key: CORS_ORIGIN
         value: ${CORS_ORIGIN}
       - key: SECURITY_HEADERS
-        value: "true"
+        value: 'true'
       - key: HELMET_ENABLED
-        value: "true"
+        value: 'true'
       - key: RATE_LIMIT_WINDOW_MS
-        value: "900000"
+        value: '900000'
       - key: RATE_LIMIT_MAX_REQUESTS
-        value: "100"
+        value: '100'
     health_check:
       http_path: /health
       initial_delay_seconds: 10
@@ -61,7 +61,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: "3003"
+        value: '3003'
       - key: JWT_SECRET
         value: ${JWT_SECRET}
       - key: SUPABASE_URL
@@ -73,7 +73,7 @@ services:
       - key: RECALL_AI_API_KEY
         value: ${RECALL_AI_API_KEY}
       - key: RECALL_AI_BASE_URL
-        value: "https://us-east-1.recall.ai"
+        value: 'https://us-east-1.recall.ai'
     health_check:
       http_path: /health
       initial_delay_seconds: 10
@@ -98,7 +98,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: "3005"
+        value: '3005'
       - key: JWT_SECRET
         value: ${JWT_SECRET}
       - key: SUPABASE_URL
@@ -129,7 +129,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: "3006"
+        value: '3006'
       - key: JWT_SECRET
         value: ${JWT_SECRET}
       - key: SUPABASE_URL
@@ -165,7 +165,7 @@ static_sites:
 databases:
   - name: qylon-production-db
     engine: PG
-    version: "15"
+    version: '15'
     size: db-s-2vcpu-4gb
     num_nodes: 2
     region: nyc3

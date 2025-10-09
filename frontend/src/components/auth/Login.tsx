@@ -66,8 +66,7 @@ export default function Login() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              {/* <Icon name="arrowLeft" size={16} /> */}
-              ←
+              {/* <Icon name="arrowLeft" size={16} /> */}←
               <span className='text-sm'>Back to Home</span>
             </a>
           </div>

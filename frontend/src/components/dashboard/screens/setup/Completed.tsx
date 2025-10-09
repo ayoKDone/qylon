@@ -18,8 +18,8 @@ export default function Completed() {
         preferences: {
           notifications: true,
           email_updates: true,
-          data_sharing: false
-        }
+          data_sharing: false,
+        },
       });
     } catch (error) {
       console.error('Error completing onboarding:', error);

@@ -61,7 +61,7 @@ export async function completeOnboarding(req: Request, res: Response) {
   if (!user_id || !onboarding_data) {
     return res.status(400).json({
       message: 'User ID and onboarding data are required',
-      success: false
+      success: false,
     });
   }
 
@@ -89,7 +89,7 @@ export async function completeOnboarding(req: Request, res: Response) {
       onboarding_data.company_size,
       onboarding_data.role,
       onboarding_data.timezone || 'UTC',
-      user_id
+      user_id,
     ];
 
     const result = await pool.query(query, values);
@@ -97,25 +97,25 @@ export async function completeOnboarding(req: Request, res: Response) {
     if (result.rows.length === 0) {
       return res.status(404).json({
         message: 'User not found',
-        success: false
+        success: false,
       });
     }
 
     logger.info('User onboarding completed', {
       user_id,
-      company: onboarding_data.company_name
+      company: onboarding_data.company_name,
     });
 
     res.status(200).json({
       message: 'Onboarding completed successfully',
       success: true,
-      user: result.rows[0]
+      user: result.rows[0],
     });
   } catch (error) {
     logger.error('Failed to complete onboarding', { error, user_id });
     res.status(500).json({
       message: 'Failed to complete onboarding',
-      success: false
+      success: false,
     });
   }
 }

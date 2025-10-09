@@ -18,7 +18,7 @@ jobs:
       - name: Fix Registry Credentials
         run: |
           echo "🔧 Fixing DigitalOcean Container Registry Authentication"
-          
+
           # Check if registry exists
           echo "🔍 Checking registry..."
           if ! doctl registry get >/dev/null 2>&1; then
@@ -29,36 +29,36 @@ jobs:
           else
             echo "✅ Registry exists"
           fi
-          
+
           # Get registry credentials using the API directly
           echo "🔑 Getting registry credentials..."
-          
+
           # Get the registry name
           REGISTRY_NAME=$(doctl registry get --format Name --no-header)
           echo "Registry Name: $REGISTRY_NAME"
-          
+
           # Get credentials using the DigitalOcean API
           CREDENTIALS_RESPONSE=$(curl -s -X POST \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.DO_ACCESS_TOKEN }}" \
             "https://api.digitalocean.com/v2/registry/docker-credentials")
-          
+
           echo "Credentials Response: $CREDENTIALS_RESPONSE"
-          
+
           # Extract credentials from the response
           USERNAME=$(echo "$CREDENTIALS_RESPONSE" | grep -o '"username":"[^"]*"' | cut -d'"' -f4)
           PASSWORD=$(echo "$CREDENTIALS_RESPONSE" | grep -o '"password":"[^"]*"' | cut -d'"' -f4)
-          
+
           echo "Extracted Username: $USERNAME"
           echo "Extracted Password: $PASSWORD"
-          
+
           if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
             echo "✅ Successfully extracted credentials!"
             echo "🔄 Updating GitHub secrets..."
             gh secret set DO_REGISTRY_USERNAME --body "$USERNAME"
             gh secret set DO_REGISTRY_PASSWORD --body "$PASSWORD"
             echo "✅ GitHub secrets updated!"
-            
+
             # Trigger deployment
             echo "🚀 Triggering deployment..."
             if [ -n "${{ secrets.DO_APP_ID }}" ]; then

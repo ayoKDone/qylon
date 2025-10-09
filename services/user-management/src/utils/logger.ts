@@ -13,5 +13,5 @@ export const logger = {
     if (process.env.DEBUG === 'true') {
       console.debug(`[DEBUG] ${new Date().toISOString()} - ${message}`, meta || '');
     }
-  }
+  },
 };

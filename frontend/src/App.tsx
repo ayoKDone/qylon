@@ -35,8 +35,8 @@ const Setup = React.lazy(() => import('./pages/Setup'));
 
 // Loading component for Suspense fallback
 const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  <div className='flex items-center justify-center min-h-screen'>
+    <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600'></div>
   </div>
 );
 
@@ -53,8 +53,9 @@ const AppContent: React.FC = () => {
             path='/'
             element={
               <div
-                className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
-                  }`}
+                className={`min-h-screen transition-colors duration-300 ${
+                  isDark ? 'bg-black text-white' : 'bg-white text-gray-900'
+                }`}
               >
                 <Header />
                 <Hero />

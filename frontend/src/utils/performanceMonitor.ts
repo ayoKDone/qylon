@@ -84,7 +84,7 @@ class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as PerformanceEntry;
 
@@ -101,7 +101,7 @@ class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           this.recordMetric('FID', entry.processingStart - entry.startTime);
@@ -122,16 +122,18 @@ class PerformanceMonitor {
     let sessionEntries: any[] = [];
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           if (!entry.hadRecentInput) {
             const firstSessionEntry = sessionEntries[0];
             const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
 
-            if (sessionValue &&
-                entry.startTime - lastSessionEntry.startTime < 1000 &&
-                entry.startTime - firstSessionEntry.startTime < 5000) {
+            if (
+              sessionValue &&
+              entry.startTime - lastSessionEntry.startTime < 1000 &&
+              entry.startTime - firstSessionEntry.startTime < 5000
+            ) {
               sessionValue += entry.value;
               sessionEntries.push(entry);
             } else {
@@ -158,9 +160,9 @@ class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
           this.recordMetric('FCP', entry.startTime);
         });
       });
@@ -202,7 +204,7 @@ class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           if (entry.initiatorType === 'script' || entry.initiatorType === 'link') {
@@ -238,11 +240,16 @@ class PerformanceMonitor {
   private initializeNavigationTiming(): void {
     window.addEventListener('load', () => {
       setTimeout(() => {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        const navigation = performance.getEntriesByType(
+          'navigation',
+        )[0] as PerformanceNavigationTiming;
 
         if (navigation) {
           this.recordMetric('TTFB', navigation.responseStart - navigation.requestStart);
-          this.recordMetric('DOMContentLoaded', navigation.domContentLoadedEventEnd - navigation.fetchStart);
+          this.recordMetric(
+            'DOMContentLoaded',
+            navigation.domContentLoadedEventEnd - navigation.fetchStart,
+          );
           this.recordMetric('LoadComplete', navigation.loadEventEnd - navigation.fetchStart);
         }
       }, 0);
@@ -253,12 +260,13 @@ class PerformanceMonitor {
     if (!('PerformanceObserver' in window)) return;
 
     try {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
           // Track slow resources
           const loadTime = entry.responseEnd - entry.startTime;
-          if (loadTime > 1000) { // Resources taking more than 1 second
+          if (loadTime > 1000) {
+            // Resources taking more than 1 second
             this.recordMetric(`SlowResource-${entry.name}`, loadTime);
           }
         });
@@ -290,7 +298,7 @@ class PerformanceMonitor {
       timestamp: Date.now(),
       url: window.location.href,
       userAgent: navigator.userAgent,
-      connection: (navigator as any).connection?.effectiveType
+      connection: (navigator as any).connection?.effectiveType,
     };
 
     this.metrics.push(metric);
@@ -325,8 +333,8 @@ class PerformanceMonitor {
         body: JSON.stringify({
           metrics: metricsToSend,
           timestamp: Date.now(),
-          sessionId: this.getSessionId()
-        })
+          sessionId: this.getSessionId(),
+        }),
       });
 
       console.log(`[Performance] Sent ${metricsToSend.length} metrics`);
@@ -425,7 +433,7 @@ export const performanceMonitor = import.meta.env.PROD
       batchSize: 10,
       flushInterval: 30000, // 30 seconds
       enableRealUserMonitoring: true,
-      enableSyntheticMonitoring: false
+      enableSyntheticMonitoring: false,
     })
   : null;
 
