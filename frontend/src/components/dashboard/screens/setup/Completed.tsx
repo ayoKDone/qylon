@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
 import { onboardingService } from '../../../../services/onboardingService';
 
@@ -8,7 +8,6 @@ export default function Completed() {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
   const [confettiKey, setConfettiKey] = useState(0);
-  const navigate = useNavigate();
 
   const handleStart = async () => {
     // Complete onboarding

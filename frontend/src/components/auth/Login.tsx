@@ -9,7 +9,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // const { user, loading } = useSupabaseSession();
-  const user = null;
   const loading = false;
   const navigate = useNavigate();
 

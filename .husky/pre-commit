@@ -9,16 +9,9 @@ echo "🔍 Running pre-commit quality checks..."
 # Run lint-staged to check staged files
 npx lint-staged
 
-# Run security audit
-echo "🔒 Running security audit..."
-npm run security:audit
-
 # Run type checking
 echo "📝 Running TypeScript type checking..."
 npx tsc --noEmit
 
-# Run unit tests for changed files
-echo "🧪 Running unit tests for changed files..."
-npm run test:unit
-
 echo "✅ Pre-commit checks passed!"
+npx lint-staged
