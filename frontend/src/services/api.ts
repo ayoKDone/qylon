@@ -15,7 +15,7 @@ class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public code?: string
+    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -35,7 +35,7 @@ class ApiService {
 
   private async request<T>(
     endpoint: string,
-    options: FetchRequestInit = {}
+    options: FetchRequestInit = {},
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     const config: FetchRequestInit = {
@@ -90,7 +90,7 @@ class ApiService {
   async getPaginated<T>(
     endpoint: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<ApiResponse<PaginatedResponse<T>>> {
     const params = new URLSearchParams({
       page: page.toString(),

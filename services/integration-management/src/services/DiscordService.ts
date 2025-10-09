@@ -149,7 +149,7 @@ export class DiscordService {
         roles?: string[];
         users?: string[];
       };
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage> {
     try {
       if (!this.authenticated) {
@@ -207,7 +207,7 @@ export class DiscordService {
   async sendDirectMessage(
     userId: string,
     content: string,
-    options: any = {}
+    options: any = {},
   ): Promise<CommunicationMessage> {
     try {
       // Create a DM channel with the user
@@ -285,7 +285,7 @@ export class DiscordService {
       nsfw?: boolean;
       parent_id?: string;
       permission_overwrites?: any[];
-    } = {}
+    } = {},
   ): Promise<DiscordChannel> {
     try {
       if (!this.authenticated) {
@@ -327,7 +327,7 @@ export class DiscordService {
       embeds?: any[];
       components?: any[];
       files?: any[];
-    } = {}
+    } = {},
   ): Promise<boolean> {
     try {
       if (!this.authenticated) {
@@ -388,7 +388,7 @@ export class DiscordService {
       before?: string;
       after?: string;
       around?: string;
-    } = {}
+    } = {},
   ): Promise<CommunicationMessage[]> {
     try {
       if (!this.authenticated) {
@@ -451,7 +451,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.put(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_added', {
@@ -482,7 +482,7 @@ export class DiscordService {
       const encodedEmoji = encodeURIComponent(emoji);
 
       await this.apiClient.delete(
-        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`
+        `/channels/${channelId}/messages/${messageId}/reactions/${encodedEmoji}/@me`,
       );
 
       await this.logOperation('reaction_removed', {

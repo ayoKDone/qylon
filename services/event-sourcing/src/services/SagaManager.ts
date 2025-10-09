@@ -21,7 +21,7 @@ export class SupabaseSagaManager implements ISagaManager {
     definition: SagaDefinition,
     correlationId: string,
     userId: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<Saga> {
     try {
       const sagaId = uuidv4();
@@ -120,7 +120,7 @@ export class SupabaseSagaManager implements ISagaManager {
       if (step.dependsOn) {
         const dependencies = saga.steps.filter(s => step.dependsOn!.includes(s.name));
         const incompleteDependencies = dependencies.filter(
-          d => d.status !== SagaStepStatus.COMPLETED
+          d => d.status !== SagaStepStatus.COMPLETED,
         );
 
         if (incompleteDependencies.length > 0) {

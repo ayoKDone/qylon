@@ -55,7 +55,7 @@ describe('PipedriveService', () => {
       service.authenticate.mockRejectedValue(new Error('Authentication failed'));
 
       await expect(service.authenticate(mockConfig.credentials)).rejects.toThrow(
-        'Authentication failed'
+        'Authentication failed',
       );
     });
   });
@@ -157,7 +157,7 @@ describe('PipedriveService', () => {
           lastName: 'Doe',
           email: 'john@example.com',
           phone: '+1234567890',
-        })
+        }),
       );
     });
 
@@ -175,7 +175,7 @@ describe('PipedriveService', () => {
       };
 
       await expect(service.createContact(invalidContactData)).rejects.toThrow(
-        'Invalid contact data'
+        'Invalid contact data',
       );
     });
   });
@@ -206,7 +206,7 @@ describe('PipedriveService', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-        })
+        }),
       );
     });
   });
@@ -229,7 +229,7 @@ describe('PipedriveService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           companyId: 12345,
-        })
+        }),
       );
     });
 
@@ -249,7 +249,7 @@ describe('PipedriveService', () => {
       expect(result.details).toEqual(
         expect.objectContaining({
           error: 'Authentication failed',
-        })
+        }),
       );
     });
   });

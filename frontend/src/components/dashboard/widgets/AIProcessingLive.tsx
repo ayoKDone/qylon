@@ -49,7 +49,7 @@ export default function AIProcessingLive() {
             return { ...task, status: 'completed' as const };
           }
           return task;
-        })
+        }),
       );
 
       // Update active conversations count based on processing tasks

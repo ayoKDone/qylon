@@ -92,7 +92,7 @@ const handler = async (req: Request, res: Response) => {
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
     retryAfter: Math.round(
-      req.rateLimit?.resetTime ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000 : 60
+      req.rateLimit?.resetTime ? (Number(req.rateLimit.resetTime) - Date.now()) / 1000 : 60,
     ),
   });
 };

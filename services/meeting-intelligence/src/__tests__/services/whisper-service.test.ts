@@ -301,7 +301,7 @@ describe('WhisperService', () => {
         expect.objectContaining({
           duration: expect.any(Number),
           language: expect.any(String),
-        })
+        }),
       );
     });
 

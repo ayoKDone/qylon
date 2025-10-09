@@ -219,7 +219,7 @@ Object.entries(serviceRegistry).forEach(
     serviceConfig.routes.forEach((route: string) => {
       router.use(`/api/v1${route}`, proxy);
     });
-  }
+  },
 );
 
 /**
@@ -268,8 +268,8 @@ router.get('/services/status', async (req: Request, _res: Response) => {
             lastCheck: new Date().toISOString(),
           };
         }
-      }
-    )
+      },
+    ),
   );
 
   const services = serviceStatuses.map((result, index) => {

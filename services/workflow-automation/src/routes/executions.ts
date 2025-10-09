@@ -60,7 +60,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -101,7 +101,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -147,7 +147,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -178,7 +178,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

@@ -40,7 +40,7 @@ router.post(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meeting_id)
         .eq('clients.user_id', userId)
@@ -126,7 +126,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -146,7 +146,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -207,7 +207,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -217,7 +217,7 @@ async function processRecordingAsync(
   meetingId: string,
   recordingUrl: string,
   transcriptionId: string,
-  _options?: any
+  _options?: any,
 ): Promise<void> {
   try {
     logger.info('Starting async recording processing', {
