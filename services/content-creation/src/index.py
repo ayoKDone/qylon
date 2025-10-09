@@ -82,7 +82,7 @@ class ContentResponse(BaseModel):
     client_id: str
     meeting_id: Optional[str]
     template_id: Optional[str]
-    metadata: Optional[Dict[str, Any]],
+    metadata: Optional[Dict[str, Any]]
 
 
 class ContentUpdateRequest(BaseModel):
@@ -110,7 +110,7 @@ class TemplateResponse(BaseModel):
     description: Optional[str]
     created_at: datetime
     updated_at: datetime
-    client_id: str,
+    client_id: str
 
 
 # Authentication dependency
