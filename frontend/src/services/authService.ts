@@ -51,13 +51,8 @@ export const authService = {
 
   // Check if user needs onboarding
   async needsOnboarding(): Promise<boolean> {
-    try {
-      // TODO: Implement onboarding service
-      return false; // Default to not needing onboarding
-    } catch (error) {
-      console.error('Error checking onboarding status:', error);
-      return true; // Default to showing onboarding
-    }
+    // TODO: Implement onboarding service
+    return false; // Default to not needing onboarding
   },
 };
 
