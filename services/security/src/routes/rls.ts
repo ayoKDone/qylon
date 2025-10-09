@@ -17,7 +17,7 @@ try {
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in RLS routes - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -71,7 +71,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Test RLS policy for a specific record
@@ -133,7 +133,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get user's accessible records for a table
@@ -195,7 +195,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Validate RLS policy configuration
@@ -269,7 +269,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

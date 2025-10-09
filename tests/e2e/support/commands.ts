@@ -155,7 +155,7 @@ Cypress.Commands.add(
   (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
     cy.get(`[data-testid="notification-${type}"]`).should('be.visible');
     cy.get(`[data-testid="notification-${type}"]`).should('contain', message);
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -163,7 +163,7 @@ Cypress.Commands.add(
   (type: 'success' | 'error' | 'warning' | 'info' = 'success') => {
     cy.get(`[data-testid="notification-${type}"] [data-testid="dismiss-button"]`).click();
     cy.get(`[data-testid="notification-${type}"]`).should('not.be.visible');
-  }
+  },
 );
 
 // Loading state commands
@@ -193,7 +193,7 @@ Cypress.Commands.add(
       statusCode,
       body: response,
     }).as(`${method.toLowerCase()}_${url.replace(/[^a-zA-Z0-9]/g, '_')}`);
-  }
+  },
 );
 
 // File upload commands
@@ -326,7 +326,7 @@ declare global {
       // Notifications
       expectNotification(
         message: string,
-        type?: 'success' | 'error' | 'warning' | 'info'
+        type?: 'success' | 'error' | 'warning' | 'info',
       ): Chainable<void>;
       dismissNotification(type?: 'success' | 'error' | 'warning' | 'info'): Chainable<void>;
 
@@ -341,7 +341,7 @@ declare global {
         method: string,
         url: string,
         statusCode: number,
-        response: any
+        response: any,
       ): Chainable<void>;
 
       // File uploads

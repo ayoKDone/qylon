@@ -59,7 +59,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid credentials provided',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
@@ -69,7 +69,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Invalid contact email',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
 
@@ -77,7 +77,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Contact must have at least first name or last name',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
@@ -87,7 +87,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity name is required',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
 
@@ -95,7 +95,7 @@ export abstract class BaseCRMService implements ICRMService {
       throw createIntegrationError(
         'Opportunity must be associated with a contact',
         this.integrationType,
-        this.config.userId
+        this.config.userId,
       );
     }
   }
@@ -114,14 +114,14 @@ export abstract class BaseCRMService implements ICRMService {
     throw createExternalServiceError(
       `${operation} failed: ${errorMessage}`,
       this.integrationType,
-      this.config.userId
+      this.config.userId,
     );
   }
 
   protected async retryOperation<T>(
     operation: () => Promise<T>,
     maxRetries: number = 3,
-    delay: number = 1000
+    delay: number = 1000,
   ): Promise<T> {
     let lastError: Error;
 
@@ -165,7 +165,7 @@ export abstract class BaseCRMService implements ICRMService {
     recordsUpdated: number,
     recordsFailed: number,
     errors?: string[],
-    duration?: number
+    duration?: number,
   ): SyncResult {
     const result: SyncResult = {
       success,

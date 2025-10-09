@@ -27,7 +27,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -99,7 +99,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -123,7 +123,7 @@ router.patch(
           id,
           clients!inner(user_id)
         )
-      `
+      `,
         )
         .eq('id', actionItemId)
         .eq('meetings.clients.user_id', userId)
@@ -194,7 +194,7 @@ router.patch(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

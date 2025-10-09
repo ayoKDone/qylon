@@ -50,7 +50,7 @@ Cypress.Commands.add(
         expect(interception.response.body).to.deep.include(expectedData);
       }
     });
-  }
+  },
 );
 
 Cypress.Commands.add(
@@ -63,7 +63,7 @@ Cypress.Commands.add(
         expect(interception.response.body.error).to.include(expectedError);
       }
     });
-  }
+  },
 );
 
 // Custom assertions for user authentication
@@ -141,7 +141,7 @@ Cypress.Commands.add('shouldHaveFieldError', (fieldTestId: string, expectedError
   cy.get(`[data-testid="${fieldTestId}"]`).should('have.class', 'error');
   cy.get(`[data-testid="${fieldTestId}"] + [data-testid="field-error"]`).should(
     'contain',
-    expectedError
+    expectedError,
   );
 });
 
@@ -189,20 +189,20 @@ Cypress.Commands.add(
     cy.get(`[data-testid="${paginationTestId}"]`).should('be.visible');
     cy.get(`[data-testid="${paginationTestId}"] [data-testid="current-page"]`).should(
       'contain',
-      currentPage
+      currentPage,
     );
     cy.get(`[data-testid="${paginationTestId}"] [data-testid="total-pages"]`).should(
       'contain',
-      totalPages
+      totalPages,
     );
-  }
+  },
 );
 
 // Custom assertions for search
 Cypress.Commands.add('shouldHaveSearchResults', (searchTestId: string, expectedCount: number) => {
   cy.get(`[data-testid="${searchTestId}"] [data-testid="search-results"]`).should(
     'have.length',
-    expectedCount
+    expectedCount,
   );
 });
 
@@ -279,12 +279,12 @@ declare global {
       shouldHaveAPIResponse(
         alias: string,
         expectedStatus: number,
-        expectedData?: any
+        expectedData?: any,
       ): Chainable<void>;
       shouldHaveAPIError(
         alias: string,
         expectedStatus: number,
-        expectedError?: string
+        expectedError?: string,
       ): Chainable<void>;
 
       // Authentication assertions
@@ -333,7 +333,7 @@ declare global {
       shouldHavePagination(
         paginationTestId: string,
         currentPage: number,
-        totalPages: number
+        totalPages: number,
       ): Chainable<void>;
 
       // Search assertions

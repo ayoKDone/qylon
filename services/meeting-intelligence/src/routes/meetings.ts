@@ -81,7 +81,7 @@ router.post(
         try {
           const bot = await recallAIService.createBot(
             meetingData.meeting_url,
-            `Qylon Bot - ${meetingData.title}`
+            `Qylon Bot - ${meetingData.title}`,
           );
 
           // Update meeting with bot information
@@ -143,7 +143,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -231,7 +231,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -250,7 +250,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -299,7 +299,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -334,7 +334,7 @@ router.put(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -427,7 +427,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -447,7 +447,7 @@ router.delete(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', meetingId)
         .eq('clients.user_id', userId)
@@ -520,7 +520,7 @@ router.delete(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

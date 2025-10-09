@@ -69,7 +69,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get specific integration
@@ -118,7 +118,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Create new integration
@@ -173,7 +173,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Update integration
@@ -232,7 +232,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Delete integration
@@ -284,7 +284,7 @@ router.delete(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Test integration connection
@@ -417,7 +417,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Sync integration data
@@ -514,7 +514,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get integration metrics
@@ -578,7 +578,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

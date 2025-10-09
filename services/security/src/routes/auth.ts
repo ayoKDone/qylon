@@ -17,7 +17,7 @@ try {
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in auth routes - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -70,7 +70,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Refresh JWT token
@@ -123,7 +123,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Revoke JWT token
@@ -167,7 +167,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 // Get user permissions
@@ -220,7 +220,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

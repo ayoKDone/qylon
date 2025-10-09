@@ -23,7 +23,7 @@ export class WorkflowEngine {
   async executeWorkflow(
     workflowId: string,
     inputData: Record<string, any>,
-    context?: Record<string, any>
+    context?: Record<string, any>,
   ): Promise<WorkflowExecution> {
     try {
       logWorkflow('workflow_execution_started', workflowId);
@@ -172,7 +172,7 @@ export class WorkflowEngine {
    */
   private async createExecution(
     workflow: Workflow,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<WorkflowExecution> {
     try {
       const { data, error } = await this.supabase
@@ -190,7 +190,7 @@ export class WorkflowEngine {
       if (error) {
         throw new ExecutionError(
           `Failed to create execution: ${error.message}`,
-          'EXECUTION_CREATION_FAILED'
+          'EXECUTION_CREATION_FAILED',
         );
       }
 
@@ -284,7 +284,7 @@ export class WorkflowEngine {
   private async executeWorkflowAsync(
     executionId: string,
     workflow: Workflow,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<void> {
     try {
       logWorkflow('workflow_execution_running', workflow.id, executionId);
@@ -340,7 +340,7 @@ export class WorkflowEngine {
   private async updateExecutionStatus(
     executionId: string,
     status: ExecutionStatus,
-    updates?: any
+    updates?: any,
   ): Promise<void> {
     try {
       const updateData: any = {
@@ -419,7 +419,7 @@ export class WorkflowEngine {
   async getExecutions(
     workflowId: string,
     page: number = 1,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<{ executions: WorkflowExecution[]; total: number }> {
     try {
       const { data, error, count } = await this.supabase

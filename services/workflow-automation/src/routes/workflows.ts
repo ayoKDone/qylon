@@ -101,7 +101,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -182,7 +182,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -201,7 +201,7 @@ router.get(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -246,7 +246,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -266,7 +266,7 @@ router.put(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -349,7 +349,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -369,7 +369,7 @@ router.delete(
           `
         *,
         clients!inner(user_id)
-      `
+      `,
         )
         .eq('id', workflowId)
         .eq('clients.user_id', userId)
@@ -430,7 +430,7 @@ router.delete(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

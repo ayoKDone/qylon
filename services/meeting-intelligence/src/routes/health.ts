@@ -101,7 +101,7 @@ router.get('/detailed', async (req: Request, res: Response): Promise<void> => {
 
     // Determine overall health
     const allHealthy = Object.values(healthChecks.dependencies).every(
-      dep => dep.status === 'healthy'
+      dep => dep.status === 'healthy',
     );
 
     healthChecks.status = allHealthy ? 'healthy' : 'degraded';

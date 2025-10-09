@@ -16,7 +16,7 @@ try {
 } catch (error) {
   logger.warn(
     'Failed to initialize Supabase client in health routes - running in local development mode',
-    { error: error instanceof Error ? error.message : String(error) }
+    { error: error instanceof Error ? error.message : String(error) },
   );
 }
 
@@ -118,7 +118,7 @@ router.get('/detailed', async (_req: Request, res: Response): Promise<void> => {
     checks.memory.status = checks.memory.usage > 500 ? 'warning' : 'healthy';
 
     const overallStatus = Object.values(checks).every(
-      check => check.status === 'healthy' || check.status === 'warning'
+      check => check.status === 'healthy' || check.status === 'warning',
     )
       ? 'healthy'
       : 'unhealthy';

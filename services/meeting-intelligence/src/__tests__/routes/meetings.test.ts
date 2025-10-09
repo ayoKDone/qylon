@@ -589,7 +589,7 @@ describe('Meetings Routes', () => {
         'Meetings retrieved',
         expect.objectContaining({
           userId: 'test-user-id',
-        })
+        }),
       );
     });
 
@@ -617,7 +617,7 @@ describe('Meetings Routes', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'invalid-id',
-        })
+        }),
       );
     });
   });
