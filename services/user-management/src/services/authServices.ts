@@ -55,6 +55,71 @@ export async function registerUser(req: Request, res: Response<RegisterResponse>
   }
 }
 
+export async function completeOnboarding(req: Request, res: Response) {
+  const { user_id, onboarding_data } = req.body;
+
+  if (!user_id || !onboarding_data) {
+    return res.status(400).json({
+      message: 'User ID and onboarding data are required',
+      success: false
+    });
+  }
+
+  try {
+    // Update user profile with onboarding data
+    const query = `
+      UPDATE users
+      SET
+        full_name = $1,
+        company_name = $2,
+        industry = $3,
+        company_size = $4,
+        role = $5,
+        timezone = $6,
+        onboarding_completed = true,
+        updated_at = NOW()
+      WHERE id = $7
+      RETURNING id, email, full_name, company_name
+    `;
+
+    const values = [
+      onboarding_data.full_name,
+      onboarding_data.company_name,
+      onboarding_data.industry,
+      onboarding_data.company_size,
+      onboarding_data.role,
+      onboarding_data.timezone || 'UTC',
+      user_id
+    ];
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: 'User not found',
+        success: false
+      });
+    }
+
+    logger.info('User onboarding completed', {
+      user_id,
+      company: onboarding_data.company_name
+    });
+
+    res.status(200).json({
+      message: 'Onboarding completed successfully',
+      success: true,
+      user: result.rows[0]
+    });
+  } catch (error) {
+    logger.error('Failed to complete onboarding', { error, user_id });
+    res.status(500).json({
+      message: 'Failed to complete onboarding',
+      success: false
+    });
+  }
+}
+
 export async function loginUser(req: Request, res: Response<LoginResponse>) {
   const { email, password } = req.body;
 

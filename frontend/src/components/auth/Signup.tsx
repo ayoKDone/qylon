@@ -37,7 +37,8 @@ export default function Signup() {
         navigate('/verify-email', { state: { email: data.email } });
         return;
       }
-      navigate('/dashboard');
+      // Redirect to onboarding after successful signup
+      navigate('/setup');
     } catch (err: unknown) {
       setFormError('An unexpected error occurred. Please try again.');
       console.error(err);
@@ -49,6 +50,16 @@ export default function Signup() {
       <section className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-half xui-flex-ai-center xui-w-fluid-100 xui-min-h-[100dvh] xui-min-h-[100vh] xui-h-fluid-100 xui-p-[16px]'>
         <div className='xui-h-fluid-100 bg-gradient-to-r from-purple-500 to-indigo-500 xui-bdr-rad-[16px]'></div>
         <div className='xui-py-2 xui-md-py-4 xui-px-2 xui-md-px-4'>
+          {/* Back to Home Button */}
+          <div className='xui-mb-4'>
+            <a
+              href='/'
+              className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
+            >
+              <Icon name="arrowLeft" size={16} />
+              <span className='text-sm'>Back to Home</span>
+            </a>
+          </div>
           <h1 className='xui-font-sz-[28px] xui-md-font-sz-[28px]'>Sign Up</h1>
           <p className='xui-opacity-7 xui-font-sz-[14px]'>
             Get started with Qylon and let's set your account.

@@ -8,6 +8,7 @@ import type { LoginFormInputs } from '../../types/auth';
 import { getErrorMessage } from '../../utils/handleError';
 import { Divider } from '../UI/Divider';
 import { SocialLogin } from '../UI/SocialLogin';
+import Icon from '../icons/Icon';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +18,25 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/dashboard');
+      // Check if user has completed onboarding
+      checkOnboardingStatus();
     }
   }, [user, loading, navigate]);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const needsOnboarding = await authService.needsOnboarding();
+      if (needsOnboarding) {
+        navigate('/setup');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      // Default to onboarding if we can't determine status
+      navigate('/setup');
+    }
+  };
 
   const {
     register,
@@ -32,8 +49,8 @@ export default function Login() {
     try {
       await authService.login(data);
 
-      // Redirect after login
-      window.location.href = '/dashboard';
+      // Check onboarding status and redirect accordingly
+      await checkOnboardingStatus();
     } catch (err: unknown) {
       setError(getErrorMessage(err));
     }
@@ -46,6 +63,16 @@ export default function Login() {
       <section className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-half xui-flex-ai-center xui-w-fluid-100 xui-min-h-[100dvh] xui-min-h-[100vh] xui-h-fluid-100 xui-p-[16px]'>
         <div className='xui-h-fluid-100 bg-gradient-to-r from-purple-500 to-indigo-500 xui-bdr-rad-[16px]'></div>
         <div className='xui-py-2 xui-md-py-4 xui-px-2 xui-md-px-4'>
+          {/* Back to Home Button */}
+          <div className='xui-mb-4'>
+            <a
+              href='/'
+              className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
+            >
+              <Icon name="arrowLeft" size={16} />
+              <span className='text-sm'>Back to Home</span>
+            </a>
+          </div>
           <h1 className='xui-font-sz-[28px] xui-md-font-sz-[28px]'>Log In</h1>
           <p className='xui-opacity-7 xui-font-sz-[14px]'>Let's pick up from where you left off</p>
           <form

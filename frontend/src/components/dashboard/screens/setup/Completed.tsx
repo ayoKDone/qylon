@@ -1,14 +1,30 @@
 import { useEffect, useState } from 'react';
 import Confetti from 'react-confetti';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useWindowSize } from 'react-use';
+import { onboardingService } from '../../../../services/onboardingService';
 
 export default function Completed() {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
   const [confettiKey, setConfettiKey] = useState(0);
+  const navigate = useNavigate();
 
-  const handleStart = () => {
+  const handleStart = async () => {
+    // Complete onboarding
+    try {
+      await onboardingService.updateOnboardingProgress('complete', {
+        completed_at: new Date().toISOString(),
+        preferences: {
+          notifications: true,
+          email_updates: true,
+          data_sharing: false
+        }
+      });
+    } catch (error) {
+      console.error('Error completing onboarding:', error);
+    }
+
     // trigger a single burst
     setConfettiKey(k => k + 1);
     setShowConfetti(true);
@@ -18,6 +34,7 @@ export default function Completed() {
       setShowConfetti(false);
     }, 6000);
   };
+
   useEffect(() => {
     handleStart();
   }, []);

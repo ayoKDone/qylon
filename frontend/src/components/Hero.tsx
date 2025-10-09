@@ -181,10 +181,10 @@ const Hero: React.FC = () => {
             {submitMessage && (
               <div
                 className={`mt-4 p-3 rounded-lg text-center text-sm ${submitMessage.includes('🎉')
-                    ? 'glass-heavy text-emerald-200 border-emerald-300/30'
-                    : submitMessage.includes('already')
-                      ? 'glass-heavy text-amber-200 border-amber-300/30'
-                      : 'glass-heavy text-red-200 border-red-300/30'
+                  ? 'glass-heavy text-emerald-200 border-emerald-300/30'
+                  : submitMessage.includes('already')
+                    ? 'glass-heavy text-amber-200 border-amber-300/30'
+                    : 'glass-heavy text-red-200 border-red-300/30'
                   }`}
               >
                 {submitMessage}

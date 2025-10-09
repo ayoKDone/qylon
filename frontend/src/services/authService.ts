@@ -48,6 +48,16 @@ export const authService = {
     localStorage.removeItem('access_token');
     window.location.href = '/login';
   },
+
+  // Check if user needs onboarding
+  async needsOnboarding(): Promise<boolean> {
+    try {
+      return await onboardingService.shouldRedirectToOnboarding();
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      return true; // Default to showing onboarding
+    }
+  },
 };
 
 export const logout = async () => {
