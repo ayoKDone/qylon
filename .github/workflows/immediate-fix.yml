@@ -1,0 +1,74 @@
+name: Immediate Registry Fix
+
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+
+jobs:
+  fix-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup DigitalOcean CLI
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_ACCESS_TOKEN }}
+
+      - name: Fix Registry Credentials
+        run: |
+          echo "🔧 Fixing DigitalOcean Container Registry Authentication"
+          
+          # Check if registry exists
+          echo "🔍 Checking registry..."
+          if ! doctl registry get >/dev/null 2>&1; then
+            echo "❌ No registry found. Creating one..."
+            doctl registry create qylon --region nyc3
+            echo "✅ Registry created successfully!"
+            sleep 30  # Wait for registry to be ready
+          else
+            echo "✅ Registry exists"
+          fi
+          
+          # Get registry credentials
+          echo "🔑 Getting registry credentials..."
+          CREDENTIALS=$(doctl registry docker-config 2>/dev/null)
+          
+          if [ -n "$CREDENTIALS" ]; then
+            echo "✅ Got registry credentials!"
+            
+            # Extract username and password from docker config
+            USERNAME=$(echo "$CREDENTIALS" | grep -o '"username":"[^"]*"' | cut -d'"' -f4)
+            PASSWORD=$(echo "$CREDENTIALS" | grep -o '"password":"[^"]*"' | cut -d'"' -f4)
+            
+            if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
+              echo "🔄 Updating GitHub secrets..."
+              gh secret set DO_REGISTRY_USERNAME --body "$USERNAME"
+              gh secret set DO_REGISTRY_PASSWORD --body "$PASSWORD"
+              echo "✅ GitHub secrets updated!"
+              
+              # Trigger deployment
+              echo "🚀 Triggering deployment..."
+              if [ -n "${{ secrets.DO_APP_ID }}" ]; then
+                doctl apps create-deployment "${{ secrets.DO_APP_ID }}" --force-rebuild
+                echo "✅ Deployment triggered!"
+              else
+                echo "⚠️ No DO_APP_ID found. Please create a DigitalOcean app first."
+              fi
+            else
+              echo "❌ Failed to extract credentials"
+              exit 1
+            fi
+          else
+            echo "❌ Failed to get registry credentials"
+            exit 1
+          fi
+
+      - name: Show Results
+        run: |
+          echo "🎯 Registry authentication fix completed!"
+          echo "🔗 Monitor deployment at:"
+          echo "   DigitalOcean: https://cloud.digitalocean.com/apps"
+          echo "   GitHub Actions: https://github.com/KD-Squares/qylon/actions"
