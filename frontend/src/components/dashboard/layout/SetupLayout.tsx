@@ -1,7 +1,31 @@
 // src/components/dashboard/layout/DashboardLayout.tsx
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { onboardingService } from '../../../services/onboardingService';
 
 export default function SetUpLayout() {
+  const navigate = useNavigate();
+
+  const handleSkipOnboarding = async () => {
+    try {
+      // Mark onboarding as complete to prevent future redirects
+      await onboardingService.updateOnboardingProgress('complete', {
+        completed_at: new Date().toISOString(),
+        preferences: {
+          notifications: true,
+          email_updates: true,
+          data_sharing: false
+        }
+      });
+
+      // Navigate to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error skipping onboarding:', error);
+      // Still navigate to dashboard even if there's an error
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <>
       <nav className='xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
@@ -13,9 +37,12 @@ export default function SetUpLayout() {
           height={45}
         />
         <p className='text-sm text-gray-500'>
-          <a href='/signup' className='text-purple-600 font-medium xui-text-dc-underline'>
+          <button
+            onClick={handleSkipOnboarding}
+            className='text-purple-600 font-medium xui-text-dc-underline bg-transparent border-none cursor-pointer hover:text-purple-800'
+          >
             Skip this for later
-          </a>
+          </button>
         </p>
       </nav>
       <hr />
