@@ -54,6 +54,7 @@ const limiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
