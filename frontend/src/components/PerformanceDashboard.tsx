@@ -82,31 +82,6 @@ const PerformanceDashboardComponent: React.FC = () => {
     };
   }, [isVisible]);
 
-  const formatMetric = (value: number): string => {
-    if (value < 1000) {
-      return `${Math.round(value)}ms`;
-    }
-    return `${(value / 1000).toFixed(2)}s`;
-  };
-
-  const getMetricColor = (metric: string, value: number): string => {
-    // Core Web Vitals thresholds
-    const thresholds: Record<string, { good: number; poor: number }> = {
-      LCP: { good: 2500, poor: 4000 },
-      FID: { good: 100, poor: 300 },
-      CLS: { good: 0.1, poor: 0.25 },
-      FCP: { good: 1800, poor: 3000 },
-      TTFB: { good: 800, poor: 1800 },
-    };
-
-    const threshold = thresholds[metric];
-    if (!threshold) return 'text-gray-600';
-
-    if (value <= threshold.good) return 'text-green-600';
-    if (value <= threshold.poor) return 'text-yellow-600';
-    return 'text-red-600';
-  };
-
   const exportData = () => {
     const dashboard = PerformanceDashboard.getInstance();
     const data = dashboard.exportData();
@@ -193,13 +168,12 @@ const PerformanceDashboardComponent: React.FC = () => {
                   <div className='mt-2'>
                     <div className='w-full bg-gray-200 rounded-full h-2'>
                       <div
-                        className={`h-2 rounded-full ${
-                          stat.avg <= (metric === 'CLS' ? 0.1 : 2500)
+                        className={`h-2 rounded-full ${stat.avg <= (metric === 'CLS' ? 0.1 : 2500)
                             ? 'bg-green-500'
                             : stat.avg <= (metric === 'CLS' ? 0.25 : 4000)
                               ? 'bg-yellow-500'
                               : 'bg-red-500'
-                        }`}
+                          }`}
                         style={{
                           width: `${Math.min(100, (stat.avg / (metric === 'CLS' ? 0.5 : 5000)) * 100)}%`,
                         }}
