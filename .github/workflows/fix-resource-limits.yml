@@ -2,18 +2,19 @@ name: Fix Resource Limits
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.do/app-resource-fixed.yaml'
-      - 'scripts/fix-resource-limits.sh'
+  # Only run when manually triggered or when specific files change
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - '.do/app-resource-fixed.yaml'
+  #     - 'scripts/fix-resource-limits.sh'
 
 jobs:
   fix-resources:
     name: Fix DigitalOcean Resource Limits
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
