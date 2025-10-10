@@ -76,24 +76,13 @@ app.use('/api/v1', authMiddleware as any);
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);
 
-// Serve static files from frontend build
-const frontendPath = path.join(__dirname, '../../frontend/dist');
-app.use(express.static(frontendPath));
-
-// Serve React app for all non-API routes (SPA routing)
+// API routes only - frontend will be served separately
 app.get('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api')) {
-    res.status(404).json({
-      error: 'Not Found',
-      message: `API route ${req.originalUrl} not found`,
-      timestamp: new Date().toISOString(),
-    });
-    return;
-  }
-
-  // Serve React app for all other routes
-  res.sendFile(path.join(frontendPath, 'index.html'));
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.originalUrl} not found. This is the API Gateway.`,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Global error handler

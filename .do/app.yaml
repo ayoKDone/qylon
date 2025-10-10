@@ -11,7 +11,7 @@ services:
     instance_size_slug: basic-xxs
     http_port: 8080
     routes:
-      - path: /
+      - path: /api
     envs:
       - key: NODE_ENV
         value: production
@@ -181,6 +181,24 @@ services:
       success_threshold: 1
       failure_threshold: 3
 
+static_sites:
+  - name: frontend
+    source_dir: /frontend
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    build_command: npm run build
+    output_dir: /dist
+    routes:
+      - path: /
+    catchall_document: index.html
+    envs:
+      - key: VITE_SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
+      - key: VITE_API_URL
+        value: https://qylon-app-f7utg.ondigitalocean.app/api
 
 databases:
   - name: qylon-production-db
