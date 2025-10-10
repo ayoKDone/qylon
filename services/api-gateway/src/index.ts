@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
 
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
