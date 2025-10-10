@@ -11,7 +11,7 @@ services:
     instance_size_slug: basic-xxs
     http_port: 8080
     routes:
-      - path: /
+      - path: /api
     envs:
       - key: NODE_ENV
         value: production
@@ -23,6 +23,8 @@ services:
         value: ${SUPABASE_URL}
       - key: SUPABASE_SERVICE_ROLE_KEY
         value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
       - key: OPENAI_API_KEY
         value: ${OPENAI_API_KEY}
       - key: RECALL_AI_API_KEY
@@ -195,7 +197,7 @@ static_sites:
       - key: VITE_SUPABASE_ANON_KEY
         value: ${SUPABASE_ANON_KEY}
       - key: VITE_API_URL
-        value: https://api-gateway-${APP_NAME}.ondigitalocean.app
+        value: https://qylon-app-f7utg.ondigitalocean.app/api
 
 databases:
   - name: qylon-production-db
