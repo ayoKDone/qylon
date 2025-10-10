@@ -11,13 +11,13 @@ routes:
 # Frontend static site
 static_sites:
   - name: frontend
-    source_dir: /frontend
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
       deploy_on_push: true
-    build_command: npm ci && npm run build
-    output_dir: dist
+    build_command: cd frontend && npm ci && npm run build
+    output_dir: frontend/dist
     catchall_document: index.html
     index_document: index.html
     envs:
@@ -31,12 +31,12 @@ static_sites:
 # Backend services
 services:
   - name: api-gateway
-    source_dir: /services/api-gateway
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    run_command: npm start
+    build_command: cd services/api-gateway && npm ci && npm run build
+    run_command: cd services/api-gateway && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -77,12 +77,12 @@ services:
       failure_threshold: 3
 
   - name: meeting-intelligence
-    source_dir: /services/meeting-intelligence
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    run_command: npm start
+    build_command: cd services/meeting-intelligence && npm ci && npm run build
+    run_command: cd services/meeting-intelligence && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -113,12 +113,12 @@ services:
       failure_threshold: 3
 
   - name: workflow-automation
-    source_dir: /services/workflow-automation
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    run_command: npm start
+    build_command: cd services/workflow-automation && npm ci && npm run build
+    run_command: cd services/workflow-automation && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -143,12 +143,12 @@ services:
       failure_threshold: 3
 
   - name: integration-management
-    source_dir: /services/integration-management
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    run_command: npm start
+    build_command: cd services/integration-management && npm ci && npm run build
+    run_command: cd services/integration-management && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -173,11 +173,12 @@ services:
       failure_threshold: 3
 
   - name: content-creation
-    source_dir: /services/content-creation
+    source_dir: /
     github:
       repo: KD-Squares/qylon
       branch: main
-    run_command: python -m uvicorn src.index:app --host 0.0.0.0 --port 3004
+    build_command: cd services/content-creation && pip install -r requirements.txt
+    run_command: cd services/content-creation && python -m uvicorn src.index:app --host 0.0.0.0 --port 3004
     environment_slug: python
     instance_count: 1
     instance_size_slug: basic-xxs
