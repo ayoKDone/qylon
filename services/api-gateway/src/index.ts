@@ -75,11 +75,11 @@ app.use('/api/v1', authMiddleware as any);
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);
 
-// 404 handler
-app.use('*', (req, res) => {
+// 404 handler for API routes only
+app.use('/api/*', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
-    message: `Route ${req.originalUrl} not found`,
+    message: `API route ${req.originalUrl} not found`,
     timestamp: new Date().toISOString(),
   });
 });
