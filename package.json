@@ -1,0 +1,14 @@
+{
+  "name": "qylon",
+  "version": "1.0.0",
+  "description": "Qylon AI Automation Platform",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Build handled by app.yaml configuration'",
+    "start": "echo 'Start handled by app.yaml configuration'"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}
