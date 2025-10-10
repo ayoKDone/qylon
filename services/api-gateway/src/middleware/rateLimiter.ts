@@ -1,7 +1,7 @@
-import { logSecurity, logger } from '@/utils/logger';
 import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import { logSecurity, logger } from '../utils/logger';
 
 // Extend Express Request interface to include rateLimit property
 declare module 'express-serve-static-core' {

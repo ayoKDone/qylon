@@ -5,13 +5,13 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { authMiddleware } from '@/middleware/auth';
-import { errorHandler } from '@/middleware/errorHandler';
-import { rateLimiter } from '@/middleware/rateLimiter';
-import { requestLogger } from '@/middleware/requestLogger';
-import { healthCheck } from '@/routes/health';
-import { proxyRoutes } from '@/routes/proxy';
-import { logger } from '@/utils/logger';
+import { authMiddleware } from './middleware/auth';
+import { errorHandler } from './middleware/errorHandler';
+import { rateLimiter } from './middleware/rateLimiter';
+import { requestLogger } from './middleware/requestLogger';
+import { healthCheck } from './routes/health';
+import { proxyRoutes } from './routes/proxy';
+import { logger } from './utils/logger';
 
 // Load environment variables
 dotenv.config();

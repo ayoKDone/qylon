@@ -1,7 +1,7 @@
-import { HealthCheckResponse, ServiceHealth } from '@/types';
-import { logger } from '@/utils/logger';
 import axios from 'axios';
 import { Request, Response, Router } from 'express';
+import { HealthCheckResponse, ServiceHealth } from '../types';
+import { logger } from '../utils/logger';
 
 const router: Router = Router();
 
