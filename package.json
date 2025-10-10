@@ -4,7 +4,10 @@
     "description": "Qylon AI Automation Platform",
     "private": true,
     "scripts": {
+        "heroku-prebuild": "echo 'Pre-build: Setting up build environment'",
         "build": "npm run build:frontend && npm run build:api-gateway && npm run build:meeting-intelligence && npm run build:workflow-automation && npm run build:integration-management",
+        "heroku-postbuild": "echo 'Post-build: All components built successfully'",
+        "heroku-cleanup": "echo 'Cleanup: Build artifacts processed'",
         "build:frontend": "cd frontend && npm ci && npm run build",
         "build:api-gateway": "cd services/api-gateway && npm ci && npm run build",
         "build:meeting-intelligence": "cd services/meeting-intelligence && npm ci && npm run build",
@@ -30,9 +33,16 @@
         "sonar": "echo 'Sonar analysis handled by individual services'"
     },
     "engines": {
-        "node": ">=20.0.0",
+        "node": "22.x",
         "npm": ">=9.0.0"
     },
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {},
+    "cacheDirectories": [
+        "frontend/node_modules",
+        "services/api-gateway/node_modules",
+        "services/meeting-intelligence/node_modules",
+        "services/workflow-automation/node_modules",
+        "services/integration-management/node_modules"
+    ]
 }
