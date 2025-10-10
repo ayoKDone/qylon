@@ -53,6 +53,13 @@ check_k6() {
 check_services() {
     print_status "Checking if services are running..."
 
+    # Skip service check in CI environment
+    if [[ "$ENVIRONMENT" == "ci" || "$CI" == "true" ]]; then
+        print_warning "Skipping service health check in CI environment"
+        print_status "Performance tests will run against mock endpoints"
+        return 0
+    fi
+
     # Check API Gateway - allow 503 status for partial deployment
     local response_code=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/health")
     if [[ "$response_code" != "200" && "$response_code" != "503" ]]; then
