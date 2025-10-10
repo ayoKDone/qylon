@@ -10,6 +10,17 @@ interface PerformanceMetric {
   connection?: string;
 }
 
+interface LayoutShift extends PerformanceEntry {
+  value: number;
+  hadRecentInput: boolean;
+  startTime: number;
+  sources?: Array<{
+    node?: Node;
+    previousRect: DOMRectReadOnly;
+    currentRect: DOMRectReadOnly;
+  }>;
+}
+
 // interface CoreWebVitals {
 //   CLS: number; // Cumulative Layout Shift
 //   FID: number; // First Input Delay
@@ -114,6 +125,7 @@ class PerformanceMonitor {
     }
   }
 
+
   private observeCLS(): void {
     if (!('PerformanceObserver' in window)) return;
 
@@ -209,7 +221,8 @@ class PerformanceMonitor {
         entries.forEach((entry: PerformanceResourceTiming) => {
           if (entry.initiatorType === 'script' || entry.initiatorType === 'link') {
             const loadTime = entry.responseEnd - entry.startTime;
-            this.recordMetric(`Bundle-${entry.name.split('/').pop()}`, loadTime);
+            const fileName = entry.name.split('/').pop() || 'unknown';
+            this.recordMetric(`Bundle-${fileName}`, loadTime);
           }
         });
       });
@@ -219,6 +232,7 @@ class PerformanceMonitor {
       console.error('[Performance] Failed to observe bundle load times:', error);
     }
   }
+
 
   private measureRouteTransitions(): void {
     let routeStartTime = 0;
@@ -302,14 +316,15 @@ class PerformanceMonitor {
         ?.effectiveType,
     };
 
-    this.metrics.push(metric);
-    console.log(`[Performance] ${name}: ${value}ms`);
+      this.metrics.push(metric);
+      console.log(`[Performance] ${name}: ${value}ms`);
 
-    // Flush if batch is full
-    if (this.metrics.length >= this.config.batchSize) {
-      this.flushMetrics();
-    }
+      // Flush if batch is full
+      if (this.metrics.length >= this.config.batchSize) {
+        this.flushMetrics();
+      }
   }
+
 
   private startBatchFlushing(): void {
     this.flushTimer = window.setInterval(() => {
@@ -420,6 +435,7 @@ export class PerformanceDashboard {
 
     return stats;
   }
+
 
   exportData(): string {
     return JSON.stringify(this.getAllStats(), null, 2);
