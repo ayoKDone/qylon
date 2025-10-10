@@ -1,13 +1,6 @@
 name: qylon-production
 # DigitalOcean App Platform Configuration
 
-# Global routing configuration - defines how requests are routed to components
-routes:
-  - path: /
-    component: frontend
-  - path: /api
-    component: api-gateway
-
 # Frontend static site
 static_sites:
   - name: frontend
@@ -20,6 +13,8 @@ static_sites:
     output_dir: dist
     catchall_document: index.html
     index_document: index.html
+    routes:
+      - path: /
     envs:
       - key: VITE_SUPABASE_URL
         value: ${SUPABASE_URL}
@@ -41,6 +36,8 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 8080
+    routes:
+      - path: /api
     envs:
       - key: NODE_ENV
         value: production
