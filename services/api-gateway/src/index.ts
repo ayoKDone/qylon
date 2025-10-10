@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import path from 'path';
 
 import { authMiddleware } from './middleware/auth';
 import { errorHandler } from './middleware/errorHandler';
@@ -75,13 +76,24 @@ app.use('/api/v1', authMiddleware as any);
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);
 
-// 404 handler for API routes only
-app.use('/api/*', (req, res) => {
-  res.status(404).json({
-    error: 'Not Found',
-    message: `API route ${req.originalUrl} not found`,
-    timestamp: new Date().toISOString(),
-  });
+// Serve static files from frontend build
+const frontendPath = path.join(__dirname, '../../frontend/dist');
+app.use(express.static(frontendPath));
+
+// Serve React app for all non-API routes (SPA routing)
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({
+      error: 'Not Found',
+      message: `API route ${req.originalUrl} not found`,
+      timestamp: new Date().toISOString(),
+    });
+    return;
+  }
+
+  // Serve React app for all other routes
+  res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Global error handler

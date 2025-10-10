@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
-    "prebuild": "npm install",
+    "prebuild": "npm install && cd ../../frontend && npm install && npm run build",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "jest",
