@@ -14,6 +14,7 @@ services:
     http_port: 8080
     routes:
       - path: /api
+      - path: /api/v1
     envs:
       - key: NODE_ENV
         value: production
@@ -120,12 +121,13 @@ services:
       failure_threshold: 3
 
   - name: integration-management
-    source_dir: /services/integration_management
+    source_dir: /services/integration-management
     github:
       repo: KD-Squares/qylon
       branch: main
-    run_command: python -m uvicorn app.main:app --host 0.0.0.0 --port 3006
-    environment_slug: python
+    build_command: npm ci && npm run build
+    run_command: npm start
+    environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3006
@@ -197,6 +199,7 @@ static_sites:
     routes:
       - path: /
     catchall_document: index.html
+    index_document: index.html
     envs:
       - key: VITE_SUPABASE_URL
         value: ${SUPABASE_URL}
