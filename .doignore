@@ -1,8 +1,0 @@
-# DigitalOcean App Platform ignore file
-# This ensures app.yaml controls the deployment process
-node_modules/
-.git/
-*.log
-.env
-.env.local
-.env.production

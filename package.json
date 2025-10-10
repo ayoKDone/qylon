@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "echo 'Build handled by app.yaml configuration'",
-    "start": "echo 'Start handled by app.yaml configuration'",
+    "start": "cd services/api-gateway && npm start",
     "dev": "echo 'Development handled by individual services'",
     "lint": "echo 'Linting handled by individual services'",
     "test": "echo 'Testing handled by individual services'",
