@@ -60,8 +60,6 @@ export interface RateLimitConfig {
   windowMs: number;
   max: number;
   message: string;
-  standardHeaders: boolean;
-  legacyHeaders: boolean;
 }
 
 // Error response

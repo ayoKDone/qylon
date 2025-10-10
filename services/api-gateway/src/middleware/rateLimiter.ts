@@ -180,8 +180,6 @@ export const createCustomRateLimiter = (windowMs: number, max: number) => {
     keyGenerator,
     skip,
     handler,
-    standardHeaders: true,
-    legacyHeaders: false,
     message: {
       error: 'Too Many Requests',
       message: 'Rate limit exceeded. Please try again later.',

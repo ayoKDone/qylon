@@ -55,8 +55,6 @@ const limiter = rateLimit({
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
   },
-  standardHeaders: true,
-  legacyHeaders: false,
 });
 
 app.use(limiter);

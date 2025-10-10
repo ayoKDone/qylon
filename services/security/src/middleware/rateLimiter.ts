@@ -12,8 +12,6 @@ const createRateLimiter = (windowMs: number, max: number, message: string) => {
       message,
       timestamp: new Date().toISOString(),
     },
-    standardHeaders: true,
-    legacyHeaders: false,
     handler: (req: Request, res: Response) => {
       logger.warn('Rate limit exceeded', {
         ip: req.ip,
