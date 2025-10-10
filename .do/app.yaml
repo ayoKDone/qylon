@@ -187,8 +187,9 @@ static_sites:
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm run build
-    output_dir: /dist
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    output_dir: dist
     routes:
       - path: /
     catchall_document: index.html
