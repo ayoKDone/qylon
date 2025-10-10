@@ -1,5 +1,5 @@
 name: qylon-production
-# Minimal configuration to test static site deployment
+# Minimal configuration to test static site deployment - Updated
 services:
   - name: api-gateway
     source_dir: /services/api-gateway
