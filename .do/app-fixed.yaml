@@ -1,0 +1,32 @@
+name: qylon-app
+services:
+  - name: qylon
+    github:
+      repo: KD-Squares/qylon
+      branch: dev
+      deploy_on_push: true
+    build_command: npm run build
+    source_dir: /
+    environment_slug: node-js
+    instance_size_slug: apps-s-1vcpu-1gb
+    instance_count: 1
+    http_port: 3000
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: '3000'
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: OPENAI_API_KEY
+        value: ${OPENAI_API_KEY}
+      - key: RECALL_AI_API_KEY
+        value: ${RECALL_AI_API_KEY}
+      - key: CORS_ORIGIN
+        value: ${CORS_ORIGIN}
+      - key: SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}

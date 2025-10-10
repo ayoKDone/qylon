@@ -1,0 +1,24 @@
+name: qylon-frontend
+services:
+  - name: frontend
+    source_dir: /frontend
+    github:
+      repo: KD-Squares/qylon
+      branch: dev
+    build_command: npm run build
+    run_command: npm run preview
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 4173
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_API_URL
+        value: https://api.qylon.com
+      - key: VITE_SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}

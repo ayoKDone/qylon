@@ -110,6 +110,7 @@ export const rateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -126,6 +127,7 @@ export const authRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Too many authentication attempts. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -142,6 +144,7 @@ export const apiRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'API rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -158,6 +161,7 @@ export const readOnlyRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Read rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -174,6 +178,7 @@ export const writeRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Write rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -191,6 +196,7 @@ export const createCustomRateLimiter = (windowMs: number, max: number) => {
       error: 'Too Many Requests',
       message: 'Rate limit exceeded. Please try again later.',
       timestamp: new Date().toISOString(),
+      status: 429,
     },
   });
 };
@@ -208,6 +214,7 @@ export const uploadRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Upload rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -224,5 +231,6 @@ export const passwordResetRateLimiter = rateLimit({
     error: 'Too Many Requests',
     message: 'Too many password reset attempts. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });

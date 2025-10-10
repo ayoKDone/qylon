@@ -1,0 +1,17 @@
+name: qylon-static
+services:
+  - name: frontend
+    source_dir: /frontend/dist
+    github:
+      repo: KD-Squares/qylon
+      branch: dev
+    run_command: npx serve -s . -l 3000
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3000
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production

@@ -1,7 +1,7 @@
 import { ProxyConfig, ServiceEndpoint, ServiceRegistry } from '@/types';
 import { logger } from '@/utils/logger';
 import { NextFunction, Request, Response, Router } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const router: Router = Router();
 
