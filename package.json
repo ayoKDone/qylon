@@ -1,11 +1,9 @@
 {
-  "name": "qylon",
-  "version": "1.0.0",
+    "name": "qylon",
+    "version": "1.0.0",
     "description": "Qylon AI Automation Platform",
     "private": true,
-  "scripts": {
-        "build": "cd services/api-gateway && npm ci && npm run build",
-        "start": "cd services/api-gateway && npm start",
+    "scripts": {
         "dev": "echo 'Development handled by individual services'",
         "lint": "echo 'Linting handled by individual services'",
         "test": "echo 'Testing handled by individual services'",
@@ -22,11 +20,11 @@
         "security:scan": "echo 'Security scan handled by individual services'",
         "db:migrate": "echo 'Database migrations handled by individual services'",
         "sonar": "echo 'Sonar analysis handled by individual services'"
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=9.0.0"
-  },
+    },
+    "engines": {
+        "node": ">=20.0.0",
+        "npm": ">=9.0.0"
+    },
     "dependencies": {},
     "devDependencies": {}
 }
