@@ -298,7 +298,8 @@ class PerformanceMonitor {
       timestamp: Date.now(),
       url: window.location.href,
       userAgent: navigator.userAgent,
-      connection: (navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType,
+      connection: (navigator as Navigator & { connection?: { effectiveType?: string } }).connection
+        ?.effectiveType,
     };
 
     this.metrics.push(metric);

@@ -168,12 +168,13 @@ const PerformanceDashboardComponent: React.FC = () => {
                   <div className='mt-2'>
                     <div className='w-full bg-gray-200 rounded-full h-2'>
                       <div
-                        className={`h-2 rounded-full ${stat.avg <= (metric === 'CLS' ? 0.1 : 2500)
-                          ? 'bg-green-500'
-                          : stat.avg <= (metric === 'CLS' ? 0.25 : 4000)
-                            ? 'bg-yellow-500'
-                            : 'bg-red-500'
-                          }`}
+                        className={`h-2 rounded-full ${
+                          stat.avg <= (metric === 'CLS' ? 0.1 : 2500)
+                            ? 'bg-green-500'
+                            : stat.avg <= (metric === 'CLS' ? 0.25 : 4000)
+                              ? 'bg-yellow-500'
+                              : 'bg-red-500'
+                        }`}
                         style={{
                           width: `${Math.min(100, (stat.avg / (metric === 'CLS' ? 0.5 : 5000)) * 100)}%`,
                         }}
