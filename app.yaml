@@ -7,8 +7,8 @@ services:
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    run_command: npm start
+    build_command: cd services/api-gateway && npm ci && npm run build
+    run_command: cd services/api-gateway && npm start
     environment_slug: node-js
     instance_count: 1
     instance_size_slug: basic-xxs
@@ -57,8 +57,8 @@ static_sites:
     github:
       repo: KD-Squares/qylon
       branch: main
-    build_command: npm ci && npm run build
-    output_dir: dist
+    build_command: cd frontend && npm ci && npm run build
+    output_dir: frontend/dist
     index_document: index.html
     error_document: index.html
     catchall_document: index.html
