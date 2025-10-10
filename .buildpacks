@@ -1,0 +1,4 @@
+# DigitalOcean Buildpack Configuration
+# Ensures proper Node.js buildpack detection
+
+https://github.com/heroku/heroku-buildpack-nodejs
