@@ -8,7 +8,8 @@
     "start": "echo 'Start handled by app.yaml configuration'",
     "lint": "echo 'Linting handled by individual services'",
     "test": "echo 'Testing handled by individual services'",
-    "format": "echo 'Formatting handled by individual services'"
+    "format": "echo 'Formatting handled by individual services'",
+    "db:migrate": "echo 'Database migrations handled by individual services'"
   },
     "engines": {
         "node": ">=20.0.0",
