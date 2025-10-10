@@ -76,22 +76,22 @@ app.use('/api/v1', authMiddleware as any);
 app.use('/api/v1', proxyRoutes);
 
 // API routes only - frontend will be served separately
+// Only handle requests that start with /api/v1
+app.get('/api/v1/*', (req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `API route ${req.originalUrl} not found. This is the API Gateway.`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Catch-all for any other routes (should not reach here if routing is correct)
 app.get('*', (req, res) => {
-  // Only handle API routes, let static site handle everything else
-  if (req.originalUrl.startsWith('/api')) {
-    res.status(404).json({
-      error: 'Not Found',
-      message: `API route ${req.originalUrl} not found. This is the API Gateway.`,
-      timestamp: new Date().toISOString(),
-    });
-  } else {
-    // For non-API routes, let the static site handle them
-    res.status(404).json({
-      error: 'Not Found',
-      message: `Route ${req.originalUrl} not found. Please check the frontend static site.`,
-      timestamp: new Date().toISOString(),
-    });
-  }
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.originalUrl} not found. This is the API Gateway - please check the frontend static site.`,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Global error handler

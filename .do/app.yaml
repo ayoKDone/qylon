@@ -1,5 +1,28 @@
 name: qylon-production
 # DigitalOcean App Platform Configuration
+
+# Frontend static site should be first to handle root path
+static_sites:
+  - name: frontend
+    source_dir: /frontend
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+      deploy_on_push: true
+    build_command: npm ci && npm run build
+    output_dir: dist
+    routes:
+      - path: /
+    catchall_document: index.html
+    index_document: index.html
+    envs:
+      - key: VITE_SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
+      - key: VITE_API_URL
+        value: https://qylon-app-f7utg.ondigitalocean.app/api
+
 services:
   - name: api-gateway
     source_dir: /services/api-gateway
@@ -13,7 +36,6 @@ services:
     instance_size_slug: basic-xxs
     http_port: 8080
     routes:
-      - path: /api
       - path: /api/v1
     envs:
       - key: NODE_ENV
@@ -186,27 +208,6 @@ services:
       timeout_seconds: 5
       success_threshold: 1
       failure_threshold: 3
-
-static_sites:
-  - name: frontend
-    source_dir: /frontend
-    github:
-      repo: KD-Squares/qylon
-      branch: main
-      deploy_on_push: true
-    build_command: npm ci && npm run build
-    output_dir: dist
-    routes:
-      - path: /
-    catchall_document: index.html
-    index_document: index.html
-    envs:
-      - key: VITE_SUPABASE_URL
-        value: ${SUPABASE_URL}
-      - key: VITE_SUPABASE_ANON_KEY
-        value: ${SUPABASE_ANON_KEY}
-      - key: VITE_API_URL
-        value: https://qylon-app-f7utg.ondigitalocean.app/api
 
 databases:
   - name: qylon-production-db
