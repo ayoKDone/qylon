@@ -1,18 +1,30 @@
 {
-    "name": "qylon",
-    "version": "1.0.0",
+  "name": "qylon",
+  "version": "1.0.0",
     "description": "Qylon AI Automation Platform",
     "private": true,
   "scripts": {
     "build": "echo 'Build handled by app.yaml configuration'",
     "start": "echo 'Start handled by app.yaml configuration'",
+    "dev": "echo 'Development handled by individual services'",
     "lint": "echo 'Linting handled by individual services'",
     "test": "echo 'Testing handled by individual services'",
+    "test:unit": "echo 'Unit tests handled by individual services'",
+    "test:integration": "echo 'Integration tests handled by individual services'",
+    "test:e2e": "echo 'E2E tests handled by individual services'",
+    "test:coverage": "echo 'Coverage tests handled by individual services'",
+    "test:coverage:html": "echo 'Coverage HTML handled by individual services'",
+    "test:performance:load": "echo 'Load tests handled by individual services'",
+    "test:performance:stress": "echo 'Stress tests handled by individual services'",
+    "test:performance:spike": "echo 'Spike tests handled by individual services'",
     "format": "echo 'Formatting handled by individual services'",
-    "db:migrate": "echo 'Database migrations handled by individual services'"
+    "format:check": "echo 'Format check handled by individual services'",
+    "security:scan": "echo 'Security scan handled by individual services'",
+    "db:migrate": "echo 'Database migrations handled by individual services'",
+    "sonar": "echo 'Sonar analysis handled by individual services'"
   },
-    "engines": {
-        "node": ">=20.0.0",
-        "npm": ">=9.0.0"
-    }
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
 }
