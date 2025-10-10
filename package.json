@@ -1,14 +1,16 @@
 {
-  "name": "qylon",
-  "version": "1.0.0",
-  "description": "Qylon AI Automation Platform",
-  "private": true,
+    "name": "qylon",
+    "version": "1.0.0",
+    "description": "Qylon AI Automation Platform",
+    "private": true,
   "scripts": {
     "build": "echo 'Build handled by app.yaml configuration'",
-    "start": "echo 'Start handled by app.yaml configuration'"
+    "start": "echo 'Start handled by app.yaml configuration'",
+    "lint": "echo 'Linting handled by individual services'",
+    "test": "echo 'Testing handled by individual services'"
   },
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=9.0.0"
-  }
+    "engines": {
+        "node": ">=20.0.0",
+        "npm": ">=9.0.0"
+    }
 }
