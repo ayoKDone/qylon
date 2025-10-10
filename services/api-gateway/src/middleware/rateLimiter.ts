@@ -104,8 +104,6 @@ export const rateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Rate limit exceeded. Please try again later.',
@@ -121,8 +119,6 @@ export const authRateLimiter = rateLimit({
   keyGenerator,
   skip: (req: Request) => req.path === '/health',
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Too many authentication attempts. Please try again later.',
@@ -138,8 +134,6 @@ export const apiRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'API rate limit exceeded. Please try again later.',
@@ -155,8 +149,6 @@ export const readOnlyRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Read rate limit exceeded. Please try again later.',
@@ -172,8 +164,6 @@ export const writeRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Write rate limit exceeded. Please try again later.',
@@ -208,8 +198,6 @@ export const uploadRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Upload rate limit exceeded. Please try again later.',
@@ -225,8 +213,6 @@ export const passwordResetRateLimiter = rateLimit({
   keyGenerator,
   skip: (req: Request) => req.path === '/health',
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Too many password reset attempts. Please try again later.',
