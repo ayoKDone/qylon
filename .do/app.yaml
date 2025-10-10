@@ -114,7 +114,7 @@ services:
       failure_threshold: 3
 
   - name: integration-management
-    source_dir: /services/integration-management
+    source_dir: /services/integration_management
     github:
       repo: KD-Squares/qylon
       branch: main
@@ -136,6 +136,41 @@ services:
         value: ${SUPABASE_URL}
       - key: SUPABASE_SERVICE_ROLE_KEY
         value: ${SUPABASE_SERVICE_ROLE_KEY}
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+  - name: content-creation
+    source_dir: /services/content-creation
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+    run_command: python -m uvicorn src.index:app --host 0.0.0.0 --port 3004
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 3004
+    routes:
+      - path: /api/content-creation
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: '3004'
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
+      - key: OPENAI_API_KEY
+        value: ${OPENAI_API_KEY}
+      - key: ANTHROPIC_API_KEY
+        value: ${ANTHROPIC_API_KEY}
     health_check:
       http_path: /health
       initial_delay_seconds: 10
