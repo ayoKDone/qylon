@@ -6,7 +6,11 @@ module.exports = {
     es2022: true,
     jest: true,
   },
-  extends: ['eslint:recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2022,
@@ -20,17 +24,38 @@ module.exports = {
     'no-unused-vars': 'off', // Allow unused vars in development
     'prefer-const': 'error',
     'no-var': 'error',
+    '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-unsafe-function-type': 'off',
+    '@typescript-eslint/no-require-imports': 'off',
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
     semi: ['error', 'always'],
     'comma-dangle': 'off', // Let Prettier handle this
   },
   overrides: [
     {
-      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      files: [
+        '__tests__/**/*.ts, tests/**/*.ts',
+        'tests/**/*.tsx',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+        '**/*.spec.ts',
+        '**/*.spec.tsx',
+      ],
       env: {
         jest: true,
       },
       rules: {
         'no-unused-vars': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
       },
     },
     {

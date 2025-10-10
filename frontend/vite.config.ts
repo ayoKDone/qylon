@@ -33,7 +33,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // CDN-friendly asset naming
-        assetFileNames: (assetInfo) => {
+        assetFileNames: assetInfo => {
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/\.(css)$/.test(assetInfo.name)) {
@@ -47,13 +47,17 @@ export default defineConfig({
         chunkFileNames: 'assets/js/[name]-[hash].js',
         entryFileNames: 'assets/js/[name]-[hash].js',
 
-        manualChunks: (id) => {
+        manualChunks: id => {
           // Vendor chunks
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor';
             }
-            if (id.includes('@react-oauth') || id.includes('react-hook-form') || id.includes('react-use')) {
+            if (
+              id.includes('@react-oauth') ||
+              id.includes('react-hook-form') ||
+              id.includes('react-use')
+            ) {
               return 'ui-vendor';
             }
             if (id.includes('axios') || id.includes('jwt-decode')) {
@@ -75,11 +79,15 @@ export default defineConfig({
           if (id.includes('/src/pages/Dashboard') || id.includes('/src/components/dashboard/')) {
             return 'dashboard';
           }
-          if (id.includes('/src/components/') && !id.includes('/auth/') && !id.includes('/dashboard/')) {
+          if (
+            id.includes('/src/components/') &&
+            !id.includes('/auth/') &&
+            !id.includes('/dashboard/')
+          ) {
             return 'landing';
           }
-        }
-      }
+        },
+      },
     },
     chunkSizeWarningLimit: 1000,
     // CDN optimization

@@ -17,8 +17,9 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed w-full top-0 z-50 transition-all duration-500 ${isScrolled ? 'glass-heavy border-b border-white/20' : 'bg-transparent'
-        }`}
+      className={`fixed w-full top-0 z-50 transition-all duration-500 ${
+        isScrolled ? 'glass-heavy border-b border-white/20' : 'bg-transparent'
+      }`}
     >
       <nav className='container mx-auto px-6 py-6'>
         <div className='flex items-center justify-between'>
@@ -26,7 +27,7 @@ const Header: React.FC = () => {
           <div className='flex items-center space-x-3'>
             <div className='flex items-center space-x-3'>
               <div className='w-10 h-10 bg-gradient-to-r from-cyan-400 via-pink-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg'>
-                <Icon name="zap" size={20} className="text-white" />
+                <Icon name='zap' size={20} className='text-white' />
               </div>
               <div className='flex flex-col hidden sm:block'>
                 <span className='text-2xl font-bold text-white drop-shadow-lg'>Qylon</span>
@@ -82,7 +83,7 @@ const Header: React.FC = () => {
             className='md:hidden transition-colors duration-200 text-white/80 hover:text-white'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <Icon name="x" size={24} /> : <Icon name="menu" size={24} />}
+            {isMobileMenuOpen ? <Icon name='x' size={24} /> : <Icon name='menu' size={24} />}
           </button>
         </div>
 

@@ -32,7 +32,9 @@ export const onboardingService = {
   // Get user's onboarding progress
   async getOnboardingProgress(): Promise<OnboardingProgress> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         throw new Error('User not authenticated');
@@ -45,7 +47,8 @@ export const onboardingService = {
         .eq('user_id', user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 = no rows returned
         throw new Error(error.message);
       }
 
@@ -55,7 +58,7 @@ export const onboardingService = {
           current_step: 'welcome',
           completed_steps: [],
           total_steps: 5,
-          is_complete: false
+          is_complete: false,
         };
       }
 
@@ -63,7 +66,7 @@ export const onboardingService = {
         current_step: data.current_step || 'welcome',
         completed_steps: data.completed_steps || [],
         total_steps: 5,
-        is_complete: data.is_complete || false
+        is_complete: data.is_complete || false,
       };
     } catch (error) {
       console.error('Error getting onboarding progress:', error);
@@ -74,7 +77,9 @@ export const onboardingService = {
   // Update onboarding progress
   async updateOnboardingProgress(step: string, data?: any): Promise<void> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         throw new Error('User not authenticated');
@@ -99,7 +104,7 @@ export const onboardingService = {
         current_step: step,
         completed_steps: completedSteps,
         is_complete: isComplete,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       if (currentProgress) {
@@ -112,9 +117,7 @@ export const onboardingService = {
         if (error) throw error;
       } else {
         // Create new record
-        const { error } = await supabase
-          .from('user_onboarding')
-          .insert(progressData);
+        const { error } = await supabase.from('user_onboarding').insert(progressData);
 
         if (error) throw error;
       }
@@ -132,7 +135,9 @@ export const onboardingService = {
   // Complete onboarding and update user profile
   async completeOnboarding(onboardingData: OnboardingData): Promise<void> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         throw new Error('User not authenticated');
@@ -149,7 +154,7 @@ export const onboardingService = {
           role: onboardingData.role,
           timezone: onboardingData.timezone,
           onboarding_completed: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
 
@@ -160,7 +165,7 @@ export const onboardingService = {
         .from('user_onboarding')
         .update({
           is_complete: true,
-          completed_at: new Date().toISOString()
+          completed_at: new Date().toISOString(),
         })
         .eq('user_id', user.id);
 
@@ -177,7 +182,9 @@ export const onboardingService = {
   // Trigger backend onboarding completion
   async triggerBackendOnboarding(onboardingData: OnboardingData): Promise<void> {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('No active session');
@@ -188,12 +195,12 @@ export const onboardingService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           onboarding_data: onboardingData,
-          user_id: session.user.id
-        })
+          user_id: session.user.id,
+        }),
       });
 
       if (!response.ok) {
@@ -228,9 +235,9 @@ export const onboardingService = {
       { id: 'profile', name: 'Profile Setup', completed: false },
       { id: 'add-calendar', name: 'Calendar Integration', completed: false },
       { id: 'integrations', name: 'Additional Integrations', completed: false },
-      { id: 'demo', name: 'Demo Setup', completed: false }
+      { id: 'demo', name: 'Demo Setup', completed: false },
     ];
-  }
+  },
 };
 
 export default onboardingService;

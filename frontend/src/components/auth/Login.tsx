@@ -9,7 +9,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // const { user, loading } = useSupabaseSession();
-  const user = null;
   const loading = false;
   const navigate = useNavigate();
 
@@ -66,8 +65,7 @@ export default function Login() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              {/* <Icon name="arrowLeft" size={16} /> */}
-              ←
+              {/* <Icon name="arrowLeft" size={16} /> */}←
               <span className='text-sm'>Back to Home</span>
             </a>
           </div>
