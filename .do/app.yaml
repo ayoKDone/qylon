@@ -1,7 +1,14 @@
 name: qylon-production
 # DigitalOcean App Platform Configuration
 
-# Frontend static site should be first to handle root path
+# Global routing configuration - defines how requests are routed to components
+routes:
+  - path: /
+    component: frontend
+  - path: /api
+    component: api-gateway
+
+# Frontend static site
 static_sites:
   - name: frontend
     source_dir: /frontend
@@ -11,8 +18,6 @@ static_sites:
       deploy_on_push: true
     build_command: npm ci && npm run build
     output_dir: dist
-    routes:
-      - path: /
     catchall_document: index.html
     index_document: index.html
     envs:
@@ -23,6 +28,7 @@ static_sites:
       - key: VITE_API_URL
         value: https://qylon-app-f7utg.ondigitalocean.app/api
 
+# Backend services
 services:
   - name: api-gateway
     source_dir: /services/api-gateway
@@ -35,8 +41,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 8080
-    routes:
-      - path: /api/v1
     envs:
       - key: NODE_ENV
         value: production
@@ -83,8 +87,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3003
-    routes:
-      - path: /api/meeting-intelligence
     envs:
       - key: NODE_ENV
         value: production
@@ -121,8 +123,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3005
-    routes:
-      - path: /api/workflow-automation
     envs:
       - key: NODE_ENV
         value: production
@@ -153,8 +153,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3006
-    routes:
-      - path: /api/integration-management
     envs:
       - key: NODE_ENV
         value: production
@@ -184,8 +182,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 3004
-    routes:
-      - path: /api/content-creation
     envs:
       - key: NODE_ENV
         value: production
