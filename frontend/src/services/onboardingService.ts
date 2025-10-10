@@ -18,7 +18,7 @@ export interface OnboardingStep {
   id: string;
   name: string;
   completed: boolean;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 export interface OnboardingProgress {
@@ -75,7 +75,7 @@ export const onboardingService = {
   },
 
   // Update onboarding progress
-  async updateOnboardingProgress(step: string, data?: any): Promise<void> {
+  async updateOnboardingProgress(step: string, data?: Record<string, unknown>): Promise<void> {
     try {
       const {
         data: { user },

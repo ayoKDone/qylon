@@ -103,7 +103,7 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceEventTiming) => {
           this.recordMetric('FID', entry.processingStart - entry.startTime);
         });
       });
@@ -119,12 +119,12 @@ class PerformanceMonitor {
 
     let clsValue = 0;
     let sessionValue = 0;
-    let sessionEntries: any[] = [];
+    let sessionEntries: PerformanceEntry[] = [];
 
     try {
       const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceEntry) => {
           if (!entry.hadRecentInput) {
             const firstSessionEntry = sessionEntries[0];
             const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
@@ -206,7 +206,7 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceResourceTiming) => {
           if (entry.initiatorType === 'script' || entry.initiatorType === 'link') {
             const loadTime = entry.responseEnd - entry.startTime;
             this.recordMetric(`Bundle-${entry.name.split('/').pop()}`, loadTime);
@@ -262,7 +262,7 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
-        entries.forEach((entry: any) => {
+        entries.forEach((entry: PerformanceResourceTiming) => {
           // Track slow resources
           const loadTime = entry.responseEnd - entry.startTime;
           if (loadTime > 1000) {
@@ -298,7 +298,7 @@ class PerformanceMonitor {
       timestamp: Date.now(),
       url: window.location.href,
       userAgent: navigator.userAgent,
-      connection: (navigator as any).connection?.effectiveType,
+      connection: (navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType,
     };
 
     this.metrics.push(metric);
@@ -413,7 +413,7 @@ export class PerformanceDashboard {
   getAllStats(): Record<string, { avg: number; min: number; max: number; count: number }> {
     const stats: Record<string, { avg: number; min: number; max: number; count: number }> = {};
 
-    for (const [name, _] of this.metrics) {
+    for (const [name] of this.metrics) {
       stats[name] = this.getMetricStats(name);
     }
 

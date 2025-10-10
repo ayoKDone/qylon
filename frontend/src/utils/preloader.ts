@@ -45,8 +45,8 @@ class RoutePreloader {
 
   private preloadCriticalRoutes(): void {
     const criticalRoutes = Object.entries(this.config.routes)
-      .filter(([_, config]) => config.priority === 'high' && config.preloadOn === 'immediate')
-      .map(([route, _]) => route);
+      .filter(([, config]) => config.priority === 'high' && config.preloadOn === 'immediate')
+      .map(([route]) => route);
 
     console.log('[Preloader] Preloading critical routes:', criticalRoutes);
 
@@ -56,7 +56,7 @@ class RoutePreloader {
   }
 
   private setupHoverTracking(): void {
-    document.addEventListener('mouseover', event => {
+    document.addEventListener('mouseover', (event) => {
       const target = event.target as HTMLElement;
       const link = target.closest('a[href]') as HTMLAnchorElement;
 
@@ -73,7 +73,7 @@ class RoutePreloader {
   }
 
   private setupClickTracking(): void {
-    document.addEventListener('click', event => {
+    document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
       const link = target.closest('a[href]') as HTMLAnchorElement;
 
@@ -95,13 +95,13 @@ class RoutePreloader {
   private setupIdlePreloading(): void {
     const preloadOnIdle = () => {
       const idleRoutes = Object.entries(this.config.routes)
-        .filter(([_, config]) => config.preloadOn === 'idle')
+        .filter(([, config]) => config.preloadOn === 'idle')
         .sort((a, b) => {
           const aScore = this.userBehavior.get(a[0]) || 0;
           const bScore = this.userBehavior.get(b[0]) || 0;
           return bScore - aScore; // Sort by user preference
         })
-        .map(([route, _]) => route);
+        .map(([route]) => route);
 
       console.log('[Preloader] Preloading routes on idle:', idleRoutes);
 
@@ -141,7 +141,9 @@ class RoutePreloader {
 
     try {
       // Preload route resources
-      const preloadPromises = routeConfig.resources.map(resource => this.preloadResource(resource));
+      const preloadPromises = routeConfig.resources.map(resource =>
+        this.preloadResource(resource)
+      );
 
       await Promise.all(preloadPromises);
       this.preloadedRoutes.add(route);
@@ -256,56 +258,53 @@ export const routePreloader = new RoutePreloader({
       priority: 'high',
       preloadOn: 'hover',
       resources: [
-        // Only preload in production where hashed assets exist
-        ...(import.meta.env.PROD
-          ? [
-              '/assets/js/dashboard-[hash].js',
-              '/assets/js/react-vendor-[hash].js',
-              '/assets/js/ui-vendor-[hash].js',
-            ]
-          : []),
-      ],
+        ...(import.meta.env.PROD ? [
+          '/assets/js/dashboard-[hash].js',
+          '/assets/js/react-vendor-[hash].js',
+          '/assets/js/ui-vendor-[hash].js'
+        ] : [])
+      ]
     },
     '/login': {
       priority: 'high',
       preloadOn: 'hover',
       resources: [
         // Only preload in production where hashed assets exist
-        ...(import.meta.env.PROD
-          ? ['/assets/js/auth-[hash].js', '/assets/js/react-vendor-[hash].js']
-          : []),
-      ],
+        ...(import.meta.env.PROD ? [
+          '/assets/js/auth-[hash].js',
+          '/assets/js/react-vendor-[hash].js'
+        ] : [])
+      ]
     },
     '/signup': {
       priority: 'medium',
       preloadOn: 'hover',
       resources: [
         // Only preload in production where hashed assets exist
-        ...(import.meta.env.PROD
-          ? ['/assets/js/auth-[hash].js', '/assets/js/react-vendor-[hash].js']
-          : []),
-      ],
+        ...(import.meta.env.PROD ? [
+          '/assets/js/auth-[hash].js',
+          '/assets/js/react-vendor-[hash].js'
+        ] : [])
+      ]
     },
     '/app': {
       priority: 'high',
       preloadOn: 'idle',
       resources: [
         // Only preload in production where hashed assets exist
-        ...(import.meta.env.PROD
-          ? [
-              '/assets/js/AppUI-[hash].js',
-              '/assets/js/react-vendor-[hash].js',
-              '/assets/js/ui-vendor-[hash].js',
-            ]
-          : []),
-      ],
-    },
+        ...(import.meta.env.PROD ? [
+          '/assets/js/AppUI-[hash].js',
+          '/assets/js/react-vendor-[hash].js',
+          '/assets/js/ui-vendor-[hash].js'
+        ] : [])
+      ]
+    }
   },
   userBehavior: {
     trackHovers: true,
     trackClicks: true,
-    idleTimeout: 2000,
-  },
+    idleTimeout: 2000
+  }
 });
 
 // Initialize resource hints for external domains
@@ -322,7 +321,7 @@ export function initializeResourceHints(): void {
   // Preload critical fonts
   ResourceHints.addPreload(
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap',
-    'style',
+    'style'
   );
 }
 

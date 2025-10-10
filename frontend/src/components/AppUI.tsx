@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { IconName } from './atomic/Icon';
 import Icon from './icons/Icon';
 import ThemeToggle from './ThemeToggle';
 
@@ -31,13 +32,11 @@ const AppUI: React.FC = () => {
   };
 
   // Glass panel base classes
-  const glassPanel = `backdrop-blur-xl border transition-all duration-300 ${
-    isDark ? 'bg-slate-900/30 border-slate-700/40' : 'bg-white/80 border-slate-200/50'
-  }`;
+  const glassPanel = `backdrop-blur-xl border transition-all duration-300 ${isDark ? 'bg-slate-900/30 border-slate-700/40' : 'bg-white/80 border-slate-200/50'
+    }`;
 
-  const glassCard = `backdrop-blur-lg border transition-all duration-300 ${
-    isDark ? 'bg-slate-800/50 border-slate-600/50' : 'bg-white/60 border-slate-300/50'
-  }`;
+  const glassCard = `backdrop-blur-lg border transition-all duration-300 ${isDark ? 'bg-slate-800/50 border-slate-600/50' : 'bg-white/60 border-slate-300/50'
+    }`;
 
   // Dashboard View
   const DashboardView = () => (
@@ -118,13 +117,12 @@ const AppUI: React.FC = () => {
             ].map((item, index) => (
               <div
                 key={index}
-                className={`p-3 lg:p-4 rounded-lg lg:rounded-xl border-l-4 ${
-                  item.color === 'amber'
-                    ? 'border-amber-400 bg-amber-500/10'
-                    : item.color === 'emerald'
-                      ? 'border-emerald-400 bg-emerald-500/10'
-                      : 'border-blue-400 bg-blue-500/10'
-                }`}
+                className={`p-3 lg:p-4 rounded-lg lg:rounded-xl border-l-4 ${item.color === 'amber'
+                  ? 'border-amber-400 bg-amber-500/10'
+                  : item.color === 'emerald'
+                    ? 'border-emerald-400 bg-emerald-500/10'
+                    : 'border-blue-400 bg-blue-500/10'
+                  }`}
               >
                 <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2'>
                   <p
@@ -133,13 +131,12 @@ const AppUI: React.FC = () => {
                     {item.text}
                   </p>
                   <span
-                    className={`text-xs px-2 py-1 rounded-full font-medium self-start sm:self-center ${
-                      item.color === 'amber'
-                        ? 'text-amber-400 bg-amber-400/20'
-                        : item.color === 'emerald'
-                          ? 'text-emerald-400 bg-emerald-400/20'
-                          : 'text-blue-400 bg-blue-400/20'
-                    }`}
+                    className={`text-xs px-2 py-1 rounded-full font-medium self-start sm:self-center ${item.color === 'amber'
+                      ? 'text-amber-400 bg-amber-400/20'
+                      : item.color === 'emerald'
+                        ? 'text-emerald-400 bg-emerald-400/20'
+                        : 'text-blue-400 bg-blue-400/20'
+                      }`}
                   >
                     {item.status}
                   </span>
@@ -180,7 +177,7 @@ const AppUI: React.FC = () => {
             >
               <div className='flex items-center justify-between mb-3 lg:mb-4'>
                 <Icon
-                  name={stat.icon as any}
+                  name={stat.icon as IconName}
                   size={32}
                   className='w-6 lg:w-8 h-6 lg:h-8 text-blue-500'
                 />
@@ -189,9 +186,8 @@ const AppUI: React.FC = () => {
                 )}
               </div>
               <div
-                className={`text-2xl lg:text-3xl font-bold mb-2 ${
-                  isDark ? 'text-white' : 'text-slate-900'
-                }`}
+                className={`text-2xl lg:text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'
+                  }`}
               >
                 {stat.value}
               </div>
@@ -224,15 +220,14 @@ const AppUI: React.FC = () => {
                 className={`w-full flex items-center space-x-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl ${glassCard} hover:scale-[1.02] transition-all`}
               >
                 <Icon
-                  name={action.icon as any}
+                  name={action.icon as IconName}
                   size={20}
-                  className={`w-4 lg:w-5 h-4 lg:h-5 ${
-                    action.color === 'blue'
-                      ? 'text-blue-500'
-                      : action.color === 'emerald'
-                        ? 'text-emerald-500'
-                        : 'text-amber-500'
-                  }`}
+                  className={`w-4 lg:w-5 h-4 lg:h-5 ${action.color === 'blue'
+                    ? 'text-blue-500'
+                    : action.color === 'emerald'
+                      ? 'text-emerald-500'
+                      : 'text-amber-500'
+                    }`}
                 />
                 <span
                   className={`text-sm lg:text-base font-medium ${isDark ? 'text-white' : 'text-slate-900'}`}
@@ -333,31 +328,28 @@ const AppUI: React.FC = () => {
       )}
 
       <div
-        className={`min-h-screen transition-all duration-300 ${
-          isDark
-            ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'
-            : 'bg-gradient-to-br from-slate-100 via-white to-slate-200'
-        }`}
+        className={`min-h-screen transition-all duration-300 ${isDark
+          ? 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950'
+          : 'bg-gradient-to-br from-slate-100 via-white to-slate-200'
+          }`}
       >
         {/* Ambient Background Effects */}
         <div className='fixed inset-0 overflow-hidden pointer-events-none'>
           <div
-            className={`absolute -top-1/2 -right-1/2 w-full h-full rounded-full transition-all duration-[3000ms] ${
-              isDark
-                ? 'bg-gradient-radial from-blue-500/10 via-cyan-500/5 to-transparent'
-                : 'bg-gradient-radial from-blue-300/30 via-cyan-300/15 to-transparent'
-            }`}
+            className={`absolute -top-1/2 -right-1/2 w-full h-full rounded-full transition-all duration-[3000ms] ${isDark
+              ? 'bg-gradient-radial from-blue-500/10 via-cyan-500/5 to-transparent'
+              : 'bg-gradient-radial from-blue-300/30 via-cyan-300/15 to-transparent'
+              }`}
             style={{
               transform: 'rotate(45deg)',
               filter: 'blur(40px)',
             }}
           ></div>
           <div
-            className={`absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full transition-all duration-[4000ms] ${
-              isDark
-                ? 'bg-gradient-radial from-purple-600/8 via-slate-700/10 to-transparent'
-                : 'bg-gradient-radial from-purple-400/25 via-slate-400/10 to-transparent'
-            }`}
+            className={`absolute -bottom-1/2 -left-1/2 w-full h-full rounded-full transition-all duration-[4000ms] ${isDark
+              ? 'bg-gradient-radial from-purple-600/8 via-slate-700/10 to-transparent'
+              : 'bg-gradient-radial from-purple-400/25 via-slate-400/10 to-transparent'
+              }`}
             style={{
               transform: 'rotate(-45deg)',
               filter: 'blur(50px)',
@@ -369,9 +361,8 @@ const AppUI: React.FC = () => {
         <div className='relative z-10 flex h-screen overflow-hidden'>
           {/* Sidebar */}
           <div
-            className={`fixed lg:relative inset-y-0 left-0 z-50 w-80 p-4 lg:p-8 backdrop-blur-3xl border-r transition-all duration-500 ${
-              isDark ? 'bg-slate-900/30 border-slate-700/40' : 'bg-white/80 border-slate-200/50'
-            } ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
+            className={`fixed lg:relative inset-y-0 left-0 z-50 w-80 p-4 lg:p-8 backdrop-blur-3xl border-r transition-all duration-500 ${isDark ? 'bg-slate-900/30 border-slate-700/40' : 'bg-white/80 border-slate-200/50'
+              } ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
           >
             {/* Logo */}
             <div className='flex items-center justify-between lg:justify-start space-x-4 mb-8 lg:mb-12'>
@@ -411,17 +402,16 @@ const AppUI: React.FC = () => {
                     setActiveTab(item.id);
                     setIsSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all duration-300 backdrop-blur-xl border ${
-                    activeTab === item.id
-                      ? isDark
-                        ? 'bg-slate-800/60 border-slate-600/60 text-white'
-                        : 'bg-white/70 border-slate-300/70 text-slate-900'
-                      : isDark
-                        ? 'text-slate-300 hover:text-white hover:bg-slate-800/40 hover:border-slate-600/40 border-transparent'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 hover:border-slate-300/50 border-transparent'
-                  }`}
+                  className={`w-full flex items-center space-x-4 px-6 py-4 rounded-2xl transition-all duration-300 backdrop-blur-xl border ${activeTab === item.id
+                    ? isDark
+                      ? 'bg-slate-800/60 border-slate-600/60 text-white'
+                      : 'bg-white/70 border-slate-300/70 text-slate-900'
+                    : isDark
+                      ? 'text-slate-300 hover:text-white hover:bg-slate-800/40 hover:border-slate-600/40 border-transparent'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 hover:border-slate-300/50 border-transparent'
+                    }`}
                 >
-                  <Icon name={item.icon as any} size={20} className='w-5 h-5' />
+                  <Icon name={item.icon as IconName} size={20} className='w-5 h-5' />
                   <span className='font-medium'>{item.label}</span>
                 </button>
               ))}
@@ -429,9 +419,8 @@ const AppUI: React.FC = () => {
 
             {/* Recording Status Card */}
             <div
-              className={`p-6 rounded-3xl backdrop-blur-2xl border transition-all duration-500 ${
-                isDark ? 'bg-slate-800/40 border-slate-600/50' : 'bg-white/60 border-slate-300/50'
-              }`}
+              className={`p-6 rounded-3xl backdrop-blur-2xl border transition-all duration-500 ${isDark ? 'bg-slate-800/40 border-slate-600/50' : 'bg-white/60 border-slate-300/50'
+                }`}
             >
               <div className='flex items-center justify-between mb-4'>
                 <span
@@ -440,9 +429,8 @@ const AppUI: React.FC = () => {
                   Recording Status
                 </span>
                 <div
-                  className={`w-3 h-3 rounded-full ${
-                    isRecording ? 'bg-red-500 animate-pulse' : 'bg-slate-400'
-                  }`}
+                  className={`w-3 h-3 rounded-full ${isRecording ? 'bg-red-500 animate-pulse' : 'bg-slate-400'
+                    }`}
                 ></div>
               </div>
 
@@ -461,11 +449,10 @@ const AppUI: React.FC = () => {
                     setIsRecording(!isRecording);
                     if (!isRecording) setMeetingTime(0);
                   }}
-                  className={`p-3 rounded-2xl transition-all duration-300 hover:scale-110 ${
-                    isRecording
-                      ? 'bg-gradient-to-br from-red-500 to-red-600 text-white'
-                      : 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
-                  }`}
+                  className={`p-3 rounded-2xl transition-all duration-300 hover:scale-110 ${isRecording
+                    ? 'bg-gradient-to-br from-red-500 to-red-600 text-white'
+                    : 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
+                    }`}
                 >
                   {isRecording ? (
                     <Icon name='pause' size={20} className='w-5 h-5' />
@@ -510,9 +497,8 @@ const AppUI: React.FC = () => {
 
                   <div>
                     <h1
-                      className={`text-xl lg:text-3xl font-bold ${
-                        isDark ? 'text-white' : 'text-slate-900'
-                      }`}
+                      className={`text-xl lg:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'
+                        }`}
                     >
                       {activeTab === 'dashboard'
                         ? 'Good afternoon, Alex'

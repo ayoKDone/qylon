@@ -35,7 +35,7 @@ const PerformanceDashboardComponent: React.FC = () => {
         clearInterval(refreshInterval);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, refreshInterval]);
 
   const formatMetric = (value: number): string => {
     if (value < 1000) {
@@ -80,7 +80,7 @@ const PerformanceDashboardComponent: React.FC = () => {
         clearInterval(refreshInterval);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, refreshInterval]);
 
   const exportData = () => {
     const dashboard = PerformanceDashboard.getInstance();
@@ -169,10 +169,10 @@ const PerformanceDashboardComponent: React.FC = () => {
                     <div className='w-full bg-gray-200 rounded-full h-2'>
                       <div
                         className={`h-2 rounded-full ${stat.avg <= (metric === 'CLS' ? 0.1 : 2500)
-                            ? 'bg-green-500'
-                            : stat.avg <= (metric === 'CLS' ? 0.25 : 4000)
-                              ? 'bg-yellow-500'
-                              : 'bg-red-500'
+                          ? 'bg-green-500'
+                          : stat.avg <= (metric === 'CLS' ? 0.25 : 4000)
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
                           }`}
                         style={{
                           width: `${Math.min(100, (stat.avg / (metric === 'CLS' ? 0.5 : 5000)) * 100)}%`,

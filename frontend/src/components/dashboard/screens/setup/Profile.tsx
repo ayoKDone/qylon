@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ export default function Profile() {
   const [acceptedTypeErr, setAcceptedTypeErr] = useState<boolean>(false);
 
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
-  const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/jpg'];
+  const ACCEPTED_TYPES = useMemo(() => ['image/jpeg', 'image/png', 'image/jpg'], []);
 
   // Watch the image input
   const imageFiles = watch('image');
@@ -65,7 +65,7 @@ export default function Profile() {
     } else {
       setPreviewUrl(null);
     }
-  }, [imageFiles]);
+  }, [imageFiles, ACCEPTED_TYPES, MAX_FILE_SIZE]);
 
   const submitProfile = async (data: FormValues) => {
     try {
