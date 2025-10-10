@@ -1,4 +1,5 @@
 name: qylon-production
+# DigitalOcean App Platform Configuration
 services:
   - name: api-gateway
     source_dir: /services/api-gateway
