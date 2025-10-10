@@ -4,7 +4,7 @@
     "description": "Qylon AI Automation Platform",
     "private": true,
   "scripts": {
-        "build": "echo 'Build handled by app.yaml configuration'",
+        "build": "cd services/api-gateway && npm ci && npm run build",
         "start": "cd services/api-gateway && npm start",
         "dev": "echo 'Development handled by individual services'",
         "lint": "echo 'Linting handled by individual services'",
