@@ -138,8 +138,15 @@ async function cacheFirst(request, cacheName, maxAge = 86400) {
         if (networkResponse.ok) {
             const cache = await caches.open(cacheName);
             const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.put(request, responseToCache);
+            // Create new response with additional headers instead of modifying immutable headers
+            const newHeaders = new Headers(responseToCache.headers);
+            newHeaders.set('sw-cache-time', Date.now().toString());
+            const responseWithCacheTime = new Response(responseToCache.body, {
+                status: responseToCache.status,
+                statusText: responseToCache.statusText,
+                headers: newHeaders
+            });
+            cache.put(request, responseWithCacheTime);
         }
 
         return networkResponse;
@@ -157,8 +164,15 @@ async function networkFirst(request, cacheName, maxAge = 300) {
         if (networkResponse.ok) {
             const cache = await caches.open(cacheName);
             const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.put(request, responseToCache);
+            // Create new response with additional headers instead of modifying immutable headers
+            const newHeaders = new Headers(responseToCache.headers);
+            newHeaders.set('sw-cache-time', Date.now().toString());
+            const responseWithCacheTime = new Response(responseToCache.body, {
+                status: responseToCache.status,
+                statusText: responseToCache.statusText,
+                headers: newHeaders
+            });
+            cache.put(request, responseWithCacheTime);
         }
 
         return networkResponse;
@@ -186,8 +200,15 @@ async function staleWhileRevalidate(request, cacheName, maxAge = 3600) {
         if (networkResponse.ok) {
             const cache = caches.open(cacheName);
             const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.then(c => c.put(request, responseToCache));
+            // Create new response with additional headers instead of modifying immutable headers
+            const newHeaders = new Headers(responseToCache.headers);
+            newHeaders.set('sw-cache-time', Date.now().toString());
+            const responseWithCacheTime = new Response(responseToCache.body, {
+                status: responseToCache.status,
+                statusText: responseToCache.statusText,
+                headers: newHeaders
+            });
+            cache.then(c => c.put(request, responseWithCacheTime));
         }
         return networkResponse;
     });
