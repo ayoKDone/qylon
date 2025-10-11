@@ -1,309 +1,183 @@
-# 🚀 Qylon AI Automation Platform
+# Supabase CLI
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main)
-[![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines)
-[![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary) ](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-**Qylon** is an AI automation platform that transforms manual business processes
-into intelligent, self-running systems. Built with a microservices architecture
-on DigitalOcean + Supabase.
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
-## 🏗️ Architecture Overview
+This repository contains all the functionality for Supabase CLI.
 
-- **8 Microservices**: API Gateway, Security, User Management, Client
-  Management, Meeting Intelligence, Content Creation, Workflow Automation,
-  Integration Management, Notification Service, Analytics & Reporting
-- **Event-Driven**: Asynchronous communication via Supabase Realtime
-- **Cloud-Native**: DigitalOcean App Platform + Supabase Backend-as-a-Service
-- **Security-First**: Supabase Auth + Row Level Security (RLS)
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-## 🚀 Quick Start
+## Getting started
 
-### Prerequisites
+### Install the CLI
 
-- **Node.js 18+** (use [nvm](https://github.com/nvm-sh/nvm) for version
-  management)
-- **Python 3.9+** (for Python microservices)
-- **Docker** (for local Supabase development)
-- **Git** (for version control)
-
-### 1. Clone and Setup
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
 ```bash
-git clone https://github.com/KD-Squares/KDS-Development.git
-cd KDS-Development
+npm i supabase --save-dev
 ```
 
-### 2. Install Dependencies
+To install the beta release channel:
 
 ```bash
-# Install Node.js dependencies
-npm install
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install frontend dependencies
-cd frontend && npm install && cd ..
+npm i supabase@beta --save-dev
 ```
 
-### 3. Environment Setup
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
 
-```bash
-# Copy environment templates
-cp env.example .env
-cp env.local.example .env.local
-cp env.services.example .env.services
-cp frontend/env.example frontend/.env.local
-
-# Edit the files with your actual values
-nano .env
-nano frontend/.env.local
+```
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
 ```
 
-### 4. Start Services
-
-#### Option A: Full Local Development (Recommended)
-
-```bash
-# Start all services with Docker
-./scripts/setup-local.sh
-./scripts/start-services.sh
-```
-
-#### Option B: Simplified Development
-
-```bash
-# Start only Node.js services (no Docker)
-./start-services-simple.sh
-
-# Start frontend separately
-cd frontend && npm run dev
-```
-
-## 🐳 Docker & Supabase Setup
-
-### Install Docker
-
-<details>
-  <summary><b>Linux (Ubuntu/Debian)</b></summary>
-
-```bash
-# Automated installation
-sudo bash install-docker.sh
-
-# Or manual installation
-wget -O get-docker.sh https://get.docker.com
-sudo sh get-docker.sh
-sudo systemctl start docker
-sudo systemctl enable docker
-sudo usermod -aG docker $USER
-# Log out and back in for group changes to take effect
-```
-
-</details>
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
 
 <details>
   <summary><b>macOS</b></summary>
 
-```bash
-# Install Docker Desktop from https://www.docker.com/products/docker-desktop
-# Or via Homebrew
-brew install --cask docker
-```
+  Available via [Homebrew](https://brew.sh). To install:
 
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
 </details>
 
 <details>
   <summary><b>Windows</b></summary>
 
-```powershell
-# Install Docker Desktop from https://www.docker.com/products/docker-desktop
-# Or via Chocolatey
-choco install docker-desktop
-```
+  Available via [Scoop](https://scoop.sh). To install:
 
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
+
+  To upgrade:
+
+  ```powershell
+  scoop update supabase
+  ```
 </details>
-
-### Install Supabase CLI
 
 <details>
   <summary><b>Linux</b></summary>
 
-```bash
-# Download binary directly (recommended)
-wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz
-tar -xzf supabase_linux_amd64.tar.gz
-chmod +x supabase
-sudo mv supabase /usr/local/bin/
+  Available via [Homebrew](https://brew.sh) and Linux packages.
 
-# Or via package manager
-# Ubuntu/Debian
-wget https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.deb
-sudo dpkg -i supabase_linux_amd64.deb
+  #### via Homebrew
 
-# Or via Homebrew (if installed)
-brew install supabase/tap/supabase
-```
+  To install:
 
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
 </details>
 
 <details>
-  <summary><b>macOS</b></summary>
+  <summary><b>Other Platforms</b></summary>
 
-```bash
-# Via Homebrew (recommended)
-brew install supabase/tap/supabase
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
 
-# Or download binary
-wget https://github.com/supabase/cli/releases/latest/download/supabase_darwin_amd64.tar.gz
-tar -xzf supabase_darwin_amd64.tar.gz
-chmod +x supabase
-sudo mv supabase /usr/local/bin/
-```
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
 
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
 </details>
 
 <details>
-  <summary><b>Windows</b></summary>
+  <summary><b>Community Maintained Packages</b></summary>
 
-```powershell
-# Via Scoop (recommended)
-scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-scoop install supabase
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
 
-# Or via Chocolatey
-choco install supabase
+  ```bash
+  pkgx install supabase
+  ```
 
-# Or download binary
-Invoke-WebRequest -Uri "https://github.com/supabase/cli/releases/latest/download/supabase_windows_amd64.zip" -OutFile "supabase.zip"
-Expand-Archive -Path "supabase.zip" -DestinationPath "C:\supabase"
-# Add C:\supabase to your PATH
-```
-
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
 </details>
 
-### Start Supabase Local Development
+### Run the CLI
 
 ```bash
-# Initialize Supabase (first time only)
-supabase init
-
-# Start Supabase services
-sudo supabase start
-
-# This will start:
-# - PostgreSQL: localhost:54322
-# - Kong API Gateway: localhost:54321
-# - Supabase Studio: http://localhost:54323
+supabase bootstrap
 ```
 
-### Import Database Schemas
+Or using npx:
 
 ```bash
-# Apply all migrations
-supabase db reset
-
-# Or apply migrations individually
-supabase migration up
+npx supabase bootstrap
 ```
 
-## 🌐 Service URLs
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
 
-### Development Services
+## Docs
 
-- **Frontend**: http://localhost:3002
-- **API Gateway**: http://localhost:3000
-- **Security Service**: http://localhost:3001
-- **User Management**: http://localhost:3002
-- **Meeting Intelligence**: http://localhost:3003
-- **Workflow Automation**: http://localhost:3005
-- **Integration Management**: http://localhost:3006
-- **Notification Service**: http://localhost:3007
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
 
-### Supabase Services (Local)
+## Breaking changes
 
-- **Supabase Studio**: http://localhost:54323
-- **API Gateway**: http://localhost:54321
-- **PostgreSQL**: localhost:54322
-- **Mailpit**: http://localhost:54324
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
 
-## 🔧 Development Commands
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
 
-```bash
-# Start all services
-./scripts/start-services.sh
+## Developing
 
-# Start specific service
-cd services/api-gateway && npm run dev
+To run from source:
 
-# Run tests
-npm test
-
-# Check service health
-curl http://localhost:3000/health
-
-# View logs
-tail -f logs/api-gateway.log
+```sh
+# Go >= 1.22
+go run . help
 ```
-
-## 📊 Database Schema
-
-The platform includes comprehensive database schemas:
-
-1. **Core Schema** - Users, clients, meetings, subscriptions
-2. **Meeting Intelligence** - Transcriptions, analytics, AI processing
-3. **CRM Integrations** - External system connections
-4. **Row Level Security** - Comprehensive access control
-5. **API Management** - Key management and rate limiting
-
-## 🔒 Security Features
-
-- **Authentication**: Supabase Auth with JWT tokens
-- **Authorization**: Row Level Security (RLS) policies
-- **API Security**: Rate limiting, CORS, input validation
-- **Data Protection**: Encrypted storage, secure connections
-
-## 📚 Documentation
-
-- **Architecture**: `docs/architecture/`
-- **API Documentation**: `docs/api/`
-- **Database Schema**: `database/schemas/`
-- **Development Guide**: `AI_DEVELOPMENT_GUIDE.md`
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-```bash
-# Docker permission issues
-sudo usermod -aG docker $USER
-# Log out and back in
-
-# Port conflicts
-lsof -i :3000,3001,3002,54321,54322,54323
-
-# Service health checks
-curl http://localhost:3000/health
-curl http://localhost:3001/health
-```
-
-### Getting Help
-
-- **Issues**: Check the logs in the `logs/` directory
-- **Documentation**: See `docs/` folder
-- **Supabase Docs**: https://supabase.com/docs
-- **Docker Docs**: https://docs.docker.com/
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for
-details.
