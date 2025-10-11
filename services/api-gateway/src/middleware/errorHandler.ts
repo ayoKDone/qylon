@@ -1,5 +1,5 @@
-import { ErrorResponse } from '@/types';
-import { logError, logger } from '@/utils/logger';
+import { ErrorResponse } from '../types';
+import { logError, logger } from '../utils/logger';
 import { NextFunction, Request, Response } from 'express';
 
 /**

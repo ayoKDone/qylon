@@ -35,7 +35,7 @@ const PerformanceDashboardComponent: React.FC = () => {
         clearInterval(refreshInterval);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, refreshInterval]);
 
   const formatMetric = (value: number): string => {
     if (value < 1000) {
@@ -80,32 +80,7 @@ const PerformanceDashboardComponent: React.FC = () => {
         clearInterval(refreshInterval);
       }
     };
-  }, [isVisible]);
-
-  const formatMetric = (value: number): string => {
-    if (value < 1000) {
-      return `${Math.round(value)}ms`;
-    }
-    return `${(value / 1000).toFixed(2)}s`;
-  };
-
-  const getMetricColor = (metric: string, value: number): string => {
-    // Core Web Vitals thresholds
-    const thresholds: Record<string, { good: number; poor: number }> = {
-      LCP: { good: 2500, poor: 4000 },
-      FID: { good: 100, poor: 300 },
-      CLS: { good: 0.1, poor: 0.25 },
-      FCP: { good: 1800, poor: 3000 },
-      TTFB: { good: 800, poor: 1800 },
-    };
-
-    const threshold = thresholds[metric];
-    if (!threshold) return 'text-gray-600';
-
-    if (value <= threshold.good) return 'text-green-600';
-    if (value <= threshold.poor) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+  }, [isVisible, refreshInterval]);
 
   const exportData = () => {
     const dashboard = PerformanceDashboard.getInstance();

@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { LogEntry } from '@/types';
+import { LogEntry } from '../types';
 
 // Custom log format
 const logFormat = winston.format.combine(

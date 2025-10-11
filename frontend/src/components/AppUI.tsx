@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { IconName } from './atomic/Icon';
 import Icon from './icons/Icon';
 import ThemeToggle from './ThemeToggle';
 
@@ -180,7 +181,7 @@ const AppUI: React.FC = () => {
             >
               <div className='flex items-center justify-between mb-3 lg:mb-4'>
                 <Icon
-                  name={stat.icon as any}
+                  name={stat.icon as IconName}
                   size={32}
                   className='w-6 lg:w-8 h-6 lg:h-8 text-blue-500'
                 />
@@ -224,7 +225,7 @@ const AppUI: React.FC = () => {
                 className={`w-full flex items-center space-x-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl ${glassCard} hover:scale-[1.02] transition-all`}
               >
                 <Icon
-                  name={action.icon as any}
+                  name={action.icon as IconName}
                   size={20}
                   className={`w-4 lg:w-5 h-4 lg:h-5 ${
                     action.color === 'blue'
@@ -421,7 +422,7 @@ const AppUI: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 hover:border-slate-300/50 border-transparent'
                   }`}
                 >
-                  <Icon name={item.icon as any} size={20} className='w-5 h-5' />
+                  <Icon name={item.icon as IconName} size={20} className='w-5 h-5' />
                   <span className='font-medium'>{item.label}</span>
                 </button>
               ))}

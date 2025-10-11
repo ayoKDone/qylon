@@ -1,12 +1,14 @@
 name: Quality Assurance Pipeline
 
 on:
-  push:
-    branches: [main, develop, feature/*]
+  # Only run on feature branches and PRs, not on main/develop pushes
   pull_request:
     branches: [main, develop]
   schedule:
     - cron: "0 2 * * *" # Daily at 2 AM
+  # Disable push triggers to reduce duplicate runs
+  # push:
+  #   branches: [main, develop, feature/*]
 
 # Set permissions for the entire workflow
 permissions:

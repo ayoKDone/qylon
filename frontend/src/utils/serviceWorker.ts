@@ -195,13 +195,13 @@ export class ServiceWorkerMetrics {
 
 // Export the main service worker manager
 export const serviceWorkerManager = new ServiceWorkerManager({
-  onUpdate: _registration => {
+  onUpdate: () => {
     // Show update notification to user
     if (confirm('New version available! Reload to update?')) {
       window.location.reload();
     }
   },
-  onSuccess: _registration => {
+  onSuccess: () => {
     console.log('[SW] Service worker ready');
   },
   onOfflineReady: () => {

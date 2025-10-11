@@ -1,8 +1,8 @@
-import { AuthenticatedRequest, JWTPayload, UserRole } from '@/types';
-import { logSecurity, logger } from '@/utils/logger';
 import { createClient } from '@supabase/supabase-js';
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthenticatedRequest, JWTPayload, UserRole } from '../types';
+import { logSecurity, logger } from '../utils/logger';
 
 // Initialize Supabase client (optional for local development)
 let supabase: any = null;

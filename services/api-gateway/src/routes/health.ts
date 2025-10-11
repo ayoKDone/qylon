@@ -1,47 +1,20 @@
-import { HealthCheckResponse, ServiceHealth } from '@/types';
-import { logger } from '@/utils/logger';
 import axios from 'axios';
 import { Request, Response, Router } from 'express';
+import { ServiceHealth } from '../types';
+import { logger } from '../utils/logger';
 
 const router: Router = Router();
 
 // Service endpoints configuration
-const services = [
-  {
-    name: 'security',
-    url: process.env.SECURITY_SERVICE_URL || 'http://localhost:3001',
-    healthCheck: '/health',
-  },
-  {
-    name: 'meeting-intelligence',
-    url: process.env.MEETING_INTELLIGENCE_URL || 'http://localhost:3003',
-    healthCheck: '/health',
-  },
-  {
-    name: 'content-creation',
-    url: process.env.CONTENT_CREATION_URL || 'http://localhost:3004',
-    healthCheck: '/health',
-  },
-  {
-    name: 'workflow-automation',
-    url: process.env.WORKFLOW_AUTOMATION_URL || 'http://localhost:3005',
-    healthCheck: '/health',
-  },
-  {
-    name: 'integration-management',
-    url: process.env.INTEGRATION_MANAGEMENT_URL || 'http://localhost:3006',
-    healthCheck: '/health',
-  },
-  {
-    name: 'notification-service',
-    url: process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:3007',
-    healthCheck: '/health',
-  },
-  {
-    name: 'analytics-reporting',
-    url: process.env.ANALYTICS_REPORTING_URL || 'http://localhost:3008',
-    healthCheck: '/health',
-  },
+// Only include services that are actually deployed
+const services: Array<{
+  name: string;
+  url: string;
+  healthCheck: string;
+  enabled: boolean;
+}> = [
+  // Only include services that are actually deployed and running
+  // For now, we'll start with an empty list and add services as they're deployed
 ];
 
 /**
@@ -49,6 +22,17 @@ const services = [
  */
 const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
   const startTime = Date.now();
+
+  // Skip health check for disabled services
+  if (service.enabled === false) {
+    return {
+      name: service.name,
+      status: 'disabled',
+      responseTime: 0,
+      lastCheck: new Date().toISOString(),
+      details: 'Service is disabled',
+    };
+  }
 
   try {
     const response = await axios.get(`${service.url}${service.healthCheck}`, {
@@ -77,64 +61,19 @@ const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
 };
 
 /**
- * Basic health check endpoint
+ * Basic health check endpoint - Always healthy for DigitalOcean
  */
-router.get('/', async (req: Request, res: Response) => {
-  try {
-    const startTime = Date.now();
-
-    // Check all services in parallel
-    const serviceHealthChecks = await Promise.allSettled(
-      services.map(service => checkServiceHealth(service)),
-    );
-
-    const serviceHealths: ServiceHealth[] = serviceHealthChecks.map((result, index) => {
-      if (result.status === 'fulfilled') {
-        return result.value;
-      } else {
-        return {
-          name: services[index].name,
-          status: 'unhealthy',
-          lastCheck: new Date().toISOString(),
-          error: result.reason instanceof Error ? result.reason.message : 'Unknown error',
-        };
-      }
-    });
-
-    // Determine overall health
-    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
-    const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
-
-    const response: HealthCheckResponse = {
-      status: overallStatus,
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      services: serviceHealths,
-    };
-
-    const statusCode = overallStatus === 'healthy' ? 200 : 503;
-
-    logger.info('Health check completed', {
-      status: overallStatus,
-      unhealthyServices: unhealthyServices.length,
-      responseTime: Date.now() - startTime,
-    });
-
-    res.status(statusCode).json(response);
-  } catch (error) {
-    logger.error('Health check failed', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-    });
-
-    res.status(503).json({
-      status: 'unhealthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      services: [],
-      error: 'Health check failed',
-    });
-  }
+router.get('/', (req: Request, res: Response) => {
+  // Always return healthy - this is just for DigitalOcean health checks
+  // The API Gateway itself is healthy if it can respond to this request
+  res.status(200).json({
+    status: 'healthy',
+    service: 'api-gateway',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
+  });
 });
 
 /**
@@ -173,8 +112,11 @@ router.get('/detailed', async (req: Request, res: Response) => {
       environment: process.env.NODE_ENV || 'development',
     };
 
-    // Determine overall health
-    const unhealthyServices = serviceHealths.filter(service => service.status === 'unhealthy');
+    // Determine overall health - only consider enabled services
+    const enabledServices = serviceHealths.filter(service =>
+      service.status !== 'disabled' && service.status !== 'unknown'
+    );
+    const unhealthyServices = enabledServices.filter(service => service.status === 'unhealthy');
     const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
 
     const response = {
@@ -190,7 +132,9 @@ router.get('/detailed', async (req: Request, res: Response) => {
 
     logger.info('Detailed health check completed', {
       status: overallStatus,
+      enabledServices: enabledServices.length,
       unhealthyServices: unhealthyServices.length,
+      totalServices: serviceHealths.length,
       responseTime: Date.now() - startTime,
     });
 
