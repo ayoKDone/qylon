@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Qylon API Gateway - Central entry point for all frontend requests",
   "main": "dist/index.js",
+  "engines": {
+    "node": ">=18.0.0 <23.0.0"
+  },
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/index.ts",
     "build": "tsc",

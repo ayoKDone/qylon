@@ -42,7 +42,7 @@ services:
       repo: KD-Squares/qylon
       branch: main
       deploy_on_push: true
-    build_command: cd services/api-gateway && npm ci --include=dev && npx tsc
+    build_command: cd services/api-gateway && npm ci && npm run build
     run_command: cd services/api-gateway && npm start
     environment_slug: node-js
     instance_count: 1

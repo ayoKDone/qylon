@@ -61,13 +61,18 @@ const checkServiceHealth = async (service: any): Promise<ServiceHealth> => {
 };
 
 /**
- * Basic health check endpoint - Super simple
+ * Basic health check endpoint - Always healthy for DigitalOcean
  */
 router.get('/', (req: Request, res: Response) => {
+  // Always return healthy - this is just for DigitalOcean health checks
+  // The API Gateway itself is healthy if it can respond to this request
   res.status(200).json({
     status: 'healthy',
     service: 'api-gateway',
     timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0'
   });
 });
 
