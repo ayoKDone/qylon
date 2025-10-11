@@ -66,8 +66,9 @@ app.use(rateLimiter);
 // Request logging middleware
 app.use(requestLogger);
 
-// Health check endpoint
+// Health check endpoints - mounted at both /health and /api/health
 app.use('/health', healthCheck);
+app.use('/api/health', healthCheck);
 
 // Authentication middleware for protected routes
 app.use('/api/v1', authMiddleware as any);
