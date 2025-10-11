@@ -24,7 +24,6 @@ static_sites:
       repo: KD-Squares/qylon
       branch: main
       deploy_on_push: true
-    build_command: cd frontend && npm ci && npm run build
     output_dir: frontend/dist
     catchall_document: index.html
     index_document: index.html
