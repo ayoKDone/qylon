@@ -164,7 +164,8 @@ jobs:
           DB_PASSWORD: postgres
         run: |
           echo "Running database migrations..."
-          npm run db:migrate
+          # Database migrations are handled by the local CI pipeline
+          echo "Database migrations handled by local CI pipeline"
 
       - name: Run Local CI Pipeline (Tests)
         env:
