@@ -1,9 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
-import { Event } from '../../event-sourcing/src/models/Event';
 import { logger } from '../utils/logger';
 import { EventDrivenOrchestrator, OrchestrationResult } from './EventDrivenOrchestrator';
 import { IntegrationServiceCoordinator } from './IntegrationServiceCoordinator';
 import { WorkflowTriggerSystem } from './WorkflowTriggerSystem';
+// Note: Event types would be imported from event-sourcing service
+// For now, we'll define them locally
+interface Event {
+  id: string;
+  aggregateId: string;
+  aggregateType: string;
+  eventType: string;
+  eventData: Record<string, any>;
+  eventVersion: number;
+  timestamp: Date;
+  userId: string;
+  correlationId?: string;
+  causationId?: string;
+  metadata?: Record<string, any>;
+}
 
 export interface OrchestrationServiceConfig {
   enableWorkflowTriggers: boolean;

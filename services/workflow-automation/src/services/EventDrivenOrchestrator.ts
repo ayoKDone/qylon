@@ -1,8 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
-import { Event, QylonEventTypes } from '../../event-sourcing/src/models/Event';
 import { logger } from '../utils/logger';
 import { CoordinationContext, IntegrationAction, IntegrationServiceCoordinator } from './IntegrationServiceCoordinator';
 import { TriggerResult, WorkflowTriggerSystem } from './WorkflowTriggerSystem';
+// Note: Event types would be imported from event-sourcing service
+// For now, we'll define them locally
+interface Event {
+  id: string;
+  aggregateId: string;
+  aggregateType: string;
+  eventType: string;
+  eventData: Record<string, any>;
+  eventVersion: number;
+  timestamp: Date;
+  userId: string;
+  correlationId?: string;
+  causationId?: string;
+  metadata?: Record<string, any>;
+}
+
+enum QylonEventTypes {
+  ACTION_ITEM_CREATED = 'action_item.created',
+  MEETING_ENDED = 'meeting.ended',
+  CLIENT_CREATED = 'client.created',
+  USER_CREATED = 'user.created',
+}
 
 export interface OrchestrationContext {
   eventId: string;

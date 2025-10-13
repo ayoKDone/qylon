@@ -17,7 +17,7 @@ const app: express.Application = express();
 const PORT = process.env.PORT || 3005;
 
 // Initialize Workflow Orchestration Service
-const orchestrationService = new WorkflowOrchestrationService({
+const orchestrationService = new (require('./services/WorkflowOrchestrationService').WorkflowOrchestrationService)({
   enableWorkflowTriggers: true,
   enableIntegrationCoordination: true,
   enableEventDrivenArchitecture: true,
@@ -80,7 +80,7 @@ app.use('/api/v1', authMiddleware);
 // API routes
 app.use('/api/v1/workflows', workflowRoutes);
 app.use('/api/v1/executions', executionRoutes);
-app.use('/api/v1/orchestration', orchestrationRoutes);
+app.use('/api/v1/orchestration', require('./routes/orchestration').default);
 
 // Set orchestration service for routes
 import { setOrchestrationService } from './routes/orchestration';

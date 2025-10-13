@@ -1,5 +1,25 @@
-import { IntegrationConfig, IntegrationType } from '../../../integration-management/src/types';
 import { CoordinationContext, IntegrationAction, IntegrationServiceCoordinator } from '../../services/IntegrationServiceCoordinator';
+
+// Local type definitions for testing
+interface IntegrationConfig {
+  id: string;
+  userId: string;
+  clientId: string;
+  type: IntegrationType;
+  name: string;
+  status: string;
+  credentials: Record<string, any>;
+  settings: Record<string, any>;
+  lastSync?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+enum IntegrationType {
+  CRM_SALESFORCE = 'crm_salesforce',
+  CRM_HUBSPOT = 'crm_hubspot',
+  CRM_PIPEDRIVE = 'crm_pipedrive',
+}
 
 // Mock dependencies
 jest.mock('@supabase/supabase-js');
