@@ -3,8 +3,7 @@ name: Deploy to DigitalOcean App Platform
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  # Removed pull_request trigger - only deploy when pushing to main or merging to main
 
 permissions:
   contents: read
