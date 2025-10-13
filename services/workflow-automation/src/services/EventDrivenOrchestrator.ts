@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '../utils/logger';
 import {
-    CoordinationContext,
-    IntegrationAction,
-    IntegrationServiceCoordinator,
+  CoordinationContext,
+  IntegrationAction,
+  IntegrationServiceCoordinator,
 } from './IntegrationServiceCoordinator';
 import { TriggerResult, WorkflowTriggerSystem } from './WorkflowTriggerSystem';
 // Note: Event types would be imported from event-sourcing service
