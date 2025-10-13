@@ -57,10 +57,7 @@ export class WorkflowOrchestrationService {
   private eventSubscription: any = null;
 
   constructor(config?: Partial<OrchestrationServiceConfig>) {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
     this.config = {
       enableWorkflowTriggers: true,
@@ -185,7 +182,7 @@ export class WorkflowOrchestrationService {
             schema: 'public',
             table: 'events',
           },
-          async (payload) => {
+          async payload => {
             try {
               if (this.isRunning) {
                 await this.processEventFromSubscription(payload.new);
@@ -196,7 +193,7 @@ export class WorkflowOrchestrationService {
                 error: error instanceof Error ? error.message : 'Unknown error',
               });
             }
-          }
+          },
         )
         .subscribe();
 
@@ -297,7 +294,8 @@ export class WorkflowOrchestrationService {
         Promise.resolve(this.eventDrivenOrchestrator.getMetrics()),
       ]);
 
-      const overall = triggerSystemHealthy && coordinatorHealthy && orchestratorHealthy && databaseHealthy;
+      const overall =
+        triggerSystemHealthy && coordinatorHealthy && orchestratorHealthy && databaseHealthy;
 
       return {
         overall,
@@ -414,11 +412,7 @@ export class WorkflowOrchestrationService {
     orchestrationMetrics: any;
   }> {
     try {
-      const [
-        triggerStats,
-        coordinationStats,
-        orchestrationMetrics,
-      ] = await Promise.all([
+      const [triggerStats, coordinationStats, orchestrationMetrics] = await Promise.all([
         this.workflowTriggerSystem.getTriggerStatistics(),
         this.integrationCoordinator.getCoordinationStatistics(),
         Promise.resolve(this.eventDrivenOrchestrator.getMetrics()),

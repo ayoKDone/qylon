@@ -18,7 +18,7 @@ interface Event {
   metadata?: Record<string, any>;
 }
 
-enum QylonEventTypes {
+enum _QylonEventTypes {
   ACTION_ITEM_CREATED = 'action_item.created',
   MEETING_ENDED = 'meeting.ended',
   CLIENT_CREATED = 'client.created',
@@ -52,10 +52,7 @@ export class WorkflowTriggerSystem {
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     this.workflowEngine = new WorkflowEngine();
   }
 
@@ -139,7 +136,8 @@ export class WorkflowTriggerSystem {
       // Query database for matching workflows
       const { data, error } = await this.supabase
         .from('workflows')
-        .select(`
+        .select(
+          `
           id,
           client_id,
           name,
@@ -150,7 +148,8 @@ export class WorkflowTriggerSystem {
           is_active,
           created_at,
           updated_at
-        `)
+        `,
+        )
         .eq('is_active', true)
         .eq('status', 'active');
 
@@ -340,7 +339,7 @@ export class WorkflowTriggerSystem {
           eventId: event.id,
           eventType: event.eventType,
           aggregateId: event.aggregateId,
-        }
+        },
       );
 
       logger.info('Workflow triggered successfully', {

@@ -118,7 +118,8 @@ router.post(
       if (!eventId || !aggregateId || !aggregateType || !eventType || !eventData) {
         res.status(400).json({
           error: 'Bad Request',
-          message: 'Missing required fields: eventId, aggregateId, aggregateType, eventType, eventData',
+          message:
+            'Missing required fields: eventId, aggregateId, aggregateType, eventType, eventData',
           timestamp: new Date().toISOString(),
         });
         return;
