@@ -26,8 +26,9 @@
         "node": "22.x",
         "npm": ">=9.0.0"
     },
-    "dependencies": {},
-    "devDependencies": {},
+    "devDependencies": {
+        "typescript": "^5.9.3"
+    },
     "cacheDirectories": [
         "frontend/node_modules",
         "services/api-gateway/node_modules",
