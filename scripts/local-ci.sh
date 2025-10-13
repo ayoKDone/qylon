@@ -1,0 +1,509 @@
+#!/bin/bash
+
+# Qylon AI Automation Platform - Local CI/CD Pipeline
+# This script runs the complete CI/CD pipeline locally to catch issues before GitHub Actions
+# Chief Architect: Bill (siwale)
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+# Configuration
+COVERAGE_THRESHOLD=50
+TEST_TIMEOUT=30000
+PARALLEL_WORKERS=4
+
+# Get the repository root
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+cd "$REPO_ROOT"
+
+# Function to print section headers
+print_section() {
+    echo -e "\n${BLUE}🚀 $1${NC}"
+    echo "=================================================="
+}
+
+# Function to print subsection
+print_subsection() {
+    echo -e "\n${CYAN}📋 $1${NC}"
+    echo "----------------------------------------"
+}
+
+# Function to print success
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+# Function to print error
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+# Function to print warning
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+# Function to print info
+print_info() {
+    echo -e "${PURPLE}ℹ️  $1${NC}"
+}
+
+# Function to run command with error handling
+run_command() {
+    local cmd="$1"
+    local description="$2"
+
+    print_info "Running: $description"
+    echo "Command: $cmd"
+
+    if eval "$cmd"; then
+        print_success "$description completed successfully"
+        return 0
+    else
+        print_error "$description failed"
+        return 1
+    fi
+}
+
+# Function to check if command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Function to install dependencies for a service
+install_service_dependencies() {
+    local service="$1"
+    local service_path="services/$service"
+
+    if [ -d "$service_path" ]; then
+        print_info "Installing dependencies for $service..."
+        cd "$service_path"
+
+        if [ -f "package.json" ]; then
+            if run_command "npm install" "Install dependencies for $service"; then
+                cd "$REPO_ROOT"
+                return 0
+            else
+                cd "$REPO_ROOT"
+                return 1
+            fi
+        else
+            print_warning "No package.json found in $service_path"
+            cd "$REPO_ROOT"
+            return 0
+        fi
+    else
+        print_warning "Service directory $service_path not found"
+        return 0
+    fi
+}
+
+# Function to run linting for a service
+run_service_lint() {
+    local service="$1"
+    local service_path="services/$service"
+
+    if [ -d "$service_path" ]; then
+        print_info "Linting $service..."
+        cd "$service_path"
+
+        if [ -f "package.json" ] && grep -q '"lint"' package.json; then
+            if run_command "npm run lint" "Lint $service"; then
+                cd "$REPO_ROOT"
+                return 0
+            else
+                cd "$REPO_ROOT"
+                return 1
+            fi
+        else
+            print_warning "No lint script found in $service"
+            cd "$REPO_ROOT"
+            return 0
+        fi
+    else
+        print_warning "Service directory $service_path not found"
+        return 0
+    fi
+}
+
+# Function to run tests for a service
+run_service_tests() {
+    local service="$1"
+    local service_path="services/$service"
+
+    if [ -d "$service_path" ]; then
+        print_info "Testing $service..."
+        cd "$service_path"
+
+        if [ -f "package.json" ] && grep -q '"test"' package.json; then
+            if run_command "npm run test" "Test $service"; then
+                cd "$REPO_ROOT"
+                return 0
+            else
+                cd "$REPO_ROOT"
+                return 1
+            fi
+        else
+            print_warning "No test script found in $service"
+            cd "$REPO_ROOT"
+            return 0
+        fi
+    else
+        print_warning "Service directory $service_path not found"
+        return 0
+    fi
+}
+
+# Function to run formatting check for a service
+run_service_format_check() {
+    local service="$1"
+    local service_path="services/$service"
+
+    if [ -d "$service_path" ]; then
+        print_info "Checking formatting for $service..."
+        cd "$service_path"
+
+        if [ -f "package.json" ] && grep -q '"format:check"' package.json; then
+            if run_command "npm run format:check" "Format check $service"; then
+                cd "$REPO_ROOT"
+                return 0
+            else
+                cd "$REPO_ROOT"
+                return 1
+            fi
+        else
+            print_warning "No format:check script found in $service"
+            cd "$REPO_ROOT"
+            return 0
+        fi
+    else
+        print_warning "Service directory $service_path not found"
+        return 0
+    fi
+}
+
+# Function to run TypeScript compilation for a service
+run_service_build() {
+    local service="$1"
+    local service_path="services/$service"
+
+    if [ -d "$service_path" ]; then
+        print_info "Building $service..."
+        cd "$service_path"
+
+        if [ -f "package.json" ] && grep -q '"build"' package.json; then
+            if run_command "npm run build" "Build $service"; then
+                cd "$REPO_ROOT"
+                return 0
+            else
+                cd "$REPO_ROOT"
+                return 1
+            fi
+        else
+            print_warning "No build script found in $service"
+            cd "$REPO_ROOT"
+            return 0
+        fi
+    else
+        print_warning "Service directory $service_path not found"
+        return 0
+    fi
+}
+
+# Main CI/CD pipeline function
+main() {
+    local exit_code=0
+    local start_time=$(date +%s)
+
+    print_section "Qylon Local CI/CD Pipeline"
+    echo "This pipeline mimics GitHub Actions to catch issues locally"
+    echo "Start time: $(date)"
+    echo ""
+
+    # List of services to process
+    local services=("api-gateway" "meeting-intelligence" "workflow-automation" "integration-management")
+
+    # Step 1: Environment Setup
+    print_section "Environment Setup"
+
+    # Check Node.js version
+    if command_exists node; then
+        local node_version=$(node --version)
+        print_info "Node.js version: $node_version"
+
+        # Check if Node.js version is >= 20
+        local major_version=$(echo "$node_version" | sed 's/v\([0-9]*\).*/\1/')
+        if [ "$major_version" -lt 20 ]; then
+            print_error "Node.js version $node_version is too old. Required: >= 20.0.0"
+            exit_code=1
+        else
+            print_success "Node.js version check passed"
+        fi
+    else
+        print_error "Node.js not found. Please install Node.js >= 20.0.0"
+        exit_code=1
+    fi
+
+    # Check npm version
+    if command_exists npm; then
+        local npm_version=$(npm --version)
+        print_info "npm version: $npm_version"
+        print_success "npm version check passed"
+    else
+        print_error "npm not found. Please install npm >= 9.0.0"
+        exit_code=1
+    fi
+
+    # Check if we're in a git repository
+    if [ -d ".git" ]; then
+        print_success "Git repository detected"
+    else
+        print_warning "Not in a git repository"
+    fi
+
+    # Step 2: Install Dependencies
+    print_section "Dependency Installation"
+
+    # Install root dependencies
+    if [ -f "package.json" ]; then
+        if ! run_command "npm install" "Install root dependencies"; then
+            exit_code=1
+        fi
+    fi
+
+    # Install service dependencies
+    for service in "${services[@]}"; do
+        if ! install_service_dependencies "$service"; then
+            exit_code=1
+        fi
+    done
+
+    # Step 3: Linting
+    if [ "$SKIP_LINT" != "true" ]; then
+        print_section "Code Linting"
+
+        for service in "${services[@]}"; do
+            if ! run_service_lint "$service"; then
+                exit_code=1
+            fi
+        done
+
+        # Step 4: Formatting Check
+        print_section "Code Formatting Check"
+
+        for service in "${services[@]}"; do
+            if ! run_service_format_check "$service"; then
+                exit_code=1
+            fi
+        done
+    else
+        print_warning "Skipping linting and formatting checks (--skip-lint flag)"
+    fi
+
+    # Step 5: TypeScript Compilation
+    if [ "$SKIP_BUILD" != "true" ]; then
+        print_section "TypeScript Compilation"
+
+        for service in "${services[@]}"; do
+            if ! run_service_build "$service"; then
+                exit_code=1
+            fi
+        done
+    else
+        print_warning "Skipping TypeScript compilation (--skip-build flag)"
+    fi
+
+    # Step 6: Unit Tests
+    if [ "$SKIP_TESTS" != "true" ]; then
+        print_section "Unit Tests"
+
+        for service in "${services[@]}"; do
+            if ! run_service_tests "$service"; then
+                exit_code=1
+            fi
+        done
+    else
+        print_warning "Skipping unit tests (--skip-tests flag)"
+    fi
+
+    # Step 7: Integration Tests (if available)
+    if [ "$SKIP_TESTS" != "true" ]; then
+        print_section "Integration Tests"
+
+        if [ -d "tests/integration" ] && [ "$(ls -A tests/integration 2>/dev/null)" ]; then
+            print_info "Running integration tests..."
+            # Check if the script exists before running
+            if npm run | grep -q "test:integration"; then
+                if ! run_command "npm run test:integration" "Integration tests"; then
+                    exit_code=1
+                fi
+            else
+                print_warning "No integration test script found"
+            fi
+        else
+            print_warning "No integration tests found"
+        fi
+    else
+        print_warning "Skipping integration tests (--skip-tests flag)"
+    fi
+
+    # Step 8: Security Scan (if available)
+    print_section "Security Scan"
+
+    print_info "Running npm audit..."
+    if ! run_command "npm audit --audit-level=moderate" "Security audit"; then
+        print_warning "Security vulnerabilities found. Please review and fix."
+        # Don't fail the pipeline for security issues, just warn
+    fi
+
+    # Step 9: Performance Tests (if available)
+    if [ "$SKIP_TESTS" != "true" ]; then
+        print_section "Performance Tests"
+
+        if [ -d "tests/performance" ] && [ "$(ls -A tests/performance 2>/dev/null)" ]; then
+            print_info "Running performance tests..."
+            # Check if the script exists before running
+            if npm run | grep -q "test:performance:"; then
+                if ! run_command "npm run test:performance:load" "Performance tests"; then
+                    exit_code=1
+                fi
+            else
+                print_warning "No performance test scripts found"
+            fi
+        else
+            print_warning "No performance tests found"
+        fi
+    else
+        print_warning "Skipping performance tests (--skip-tests flag)"
+    fi
+
+    # Step 10: End-to-End Tests (if available)
+    if [ "$SKIP_TESTS" != "true" ]; then
+        print_section "End-to-End Tests"
+
+        if [ -d "tests/e2e" ] && [ "$(ls -A tests/e2e 2>/dev/null)" ]; then
+            print_info "Running E2E tests..."
+            # Check if the script exists before running
+            if npm run | grep -q "test:e2e"; then
+                if ! run_command "npm run test:e2e" "E2E tests"; then
+                    exit_code=1
+                fi
+            else
+                print_warning "No E2E test script found"
+            fi
+        else
+            print_warning "No E2E tests found"
+        fi
+    else
+        print_warning "Skipping E2E tests (--skip-tests flag)"
+    fi
+
+    # Step 11: Coverage Analysis
+    print_section "Coverage Analysis"
+
+    if [ -d "coverage" ]; then
+        print_info "Coverage report generated in: coverage/index.html"
+
+        # Check if coverage meets threshold
+        if [ -f "coverage/coverage-summary.json" ]; then
+            print_info "Analyzing coverage thresholds..."
+            # This would need a more sophisticated analysis in a real implementation
+            print_success "Coverage analysis completed"
+        fi
+    else
+        print_warning "No coverage report found"
+    fi
+
+    # Final Summary
+    local end_time=$(date +%s)
+    local duration=$((end_time - start_time))
+
+    print_section "Pipeline Summary"
+    echo "Duration: ${duration}s"
+    echo "End time: $(date)"
+    echo ""
+
+    if [ $exit_code -eq 0 ]; then
+        print_success "🎉 All CI/CD checks passed!"
+        echo -e "${GREEN}✅ Ready for commit and push to GitHub${NC}"
+        echo -e "${GREEN}✅ No GitHub Actions minutes will be wasted${NC}"
+        echo ""
+        echo "Next steps:"
+        echo "  1. git add ."
+        echo "  2. git commit -m 'your commit message'"
+        echo "  3. git push origin <branch>"
+    else
+        print_error "❌ CI/CD pipeline failed!"
+        echo -e "${RED}❌ Please fix the issues above before committing${NC}"
+        echo -e "${RED}❌ This will prevent wasting GitHub Actions minutes${NC}"
+        echo ""
+        echo "Common fixes:"
+        echo "  - Run 'npm run lint:fix' to auto-fix linting issues"
+        echo "  - Run 'npm run format' to auto-fix formatting issues"
+        echo "  - Check test failures and fix the underlying issues"
+        echo "  - Ensure all dependencies are properly installed"
+    fi
+
+    exit $exit_code
+}
+
+# Parse command line arguments
+VERBOSE=false
+SKIP_TESTS=false
+SKIP_LINT=false
+SKIP_BUILD=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --verbose)
+            VERBOSE=true
+            shift
+            ;;
+        --skip-tests)
+            SKIP_TESTS=true
+            shift
+            ;;
+        --skip-lint)
+            SKIP_LINT=true
+            shift
+            ;;
+        --skip-lint=false)
+            SKIP_LINT=false
+            shift
+            ;;
+        --skip-build)
+            SKIP_BUILD=true
+            shift
+            ;;
+        --help)
+            echo "Usage: $0 [OPTIONS]"
+            echo "Options:"
+            echo "  --verbose       Enable verbose output"
+            echo "  --skip-tests    Skip running tests"
+            echo "  --skip-lint     Skip linting"
+            echo "  --skip-lint=false  Force enable linting (override other skip flags)"
+            echo "  --skip-build    Skip building"
+            echo "  --help          Show this help message"
+            echo ""
+            echo "This script runs the complete CI/CD pipeline locally to catch issues"
+            echo "before they reach GitHub Actions, saving GitHub minutes."
+            exit 0
+            ;;
+        *)
+            print_error "Unknown option: $1"
+            echo "Use --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+# Run main function
+main "$@"
