@@ -1,5 +1,7 @@
 // Performance Dashboard Component
 // Shows real-time performance metrics for development and debugging
+/* eslint-env node */
+
 
 import React, { useEffect, useState } from 'react';
 import { PerformanceDashboard } from '../utils/performanceMonitor';
