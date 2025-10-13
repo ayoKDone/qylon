@@ -10,6 +10,8 @@
     "test": "jest --passWithNoTests --coverage --coverageDirectory=../../coverage/meeting-intelligence",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:integration": "echo 'Integration tests not implemented yet'",
+    "test:performance": "echo 'Performance tests not implemented yet'",
     "lint": "npx eslint src/**/*.ts",
     "lint:fix": "npx eslint src/**/*.ts --fix",
     "format": "npx prettier --write src/**/*.ts",

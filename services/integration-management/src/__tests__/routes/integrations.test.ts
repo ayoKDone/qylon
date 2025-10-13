@@ -5,6 +5,9 @@ describe('Integrations Routes - Bypass Test', () => {
   let app: express.Application;
 
   beforeEach(() => {
+    // Set NODE_ENV to test for this test suite
+    process.env['NODE_ENV'] = 'test';
+
     app = express();
     app.use(express.json());
 
@@ -400,5 +403,10 @@ describe('Integrations Routes - Bypass Test', () => {
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('not found');
     });
+  });
+
+  afterEach(() => {
+    // Clean up environment variable
+    delete process.env['NODE_ENV'];
   });
 });

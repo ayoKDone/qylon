@@ -20,7 +20,19 @@
         "ci:local:verbose": "./scripts/local-ci.sh --verbose",
         "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build",
         "ci:local:lint-only": "./scripts/local-ci.sh --skip-tests --skip-build --skip-lint=false",
-        "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build"
+        "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build",
+        "test": "echo 'Running all tests' && npm run test:unit && npm run test:integration && npm run test:e2e",
+        "test:unit": "echo 'Running unit tests' && npm run test:unit:meeting-intelligence && npm run test:unit:integration-management",
+        "test:unit:meeting-intelligence": "cd services/meeting-intelligence && npm test",
+        "test:unit:integration-management": "cd services/integration-management && npm test",
+        "test:integration": "echo 'Running integration tests' && npm run test:integration:meeting-intelligence && npm run test:integration:integration-management",
+        "test:integration:meeting-intelligence": "cd services/meeting-intelligence && npm run test:integration",
+        "test:integration:integration-management": "cd services/integration-management && npm run test:integration",
+        "test:e2e": "echo 'Running E2E tests' && npm run test:e2e:frontend",
+        "test:e2e:frontend": "cd frontend && npm run test:e2e",
+        "test:performance": "echo 'Running performance tests' && npm run test:performance:meeting-intelligence",
+        "test:performance:meeting-intelligence": "cd services/meeting-intelligence && npm run test:performance",
+        "test:performance:load": "echo 'Load tests not implemented yet'"
     },
     "engines": {
         "node": "22.x",
