@@ -55,11 +55,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run ESLint
-        run: npm run lint
-
-      - name: Run Prettier check
-        run: npm run format -- --check
+      - name: Run Local CI Pipeline (Linting and Formatting)
+        run: |
+          chmod +x scripts/local-ci.sh
+          ./scripts/local-ci.sh --skip-tests --skip-build
 
       - name: Run Python linting
         run: |
@@ -167,7 +166,7 @@ jobs:
           echo "Running database migrations..."
           npm run db:migrate
 
-      - name: Run Node.js tests
+      - name: Run Local CI Pipeline (Tests)
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
@@ -184,7 +183,8 @@ jobs:
             npx jest --clearCache || true
             npm cache clean --force || true
           fi
-          npm run test:unit && npm run test:integration
+          chmod +x scripts/local-ci.sh
+          ./scripts/local-ci.sh --skip-lint --skip-build
 
       - name: Install K6 for performance testing
         run: |
@@ -309,7 +309,9 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_integration_test
           REDIS_URL: redis://localhost:6379
-        run: npm run test:integration
+        run: |
+          chmod +x scripts/local-ci.sh
+          ./scripts/local-ci.sh --skip-lint --skip-build
 
   # Security Scan
   security:
