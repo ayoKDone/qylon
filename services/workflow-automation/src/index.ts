@@ -16,11 +16,15 @@ dotenv.config();
 const app: express.Application = express();
 const PORT = process.env.PORT || 3005;
 
-// Initialize Supabase client
-// const supabase = createClient(
-//   process.env.SUPABASE_URL!,
-//   process.env.SUPABASE_SERVICE_ROLE_KEY!
-// );
+// Initialize Workflow Orchestration Service
+const orchestrationService = new WorkflowOrchestrationService({
+  enableWorkflowTriggers: true,
+  enableIntegrationCoordination: true,
+  enableEventDrivenArchitecture: true,
+  maxConcurrentEvents: 100,
+  retryAttempts: 3,
+  retryDelay: 1000,
+});
 
 // Security middleware
 app.use(
@@ -76,18 +80,37 @@ app.use('/api/v1', authMiddleware);
 // API routes
 app.use('/api/v1/workflows', workflowRoutes);
 app.use('/api/v1/executions', executionRoutes);
+app.use('/api/v1/orchestration', orchestrationRoutes);
+
+// Set orchestration service for routes
+import { setOrchestrationService } from './routes/orchestration';
+setOrchestrationService(orchestrationService);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
 // Graceful shutdown
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
+  try {
+    await orchestrationService.stop();
+  } catch (error) {
+    logger.error('Error stopping orchestration service during shutdown', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
   process.exit(0);
 });
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   logger.info('SIGINT received, shutting down gracefully');
+  try {
+    await orchestrationService.stop();
+  } catch (error) {
+    logger.error('Error stopping orchestration service during shutdown', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
   process.exit(0);
 });
 

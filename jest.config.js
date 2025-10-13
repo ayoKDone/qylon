@@ -17,7 +17,7 @@ module.exports = {
   ],
 
   // Test directories
-  roots: ['<rootDir>/tests', '<rootDir>/shared'],
+  roots: ['<rootDir>/src'],
 
   // Module file extensions
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
@@ -38,17 +38,12 @@ module.exports = {
 
   // Coverage configuration
   collectCoverageFrom: [
-    'services/**/*.{js,jsx,ts,tsx}',
-    'shared/**/*.{js,jsx,ts,tsx}',
-    '!services/**/*.d.ts',
-    '!shared/**/*.d.ts',
-    '!services/**/node_modules/**',
-    '!shared/**/node_modules/**',
-    '!services/**/dist/**',
-    '!shared/**/dist/**',
-    '!services/**/build/**',
-    '!shared/**/build/**',
-    '!**/tests/**',
+    'src/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
+    '!src/**/node_modules/**',
+    '!src/**/dist/**',
+    '!src/**/build/**',
+    '!**/__tests__/**',
     '!**/cypress/**',
   ],
 
@@ -63,7 +58,7 @@ module.exports = {
   },
 
   // Setup files
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
 
   // Test timeout
   testTimeout: 10000,
@@ -79,12 +74,16 @@ module.exports = {
 
   // Module name mapping
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
-    '^@shared/(.*)$': '<rootDir>/shared/$1',
-    '^@services/(.*)$': '<rootDir>/services/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
 
   // Transform ignore patterns - Allow transformation of specific node_modules
   transformIgnorePatterns: ['node_modules/(?!(uuid|jsonwebtoken)/)'],
+
+  // Global setup
+  globals: {
+    'ts-jest': {
+      useESM: false,
+    },
+  },
 };
