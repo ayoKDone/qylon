@@ -27,7 +27,10 @@
         "npm": ">=9.0.0"
     },
     "devDependencies": {
+        "@types/cypress": "^0.1.6",
+        "@types/express": "^5.0.3",
         "@types/node": "^24.7.2",
+        "cypress": "^13.17.0",
         "typescript": "^5.9.3"
     },
     "cacheDirectories": [
@@ -36,5 +39,8 @@
         "services/meeting-intelligence/node_modules",
         "services/workflow-automation/node_modules",
         "services/integration-management/node_modules"
-    ]
+    ],
+    "dependencies": {
+        "express": "^5.1.0"
+    }
 }
