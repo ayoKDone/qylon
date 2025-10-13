@@ -1,8 +1,9 @@
 name: Immediate Registry Fix
 
 on:
-  push:
-    branches: [dev]
+  # Disabled automatic triggers - only run manually when needed
+  # push:
+  #   branches: [dev]
   workflow_dispatch:
 
 jobs:
@@ -38,17 +39,17 @@ jobs:
 
           if [ -n "$CREDENTIALS" ]; then
             echo "✅ Got registry credentials!"
-            
+
             # Extract username and password from docker config
             USERNAME=$(echo "$CREDENTIALS" | grep -o '"username":"[^"]*"' | cut -d'"' -f4)
             PASSWORD=$(echo "$CREDENTIALS" | grep -o '"password":"[^"]*"' | cut -d'"' -f4)
-            
+
             if [ -n "$USERNAME" ] && [ -n "$PASSWORD" ]; then
               echo "🔄 Updating GitHub secrets..."
               gh secret set DO_REGISTRY_USERNAME --body "$USERNAME"
               gh secret set DO_REGISTRY_PASSWORD --body "$PASSWORD"
               echo "✅ GitHub secrets updated!"
-              
+
               # Trigger deployment
               echo "🚀 Triggering deployment..."
               if [ -n "${{ secrets.DO_APP_ID }}" ]; then

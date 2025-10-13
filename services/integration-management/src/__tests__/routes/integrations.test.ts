@@ -5,11 +5,14 @@ describe('Integrations Routes - Bypass Test', () => {
   let app: express.Application;
 
   beforeEach(() => {
+    // Set NODE_ENV to test for this test suite
+    process.env['NODE_ENV'] = 'test';
+
     app = express();
     app.use(express.json());
 
     // Create a minimal route that mimics the exact logic from integrations.ts
-    app.get('/api/v1/integrations', (req, res) => {
+    app.get('/api/v1/integrations', (_req, res) => {
       try {
         // This is the exact logic from the GET / route
         const integrations =
@@ -400,5 +403,10 @@ describe('Integrations Routes - Bypass Test', () => {
       expect(response.body.success).toBe(false);
       expect(response.body.error).toContain('not found');
     });
+  });
+
+  afterEach(() => {
+    // Clean up environment variable
+    delete process.env['NODE_ENV'];
   });
 });

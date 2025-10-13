@@ -16,33 +16,43 @@
         "start": "npm run start:api-gateway",
         "start:api-gateway": "cd services/api-gateway && npm start",
         "dev": "echo 'Development handled by individual services'",
-        "lint": "echo 'Linting handled by individual services'",
-        "test": "echo 'Testing handled by individual services'",
-        "test:unit": "echo 'Unit tests handled by individual services'",
-        "test:integration": "echo 'Integration tests handled by individual services'",
-        "test:e2e": "echo 'E2E tests handled by individual services'",
-        "test:coverage": "echo 'Coverage tests handled by individual services'",
-        "test:coverage:html": "echo 'Coverage HTML handled by individual services'",
-        "test:performance:load": "echo 'Load tests handled by individual services'",
-        "test:performance:stress": "echo 'Stress tests handled by individual services'",
-        "test:performance:spike": "echo 'Spike tests handled by individual services'",
-        "format": "echo 'Formatting handled by individual services'",
-        "format:check": "echo 'Format check handled by individual services'",
-        "security:scan": "echo 'Security scan handled by individual services'",
-        "db:migrate": "echo 'Database migrations handled by individual services'",
-        "sonar": "echo 'Sonar analysis handled by individual services'"
+        "ci:local": "./scripts/local-ci.sh",
+        "ci:local:verbose": "./scripts/local-ci.sh --verbose",
+        "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build",
+        "ci:local:lint-only": "./scripts/local-ci.sh --skip-tests --skip-build --skip-lint=false",
+        "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build",
+        "test": "echo 'Running all tests' && npm run test:unit && npm run test:integration && npm run test:e2e",
+        "test:unit": "echo 'Running unit tests' && npm run test:unit:meeting-intelligence && npm run test:unit:integration-management",
+        "test:unit:meeting-intelligence": "cd services/meeting-intelligence && npm test",
+        "test:unit:integration-management": "cd services/integration-management && npm test",
+        "test:integration": "echo 'Running integration tests' && npm run test:integration:meeting-intelligence && npm run test:integration:integration-management",
+        "test:integration:meeting-intelligence": "cd services/meeting-intelligence && npm run test:integration",
+        "test:integration:integration-management": "cd services/integration-management && npm run test:integration",
+        "test:e2e": "echo 'Running E2E tests' && npm run test:e2e:frontend",
+        "test:e2e:frontend": "cd frontend && npm run test:e2e",
+        "test:performance": "echo 'Running performance tests' && npm run test:performance:meeting-intelligence",
+        "test:performance:meeting-intelligence": "cd services/meeting-intelligence && npm run test:performance",
+        "test:performance:load": "echo 'Load tests not implemented yet'"
     },
     "engines": {
         "node": "22.x",
         "npm": ">=9.0.0"
     },
-    "dependencies": {},
-    "devDependencies": {},
+    "devDependencies": {
+        "@types/cypress": "^0.1.6",
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.7.2",
+        "cypress": "^13.17.0",
+        "typescript": "^5.9.3"
+    },
     "cacheDirectories": [
         "frontend/node_modules",
         "services/api-gateway/node_modules",
         "services/meeting-intelligence/node_modules",
         "services/workflow-automation/node_modules",
         "services/integration-management/node_modules"
-    ]
+    ],
+    "dependencies": {
+        "express": "^5.1.0"
+    }
 }

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
-    "lib": ["ES2020"],
+    "lib": [
+      "ES2020"
+    ],
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
@@ -27,13 +29,27 @@
     "allowUnreachableCode": false,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["*"],
-      "@/services/*": ["services/*"],
-      "@/tests/*": ["tests/*"]
+      "@/*": [
+        "*"
+      ],
+      "@/services/*": [
+        "services/*"
+      ],
+      "@/tests/*": [
+        "tests/*"
+      ]
     },
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["scripts/**/*", "*.ts", "*.js", "tests/**/*", "shared/**/*"],
+  "include": [
+    "scripts/**/*",
+    "*.ts",
+    "*.js",
+    "tests/**/*",
+    "shared/**/*"
+  ],
   "exclude": [
     "node_modules",
     "dist",
@@ -42,6 +58,7 @@
     "tests/**/*",
     "**/*.d.ts",
     "cypress/**/*",
+    "cypress.config.ts",
     "**/*.cy.ts",
     "**/*.cy.tsx",
     "**/__tests__/**/*",

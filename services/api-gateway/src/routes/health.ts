@@ -72,7 +72,7 @@ router.get('/', (req: Request, res: Response) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 
@@ -113,8 +113,8 @@ router.get('/detailed', async (req: Request, res: Response) => {
     };
 
     // Determine overall health - only consider enabled services
-    const enabledServices = serviceHealths.filter(service =>
-      service.status !== 'disabled' && service.status !== 'unknown'
+    const enabledServices = serviceHealths.filter(
+      service => service.status !== 'disabled' && service.status !== 'unknown',
     );
     const unhealthyServices = enabledServices.filter(service => service.status === 'unhealthy');
     const overallStatus = unhealthyServices.length === 0 ? 'healthy' : 'unhealthy';
