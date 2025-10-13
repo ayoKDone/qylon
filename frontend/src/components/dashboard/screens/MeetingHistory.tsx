@@ -79,18 +79,18 @@ export default function MeetingHistory() {
         platform: 'Teams',
         status: 'completed',
       },
-      {
-        id: '4',
-        title: 'Barkbase internal handoff',
-        time: '9:00',
-        endTime: '9:30 AM',
-        date: 'WED, APRIL 22',
-        owner: 'Cosmo S.',
-        duration: '30 min',
-        participants: 6,
-        platform: 'Zoom',
-        status: 'failed',
-      },
+      // {
+      //   id: '4',
+      //   title: 'Barkbase internal handoff',
+      //   time: '9:00',
+      //   endTime: '9:30 AM',
+      //   date: 'WED, APRIL 22',
+      //   owner: 'Cosmo S.',
+      //   duration: '30 min',
+      //   participants: 6,
+      //   platform: 'Zoom',
+      //   status: 'failed',
+      // },
     ];
 
     setMeetings(mockMeetings);
