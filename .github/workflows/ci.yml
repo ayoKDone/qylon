@@ -44,10 +44,10 @@ jobs:
       - name: Install service dependencies
         run: |
           # Install dependencies for each service
-          cd services/api-gateway && npm ci
-          cd ../meeting-intelligence && npm ci
-          cd ../workflow-automation && npm ci
-          cd ../integration-management && npm ci
+          cd services/api-gateway && npm install
+          cd ../meeting-intelligence && npm install
+          cd ../workflow-automation && npm install
+          cd ../integration-management && npm install
           cd ../..
 
       - name: Install Python dependencies
@@ -118,10 +118,10 @@ jobs:
       - name: Install service dependencies
         run: |
           # Install dependencies for each service
-          cd services/api-gateway && npm ci
-          cd ../meeting-intelligence && npm ci
-          cd ../workflow-automation && npm ci
-          cd ../integration-management && npm ci
+          cd services/api-gateway && npm install
+          cd ../meeting-intelligence && npm install
+          cd ../workflow-automation && npm install
+          cd ../integration-management && npm install
           cd ../..
 
       - name: Install Python dependencies
@@ -296,10 +296,10 @@ jobs:
         run: |
           npm ci
           # Install dependencies for each service
-          cd services/api-gateway && npm ci
-          cd ../meeting-intelligence && npm ci
-          cd ../workflow-automation && npm ci
-          cd ../integration-management && npm ci
+          cd services/api-gateway && npm install
+          cd ../meeting-intelligence && npm install
+          cd ../workflow-automation && npm install
+          cd ../integration-management && npm install
           cd ../..
           python -m pip install --upgrade pip
           pip install -r requirements.txt
