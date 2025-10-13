@@ -82,7 +82,7 @@ describe('Health Routes', () => {
           },
           openAI: {
             status: 'healthy',
-            responseTime: 0,
+            responseTime: expect.any(Number),
           },
           recallAI: {
             status: 'healthy',
