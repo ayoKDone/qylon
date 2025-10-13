@@ -46,7 +46,10 @@
         "format:check:integration-management": "cd services/integration-management && npm run format:check",
         "security:scan": "echo 'Security scan handled by individual services'",
         "db:migrate": "echo 'Database migrations handled by individual services'",
-        "sonar": "echo 'Sonar analysis handled by individual services'"
+        "sonar": "echo 'Sonar analysis handled by individual services'",
+        "ci:local": "./scripts/local-ci.sh",
+        "ci:local:verbose": "./scripts/local-ci.sh --verbose",
+        "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build"
     },
     "engines": {
         "node": "22.x",
