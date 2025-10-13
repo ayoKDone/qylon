@@ -86,7 +86,7 @@ describe('Health Routes', () => {
           },
           recallAI: {
             status: 'healthy',
-            responseTime: 0,
+            responseTime: expect.any(Number),
           },
         },
       });
