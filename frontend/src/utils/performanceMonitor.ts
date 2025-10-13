@@ -10,17 +10,6 @@ interface PerformanceMetric {
   connection?: string;
 }
 
-interface LayoutShift extends PerformanceEntry {
-  value: number;
-  hadRecentInput: boolean;
-  startTime: number;
-  sources?: Array<{
-    node?: Node;
-    previousRect: DOMRectReadOnly;
-    currentRect: DOMRectReadOnly;
-  }>;
-}
-
 // interface CoreWebVitals {
 //   CLS: number; // Cumulative Layout Shift
 //   FID: number; // First Input Delay
