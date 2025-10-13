@@ -4,6 +4,7 @@ module.exports = {
 
   // Test file patterns
   testMatch: ['**/__tests__/**/*.(js|jsx|ts|tsx)', '**/*.(test|spec).(js|jsx|ts|tsx)'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/build/', '/__tests__/setup.ts'],
 
   // Test directories
   roots: ['<rootDir>/src'],
@@ -17,7 +18,7 @@ module.exports = {
       'ts-jest',
       {
         tsconfig: 'tsconfig.test.json',
-        isolatedModules: true,
+        transpilation: true,
       },
     ],
     '^.+\\.(js|jsx)$': 'babel-jest',
@@ -47,7 +48,7 @@ module.exports = {
   },
 
   // Setup files
-  setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
 
   // Test timeout
   testTimeout: 10000,
