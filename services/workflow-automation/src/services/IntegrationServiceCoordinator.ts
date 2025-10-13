@@ -561,7 +561,7 @@ export class IntegrationServiceCoordinator {
   /**
    * Check if error is retryable
    */
-  private isRetryableError(error: any): boolean {
+  public isRetryableError(error: any): boolean {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
       return (
@@ -570,7 +570,9 @@ export class IntegrationServiceCoordinator {
         message.includes('connection') ||
         message.includes('rate limit') ||
         message.includes('temporary') ||
-        message.includes('service unavailable')
+        message.includes('temporarily') ||
+        message.includes('service unavailable') ||
+        message.includes('unavailable')
       );
     }
     return false;
