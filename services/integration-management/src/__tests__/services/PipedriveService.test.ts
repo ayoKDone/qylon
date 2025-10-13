@@ -69,6 +69,8 @@ describe('PipedriveService', () => {
         recordsUpdated: 0,
         recordsFailed: 0,
         errors: [],
+        duration: 1000,
+        timestamp: new Date().toISOString(),
       };
 
       service.syncContacts.mockResolvedValue(mockResult);
@@ -90,6 +92,8 @@ describe('PipedriveService', () => {
         recordsUpdated: 0,
         recordsFailed: 0,
         errors: ['API Error'],
+        duration: 1000,
+        timestamp: new Date().toISOString(),
       };
 
       service.syncContacts.mockResolvedValue(mockResult);
@@ -111,6 +115,8 @@ describe('PipedriveService', () => {
         recordsUpdated: 0,
         recordsFailed: 0,
         errors: [],
+        duration: 1000,
+        timestamp: new Date().toISOString(),
       };
 
       service.syncOpportunities.mockResolvedValue(mockResult);

@@ -60,8 +60,6 @@ export interface RateLimitConfig {
   windowMs: number;
   max: number;
   message: string;
-  standardHeaders: boolean;
-  legacyHeaders: boolean;
 }
 
 // Error response
@@ -83,10 +81,11 @@ export interface HealthCheckResponse {
 
 export interface ServiceHealth {
   name: string;
-  status: 'healthy' | 'unhealthy' | 'unknown';
+  status: 'healthy' | 'unhealthy' | 'unknown' | 'disabled';
   responseTime?: number;
   lastCheck: string;
   error?: string;
+  details?: string;
 }
 
 // Proxy configuration

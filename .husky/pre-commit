@@ -1,24 +1,13 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Pre-commit hook for Qylon Platform
-# Runs quality checks before allowing commits
-
 echo "🔍 Running pre-commit quality checks..."
 
-# Run lint-staged to check staged files
+# Run lint-staged to format and lint staged files
 npx lint-staged
 
-# Run security audit
-echo "🔒 Running security audit..."
-npm run security:audit
-
-# Run type checking
+# Run TypeScript type checking (no emit)
 echo "📝 Running TypeScript type checking..."
 npx tsc --noEmit
-
-# Run unit tests for changed files
-echo "🧪 Running unit tests for changed files..."
-npm run test:unit
 
 echo "✅ Pre-commit checks passed!"

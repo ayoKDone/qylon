@@ -64,13 +64,13 @@ describe('SlackService', () => {
     it('should send message successfully', async () => {
       const mockMessage = {
         id: '1234567890.123456',
-        channelId: 'C1234567890',
-        text: 'Hello, World!',
-        timestamp: '1234567890.123456',
-        userId: 'U1234567890',
+        channel: 'C1234567890',
         platform: 'slack',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        content: 'Hello, World!',
+        sender: 'bot',
+        recipient: 'C1234567890',
+        timestamp: new Date().toISOString(),
+        metadata: {},
       };
 
       service.sendMessage.mockResolvedValue(mockMessage);
@@ -79,8 +79,8 @@ describe('SlackService', () => {
 
       expect(result).toEqual(
         expect.objectContaining({
-          channelId: 'C1234567890',
-          text: 'Hello, World!',
+          channel: 'C1234567890',
+          content: 'Hello, World!',
         }),
       );
     });
@@ -100,18 +100,20 @@ describe('SlackService', () => {
         {
           id: 'C1234567890',
           name: 'general',
-          isMember: true,
-          isPrivate: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          is_channel: true,
+          is_group: false,
+          is_im: false,
+          is_private: false,
+          is_member: true,
         },
         {
           id: 'C0987654321',
           name: 'random',
-          isMember: false,
-          isPrivate: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          is_channel: true,
+          is_group: false,
+          is_im: false,
+          is_private: false,
+          is_member: false,
         },
       ];
 
@@ -124,7 +126,7 @@ describe('SlackService', () => {
         expect.objectContaining({
           id: 'C1234567890',
           name: 'general',
-          isMember: true,
+          is_member: true,
         }),
       );
     });
@@ -141,13 +143,18 @@ describe('SlackService', () => {
       const mockUsers = [
         {
           id: 'U1234567890',
-          username: 'john.doe',
-          realName: 'John Doe',
-          email: 'john@example.com',
-          isBot: false,
-          isAdmin: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
+          name: 'john.doe',
+          real_name: 'John Doe',
+          profile: {
+            email: 'john@example.com',
+            phone: '+1234567890',
+            image_24: 'https://example.com/image24.jpg',
+            image_32: 'https://example.com/image32.jpg',
+            image_48: 'https://example.com/image48.jpg',
+            image_72: 'https://example.com/image72.jpg',
+            image_192: 'https://example.com/image192.jpg',
+            image_512: 'https://example.com/image512.jpg',
+          },
         },
       ];
 
@@ -159,9 +166,8 @@ describe('SlackService', () => {
       expect(result[0]).toEqual(
         expect.objectContaining({
           id: 'U1234567890',
-          username: 'john.doe',
-          realName: 'John Doe',
-          email: 'john@example.com',
+          name: 'john.doe',
+          real_name: 'John Doe',
         }),
       );
     });

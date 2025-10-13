@@ -1,6 +1,6 @@
-import { ErrorResponse } from '@/types';
-import { logError, logger } from '@/utils/logger';
 import { NextFunction, Request, Response } from 'express';
+import { ErrorResponse } from '../types';
+import { logError, logger } from '../utils/logger';
 
 /**
  * Global error handler middleware
@@ -78,7 +78,9 @@ export const notFoundHandler = (req: Request, _res: Response, _next: NextFunctio
 /**
  * Async error wrapper for route handlers
  */
-export const asyncHandler = (fn: Function) => {
+export const asyncHandler = (
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };

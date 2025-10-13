@@ -1,7 +1,8 @@
-import { ProxyConfig, ServiceEndpoint, ServiceRegistry } from '@/types';
-import { logger } from '@/utils/logger';
+import axios from 'axios';
 import { NextFunction, Request, Response, Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { ProxyConfig, ServiceEndpoint, ServiceRegistry } from '../types';
+import { logger } from '../utils/logger';
 
 const router: Router = Router();
 
@@ -184,7 +185,6 @@ const serviceHealthCheck = async (req: Request, _res: Response, next: NextFuncti
 
   try {
     // Simple health check - just verify the service is reachable
-    const axios = require('axios');
     await axios.get(`${serviceConfig.url}${serviceConfig.healthCheck}`, {
       timeout: 2000, // 2 second timeout
     });
@@ -245,7 +245,6 @@ router.get('/services', (req: Request, _res: Response) => {
  * Service status endpoint
  */
 router.get('/services/status', async (req: Request, _res: Response) => {
-  const axios = require('axios');
   const serviceStatuses = await Promise.allSettled(
     Object.entries(serviceRegistry).map(
       async ([serviceName, serviceConfig]: [string, ServiceEndpoint]) => {

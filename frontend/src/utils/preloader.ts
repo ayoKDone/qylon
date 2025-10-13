@@ -45,8 +45,8 @@ class RoutePreloader {
 
   private preloadCriticalRoutes(): void {
     const criticalRoutes = Object.entries(this.config.routes)
-      .filter(([_, config]) => config.priority === 'high' && config.preloadOn === 'immediate')
-      .map(([route, _]) => route);
+      .filter(([, config]) => config.priority === 'high' && config.preloadOn === 'immediate')
+      .map(([route]) => route);
 
     console.log('[Preloader] Preloading critical routes:', criticalRoutes);
 
@@ -95,13 +95,13 @@ class RoutePreloader {
   private setupIdlePreloading(): void {
     const preloadOnIdle = () => {
       const idleRoutes = Object.entries(this.config.routes)
-        .filter(([_, config]) => config.preloadOn === 'idle')
+        .filter(([, config]) => config.preloadOn === 'idle')
         .sort((a, b) => {
           const aScore = this.userBehavior.get(a[0]) || 0;
           const bScore = this.userBehavior.get(b[0]) || 0;
           return bScore - aScore; // Sort by user preference
         })
-        .map(([route, _]) => route);
+        .map(([route]) => route);
 
       console.log('[Preloader] Preloading routes on idle:', idleRoutes);
 
@@ -256,7 +256,6 @@ export const routePreloader = new RoutePreloader({
       priority: 'high',
       preloadOn: 'hover',
       resources: [
-        // Only preload in production where hashed assets exist
         ...(import.meta.env.PROD
           ? [
               '/assets/js/dashboard-[hash].js',

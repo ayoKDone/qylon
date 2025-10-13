@@ -18,6 +18,31 @@ const CACHE_STRATEGIES = {
     NETWORK_ONLY: 'network-only'
 };
 
+// Clear bad cache entries (HTML responses cached for JS/CSS files)
+async function clearBadCacheEntries() {
+    const cacheNames = [STATIC_CACHE, DYNAMIC_CACHE, API_CACHE];
+
+    for (const cacheName of cacheNames) {
+        const cache = await caches.open(cacheName);
+        const requests = await cache.keys();
+
+        for (const request of requests) {
+            const response = await cache.match(request);
+            if (response) {
+                const contentType = response.headers.get('content-type') || '';
+                const isBadCache =
+                    (request.url.endsWith('.js') && contentType.includes('text/html')) ||
+                    (request.url.endsWith('.css') && contentType.includes('text/html'));
+
+                if (isBadCache) {
+                    console.log('[SW] Removing bad cache entry:', request.url);
+                    await cache.delete(request);
+                }
+            }
+        }
+    }
+}
+
 // Static assets to cache immediately
 const STATIC_ASSETS = [
     '/',
@@ -47,7 +72,8 @@ self.addEventListener('install', (event) => {
     console.log('[SW] Installing service worker...');
 
     event.waitUntil(
-        caches.open(STATIC_CACHE)
+        clearBadCacheEntries()
+            .then(() => caches.open(STATIC_CACHE))
             .then((cache) => {
                 console.log('[SW] Caching static assets');
                 return cache.addAll(STATIC_ASSETS);
@@ -124,11 +150,27 @@ async function cacheFirst(request, cacheName, maxAge = 86400) {
         const cachedResponse = await caches.match(request);
 
         if (cachedResponse) {
-            // Check if cache is still valid
+            // Check if cache is still valid and has correct content type
             const cacheTime = cachedResponse.headers.get('sw-cache-time');
-            if (cacheTime && (Date.now() - parseInt(cacheTime)) < maxAge * 1000) {
+            const contentType = cachedResponse.headers.get('content-type') || '';
+            const isCorrectContentType =
+                contentType.includes('application/javascript') ||
+                contentType.includes('text/javascript') ||
+                contentType.includes('application/json') ||
+                contentType.includes('text/css') ||
+                contentType.includes('image/') ||
+                contentType.includes('font/') ||
+                contentType.includes('application/font') ||
+                (request.url.endsWith('.js') && !contentType.includes('text/html')) ||
+                (request.url.endsWith('.css') && !contentType.includes('text/html'));
+
+            if (cacheTime && (Date.now() - parseInt(cacheTime)) < maxAge * 1000 && isCorrectContentType) {
                 console.log('[SW] Serving from cache:', request.url);
                 return cachedResponse;
+            } else if (!isCorrectContentType) {
+                console.log('[SW] Removing bad cache entry:', request.url, contentType);
+                const cache = await caches.open(cacheName);
+                await cache.delete(request);
             }
         }
 
@@ -136,10 +178,34 @@ async function cacheFirst(request, cacheName, maxAge = 86400) {
         const networkResponse = await fetch(request);
 
         if (networkResponse.ok) {
-            const cache = await caches.open(cacheName);
-            const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.put(request, responseToCache);
+            // Only cache if the response is the correct content type
+            const contentType = networkResponse.headers.get('content-type') || '';
+            const isCorrectContentType =
+                contentType.includes('application/javascript') ||
+                contentType.includes('text/javascript') ||
+                contentType.includes('application/json') ||
+                contentType.includes('text/css') ||
+                contentType.includes('image/') ||
+                contentType.includes('font/') ||
+                contentType.includes('application/font') ||
+                (request.url.endsWith('.js') && !contentType.includes('text/html')) ||
+                (request.url.endsWith('.css') && !contentType.includes('text/html'));
+
+            if (isCorrectContentType) {
+                const cache = await caches.open(cacheName);
+                const responseToCache = networkResponse.clone();
+                // Create new response with additional headers instead of modifying immutable headers
+                const newHeaders = new Headers(responseToCache.headers);
+                newHeaders.set('sw-cache-time', Date.now().toString());
+                const responseWithCacheTime = new Response(responseToCache.body, {
+                    status: responseToCache.status,
+                    statusText: responseToCache.statusText,
+                    headers: newHeaders
+                });
+                cache.put(request, responseWithCacheTime);
+            } else {
+                console.log('[SW] Skipping cache for incorrect content type:', request.url, contentType);
+            }
         }
 
         return networkResponse;
@@ -155,10 +221,34 @@ async function networkFirst(request, cacheName, maxAge = 300) {
         const networkResponse = await fetch(request);
 
         if (networkResponse.ok) {
-            const cache = await caches.open(cacheName);
-            const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.put(request, responseToCache);
+            // Only cache if the response is the correct content type
+            const contentType = networkResponse.headers.get('content-type') || '';
+            const isCorrectContentType =
+                contentType.includes('application/javascript') ||
+                contentType.includes('text/javascript') ||
+                contentType.includes('application/json') ||
+                contentType.includes('text/css') ||
+                contentType.includes('image/') ||
+                contentType.includes('font/') ||
+                contentType.includes('application/font') ||
+                (request.url.endsWith('.js') && !contentType.includes('text/html')) ||
+                (request.url.endsWith('.css') && !contentType.includes('text/html'));
+
+            if (isCorrectContentType) {
+                const cache = await caches.open(cacheName);
+                const responseToCache = networkResponse.clone();
+                // Create new response with additional headers instead of modifying immutable headers
+                const newHeaders = new Headers(responseToCache.headers);
+                newHeaders.set('sw-cache-time', Date.now().toString());
+                const responseWithCacheTime = new Response(responseToCache.body, {
+                    status: responseToCache.status,
+                    statusText: responseToCache.statusText,
+                    headers: newHeaders
+                });
+                cache.put(request, responseWithCacheTime);
+            } else {
+                console.log('[SW] Skipping cache for incorrect content type:', request.url, contentType);
+            }
         }
 
         return networkResponse;
@@ -184,10 +274,34 @@ async function staleWhileRevalidate(request, cacheName, maxAge = 3600) {
     // Update cache in background
     const fetchPromise = fetch(request).then((networkResponse) => {
         if (networkResponse.ok) {
-            const cache = caches.open(cacheName);
-            const responseToCache = networkResponse.clone();
-            responseToCache.headers.set('sw-cache-time', Date.now().toString());
-            cache.then(c => c.put(request, responseToCache));
+            // Only cache if the response is the correct content type
+            const contentType = networkResponse.headers.get('content-type') || '';
+            const isCorrectContentType =
+                contentType.includes('application/javascript') ||
+                contentType.includes('text/javascript') ||
+                contentType.includes('application/json') ||
+                contentType.includes('text/css') ||
+                contentType.includes('image/') ||
+                contentType.includes('font/') ||
+                contentType.includes('application/font') ||
+                (request.url.endsWith('.js') && !contentType.includes('text/html')) ||
+                (request.url.endsWith('.css') && !contentType.includes('text/html'));
+
+            if (isCorrectContentType) {
+                const cache = caches.open(cacheName);
+                const responseToCache = networkResponse.clone();
+                // Create new response with additional headers instead of modifying immutable headers
+                const newHeaders = new Headers(responseToCache.headers);
+                newHeaders.set('sw-cache-time', Date.now().toString());
+                const responseWithCacheTime = new Response(responseToCache.body, {
+                    status: responseToCache.status,
+                    statusText: responseToCache.statusText,
+                    headers: newHeaders
+                });
+                cache.then(c => c.put(request, responseWithCacheTime));
+            } else {
+                console.log('[SW] Skipping cache for incorrect content type:', request.url, contentType);
+            }
         }
         return networkResponse;
     });
@@ -275,7 +389,7 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 
     event.waitUntil(
-        clients.openWindow('/')
+        self.clients.openWindow('/')
     );
 });
 

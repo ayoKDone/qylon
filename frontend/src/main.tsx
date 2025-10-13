@@ -12,6 +12,7 @@ initializeResourceHints();
 
 // Initialize performance monitoring only in production
 if (import.meta.env.PROD) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   performanceMonitor;
 }
 

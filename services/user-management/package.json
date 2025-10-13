@@ -6,8 +6,8 @@
     "start": "tsx src/index.ts",
     "build": "tsc",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
-    "lint": "eslint 'src/**/*.ts' 'tests/**/*.ts'",
-    "lint:fix": "eslint 'src/**/*.ts' 'tests/**/*.ts' --fix",
+    "lint": "npx eslint 'src/**/*.ts' 'tests/**/*.ts'",
+    "lint:fix": "npx eslint 'src/**/*.ts' 'tests/**/*.ts' --fix",
     "format": "prettier '**/*.{ts,js,json,css,md}' --write"
   },
   "dependencies": {

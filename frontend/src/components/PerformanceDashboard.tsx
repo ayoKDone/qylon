@@ -15,7 +15,7 @@ interface PerformanceStats {
 const PerformanceDashboardComponent: React.FC = () => {
   const [stats, setStats] = useState<Record<string, PerformanceStats>>({});
   const [isVisible, setIsVisible] = useState(false);
-  const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
+  const [refreshInterval, setRefreshInterval] = useState<number | null>(null);
 
   useEffect(() => {
     if (isVisible) {
@@ -35,7 +35,7 @@ const PerformanceDashboardComponent: React.FC = () => {
         clearInterval(refreshInterval);
       }
     };
-  }, [isVisible]);
+  }, [isVisible, refreshInterval]);
 
   const formatMetric = (value: number): string => {
     if (value < 1000) {
@@ -61,6 +61,26 @@ const PerformanceDashboardComponent: React.FC = () => {
     if (value <= threshold.poor) return 'text-yellow-600';
     return 'text-red-600';
   };
+
+  useEffect(() => {
+    if (isVisible) {
+      const interval = setInterval(() => {
+        const dashboard = PerformanceDashboard.getInstance();
+        setStats(dashboard.getAllStats());
+      }, 1000);
+
+      setRefreshInterval(interval);
+    } else if (refreshInterval) {
+      clearInterval(refreshInterval);
+      setRefreshInterval(null);
+    }
+
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
+  }, [isVisible, refreshInterval]);
 
   const exportData = () => {
     const dashboard = PerformanceDashboard.getInstance();
