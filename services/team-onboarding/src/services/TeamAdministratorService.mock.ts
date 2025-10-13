@@ -2,6 +2,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {
     AdministratorPermission,
     AdministratorRole,
+    CreateTeamAdministratorSchema,
+    CreateTeamSchema,
     NotFoundError,
     Team,
     TeamAdministrator,
@@ -22,14 +24,17 @@ export class TeamAdministratorService {
    */
   async createTeam(teamData: any, createdBy: string): Promise<Team> {
     try {
+      // Validate team data
+      const validatedData = CreateTeamSchema.parse(teamData);
+
       const teamId = uuidv4();
       const team: Team = {
         id: teamId,
-        name: teamData.name,
-        description: teamData.description,
-        organizationId: teamData.organizationId,
-        settings: teamData.settings || {},
-        complianceSettings: teamData.complianceSettings || {},
+        name: validatedData.name,
+        description: validatedData.description,
+        organizationId: validatedData.organizationId,
+        settings: validatedData.settings,
+        complianceSettings: validatedData.complianceSettings,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -43,6 +48,10 @@ export class TeamAdministratorService {
 
       return team;
     } catch (error) {
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
       logger.error('Team creation failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         createdBy,
@@ -57,28 +66,35 @@ export class TeamAdministratorService {
    */
   async createTeamAdministrator(adminData: any, createdBy: string): Promise<TeamAdministrator> {
     try {
+      // Validate administrator data
+      const validatedData = CreateTeamAdministratorSchema.parse(adminData);
+
       const adminId = uuidv4();
       const administrator: TeamAdministrator = {
         id: adminId,
-        teamId: adminData.teamId,
-        userId: adminData.userId,
-        role: adminData.role as AdministratorRole,
-        permissions: adminData.permissions as AdministratorPermission[],
+        teamId: validatedData.teamId,
+        userId: validatedData.userId,
+        role: validatedData.role,
+        permissions: validatedData.permissions,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy,
       };
 
-      logTeamOperation('administrator_created', adminData.teamId, createdBy, {
+      logTeamOperation('administrator_created', validatedData.teamId, createdBy, {
         administratorId: adminId,
-        userId: adminData.userId,
-        role: adminData.role,
-        permissions: adminData.permissions,
+        userId: validatedData.userId,
+        role: validatedData.role,
+        permissions: validatedData.permissions,
       });
 
       return administrator;
     } catch (error) {
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
       logger.error('Team administrator creation failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         createdBy,

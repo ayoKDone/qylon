@@ -1,7 +1,9 @@
+import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
     AdministratorPermission,
-    AdministratorRole,
+    CreateTeamAdministratorSchema,
+    CreateTeamSchema,
     NotFoundError,
     Team,
     TeamAdministrator,
@@ -11,31 +13,44 @@ import {
 import { logger, logTeamOperation } from '../utils/logger';
 
 export class TeamAdministratorService {
+  private supabase;
+
   constructor() {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Supabase environment variables are not set.');
     }
+    this.supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
   }
 
   /**
    * Create a new team with administrator setup
    */
-  async createTeam(teamData: any, createdBy: string): Promise<Team> {
+  async createTeam(
+    teamData: any,
+    createdBy: string
+  ): Promise<Team> {
     try {
+      // Validate team data
+      const validatedData = CreateTeamSchema.parse(teamData);
+
       const teamId = uuidv4();
       const team: Team = {
         id: teamId,
-        name: teamData.name,
-        description: teamData.description,
-        organizationId: teamData.organizationId,
-        settings: teamData.settings || {},
-        complianceSettings: teamData.complianceSettings || {},
+        name: validatedData.name,
+        description: validatedData.description,
+        organizationId: validatedData.organizationId,
+        settings: validatedData.settings,
+        complianceSettings: validatedData.complianceSettings,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy,
       };
 
+      // For testing, just return the team without database operations
       logTeamOperation('team_created', teamId, createdBy, {
         teamName: team.name,
         organizationId: team.organizationId,
@@ -43,6 +58,10 @@ export class TeamAdministratorService {
 
       return team;
     } catch (error) {
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
       logger.error('Team creation failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         createdBy,
@@ -55,30 +74,41 @@ export class TeamAdministratorService {
   /**
    * Create a team administrator
    */
-  async createTeamAdministrator(adminData: any, createdBy: string): Promise<TeamAdministrator> {
+  async createTeamAdministrator(
+    adminData: any,
+    createdBy: string
+  ): Promise<TeamAdministrator> {
     try {
+      // Validate administrator data
+      const validatedData = CreateTeamAdministratorSchema.parse(adminData);
+
       const adminId = uuidv4();
       const administrator: TeamAdministrator = {
         id: adminId,
-        teamId: adminData.teamId,
-        userId: adminData.userId,
-        role: adminData.role as AdministratorRole,
-        permissions: adminData.permissions as AdministratorPermission[],
+        teamId: validatedData.teamId,
+        userId: validatedData.userId,
+        role: validatedData.role,
+        permissions: validatedData.permissions,
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy,
       };
 
-      logTeamOperation('administrator_created', adminData.teamId, createdBy, {
+      // For testing, just return the administrator without database operations
+      logTeamOperation('administrator_created', validatedData.teamId, createdBy, {
         administratorId: adminId,
-        userId: adminData.userId,
-        role: adminData.role,
-        permissions: adminData.permissions,
+        userId: validatedData.userId,
+        role: validatedData.role,
+        permissions: validatedData.permissions,
       });
 
       return administrator;
     } catch (error) {
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
       logger.error('Team administrator creation failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
         createdBy,
@@ -93,7 +123,7 @@ export class TeamAdministratorService {
    */
   async getTeamAdministrators(teamId: string): Promise<TeamAdministrator[]> {
     try {
-      // Return empty array for testing
+      // For testing, return empty array
       return [];
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
@@ -123,12 +153,12 @@ export class TeamAdministratorService {
     updatedBy: string
   ): Promise<TeamAdministrator> {
     try {
-      // Return a mock updated administrator
+      // For testing, return a mock updated administrator
       const updatedAdmin: TeamAdministrator = {
         id: adminId,
         teamId: 'team-123',
         userId: 'user-456',
-        role: updates.role || AdministratorRole.TEAM_ADMIN,
+        role: updates.role || 'team_admin' as any,
         permissions: updates.permissions || [AdministratorPermission.MANAGE_USERS],
         isActive: updates.isActive !== undefined ? updates.isActive : true,
         createdAt: new Date(),
@@ -160,9 +190,12 @@ export class TeamAdministratorService {
   /**
    * Delete team administrator
    */
-  async deleteTeamAdministrator(adminId: string, deletedBy: string): Promise<void> {
+  async deleteTeamAdministrator(
+    adminId: string,
+    deletedBy: string
+  ): Promise<void> {
     try {
-      // Just log the operation for testing
+      // For testing, just log the operation
       logTeamOperation('administrator_deleted', 'team-123', deletedBy, {
         administratorId: adminId,
       });
@@ -191,7 +224,7 @@ export class TeamAdministratorService {
    */
   async getTeam(teamId: string): Promise<Team> {
     try {
-      // Return a mock team
+      // For testing, return a mock team
       const team: Team = {
         id: teamId,
         name: 'Test Team',
@@ -277,7 +310,11 @@ export class TeamAdministratorService {
   /**
    * Update team settings
    */
-  async updateTeamSettings(teamId: string, settings: any, updatedBy: string): Promise<Team> {
+  async updateTeamSettings(
+    teamId: string,
+    settings: any,
+    updatedBy: string
+  ): Promise<Team> {
     try {
       const team = await this.getTeam(teamId);
       const updatedTeam = { ...team, settings, updatedAt: new Date() };
