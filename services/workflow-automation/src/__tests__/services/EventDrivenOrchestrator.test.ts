@@ -31,16 +31,18 @@ enum QylonEventTypes {
 }
 
 // Mock dependencies
-jest.mock('@supabase/supabase-js');
-jest.mock('../../services/WorkflowTriggerSystem');
-jest.mock('../../services/IntegrationServiceCoordinator');
-jest.mock('../../utils/logger');
-
 const mockSupabase = {
   from: jest.fn(() => ({
     upsert: jest.fn().mockResolvedValue({ error: null }),
   })),
 };
+
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => mockSupabase),
+}));
+jest.mock('../../services/WorkflowTriggerSystem');
+jest.mock('../../services/IntegrationServiceCoordinator');
+jest.mock('../../utils/logger');
 
 const mockWorkflowTriggerSystem = {
   processEvent: jest.fn(),
@@ -390,7 +392,10 @@ describe('EventDrivenOrchestrator', () => {
       await (orchestrator as any).updateEventProcessingStatus('event-123', 'completed');
 
       expect(mockSupabase.from).toHaveBeenCalledWith('event_processing_status');
-      expect(mockSupabase.from().upsert).toHaveBeenCalledWith({
+
+      // Get the last call to from() and check its upsert method
+      const lastFromCall = mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
+      expect(lastFromCall.value.upsert).toHaveBeenCalledWith({
         event_id: 'event-123',
         status: 'completed',
         error: undefined,
@@ -403,7 +408,11 @@ describe('EventDrivenOrchestrator', () => {
 
       await (orchestrator as any).updateEventProcessingStatus('event-123', 'failed', 'Test error');
 
-      expect(mockSupabase.from().upsert).toHaveBeenCalledWith({
+      expect(mockSupabase.from).toHaveBeenCalledWith('event_processing_status');
+
+      // Get the last call to from() and check its upsert method
+      const lastFromCall = mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
+      expect(lastFromCall.value.upsert).toHaveBeenCalledWith({
         event_id: 'event-123',
         status: 'failed',
         error: 'Test error',
