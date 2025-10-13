@@ -1,6 +1,54 @@
 import { createClient } from '@supabase/supabase-js';
-import { CRMContact, CRMOpportunity, IntegrationConfig, IntegrationType } from '../../integration-management/src/types';
 import { logger } from '../utils/logger';
+// Note: Integration types would be imported from integration-management service
+// For now, we'll define them locally
+interface CRMContact {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  company?: string;
+  title?: string;
+  source: string;
+  customFields?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CRMOpportunity {
+  id: string;
+  name: string;
+  amount?: number;
+  stage: string;
+  probability?: number;
+  closeDate?: string;
+  contactId: string;
+  source: string;
+  customFields?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface IntegrationConfig {
+  id: string;
+  userId: string;
+  clientId: string;
+  type: IntegrationType;
+  name: string;
+  status: string;
+  credentials: Record<string, any>;
+  settings: Record<string, any>;
+  lastSync?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+enum IntegrationType {
+  CRM_SALESFORCE = 'crm_salesforce',
+  CRM_HUBSPOT = 'crm_hubspot',
+  CRM_PIPEDRIVE = 'crm_pipedrive',
+}
 
 export interface IntegrationAction {
   id: string;
@@ -312,11 +360,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`CRM contact creation failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to create CRM contact', {
@@ -349,11 +397,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`CRM contact update failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to update CRM contact', {
@@ -387,11 +435,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`CRM opportunity creation failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to create CRM opportunity', {
@@ -424,11 +472,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`CRM opportunity update failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to update CRM opportunity', {
@@ -462,11 +510,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`Data sync failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to sync data', {
@@ -499,11 +547,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json() as any;
         throw new Error(`Notification failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to send notification', {

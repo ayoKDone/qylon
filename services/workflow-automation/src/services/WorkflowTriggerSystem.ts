@@ -1,8 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
-import { Event } from '../../event-sourcing/src/models/Event';
-import { TriggerType, Workflow, WorkflowTrigger } from '../types';
+import { TriggerType, Workflow } from '../types';
 import { logger } from '../utils/logger';
 import { WorkflowEngine } from './WorkflowEngine';
+// Note: Event types would be imported from event-sourcing service
+// For now, we'll define them locally
+interface Event {
+  id: string;
+  aggregateId: string;
+  aggregateType: string;
+  eventType: string;
+  eventData: Record<string, any>;
+  eventVersion: number;
+  timestamp: Date;
+  userId: string;
+  correlationId?: string;
+  causationId?: string;
+  metadata?: Record<string, any>;
+}
+
+enum QylonEventTypes {
+  ACTION_ITEM_CREATED = 'action_item.created',
+  MEETING_ENDED = 'meeting.ended',
+  CLIENT_CREATED = 'client.created',
+  USER_CREATED = 'user.created',
+}
 
 export interface TriggerContext {
   eventId: string;
@@ -26,7 +47,7 @@ export interface TriggerResult {
 export class WorkflowTriggerSystem {
   private supabase;
   private workflowEngine: WorkflowEngine;
-  private triggerCache: Map<string, WorkflowTrigger[]> = new Map();
+  private triggerCache: Map<string, Workflow[]> = new Map();
   private cacheExpiry: Map<string, number> = new Map();
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
@@ -362,7 +383,8 @@ export class WorkflowTriggerSystem {
       return null;
     }
 
-    return this.triggerCache.get(cacheKey) || null;
+    const cached = this.triggerCache.get(cacheKey);
+    return cached || null;
   }
 
   /**

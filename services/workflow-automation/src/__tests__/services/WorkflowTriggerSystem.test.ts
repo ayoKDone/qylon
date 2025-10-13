@@ -1,6 +1,33 @@
-import { AggregateTypes, Event, QylonEventTypes } from '../../../event-sourcing/src/models/Event';
 import { WorkflowTriggerSystem } from '../../services/WorkflowTriggerSystem';
 import { TriggerType, Workflow } from '../../types';
+
+// Local type definitions for testing
+enum AggregateTypes {
+  MEETING = 'meeting',
+  USER = 'user',
+  CLIENT = 'client',
+}
+
+interface Event {
+  id: string;
+  aggregateId: string;
+  aggregateType: string;
+  eventType: string;
+  eventData: Record<string, any>;
+  eventVersion: number;
+  timestamp: Date;
+  userId: string;
+  correlationId?: string;
+  causationId?: string;
+  metadata?: Record<string, any>;
+}
+
+enum QylonEventTypes {
+  ACTION_ITEM_CREATED = 'action_item.created',
+  MEETING_ENDED = 'meeting.ended',
+  CLIENT_CREATED = 'client.created',
+  USER_CREATED = 'user.created',
+}
 
 // Mock dependencies
 jest.mock('@supabase/supabase-js');
