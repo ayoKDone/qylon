@@ -1,5 +1,6 @@
 // Qylon Service Worker - Advanced Caching Strategy
 // Version: 1.0.0
+/* global clients */
 
 const CACHE_NAME = 'qylon-v1.0.0';
 const STATIC_CACHE = 'qylon-static-v1.0.0';
