@@ -14,7 +14,7 @@ import {
   Zap,
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import useTheme from '../contexts/useTheme';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Sample conversation data
 const sampleConversations = {
