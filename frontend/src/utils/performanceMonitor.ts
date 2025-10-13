@@ -114,7 +114,6 @@ class PerformanceMonitor {
     }
   }
 
-
   private observeCLS(): void {
     if (!('PerformanceObserver' in window)) return;
 
@@ -222,7 +221,6 @@ class PerformanceMonitor {
     }
   }
 
-
   private measureRouteTransitions(): void {
     let routeStartTime = 0;
 
@@ -305,15 +303,14 @@ class PerformanceMonitor {
         ?.effectiveType,
     };
 
-      this.metrics.push(metric);
-      console.log(`[Performance] ${name}: ${value}ms`);
+    this.metrics.push(metric);
+    console.log(`[Performance] ${name}: ${value}ms`);
 
-      // Flush if batch is full
-      if (this.metrics.length >= this.config.batchSize) {
-        this.flushMetrics();
-      }
+    // Flush if batch is full
+    if (this.metrics.length >= this.config.batchSize) {
+      this.flushMetrics();
+    }
   }
-
 
   private startBatchFlushing(): void {
     this.flushTimer = window.setInterval(() => {
@@ -424,7 +421,6 @@ export class PerformanceDashboard {
 
     return stats;
   }
-
 
   exportData(): string {
     return JSON.stringify(this.getAllStats(), null, 2);

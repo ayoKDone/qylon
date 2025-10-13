@@ -55,25 +55,20 @@ export default function TaskStats({
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
-          <div
-            key={index}
-            className="bg-white xui-bdr-rad-2 p-6 border border-gray-200"
-          >
-            <div className="xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between mb-3">
+          <div key={index} className='bg-white xui-bdr-rad-2 p-6 border border-gray-200'>
+            <div className='xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between mb-3'>
               <div
                 className={`w-10 h-10 rounded-full ${stat.iconBgColor} xui-d-flex xui-flex-ai-center xui-flex-jc-center`}
               >
                 <Icon className={`w-5 h-5 ${stat.iconColor}`} />
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">
-                {stat.value}
-              </div>
+              <div className='text-3xl font-bold text-gray-900 mb-1'>{stat.value}</div>
             </div>
-            <div className="text-sm text-gray-600">{stat.label}</div>
+            <div className='text-sm text-gray-600'>{stat.label}</div>
           </div>
         );
       })}

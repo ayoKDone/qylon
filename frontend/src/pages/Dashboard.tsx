@@ -15,14 +15,14 @@ export default function DashboardPage() {
     <Routes>
       <Route element={<DashboardLayout />}>
         <Route index element={<DashboardOverview />} />
-        <Route path="live-meetings" element={<LiveMeetings />} />
-        <Route path="tasks" element={<ActionItems />} />
-        <Route path="meeting-history" element={<MeetingHistory />} />
-        <Route path="analytics" element={<Analytics />} />
-        <Route path="workflow" element={<Workflow />} />
-        <Route path="contents" element={<Contents />} />
-        <Route path="Integration" element={<Integration />} />
-        <Route path="settings" element={<Settings />} />
+        <Route path='live-meetings' element={<LiveMeetings />} />
+        <Route path='tasks' element={<ActionItems />} />
+        <Route path='meeting-history' element={<MeetingHistory />} />
+        <Route path='analytics' element={<Analytics />} />
+        <Route path='workflow' element={<Workflow />} />
+        <Route path='contents' element={<Contents />} />
+        <Route path='Integration' element={<Integration />} />
+        <Route path='settings' element={<Settings />} />
       </Route>
     </Routes>
   );

@@ -6,7 +6,6 @@ import type {
   SignUpResponse,
 } from '../types/auth';
 
-
 export const authService = {
   async login(data: LoginFormInputs): Promise<LoginResponse> {
     const { data: sessionData, error } = await supabase.auth.signInWithPassword({

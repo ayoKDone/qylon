@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Check, FileText, Mic, Settings } from 'lucide-react';
-import  { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const ProblemsVsSolutions: React.FC = () => {
   const { isDark } = useTheme();

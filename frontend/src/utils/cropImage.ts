@@ -1,9 +1,6 @@
 import { Area } from 'react-easy-crop';
 
-export const getCroppedImg = (
-  imageSrc: string,
-  pixelCrop: Area
-): Promise<string> => {
+export const getCroppedImg = (imageSrc: string, pixelCrop: Area): Promise<string> => {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.src = imageSrc;
@@ -24,7 +21,7 @@ export const getCroppedImg = (
         0,
         0,
         pixelCrop.width,
-        pixelCrop.height
+        pixelCrop.height,
       );
 
       const base64 = canvas.toDataURL('image/jpeg');

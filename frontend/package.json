@@ -10,7 +10,9 @@
     "preview": "vite preview --port 3002",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:e2e": "echo 'E2E tests not implemented yet'"
+    "test:e2e": "echo 'E2E tests not implemented yet'",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",

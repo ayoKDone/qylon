@@ -17,10 +17,7 @@ interface TasksListProps {
   onToggleComplete?: (id: string, completed: boolean) => void;
 }
 
-export default function TasksLists({
-  tasks,
-  onToggleComplete,
-}: TasksListProps) {
+export default function TasksLists({ tasks, onToggleComplete }: TasksListProps) {
   const defaultTasks: Task[] = [
     {
       id: '1',
@@ -29,8 +26,7 @@ export default function TasksLists({
       date: '2024-01-20',
       meeting: 'Product Strategy Session',
       tags: ['#budget', '#finance', '#q1'],
-      description:
-        'Analyze the budget allocation for marketing and development teams',
+      description: 'Analyze the budget allocation for marketing and development teams',
       priority: 'high',
       status: 'pending',
     },
@@ -79,7 +75,7 @@ export default function TasksLists({
   };
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {displayTasks.map(task => (
         <TaskItem
           key={task.id}

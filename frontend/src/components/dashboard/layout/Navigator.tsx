@@ -41,16 +41,16 @@ export default function Navigator() {
   ];
 
   return (
-    <div className="navigator">
-      <div className="brand">
+    <div className='navigator'>
+      <div className='brand'>
         <img
-          src="/src/assets/images/qylon-logo.png"
-          alt="Qylon Logo"
-          className="xui-img-100 xui-h-auto"
+          src='/src/assets/images/qylon-logo.png'
+          alt='Qylon Logo'
+          className='xui-img-100 xui-h-auto'
         />
       </div>
 
-      <div className="links">
+      <div className='links'>
         {links.map(({ to, label, icon }) => {
           const isActive = location.pathname === to;
           return (
@@ -63,13 +63,13 @@ export default function Navigator() {
                   : 'text-gray-600'
               }`}
             >
-              <div className="icon text-lg">{icon}</div>
-              <span className="text">{label}</span>
+              <div className='icon text-lg'>{icon}</div>
+              <span className='text'>{label}</span>
             </Link>
           );
         })}
         {/* Recording Card Below */}
-        <div className="bottom-fixed">
+        <div className='bottom-fixed'>
           <RecordingStatus />
         </div>
       </div>

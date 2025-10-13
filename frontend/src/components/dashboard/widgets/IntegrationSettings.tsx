@@ -87,8 +87,8 @@ export default function IntegrationSettings() {
               connected: !int.connected,
               lastSync: int.connected ? null : 'Just now',
             }
-          : int
-      )
+          : int,
+      ),
     );
   };
 
@@ -106,53 +106,47 @@ export default function IntegrationSettings() {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Manage your connected services and integrations below.
-          </p>
+    <div className='min-h-screen'>
+      <div className='max-w-7xl mx-auto'>
+        <div className='mb-6'>
+          <p className='text-gray-600'>Manage your connected services and integrations below.</p>
         </div>
 
         {/* ✅ Responsive Grid Layout */}
         <div
-          className="
+          className='
                 grid
                 gap-5
                 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]
-                "
+                '
         >
           {integrations.map(integration => (
             <div
               key={integration.id}
-              className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col justify-between"
+              className='bg-white border border-gray-200 rounded-xl p-5 flex flex-col justify-between'
             >
-              <div className="flex items-start space-x-4">
+              <div className='flex items-start space-x-4'>
                 <img
                   src={integration.logo}
                   alt={integration.name}
-                  className="w-10 h-10 rounded-md object-contain"
+                  className='w-10 h-10 rounded-md object-contain'
                 />
-                <div className="flex-1">
-                  <h3 className="text-base font-semibold text-gray-900">
-                    {integration.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {integration.description}
-                  </p>
+                <div className='flex-1'>
+                  <h3 className='text-base font-semibold text-gray-900'>{integration.name}</h3>
+                  <p className='text-sm text-gray-500 mt-1'>{integration.description}</p>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
+              <div className='mt-4 flex items-center justify-between'>
+                <div className='flex items-center space-x-2'>
                   {integration.connected ? (
-                    <span className="flex items-center text-green-600 text-sm font-medium">
-                      <span className="w-2 h-2 rounded-full bg-green-500 mr-1"></span>
+                    <span className='flex items-center text-green-600 text-sm font-medium'>
+                      <span className='w-2 h-2 rounded-full bg-green-500 mr-1'></span>
                       Connected
                     </span>
                   ) : (
-                    <span className="flex items-center text-gray-500 text-sm font-medium">
-                      <span className="w-2 h-2 rounded-full bg-gray-400 mr-1"></span>
+                    <span className='flex items-center text-gray-500 text-sm font-medium'>
+                      <span className='w-2 h-2 rounded-full bg-gray-400 mr-1'></span>
                       Disconnected
                     </span>
                   )}
@@ -171,16 +165,12 @@ export default function IntegrationSettings() {
               </div>
 
               {/* ✅ Health + Last Sync */}
-              <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-                <span
-                  className={`font-medium ${getHealthColor(integration.health)}`}
-                >
+              <div className='mt-3 flex items-center justify-between text-xs text-gray-500'>
+                <span className={`font-medium ${getHealthColor(integration.health)}`}>
                   {integration.health} health
                 </span>
                 <span>
-                  {integration.lastSync
-                    ? `Last synced: ${integration.lastSync}`
-                    : 'Not synced yet'}
+                  {integration.lastSync ? `Last synced: ${integration.lastSync}` : 'Not synced yet'}
                 </span>
               </div>
             </div>
@@ -188,14 +178,12 @@ export default function IntegrationSettings() {
         </div>
 
         {/* Add New Integration */}
-        <div className="mt-10 pt-6">
-          <h3 className="text-md font-semibold text-gray-800 mb-2">
-            Add New Integration
-          </h3>
-          <p className="text-sm text-gray-600 mb-4">
+        <div className='mt-10 pt-6'>
+          <h3 className='text-md font-semibold text-gray-800 mb-2'>Add New Integration</h3>
+          <p className='text-sm text-gray-600 mb-4'>
             Connect additional services to enhance your workflow.
           </p>
-          <button className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+          <button className='inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition'>
             Add Integration
           </button>
         </div>

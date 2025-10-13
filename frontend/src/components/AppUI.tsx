@@ -435,7 +435,6 @@ const AppUI: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 hover:border-slate-300/50 border-transparent'
                   }`}
                 >
-
                   <item.icon className='w-5 h-5' />
                   <span className='font-medium'>{item.label}</span>
                 </button>

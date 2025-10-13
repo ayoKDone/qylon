@@ -1,5 +1,5 @@
 import { TrendingUp, Clock, Target, DollarSign } from 'lucide-react';
-import  { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function ROI() {
   const { isDark } = useTheme();

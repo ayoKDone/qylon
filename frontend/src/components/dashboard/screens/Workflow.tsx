@@ -112,13 +112,11 @@ export default function Workflow() {
       {
         id: 't1',
         name: 'Meeting Notes to Tasks',
-        description:
-          'Automatically create tasks from meeting transcripts and action items',
+        description: 'Automatically create tasks from meeting transcripts and action items',
         category: 'Meeting to Tasks',
         app1: { name: 'Meeting Ends', icon: '', bgColor: 'bg-blue-500' },
         app2: { name: 'Create Task', icon: '', bgColor: 'bg-orange-500' },
-        useCase:
-          'Perfect for project managers who want to streamline post-meeting workflows',
+        useCase: 'Perfect for project managers who want to streamline post-meeting workflows',
         complexity: 'beginner',
         rating: 4.8,
         usageCount: 1250,
@@ -126,8 +124,7 @@ export default function Workflow() {
       {
         id: 't2',
         name: 'Instant Team Notifications',
-        description:
-          'Send notifications to your team when action items are created',
+        description: 'Send notifications to your team when action items are created',
         category: 'Team Notifications',
         app1: {
           name: 'Action Item Created',
@@ -143,13 +140,11 @@ export default function Workflow() {
       {
         id: 't3',
         name: 'Content Generation Pipeline',
-        description:
-          'Automatically generate content when documents are updated',
+        description: 'Automatically generate content when documents are updated',
         category: 'Content Generation',
         app1: { name: 'Document Updated', icon: '', bgColor: 'bg-teal-500' },
         app2: { name: 'Generate Content', icon: '', bgColor: 'bg-cyan-500' },
-        useCase:
-          'Ideal for content creators who need to automate content generation',
+        useCase: 'Ideal for content creators who need to automate content generation',
         complexity: 'advanced',
         rating: 4.9,
         usageCount: 2100,
@@ -176,8 +171,7 @@ export default function Workflow() {
       (activeTab === 'inactive' && integration.status === 'inactive');
 
     const matchesSearch =
-      searchQuery === '' ||
-      integration.name.toLowerCase().includes(searchQuery.toLowerCase());
+      searchQuery === '' || integration.name.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesTab && matchesSearch;
   });
@@ -201,8 +195,8 @@ export default function Workflow() {
   }, [setNavbar]);
 
   return (
-    <div className="">
-      <div className="sticky top-0 z-30 bg-white">
+    <div className=''>
+      <div className='sticky top-0 z-30 bg-white'>
         <FilterTabs
           tabs={[
             { id: 'all', label: 'View all', count: integrations.length },
@@ -218,22 +212,20 @@ export default function Workflow() {
             },
             { id: 'templates', label: 'Templates', count: templates.length },
           ]}
-          defaultTab="all"
+          defaultTab='all'
           onTabChange={setActiveTab}
           onSearch={setSearchQuery}
           onAction={() => navigate('/dashboard/workflow/new')}
-          actionLabel="New Automation"
-          searchPlaceholder="Search automations..."
+          actionLabel='New Automation'
+          searchPlaceholder='Search automations...'
         />
       </div>
 
       {activeTab === 'templates' ? (
         <>
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">
-              Template Categories
-            </h2>
-            <div className="flex flex-wrap gap-2">
+          <div className='mb-6'>
+            <h2 className='text-lg font-semibold text-gray-900 mb-2'>Template Categories</h2>
+            <div className='flex flex-wrap gap-2'>
               {[
                 'Meeting to Tasks',
                 'Content Generation',
@@ -242,7 +234,7 @@ export default function Workflow() {
               ].map(category => (
                 <button
                   key={category}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  className='px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors'
                 >
                   {category}
                 </button>
@@ -250,7 +242,7 @@ export default function Workflow() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {templates.map(template => (
               <TemplateCard
                 key={template.id}
@@ -261,7 +253,7 @@ export default function Workflow() {
           </div>
         </>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {filteredIntegrations.map(integration => (
             <IntegrationCard
               key={integration.id}

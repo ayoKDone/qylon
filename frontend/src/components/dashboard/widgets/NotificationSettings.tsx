@@ -58,8 +58,7 @@ export default function NotificationSettings() {
         {
           id: 'emailMeetingRecordings' as const,
           title: 'Meeting recordings ready',
-          description:
-            'Get notified when your meeting recordings are available.',
+          description: 'Get notified when your meeting recordings are available.',
         },
         {
           id: 'emailActionItems' as const,
@@ -104,8 +103,7 @@ export default function NotificationSettings() {
         {
           id: 'smsCriticalAlerts' as const,
           title: 'Critical alerts only',
-          description:
-            'Receive SMS messages for urgent or security-related events.',
+          description: 'Receive SMS messages for urgent or security-related events.',
         },
       ],
     },
@@ -120,38 +118,30 @@ export default function NotificationSettings() {
 
   return (
     <div>
-      <div className="mb-4">
-        <p className="text-gray-600">
-          Manage your email, push, and SMS notification preferences.
-        </p>
+      <div className='mb-4'>
+        <p className='text-gray-600'>Manage your email, push, and SMS notification preferences.</p>
       </div>
 
       {/* Notification Categories */}
       {sections.map(section => (
-        <div key={section.title} className="mb-6">
-          <h3 className="text-md font-semibold text-gray-800 mb-3">
-            {section.title}
-          </h3>
-          <div className="space-y-3">
+        <div key={section.title} className='mb-6'>
+          <h3 className='text-md font-semibold text-gray-800 mb-3'>{section.title}</h3>
+          <div className='space-y-3'>
             {section.items.map(item => (
               <div
                 key={item.id}
-                className="p-4 flex items-center justify-between rounded-lg border border-gray-200"
+                className='p-4 flex items-center justify-between rounded-lg border border-gray-200'
               >
-                <div className="flex-1">
-                  <h4 className="text-base font-medium text-gray-900">
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {item.description}
-                  </p>
+                <div className='flex-1'>
+                  <h4 className='text-base font-medium text-gray-900'>{item.title}</h4>
+                  <p className='text-sm text-gray-500 mt-1'>{item.description}</p>
                 </div>
                 <button
                   onClick={() => toggleNotification(item.id)}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                     notifications[item.id] ? 'bg-blue-500' : 'bg-gray-300'
                   }`}
-                  role="switch"
+                  role='switch'
                   aria-checked={notifications[item.id]}
                 >
                   <span
@@ -167,20 +157,18 @@ export default function NotificationSettings() {
       ))}
 
       {/* Frequency Settings (Dropdown) */}
-      <div className="mt-6 xui-d-flex xui-flex-jc-space-between">
+      <div className='mt-6 xui-d-flex xui-flex-jc-space-between'>
         <div>
-          <h3 className="text-md font-semibold text-gray-800 mb-3">
-            Frequency Settings
-          </h3>
-          <p className="text-sm text-gray-600 mb-2">
+          <h3 className='text-md font-semibold text-gray-800 mb-3'>Frequency Settings</h3>
+          <p className='text-sm text-gray-600 mb-2'>
             Choose how often you want to receive notifications.
           </p>
         </div>
-        <div className="xui-form-box">
+        <div className='xui-form-box'>
           <select
             value={notifications.frequency}
             onChange={e => setFrequency(e.target.value as Frequency)}
-            className="block w-full max-w-sm rounded-md border border-gray-300 bg-white p-2 text-gray-700 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            className='block w-full max-w-sm rounded-md border border-gray-300 bg-white p-2 text-gray-700 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200'
           >
             {frequencies.map(f => (
               <option key={f.value} value={f.value}>

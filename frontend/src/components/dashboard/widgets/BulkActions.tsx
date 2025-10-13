@@ -19,14 +19,14 @@ export default function BulkActions({
   if (selectedCount === 0) return null;
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
-      <div className="xui-d-flex xui-flex-ai-center gap-2">
-        <CheckCircle2 className="w-5 h-5 text-blue-600" />
-        <span className="text-sm font-medium text-blue-900">
+    <div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
+      <div className='xui-d-flex xui-flex-ai-center gap-2'>
+        <CheckCircle2 className='w-5 h-5 text-blue-600' />
+        <span className='text-sm font-medium text-blue-900'>
           {selectedCount} task{selectedCount > 1 ? 's' : ''} selected
         </span>
       </div>
-      <div className="xui-d-flex gap-3">
+      <div className='xui-d-flex gap-3'>
         <button
           onClick={onMarkComplete}
           className={`px-4 py-2 text-white text-sm font-medium rounded-lg transition-colors ${
@@ -39,18 +39,18 @@ export default function BulkActions({
         </button>
         <button
           onClick={onExport}
-          className="px-4 py-2 bg-white border border-blue-300 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-50 transition-colors xui-d-flex xui-flex-ai-center gap-2"
+          className='px-4 py-2 bg-white border border-blue-300 text-blue-700 text-sm font-medium rounded-lg hover:bg-blue-50 transition-colors xui-d-flex xui-flex-ai-center gap-2'
         >
-          <Download className="w-4 h-4" />
+          <Download className='w-4 h-4' />
           Export to PM Tool
         </button>
         {onCancel && (
           <button
             onClick={onCancel}
-            className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors xui-d-flex xui-flex-ai-center"
-            title="Clear selection"
+            className='px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors xui-d-flex xui-flex-ai-center'
+            title='Clear selection'
           >
-            <X className="w-4 h-4" />
+            <X className='w-4 h-4' />
           </button>
         )}
       </div>

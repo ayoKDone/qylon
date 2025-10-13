@@ -1,15 +1,6 @@
-
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import {
-  User,
-  Bell,
-  Link,
-  Shield,
-  CreditCard,
-  Users,
-  SlidersHorizontal,
-} from 'lucide-react';
+import { User, Bell, Link, Shield, CreditCard, Users, SlidersHorizontal } from 'lucide-react';
 import SettingsSidebar from '../widgets/SettingsSidebar';
 import StatsHeader from '../widgets/StatsHeader';
 import ProfileSettings from '../widgets/ProfileSettings';
@@ -26,7 +17,6 @@ type NavbarContext = {
 };
 
 export default function Settings() {
-
   const [activeSection, setActiveSection] = useState('profile');
 
   const settingsItems = [
@@ -75,9 +65,9 @@ export default function Settings() {
   }, [setNavbar]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div className="lg:col-span-3">
-        <StatsHeader title="Settings">
+    <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+      <div className='lg:col-span-3'>
+        <StatsHeader title='Settings'>
           <SettingsSidebar
             items={settingsItems}
             activeItem={activeSection}
@@ -86,7 +76,7 @@ export default function Settings() {
         </StatsHeader>
       </div>
 
-      <div className="lg:col-span-9">
+      <div className='lg:col-span-9'>
         <StatsHeader title={getActiveTitle()}>{renderContent()}</StatsHeader>
       </div>
     </div>

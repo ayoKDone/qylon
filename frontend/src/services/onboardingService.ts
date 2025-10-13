@@ -21,7 +21,6 @@ export interface OnboardingStep {
   data?: Record<string, unknown>;
 }
 
-
 export interface OnboardingProgress {
   current_step: string;
   completed_steps: string[];

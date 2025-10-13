@@ -71,56 +71,56 @@ export default function DashboardOverview() {
   }, [setNavbar]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+    <div className='grid grid-cols-1 lg:grid-cols-12 gap-4'>
       {/* Main Content Area */}
-      <div className="lg:col-span-8">
+      <div className='lg:col-span-8'>
         <StatsHeader
-          title="AI Processing Status"
+          title='AI Processing Status'
           rightContent={
-            <div className="xui-d-flex xui-flex-ai-center gap-3">
-              <Monitor className="w-5 h-5 text-gray-600" />
-              <Smartphone className="w-5 h-5 text-gray-600" />
-              <Headphones className="w-5 h-5 text-gray-600" />
+            <div className='xui-d-flex xui-flex-ai-center gap-3'>
+              <Monitor className='w-5 h-5 text-gray-600' />
+              <Smartphone className='w-5 h-5 text-gray-600' />
+              <Headphones className='w-5 h-5 text-gray-600' />
             </div>
           }
         >
           {/* Metrics Cards */}
-          <div className="mb-6">
+          <div className='mb-6'>
             <StatsGrid />
           </div>
 
           {/* Performance Trends */}
-          <div className="mb-6">
+          <div className='mb-6'>
             <AIProcessingLive />
           </div>
         </StatsHeader>
         {/* Recent Meetings */}`
-        <div className="mt-2">
-          <StatsHeader title="Recent Activity">
+        <div className='mt-2'>
+          <StatsHeader title='Recent Activity'>
             <RecentActivity />
           </StatsHeader>
         </div>
       </div>
 
       {/* Right Sidebar */}
-      <div className="lg:col-span-4 xui-d-flex flex-col gap-4">
+      <div className='lg:col-span-4 xui-d-flex flex-col gap-4'>
         {/* This Month Stats */}
-        <StatsHeader title="This Month Stats">
+        <StatsHeader title='This Month Stats'>
           <MonthlyStats stats={monthlyStats} />
         </StatsHeader>
 
         {/* Team Performance */}
-        <StatsHeader title="Team Performance">
+        <StatsHeader title='Team Performance'>
           <TeamPerformance members={teamMembers} />
         </StatsHeader>
 
         {/* Upcoming Meetings */}
-        <StatsHeader title="Upcoming Meetings">
+        <StatsHeader title='Upcoming Meetings'>
           <UpcomingMeetings meetings={upcomingMeetings} />
         </StatsHeader>
 
         {/* Quick Actions */}
-        <StatsHeader title="Quick Actions">
+        <StatsHeader title='Quick Actions'>
           <QuickActions actions={dashboardActions} />
         </StatsHeader>
       </div>

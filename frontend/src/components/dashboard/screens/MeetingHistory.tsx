@@ -101,29 +101,29 @@ export default function MeetingHistory() {
   return (
     <div>
       {/* Search and filter as children */}
-      <div className="xui-d-flex xui-flex-ai-center gap-4 sticky top-0 z-30 pb-3 mb-3 bg-white">
-        <div className="flex-1 xui-pos-relative">
-          <Search className="xui-pos-absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className='xui-d-flex xui-flex-ai-center gap-4 sticky top-0 z-30 pb-3 mb-3 bg-white'>
+        <div className='flex-1 xui-pos-relative'>
+          <Search className='xui-pos-absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
           <input
-            type="text"
-            placeholder="Search meetings..."
-            className="w-full pl-10 pr-4 py-2.5 xui-form-input"
+            type='text'
+            placeholder='Search meetings...'
+            className='w-full pl-10 pr-4 py-2.5 xui-form-input'
           />
         </div>
 
-        <select className="px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-700">
+        <select className='px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-700'>
           <option>All</option>
           <option>This Week</option>
           <option>This Month</option>
           <option>Custom</option>
         </select>
         <div>
-          <button className="xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 xui-bg-black xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors">
+          <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 xui-bg-black xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
             <PiExport size={16} /> Export
           </button>
         </div>
       </div>
-      <div className="mt-6">
+      <div className='mt-6'>
         <MeetingList
           meetings={meetings}
           isLoading={isLoading}
