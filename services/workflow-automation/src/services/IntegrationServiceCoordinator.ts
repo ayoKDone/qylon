@@ -52,7 +52,13 @@ enum IntegrationType {
 
 export interface IntegrationAction {
   id: string;
-  type: 'create_contact' | 'update_contact' | 'create_opportunity' | 'update_opportunity' | 'sync_data' | 'send_notification';
+  type:
+    | 'create_contact'
+    | 'update_contact'
+    | 'create_opportunity'
+    | 'update_opportunity'
+    | 'sync_data'
+    | 'send_notification';
   integrationType: IntegrationType;
   config: Record<string, any>;
   data: Record<string, any>;
@@ -87,10 +93,7 @@ export class IntegrationServiceCoordinator {
   private readonly CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     this.integrationServiceUrl = process.env.INTEGRATION_SERVICE_URL || 'http://localhost:3006';
   }
 
@@ -99,7 +102,7 @@ export class IntegrationServiceCoordinator {
    */
   async coordinateIntegrationActions(
     actions: IntegrationAction[],
-    context: CoordinationContext
+    context: CoordinationContext,
   ): Promise<IntegrationResult[]> {
     try {
       logger.info('Starting integration coordination', {
@@ -112,9 +115,7 @@ export class IntegrationServiceCoordinator {
       const results: IntegrationResult[] = [];
 
       // Process actions in parallel for better performance
-      const actionPromises = actions.map(action =>
-        this.executeIntegrationAction(action, context)
-      );
+      const actionPromises = actions.map(action => this.executeIntegrationAction(action, context));
 
       const actionResults = await Promise.allSettled(actionPromises);
 
@@ -169,10 +170,10 @@ export class IntegrationServiceCoordinator {
    */
   private async executeIntegrationAction(
     action: IntegrationAction,
-    context: CoordinationContext
+    context: CoordinationContext,
   ): Promise<IntegrationResult> {
     const startTime = Date.now();
-    let retryCount = action.retryCount || 0;
+    const retryCount = action.retryCount || 0;
     const maxRetries = action.maxRetries || 3;
 
     try {
@@ -187,7 +188,7 @@ export class IntegrationServiceCoordinator {
       // Get integration configuration
       const integrationConfig = await this.getIntegrationConfig(
         action.integrationType,
-        context.clientId
+        context.clientId,
       );
 
       if (!integrationConfig) {
@@ -261,10 +262,7 @@ export class IntegrationServiceCoordinator {
         const delay = Math.min(1000 * Math.pow(2, retryCount), 10000);
         await new Promise(resolve => setTimeout(resolve, delay));
 
-        return this.executeIntegrationAction(
-          { ...action, retryCount: retryCount + 1 },
-          context
-        );
+        return this.executeIntegrationAction({ ...action, retryCount: retryCount + 1 }, context);
       }
 
       return {
@@ -283,7 +281,7 @@ export class IntegrationServiceCoordinator {
    */
   private async getIntegrationConfig(
     integrationType: IntegrationType,
-    clientId: string
+    clientId: string,
   ): Promise<IntegrationConfig | null> {
     try {
       // Check cache first
@@ -341,16 +339,13 @@ export class IntegrationServiceCoordinator {
   /**
    * Create contact in CRM
    */
-  private async createContact(
-    contactData: any,
-    config: IntegrationConfig
-  ): Promise<CRMContact> {
+  private async createContact(contactData: any, config: IntegrationConfig): Promise<CRMContact> {
     try {
       const response = await fetch(`${this.integrationServiceUrl}/api/v1/crm/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
         },
         body: JSON.stringify({
           integrationType: config.type,
@@ -360,11 +355,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
+        const errorData = (await response.json()) as any;
         throw new Error(`CRM contact creation failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to create CRM contact', {
@@ -378,30 +373,30 @@ export class IntegrationServiceCoordinator {
   /**
    * Update contact in CRM
    */
-  private async updateContact(
-    contactData: any,
-    config: IntegrationConfig
-  ): Promise<CRMContact> {
+  private async updateContact(contactData: any, config: IntegrationConfig): Promise<CRMContact> {
     try {
-      const response = await fetch(`${this.integrationServiceUrl}/api/v1/crm/contacts/${contactData.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+      const response = await fetch(
+        `${this.integrationServiceUrl}/api/v1/crm/contacts/${contactData.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          },
+          body: JSON.stringify({
+            integrationType: config.type,
+            credentials: config.credentials,
+            contact: contactData,
+          }),
         },
-        body: JSON.stringify({
-          integrationType: config.type,
-          credentials: config.credentials,
-          contact: contactData,
-        }),
-      });
+      );
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
+        const errorData = (await response.json()) as any;
         throw new Error(`CRM contact update failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to update CRM contact', {
@@ -418,14 +413,14 @@ export class IntegrationServiceCoordinator {
    */
   private async createOpportunity(
     opportunityData: any,
-    config: IntegrationConfig
+    config: IntegrationConfig,
   ): Promise<CRMOpportunity> {
     try {
       const response = await fetch(`${this.integrationServiceUrl}/api/v1/crm/opportunities`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
         },
         body: JSON.stringify({
           integrationType: config.type,
@@ -435,11 +430,13 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
-        throw new Error(`CRM opportunity creation failed: ${errorData.message || response.statusText}`);
+        const errorData = (await response.json()) as any;
+        throw new Error(
+          `CRM opportunity creation failed: ${errorData.message || response.statusText}`,
+        );
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to create CRM opportunity', {
@@ -455,28 +452,33 @@ export class IntegrationServiceCoordinator {
    */
   private async updateOpportunity(
     opportunityData: any,
-    config: IntegrationConfig
+    config: IntegrationConfig,
   ): Promise<CRMOpportunity> {
     try {
-      const response = await fetch(`${this.integrationServiceUrl}/api/v1/crm/opportunities/${opportunityData.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+      const response = await fetch(
+        `${this.integrationServiceUrl}/api/v1/crm/opportunities/${opportunityData.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          },
+          body: JSON.stringify({
+            integrationType: config.type,
+            credentials: config.credentials,
+            opportunity: opportunityData,
+          }),
         },
-        body: JSON.stringify({
-          integrationType: config.type,
-          credentials: config.credentials,
-          opportunity: opportunityData,
-        }),
-      });
+      );
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
-        throw new Error(`CRM opportunity update failed: ${errorData.message || response.statusText}`);
+        const errorData = (await response.json()) as any;
+        throw new Error(
+          `CRM opportunity update failed: ${errorData.message || response.statusText}`,
+        );
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to update CRM opportunity', {
@@ -491,16 +493,13 @@ export class IntegrationServiceCoordinator {
   /**
    * Sync data with integration
    */
-  private async syncData(
-    syncData: any,
-    config: IntegrationConfig
-  ): Promise<any> {
+  private async syncData(syncData: any, config: IntegrationConfig): Promise<any> {
     try {
       const response = await fetch(`${this.integrationServiceUrl}/api/v1/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
         },
         body: JSON.stringify({
           integrationType: config.type,
@@ -510,11 +509,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
+        const errorData = (await response.json()) as any;
         throw new Error(`Data sync failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to sync data', {
@@ -528,16 +527,13 @@ export class IntegrationServiceCoordinator {
   /**
    * Send notification through integration
    */
-  private async sendNotification(
-    notificationData: any,
-    config: IntegrationConfig
-  ): Promise<any> {
+  private async sendNotification(notificationData: any, config: IntegrationConfig): Promise<any> {
     try {
       const response = await fetch(`${this.integrationServiceUrl}/api/v1/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
+          Authorization: `Bearer ${process.env.INTEGRATION_SERVICE_TOKEN}`,
         },
         body: JSON.stringify({
           integrationType: config.type,
@@ -547,11 +543,11 @@ export class IntegrationServiceCoordinator {
       });
 
       if (!response.ok) {
-        const errorData = await response.json() as any;
+        const errorData = (await response.json()) as any;
         throw new Error(`Notification failed: ${errorData.message || response.statusText}`);
       }
 
-      const result = await response.json() as any;
+      const result = (await response.json()) as any;
       return result.data;
     } catch (error) {
       logger.error('Failed to send notification', {
@@ -621,9 +617,7 @@ export class IntegrationServiceCoordinator {
     integrationTypes: Record<string, number>;
   }> {
     try {
-      const { data, error } = await this.supabase
-        .from('integrations')
-        .select('type, status');
+      const { data, error } = await this.supabase.from('integrations').select('type, status');
 
       if (error) {
         logger.error('Failed to fetch integration statistics', { error: error.message });

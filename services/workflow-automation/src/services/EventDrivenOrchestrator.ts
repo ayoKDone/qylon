@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '../utils/logger';
-import { CoordinationContext, IntegrationAction, IntegrationServiceCoordinator } from './IntegrationServiceCoordinator';
+import {
+  CoordinationContext,
+  IntegrationAction,
+  IntegrationServiceCoordinator,
+} from './IntegrationServiceCoordinator';
 import { TriggerResult, WorkflowTriggerSystem } from './WorkflowTriggerSystem';
 // Note: Event types would be imported from event-sourcing service
 // For now, we'll define them locally
@@ -76,10 +80,7 @@ export class EventDrivenOrchestrator {
   };
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     this.workflowTriggerSystem = new WorkflowTriggerSystem();
     this.integrationCoordinator = new IntegrationServiceCoordinator();
   }
@@ -179,7 +180,7 @@ export class EventDrivenOrchestrator {
    */
   private async executeOrchestrationPipeline(
     event: Event,
-    context: OrchestrationContext
+    context: OrchestrationContext,
   ): Promise<OrchestrationResult> {
     const result: OrchestrationResult = {
       success: true,
@@ -222,7 +223,7 @@ export class EventDrivenOrchestrator {
 
         const integrationResults = await this.integrationCoordinator.coordinateIntegrationActions(
           integrationActions,
-          coordinationContext
+          coordinationContext,
         );
 
         result.integrationActionsExecuted = integrationResults.length;
@@ -245,7 +246,11 @@ export class EventDrivenOrchestrator {
       });
 
       // Update event processing status to failed
-      await this.updateEventProcessingStatus(event.id, 'failed', error instanceof Error ? error.message : 'Unknown error');
+      await this.updateEventProcessingStatus(
+        event.id,
+        'failed',
+        error instanceof Error ? error.message : 'Unknown error',
+      );
 
       result.success = false;
       result.errors = [error instanceof Error ? error.message : 'Unknown error'];
@@ -258,7 +263,7 @@ export class EventDrivenOrchestrator {
    */
   private async generateIntegrationActions(
     event: Event,
-    workflowResults: TriggerResult[]
+    workflowResults: TriggerResult[],
   ): Promise<IntegrationAction[]> {
     const actions: IntegrationAction[] = [];
 
@@ -266,16 +271,16 @@ export class EventDrivenOrchestrator {
       // Generate actions based on event type
       switch (event.eventType) {
         case QylonEventTypes.ACTION_ITEM_CREATED:
-          actions.push(...await this.generateActionItemIntegrationActions(event));
+          actions.push(...(await this.generateActionItemIntegrationActions(event)));
           break;
         case QylonEventTypes.MEETING_ENDED:
-          actions.push(...await this.generateMeetingEndIntegrationActions(event));
+          actions.push(...(await this.generateMeetingEndIntegrationActions(event)));
           break;
         case QylonEventTypes.CLIENT_CREATED:
-          actions.push(...await this.generateClientCreationIntegrationActions(event));
+          actions.push(...(await this.generateClientCreationIntegrationActions(event)));
           break;
         case QylonEventTypes.USER_CREATED:
-          actions.push(...await this.generateUserCreationIntegrationActions(event));
+          actions.push(...(await this.generateUserCreationIntegrationActions(event)));
           break;
         default:
           logger.debug('No specific integration actions for event type', {
@@ -289,7 +294,7 @@ export class EventDrivenOrchestrator {
         if (workflowResult.success) {
           const workflowActions = await this.generateWorkflowBasedIntegrationActions(
             workflowResult,
-            event
+            event,
           );
           actions.push(...workflowActions);
         }
@@ -423,7 +428,9 @@ export class EventDrivenOrchestrator {
   /**
    * Generate integration actions for client creation
    */
-  private async generateClientCreationIntegrationActions(event: Event): Promise<IntegrationAction[]> {
+  private async generateClientCreationIntegrationActions(
+    event: Event,
+  ): Promise<IntegrationAction[]> {
     const actions: IntegrationAction[] = [];
     const client = event.eventData;
 
@@ -498,7 +505,7 @@ export class EventDrivenOrchestrator {
    */
   private async generateWorkflowBasedIntegrationActions(
     workflowResult: TriggerResult,
-    event: Event
+    event: Event,
   ): Promise<IntegrationAction[]> {
     const actions: IntegrationAction[] = [];
 
@@ -530,17 +537,15 @@ export class EventDrivenOrchestrator {
   private async updateEventProcessingStatus(
     eventId: string,
     status: 'processing' | 'completed' | 'failed',
-    error?: string
+    error?: string,
   ): Promise<void> {
     try {
-      const { error: dbError } = await this.supabase
-        .from('event_processing_status')
-        .upsert({
-          event_id: eventId,
-          status,
-          error,
-          updated_at: new Date().toISOString(),
-        });
+      const { error: dbError } = await this.supabase.from('event_processing_status').upsert({
+        event_id: eventId,
+        status,
+        error,
+        updated_at: new Date().toISOString(),
+      });
 
       if (dbError) {
         logger.error('Failed to update event processing status', {
