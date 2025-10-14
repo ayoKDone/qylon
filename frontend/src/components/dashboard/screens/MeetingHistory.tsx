@@ -188,12 +188,12 @@ export default function MeetingHistory() {
           <option>This Month</option>
           <option>Custom</option>
         </select>
-        
+
         <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 xui-bg-black xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
           <PiExport size={16} /> Export
         </button>
       </div>
-      
+
       {/* Grid layout for content */}
       <div className='grid grid-cols-1 lg:grid-cols-12 gap-4 mt-6'>
         {/* Meeting List - Left Column */}
@@ -205,7 +205,7 @@ export default function MeetingHistory() {
             onCreateMeeting={() => console.log('Create meeting')}
           />
         </div>
-        
+
         {/* Right Sidebar */}
         <div className='lg:col-span-4 flex flex-col gap-4'>
           {/* Your sidebar content here */}
@@ -215,9 +215,9 @@ export default function MeetingHistory() {
           </StatsHeader>
 
           <StatsHeader title='Recent Meetings'>
-            <RecentMeetings 
+            <RecentMeetings
               meetings={recentMeetings}
-              onMeetingClick={(id) => console.log('Clicked meeting:', id)}
+              onMeetingClick={id => console.log('Clicked meeting:', id)}
             />
           </StatsHeader>
         </div>

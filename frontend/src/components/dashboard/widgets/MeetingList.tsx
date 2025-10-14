@@ -68,7 +68,7 @@ export default function MeetingList({
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    
+
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -82,7 +82,7 @@ export default function MeetingList({
         pages.push(1, '...', currentPage, '...', totalPages);
       }
     }
-    
+
     return pages;
   };
 
@@ -149,8 +149,8 @@ export default function MeetingList({
               >
                 Previous
               </button>
-              
-              {getPageNumbers().map((page, index) => (
+
+              {getPageNumbers().map((page, index) =>
                 typeof page === 'number' ? (
                   <button
                     key={index}
@@ -167,9 +167,9 @@ export default function MeetingList({
                   <span key={index} className='px-2 text-gray-500'>
                     {page}
                   </span>
-                )
-              ))}
-              
+                ),
+              )}
+
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}

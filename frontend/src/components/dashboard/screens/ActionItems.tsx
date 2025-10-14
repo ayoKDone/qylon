@@ -420,9 +420,9 @@ export default function ActionItems() {
 
         {/* Recent Meetings */}
         <StatsHeader title='Recent Meetings'>
-          <RecentMeetings 
+          <RecentMeetings
             meetings={recentMeetings}
-            onMeetingClick={(id) => console.log('Clicked meeting:', id)}
+            onMeetingClick={id => console.log('Clicked meeting:', id)}
           />
         </StatsHeader>
       </div>

@@ -15,10 +15,7 @@ export default function UpcomingMeetings({ meetings }: UpcomingMeetingsProps) {
   return (
     <div className='space-y-3'>
       {meetings.map((meeting, idx) => (
-        <div
-          key={idx}
-          className='flex items-center justify-between py-2'
-        >
+        <div key={idx} className='flex items-center justify-between py-2'>
           <div className='flex items-center gap-3'>
             <Calendar className='w-5 h-5 text-blue-500' />
             <div>
