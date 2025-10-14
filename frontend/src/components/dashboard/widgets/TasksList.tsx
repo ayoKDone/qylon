@@ -1,7 +1,24 @@
 import TaskItem from '../widgets/TaskItem';
 
-export default function TasksLists() {
-  const tasks = [
+interface Task {
+  id: string;
+  title: string;
+  assignee: string;
+  date: string;
+  meeting: string;
+  tags: string[];
+  description?: string;
+  priority: 'high' | 'medium' | 'low';
+  status: 'pending' | 'in-progress' | 'completed' | 'overdue';
+}
+
+interface TasksListProps {
+  tasks?: Task[];
+  onToggleComplete?: (id: string, completed: boolean) => void;
+}
+
+export default function TasksLists({ tasks, onToggleComplete }: TasksListProps) {
+  const defaultTasks: Task[] = [
     {
       id: '1',
       title: 'Review Q1 budget proposal',
@@ -10,8 +27,8 @@ export default function TasksLists() {
       meeting: 'Product Strategy Session',
       tags: ['#budget', '#finance', '#q1'],
       description: 'Analyze the budget allocation for marketing and development teams',
-      priority: 'high' as const,
-      status: 'pending' as const,
+      priority: 'high',
+      status: 'pending',
     },
     {
       id: '2',
@@ -20,8 +37,8 @@ export default function TasksLists() {
       date: '2024-01-18',
       meeting: 'Client Onboarding Call',
       tags: ['#client', '#follow-up'],
-      priority: 'medium' as const,
-      status: 'in-progress' as const,
+      priority: 'medium',
+      status: 'in-progress',
     },
     {
       id: '3',
@@ -30,8 +47,8 @@ export default function TasksLists() {
       date: '2024-01-16',
       meeting: 'Team Standup',
       tags: ['#development', '#timeline'],
-      priority: 'high' as const,
-      status: 'overdue' as const,
+      priority: 'high',
+      status: 'overdue',
     },
     {
       id: '4',
@@ -40,18 +57,31 @@ export default function TasksLists() {
       date: '2024-01-25',
       meeting: 'Product Strategy Session',
       tags: ['#demo', '#presentation'],
-      priority: 'medium' as const,
-      status: 'completed' as const,
+      priority: 'medium',
+      status: 'completed',
     },
   ];
 
+  const displayTasks = tasks || defaultTasks;
+
+  const handleToggleComplete = (id: string, completed: boolean) => {
+    if (onToggleComplete) {
+      onToggleComplete(id, completed);
+    }
+  };
+
+  const handleStatusChange = (id: string, status: string) => {
+    console.log('Status change:', id, status);
+  };
+
   return (
     <div className='space-y-4'>
-      {tasks.map(task => (
+      {displayTasks.map(task => (
         <TaskItem
           key={task.id}
           {...task}
-          onStatusChange={(id, status) => console.log('Status change:', id, status)}
+          onToggleComplete={handleToggleComplete}
+          onStatusChange={handleStatusChange}
         />
       ))}
     </div>

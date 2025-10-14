@@ -91,7 +91,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,
@@ -150,7 +152,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,
@@ -187,7 +191,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,

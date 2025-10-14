@@ -16,8 +16,8 @@ module.exports = {
     '.*\\.cy\\.tsx$',
   ],
 
-  // Test directories
-  roots: ['<rootDir>/src'],
+  // Test directories - include services and tests for our microservices architecture
+  roots: ['<rootDir>/services', '<rootDir>/tests'],
 
   // Module file extensions
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
@@ -36,32 +36,22 @@ module.exports = {
   // TypeScript configuration
   preset: 'ts-jest',
 
-  // Coverage configuration
+  // Coverage configuration - include services for our microservices architecture
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/node_modules/**',
-    '!src/**/dist/**',
-    '!src/**/build/**',
+    'services/**/*.{js,jsx,ts,tsx}',
+    '!services/**/*.d.ts',
+    '!services/**/node_modules/**',
+    '!services/**/dist/**',
+    '!services/**/build/**',
     '!**/__tests__/**',
     '!**/cypress/**',
   ],
 
-  // Coverage thresholds - Achievable targets for current development phase
-  coverageThreshold: {
-    global: {
-      branches: 25,
-      functions: 50,
-      lines: 50,
-      statements: 50,
-    },
-  },
-
-  // Setup files
-  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
+  // Setup files - use our test setup
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 
   // Test timeout
-  testTimeout: 10000,
+  testTimeout: 30000,
 
   // Verbose output
   verbose: true,

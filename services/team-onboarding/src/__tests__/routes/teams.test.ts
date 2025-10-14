@@ -53,6 +53,9 @@ describe('Teams Routes', () => {
         id: 'team-123',
         name: 'Test Team',
         organizationId: 'org-123',
+        settings: {},
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -105,6 +108,9 @@ describe('Teams Routes', () => {
         id: 'team-123',
         name: 'Test Team',
         organizationId: 'org-123',
+        settings: {},
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -159,6 +165,8 @@ describe('Teams Routes', () => {
         name: 'Test Team',
         organizationId: 'org-123',
         settings,
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -200,6 +208,8 @@ describe('Teams Routes', () => {
         userId: 'user-456',
         role: 'admin',
         permissions: ['manage_users', 'manage_settings'],
+        isActive: true,
+        createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -227,26 +237,30 @@ describe('Teams Routes', () => {
   describe('GET /api/v1/teams/:teamId/administrators', () => {
     it('should get team administrators successfully', async () => {
       const teamId = 'team-123';
-      const mockAdministrators = [
-        {
-          id: 'admin-1',
-          teamId: 'team-123',
-          userId: 'user-1',
-          role: 'admin',
-          permissions: ['manage_users'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: 'admin-2',
-          teamId: 'team-123',
-          userId: 'user-2',
-          role: 'member',
-          permissions: ['view_analytics'],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
+        const mockAdministrators = [
+          {
+            id: 'admin-1',
+            teamId: 'team-123',
+            userId: 'user-1',
+            role: 'admin',
+            permissions: ['manage_users'],
+            isActive: true,
+            createdBy: 'user-123',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            id: 'admin-2',
+            teamId: 'team-123',
+            userId: 'user-2',
+            role: 'member',
+            permissions: ['view_analytics'],
+            isActive: true,
+            createdBy: 'user-123',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ];
 
       mockTeamAdministratorService.getTeamAdministrators.mockResolvedValue(mockAdministrators);
 
@@ -279,6 +293,8 @@ describe('Teams Routes', () => {
         userId: 'user-456',
         role: 'member',
         permissions: ['view_analytics'],
+        isActive: true,
+        createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
       };

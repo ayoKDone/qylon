@@ -75,7 +75,7 @@ export const onboardingService = {
   },
 
   // Update onboarding progress
-  async updateOnboardingProgress(step: string, data?: Record<string, unknown>): Promise<void> {
+  async updateOnboardingProgress(step: string, data?: OnboardingData): Promise<void> {
     try {
       const {
         data: { user },
@@ -92,7 +92,7 @@ export const onboardingService = {
         .eq('user_id', user.id)
         .single();
 
-      const completedSteps = currentProgress?.completed_steps || [];
+      const completedSteps: string[] = currentProgress?.completed_steps || [];
       if (!completedSteps.includes(step)) {
         completedSteps.push(step);
       }

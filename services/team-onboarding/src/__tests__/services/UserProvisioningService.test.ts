@@ -262,7 +262,7 @@ describe('UserProvisioningService', () => {
 
       expect(result.status).toBe('completed');
       expect(result.results).toHaveLength(1);
-      expect(result.results[0].status).toBe('success');
+      expect(result.results?.[0]?.status).toBe('success');
     });
 
     it('should throw NotFoundError when request does not exist', async () => {
@@ -417,7 +417,7 @@ describe('UserProvisioningService', () => {
 
       expect(result.status).toBe('completed');
       expect(result.results).toHaveLength(2);
-      expect(result.results.every(r => r.status === 'success')).toBe(true);
+      expect(result.results?.every(r => r.status === 'success')).toBe(true);
     });
   });
 
