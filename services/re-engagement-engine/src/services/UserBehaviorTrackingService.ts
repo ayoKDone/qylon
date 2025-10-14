@@ -86,7 +86,7 @@ export class UserBehaviorTrackingService {
   ): Promise<void> {
     try {
       // Get existing profile or create new one
-      const { data: profile, error: profileError } = await this.supabase
+      const { data: existingProfile, error: profileError } = await this.supabase
         .from('user_behavior_profiles')
         .select('*')
         .eq('user_id', userId)
@@ -98,6 +98,7 @@ export class UserBehaviorTrackingService {
       }
 
       const now = new Date().toISOString();
+      let profile = existingProfile;
 
       if (!profile) {
         // Create new profile
