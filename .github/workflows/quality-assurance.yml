@@ -42,10 +42,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Local CI Pipeline (Linting and Formatting)
+      - name: Run Linting and Formatting
         run: |
-          chmod +x scripts/local-ci.sh
-          ./scripts/local-ci.sh --skip-tests --skip-build
+          # Run linting for each service
+          cd services/api-gateway && npm run lint && cd ../..
+          cd services/meeting-intelligence && npm run lint && cd ../..
+          cd services/workflow-automation && npm run lint && cd ../..
+          cd services/integration-management && npm run lint && cd ../..
+          
+          # Run formatting checks
+          cd services/api-gateway && npm run format:check && cd ../..
+          cd services/meeting-intelligence && npm run format:check && cd ../..
+          cd services/workflow-automation && npm run format:check && cd ../..
+          cd services/integration-management && npm run format:check && cd ../..
 
       - name: Run TypeScript type checking
         run: npx tsc --noEmit

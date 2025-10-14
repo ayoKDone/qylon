@@ -55,10 +55,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Local CI Pipeline (Linting and Formatting)
+      - name: Run Linting and Formatting
         run: |
-          chmod +x scripts/local-ci.sh
-          ./scripts/local-ci.sh --skip-tests --skip-build
+          # Run linting for each service
+          cd services/api-gateway && npm run lint && cd ../..
+          cd services/meeting-intelligence && npm run lint && cd ../..
+          cd services/workflow-automation && npm run lint && cd ../..
+          cd services/integration-management && npm run lint && cd ../..
+
+          # Run formatting checks
+          cd services/api-gateway && npm run format:check && cd ../..
+          cd services/meeting-intelligence && npm run format:check && cd ../..
+          cd services/workflow-automation && npm run format:check && cd ../..
+          cd services/integration-management && npm run format:check && cd ../..
 
       - name: Run Python linting
         run: |
@@ -167,7 +176,7 @@ jobs:
           # Database migrations are handled by the local CI pipeline
           echo "Database migrations handled by local CI pipeline"
 
-      - name: Run Local CI Pipeline (Tests)
+      - name: Run Unit Tests
         env:
           NODE_ENV: test
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_test
@@ -177,15 +186,14 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
         run: |
           # Clear Jest cache to prevent module resolution issues
-          if [ -f "scripts/clear-jest-cache.sh" ]; then
-            chmod +x scripts/clear-jest-cache.sh && ./scripts/clear-jest-cache.sh
-          else
-            echo "Jest cache clearing script not found, using fallback method"
-            npx jest --clearCache || true
-            npm cache clean --force || true
-          fi
-          chmod +x scripts/local-ci.sh
-          ./scripts/local-ci.sh --skip-lint --skip-build
+          npx jest --clearCache || true
+          npm cache clean --force || true
+
+          # Run unit tests for each service
+          cd services/api-gateway && npm test && cd ../..
+          cd services/meeting-intelligence && npm test && cd ../..
+          cd services/workflow-automation && npm test && cd ../..
+          cd services/integration-management && npm test && cd ../..
 
       - name: Install K6 for performance testing
         run: |

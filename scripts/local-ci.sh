@@ -223,6 +223,14 @@ main() {
     local exit_code=0
     local start_time=$(date +%s)
 
+    # Check if we're in a CI environment
+    if [ "$CI" = "true" ] || [ "$GITHUB_ACTIONS" = "true" ] || [ "$GITLAB_CI" = "true" ] || [ "$JENKINS_URL" != "" ]; then
+        print_error "This local CI pipeline should not run in CI environments!"
+        print_error "CI environments should use their own optimized workflows."
+        print_info "If you're seeing this in GitHub Actions, please update the workflow to use direct commands instead of this script."
+        exit 1
+    fi
+
     print_section "Qylon Local CI/CD Pipeline"
     echo "This pipeline mimics GitHub Actions to catch issues locally"
     echo "Start time: $(date)"
