@@ -1,0 +1,21 @@
+{
+    "id": "test-user-id",
+    "email": "test@example.com",
+    "name": "Test User",
+    "role": "admin",
+    "company": {
+        "id": "test-company-id",
+        "name": "Test Company",
+        "size": "10-50"
+    },
+    "permissions": [
+        "read:meetings",
+        "write:meetings",
+        "read:integrations",
+        "write:integrations",
+        "read:analytics",
+        "admin:users"
+    ],
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+}

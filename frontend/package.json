@@ -13,9 +13,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:ci": "vitest run",
-    "test:e2e": "echo 'E2E tests not implemented yet'",
-    "test:coverage": "vitest run --coverage",
-    "ci": "npm run lint && npm run test:ci && npm run test:e2e"
+    "test:e2e": "cypress run --browser chrome --headless",
+    "test:e2e:open": "cypress open",
+    "test:e2e:ci": "cypress run --browser chrome --headless --record",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
