@@ -49,7 +49,7 @@ jobs:
           cd services/meeting-intelligence && npm run lint && cd ../..
           cd services/workflow-automation && npm run lint && cd ../..
           cd services/integration-management && npm run lint && cd ../..
-          
+
           # Run formatting checks
           cd services/api-gateway && npm run format:check && cd ../..
           cd services/meeting-intelligence && npm run format:check && cd ../..
