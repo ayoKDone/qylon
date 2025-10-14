@@ -268,8 +268,8 @@ describe('TeamAdministratorService', () => {
     it('should update a team administrator successfully', async () => {
       const adminId = 'admin-123';
       const updates = {
-        role: 'member',
-        permissions: ['view_analytics'],
+        role: 'member' as any,
+        permissions: ['view_analytics'] as any,
       };
       const updatedBy = 'user-123';
 

@@ -11,46 +11,52 @@ interface StatItem {
 }
 
 interface TaskStatsProps {
-  stats?: StatItem[];
+  totalTasks: number;
+  completedTasks: number;
+  overdueTasks: number;
+  inProgressTasks: number;
 }
 
-export default function TaskStats({ stats }: TaskStatsProps) {
-  const defaultStats: StatItem[] = [
+export default function TaskStats({
+  totalTasks = 0,
+  completedTasks = 0,
+  overdueTasks = 0,
+  inProgressTasks = 0,
+}: TaskStatsProps) {
+  const stats: StatItem[] = [
     {
       icon: Target,
       iconColor: 'text-cyan-500',
       iconBgColor: 'bg-cyan-50',
       label: 'Total Tasks',
-      value: 4,
+      value: totalTasks,
     },
     {
       icon: CheckCircle2,
       iconColor: 'text-green-500',
       iconBgColor: 'bg-green-50',
       label: 'Completed',
-      value: 1,
+      value: completedTasks,
     },
     {
       icon: AlertCircle,
       iconColor: 'text-red-500',
       iconBgColor: 'bg-red-50',
       label: 'Overdue',
-      value: 1,
+      value: overdueTasks,
     },
     {
       icon: Clock,
       iconColor: 'text-amber-500',
       iconBgColor: 'bg-amber-50',
       label: 'In Progress',
-      value: 1,
+      value: inProgressTasks,
     },
   ];
 
-  const displayStats = stats || defaultStats;
-
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-      {displayStats.map((stat, index) => {
+      {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <div key={index} className='bg-white xui-bdr-rad-2 p-6 border border-gray-200'>

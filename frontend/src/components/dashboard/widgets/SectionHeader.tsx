@@ -34,11 +34,11 @@ export default function SectionHeader({
           {subtitle && <p className='text-sm text-gray-500 mt-1'>{subtitle}</p>}
         </div>
 
-        <div className='flex items-center gap-3'>
+        <div className='xui-d-flex xui-flex-ai-center gap-3'>
           {primaryAction && (
             <button
               onClick={primaryAction.onClick}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`xui-d-flex xui-flex-ai-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
                 primaryAction.variant === 'secondary'
                   ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   : 'bg-blue-600 text-white shadow-md'

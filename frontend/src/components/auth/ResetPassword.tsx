@@ -46,7 +46,6 @@ export default function ResetPassword() {
           <p className='xui-font-sz-small text-gray-500 mb-6'>
             Choose a strong password for your account
           </p>
-
           {/* New Password */}
           <div className='xui-form-box' xui-error={errors.newPassword ? 'true' : 'false'}>
             <label>New Password</label>

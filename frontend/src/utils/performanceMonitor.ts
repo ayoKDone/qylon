@@ -209,7 +209,8 @@ class PerformanceMonitor {
         entries.forEach((entry: PerformanceResourceTiming) => {
           if (entry.initiatorType === 'script' || entry.initiatorType === 'link') {
             const loadTime = entry.responseEnd - entry.startTime;
-            this.recordMetric(`Bundle-${entry.name.split('/').pop()}`, loadTime);
+            const fileName = entry.name.split('/').pop() || 'unknown';
+            this.recordMetric(`Bundle-${fileName}`, loadTime);
           }
         });
       });

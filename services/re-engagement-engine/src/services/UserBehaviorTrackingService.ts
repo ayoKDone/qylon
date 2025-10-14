@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
-import {
-    BehaviorPattern,
-    RiskFactor,
-    UserBehaviorEvent,
-    UserBehaviorProfile,
-} from '../types';
+import { BehaviorPattern, RiskFactor, UserBehaviorEvent, UserBehaviorProfile } from '../types';
 import { logBusinessEvent, logger } from '../utils/logger';
 
 export class UserBehaviorTrackingService {
@@ -34,17 +29,17 @@ export class UserBehaviorTrackingService {
       const event: UserBehaviorEvent = {
         id: eventId,
         userId,
-        clientId,
         eventType,
         eventData,
-        sessionId,
-        ipAddress,
-        userAgent,
         timestamp: now,
         metadata: {
           source: 're-engagement-engine',
           version: '1.0.0',
         },
+        ...(clientId && { clientId }),
+        ...(sessionId && { sessionId }),
+        ...(ipAddress && { ipAddress }),
+        ...(userAgent && { userAgent }),
       };
 
       const { data, error } = await this.supabase
@@ -91,7 +86,7 @@ export class UserBehaviorTrackingService {
   ): Promise<void> {
     try {
       // Get existing profile or create new one
-      let { data: profile, error: profileError } = await this.supabase
+      const { data: existingProfile, error: profileError } = await this.supabase
         .from('user_behavior_profiles')
         .select('*')
         .eq('user_id', userId)
@@ -103,13 +98,13 @@ export class UserBehaviorTrackingService {
       }
 
       const now = new Date().toISOString();
+      let profile = existingProfile;
 
       if (!profile) {
         // Create new profile
         const newProfile: UserBehaviorProfile = {
           id: uuidv4(),
           userId,
-          clientId,
           engagementScore: 0,
           lastActivityAt: now,
           totalSessions: 0,
@@ -119,6 +114,7 @@ export class UserBehaviorTrackingService {
           riskFactors: [],
           createdAt: now,
           updatedAt: now,
+          ...(clientId && { clientId }),
         };
 
         const { data: createdProfile, error: createError } = await this.supabase
@@ -218,25 +214,27 @@ export class UserBehaviorTrackingService {
     // Apply engagement decay (reduce score over time)
     const lastActivity = new Date(profile.lastActivityAt);
     const daysSinceLastActivity = (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24);
-    const decayFactor = Math.max(0, 1 - (daysSinceLastActivity * 0.1)); // 10% decay per day
+    const decayFactor = Math.max(0, 1 - daysSinceLastActivity * 0.1); // 10% decay per day
 
-    updates.engagementScore = Math.max(0, Math.min(100,
-      (profile.engagementScore * decayFactor) + engagementDelta
-    ));
+    updates.engagementScore = Math.max(
+      0,
+      Math.min(100, profile.engagementScore * decayFactor + engagementDelta),
+    );
 
     // Update session information
     if (eventType === 'session_start') {
       updates.totalSessions = profile.totalSessions + 1;
     }
 
-    if (eventType === 'session_end' && eventData.duration) {
-      const totalDuration = profile.averageSessionDuration * profile.totalSessions + eventData.duration;
+    if (eventType === 'session_end' && eventData['duration']) {
+      const totalDuration =
+        profile.averageSessionDuration * profile.totalSessions + eventData['duration'];
       updates.averageSessionDuration = totalDuration / (profile.totalSessions + 1);
     }
 
     // Update preferred channels
-    if (eventData.channel && !profile.preferredChannels.includes(eventData.channel)) {
-      updates.preferredChannels = [...profile.preferredChannels, eventData.channel];
+    if (eventData['channel'] && !profile.preferredChannels.includes(eventData['channel'])) {
+      updates.preferredChannels = [...profile.preferredChannels, eventData['channel']];
     }
 
     // Update behavior patterns
@@ -266,8 +264,8 @@ export class UserBehaviorTrackingService {
     const now = new Date().toISOString();
 
     // Pattern: Frequent login times
-    if (eventType === 'login' && eventData.time) {
-      const hour = new Date(eventData.time).getHours();
+    if (eventType === 'login' && eventData['time']) {
+      const hour = new Date(eventData['time']).getHours();
       const timePattern = `login_hour_${hour}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === timePattern);
@@ -286,8 +284,8 @@ export class UserBehaviorTrackingService {
     }
 
     // Pattern: Feature usage frequency
-    if (eventType === 'feature_used' && eventData.feature) {
-      const featurePattern = `feature_${eventData.feature}`;
+    if (eventType === 'feature_used' && eventData['feature']) {
+      const featurePattern = `feature_${eventData['feature']}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === featurePattern);
       if (existingPattern) {
@@ -305,8 +303,8 @@ export class UserBehaviorTrackingService {
     }
 
     // Pattern: Device usage
-    if (eventData.device) {
-      const devicePattern = `device_${eventData.device}`;
+    if (eventData['device']) {
+      const devicePattern = `device_${eventData['device']}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === devicePattern);
       if (existingPattern) {
@@ -393,13 +391,15 @@ export class UserBehaviorTrackingService {
     }
 
     // Risk: Feature abandonment
-    if (eventType === 'feature_abandoned' && eventData.feature) {
-      const existingRisk = profile.riskFactors.find(r => r.factor === `abandoned_${eventData.feature}`);
+    if (eventType === 'feature_abandoned' && eventData['feature']) {
+      const existingRisk = profile.riskFactors.find(
+        r => r.factor === `abandoned_${eventData['feature']}`,
+      );
       if (!existingRisk) {
         riskFactors.push({
-          factor: `abandoned_${eventData.feature}`,
+          factor: `abandoned_${eventData['feature']}`,
           severity: 'medium',
-          description: `User abandoned ${eventData.feature} feature`,
+          description: `User abandoned ${eventData['feature']} feature`,
           detectedAt: now,
         });
       }
@@ -536,9 +536,7 @@ export class UserBehaviorTrackingService {
     engagementDistribution: Array<{ range: string; count: number }>;
   }> {
     try {
-      let query = this.supabase
-        .from('user_behavior_profiles')
-        .select('*');
+      let query = this.supabase.from('user_behavior_profiles').select('*');
 
       if (userId) {
         query = query.eq('user_id', userId);
@@ -588,15 +586,15 @@ export class UserBehaviorTrackingService {
 
         // Engagement distribution
         if (profile.engagementScore <= 20) {
-          analytics.engagementDistribution[0].count++;
+          analytics.engagementDistribution[0]!.count++;
         } else if (profile.engagementScore <= 40) {
-          analytics.engagementDistribution[1].count++;
+          analytics.engagementDistribution[1]!.count++;
         } else if (profile.engagementScore <= 60) {
-          analytics.engagementDistribution[2].count++;
+          analytics.engagementDistribution[2]!.count++;
         } else if (profile.engagementScore <= 80) {
-          analytics.engagementDistribution[3].count++;
+          analytics.engagementDistribution[3]!.count++;
         } else {
-          analytics.engagementDistribution[4].count++;
+          analytics.engagementDistribution[4]!.count++;
         }
 
         // Count risk factors
@@ -606,7 +604,8 @@ export class UserBehaviorTrackingService {
 
         // Count behavior patterns
         profile.behaviorPatterns.forEach(pattern => {
-          patternCounts[pattern.pattern] = (patternCounts[pattern.pattern] || 0) + pattern.frequency;
+          patternCounts[pattern.pattern] =
+            (patternCounts[pattern.pattern] || 0) + pattern.frequency;
         });
       });
 
@@ -640,11 +639,7 @@ export class UserBehaviorTrackingService {
   /**
    * Resolve a risk factor
    */
-  async resolveRiskFactor(
-    userId: string,
-    factor: string,
-    clientId?: string,
-  ): Promise<void> {
+  async resolveRiskFactor(userId: string, factor: string, clientId?: string): Promise<void> {
     try {
       const { error } = await this.supabase
         .from('user_behavior_profiles')

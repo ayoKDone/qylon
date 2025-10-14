@@ -1,6 +1,6 @@
 // src/components/dashboard/layout/RecordingStatus.tsx
-import { useEffect, useState } from 'react';
-import { FiMic, FiPlay, FiStopCircle } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiPlay, FiStopCircle, FiMic } from 'react-icons/fi';
 
 export default function RecordingStatus() {
   const [isRecording, setIsRecording] = useState(false);
@@ -51,7 +51,6 @@ export default function RecordingStatus() {
             {isRecording ? 'Recording...' : 'Ready to record'}
           </p>
         </div>
-
         <div className='flex justify-center mt-4'>
           <button
             onClick={toggleRecording}
@@ -61,7 +60,6 @@ export default function RecordingStatus() {
           </button>
         </div>
       </div>
-
       <div className='mt-4 flex items-center justify-center gap-2'>
         <FiMic className='text-green-500' />
         <span className='text-sm font-medium text-gray-600'>Audio On</span>

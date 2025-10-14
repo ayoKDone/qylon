@@ -1,7 +1,32 @@
+import {
+  Activity,
+  BarChart3,
+  Bell,
+  Brain,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Download,
+  Headphones,
+  Menu,
+  Monitor,
+  Pause,
+  Play,
+  Plus,
+  Search,
+  Settings,
+  Smartphone,
+  Target,
+  TrendingUp,
+  Upload,
+  Video,
+  Volume2,
+  VolumeX,
+  X,
+  Zap,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { IconName } from './atomic/Icon';
-import Icon from './icons/Icon';
 import ThemeToggle from './ThemeToggle';
 
 const AppUI: React.FC = () => {
@@ -57,21 +82,17 @@ const AppUI: React.FC = () => {
             <button
               className={`p-2 lg:p-3 rounded-lg lg:rounded-xl ${glassCard} hover:scale-110 transition-transform`}
             >
-              <Icon name='monitor' size={24} className='w-4 lg:w-6 h-4 lg:h-6 text-amber-500' />
+              <Monitor className='w-4 lg:w-6 h-4 lg:h-6 text-amber-500' />
             </button>
             <button
               className={`p-2 lg:p-3 rounded-lg lg:rounded-xl ${glassCard} hover:scale-110 transition-transform`}
             >
-              <Icon name='smartphone' size={24} className='w-4 lg:w-6 h-4 lg:h-6 text-blue-500' />
+              <Smartphone className='w-4 lg:w-6 h-4 lg:h-6 text-blue-500' />
             </button>
             <button
               className={`p-2 lg:p-3 rounded-lg lg:rounded-xl ${glassCard} hover:scale-110 transition-transform`}
             >
-              <Icon
-                name='headphones'
-                size={24}
-                className='w-4 lg:w-6 h-4 lg:h-6 text-emerald-500'
-              />
+              <Headphones className='w-4 lg:w-6 h-4 lg:h-6 text-emerald-500' />
             </button>
           </div>
         </div>
@@ -81,7 +102,7 @@ const AppUI: React.FC = () => {
           <div className='flex items-center space-x-3 lg:space-x-4 mb-4 lg:mb-6'>
             <div className='relative'>
               <div className='w-12 lg:w-16 h-12 lg:h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/30'>
-                <Icon name='brain' size={32} className='w-6 lg:w-8 h-6 lg:h-8 text-white' />
+                <Brain className='w-6 lg:w-8 h-6 lg:h-8 text-white' />
               </div>
               <div className='absolute -top-1 lg:-top-2 -right-1 lg:-right-2 w-4 lg:w-6 h-4 lg:h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center animate-pulse'>
                 <div className='w-2 h-2 bg-white rounded-full'></div>
@@ -154,21 +175,21 @@ const AppUI: React.FC = () => {
         <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6'>
           {[
             {
-              icon: 'zap',
+              icon: Zap,
               value: '12',
               label: 'Tasks Created',
               change: '+5 today',
               trend: 'up',
             },
             {
-              icon: 'clock',
+              icon: Clock,
               value: '47m',
               label: 'Time Saved',
               change: 'This week',
               trend: 'up',
             },
             {
-              icon: 'target',
+              icon: Target,
               value: '94%',
               label: 'Accuracy',
               change: 'AI precision',
@@ -180,14 +201,8 @@ const AppUI: React.FC = () => {
               className={`p-4 lg:p-6 rounded-xl lg:rounded-2xl ${glassCard} hover:scale-105 transition-transform`}
             >
               <div className='flex items-center justify-between mb-3 lg:mb-4'>
-                <Icon
-                  name={stat.icon as IconName}
-                  size={32}
-                  className='w-6 lg:w-8 h-6 lg:h-8 text-blue-500'
-                />
-                {stat.trend === 'up' && (
-                  <Icon name='trendingUp' size={16} className='w-4 h-4 text-emerald-500' />
-                )}
+                <stat.icon className='w-6 lg:w-8 h-6 lg:h-8 text-blue-500' />
+                {stat.trend === 'up' && <TrendingUp className='w-4 h-4 text-emerald-500' />}
               </div>
               <div
                 className={`text-2xl lg:text-3xl font-bold mb-2 ${
@@ -216,17 +231,15 @@ const AppUI: React.FC = () => {
           </h3>
           <div className='space-y-2 lg:space-y-3'>
             {[
-              { icon: 'plus', label: 'New Meeting', color: 'blue' },
-              { icon: 'upload', label: 'Upload Audio', color: 'emerald' },
-              { icon: 'download', label: 'Export Tasks', color: 'amber' },
+              { icon: Plus, label: 'New Meeting', color: 'blue' },
+              { icon: Upload, label: 'Upload Audio', color: 'emerald' },
+              { icon: Download, label: 'Export Tasks', color: 'amber' },
             ].map((action, index) => (
               <button
                 key={index}
                 className={`w-full flex items-center space-x-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl ${glassCard} hover:scale-[1.02] transition-all`}
               >
-                <Icon
-                  name={action.icon as IconName}
-                  size={20}
+                <action.icon
                   className={`w-4 lg:w-5 h-4 lg:h-5 ${
                     action.color === 'blue'
                       ? 'text-blue-500'
@@ -380,12 +393,12 @@ const AppUI: React.FC = () => {
                 onClick={() => setIsSidebarOpen(false)}
                 className='lg:hidden p-2 rounded-lg text-slate-400 hover:text-white'
               >
-                <Icon name='x' size={24} className='w-6 h-6' />
+                <X className='w-6 h-6' />
               </button>
 
               <div className='relative group'>
                 <div className='w-12 h-12 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center'>
-                  <Icon name='zap' size={24} className='w-6 h-6 text-white' />
+                  <Zap className='w-6 h-6 text-white' />
                 </div>
               </div>
 
@@ -399,12 +412,12 @@ const AppUI: React.FC = () => {
             {/* Navigation */}
             <nav className='space-y-3 mb-8'>
               {[
-                { id: 'dashboard', label: 'Dashboard', icon: 'activity' },
-                { id: 'meetings', label: 'Live Meetings', icon: 'video' },
-                { id: 'tasks', label: 'Action Items', icon: 'checkCircle2' },
-                { id: 'analytics', label: 'Analytics', icon: 'barChart3' },
-                { id: 'calendar', label: 'Calendar', icon: 'calendar' },
-                { id: 'settings', label: 'Settings', icon: 'settings' },
+                { id: 'dashboard', label: 'Dashboard', icon: Activity },
+                { id: 'meetings', label: 'Live Meetings', icon: Video },
+                { id: 'tasks', label: 'Action Items', icon: CheckCircle2 },
+                { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+                { id: 'calendar', label: 'Calendar', icon: Calendar },
+                { id: 'settings', label: 'Settings', icon: Settings },
               ].map(item => (
                 <button
                   key={item.id}
@@ -422,7 +435,7 @@ const AppUI: React.FC = () => {
                         : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 hover:border-slate-300/50 border-transparent'
                   }`}
                 >
-                  <Icon name={item.icon as IconName} size={20} className='w-5 h-5' />
+                  <item.icon className='w-5 h-5' />
                   <span className='font-medium'>{item.label}</span>
                 </button>
               ))}
@@ -468,11 +481,7 @@ const AppUI: React.FC = () => {
                       : 'bg-gradient-to-br from-blue-500 to-purple-600 text-white'
                   }`}
                 >
-                  {isRecording ? (
-                    <Icon name='pause' size={20} className='w-5 h-5' />
-                  ) : (
-                    <Icon name='play' size={20} className='w-5 h-5' />
-                  )}
+                  {isRecording ? <Pause className='w-5 h-5' /> : <Play className='w-5 h-5' />}
                 </button>
               </div>
 
@@ -481,9 +490,9 @@ const AppUI: React.FC = () => {
                 className={`w-full flex items-center justify-center space-x-2 py-3 rounded-xl ${glassCard} hover:scale-[1.02] transition-all`}
               >
                 {isAudioEnabled ? (
-                  <Icon name='volume2' size={16} className='w-4 h-4 text-emerald-500' />
+                  <Volume2 className='w-4 h-4 text-emerald-500' />
                 ) : (
-                  <Icon name='volumeX' size={16} className='w-4 h-4 text-red-500' />
+                  <VolumeX className='w-4 h-4 text-red-500' />
                 )}
                 <span
                   className={`text-sm font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}
@@ -506,7 +515,7 @@ const AppUI: React.FC = () => {
                     onClick={() => setIsSidebarOpen(true)}
                     className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
                   >
-                    <Icon name='menu' size={24} className='w-6 h-6' />
+                    <Menu className='w-6 h-6' />
                   </button>
 
                   <div>
@@ -546,12 +555,12 @@ const AppUI: React.FC = () => {
                   <button
                     className={`p-2 lg:p-3 rounded-lg lg:rounded-2xl ${glassCard} hover:scale-110 transition-transform`}
                   >
-                    <Icon name='bell' size={20} className='w-4 lg:w-5 h-4 lg:h-5' />
+                    <Bell className='w-4 lg:w-5 h-4 lg:h-5' />
                   </button>
                   <button
                     className={`p-2 lg:p-3 rounded-lg lg:rounded-2xl ${glassCard} hover:scale-110 transition-transform`}
                   >
-                    <Icon name='search' size={20} className='w-4 lg:w-5 h-4 lg:h-5' />
+                    <Search className='w-4 lg:w-5 h-4 lg:h-5' />
                   </button>
                 </div>
               </div>
