@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ApiResponse, ReEngagementError } from '../types';
+import { ApiResponse } from '../types';
 import { logger } from '../utils/logger';
 
 export interface CustomError extends Error {
@@ -12,7 +12,7 @@ export const errorHandler = (
   error: CustomError,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ): void => {
   const statusCode = error.statusCode || 500;
   const errorCode = error.code || 'INTERNAL_SERVER_ERROR';
@@ -27,13 +27,6 @@ export const errorHandler = (
     requestId: req.headers['x-request-id'],
     details: error.details,
   });
-
-  const reEngagementError: ReEngagementError = {
-    code: errorCode,
-    message: error.message,
-    details: error.details,
-    timestamp: new Date().toISOString(),
-  };
 
   const response: ApiResponse<null> = {
     success: false,
@@ -102,7 +95,7 @@ export const createError = (
   const error = new Error(message) as CustomError;
   error.statusCode = statusCode;
   error.code = code;
-  error.details = details;
+  error.details = details || {};
   return error;
 };
 

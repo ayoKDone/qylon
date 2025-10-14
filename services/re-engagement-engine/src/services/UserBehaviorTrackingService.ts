@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    BehaviorPattern,
-    RiskFactor,
-    UserBehaviorEvent,
-    UserBehaviorProfile,
+  BehaviorPattern,
+  RiskFactor,
+  UserBehaviorEvent,
+  UserBehaviorProfile,
 } from '../types';
 import { logBusinessEvent, logger } from '../utils/logger';
 
@@ -34,12 +34,12 @@ export class UserBehaviorTrackingService {
       const event: UserBehaviorEvent = {
         id: eventId,
         userId,
-        clientId,
+        clientId: clientId || undefined,
         eventType,
         eventData,
-        sessionId,
-        ipAddress,
-        userAgent,
+        sessionId: sessionId || undefined,
+        ipAddress: ipAddress || undefined,
+        userAgent: userAgent || undefined,
         timestamp: now,
         metadata: {
           source: 're-engagement-engine',
@@ -109,7 +109,7 @@ export class UserBehaviorTrackingService {
         const newProfile: UserBehaviorProfile = {
           id: uuidv4(),
           userId,
-          clientId,
+          clientId: clientId || undefined,
           engagementScore: 0,
           lastActivityAt: now,
           totalSessions: 0,
@@ -229,14 +229,14 @@ export class UserBehaviorTrackingService {
       updates.totalSessions = profile.totalSessions + 1;
     }
 
-    if (eventType === 'session_end' && eventData.duration) {
-      const totalDuration = profile.averageSessionDuration * profile.totalSessions + eventData.duration;
+    if (eventType === 'session_end' && eventData['duration']) {
+      const totalDuration = profile.averageSessionDuration * profile.totalSessions + eventData['duration'];
       updates.averageSessionDuration = totalDuration / (profile.totalSessions + 1);
     }
 
     // Update preferred channels
-    if (eventData.channel && !profile.preferredChannels.includes(eventData.channel)) {
-      updates.preferredChannels = [...profile.preferredChannels, eventData.channel];
+    if (eventData['channel'] && !profile.preferredChannels.includes(eventData['channel'])) {
+      updates.preferredChannels = [...profile.preferredChannels, eventData['channel']];
     }
 
     // Update behavior patterns
@@ -266,8 +266,8 @@ export class UserBehaviorTrackingService {
     const now = new Date().toISOString();
 
     // Pattern: Frequent login times
-    if (eventType === 'login' && eventData.time) {
-      const hour = new Date(eventData.time).getHours();
+    if (eventType === 'login' && eventData['time']) {
+      const hour = new Date(eventData['time']).getHours();
       const timePattern = `login_hour_${hour}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === timePattern);
@@ -286,8 +286,8 @@ export class UserBehaviorTrackingService {
     }
 
     // Pattern: Feature usage frequency
-    if (eventType === 'feature_used' && eventData.feature) {
-      const featurePattern = `feature_${eventData.feature}`;
+    if (eventType === 'feature_used' && eventData['feature']) {
+      const featurePattern = `feature_${eventData['feature']}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === featurePattern);
       if (existingPattern) {
@@ -305,8 +305,8 @@ export class UserBehaviorTrackingService {
     }
 
     // Pattern: Device usage
-    if (eventData.device) {
-      const devicePattern = `device_${eventData.device}`;
+    if (eventData['device']) {
+      const devicePattern = `device_${eventData['device']}`;
 
       const existingPattern = profile.behaviorPatterns.find(p => p.pattern === devicePattern);
       if (existingPattern) {
@@ -393,13 +393,13 @@ export class UserBehaviorTrackingService {
     }
 
     // Risk: Feature abandonment
-    if (eventType === 'feature_abandoned' && eventData.feature) {
-      const existingRisk = profile.riskFactors.find(r => r.factor === `abandoned_${eventData.feature}`);
+    if (eventType === 'feature_abandoned' && eventData['feature']) {
+      const existingRisk = profile.riskFactors.find(r => r.factor === `abandoned_${eventData['feature']}`);
       if (!existingRisk) {
         riskFactors.push({
-          factor: `abandoned_${eventData.feature}`,
+          factor: `abandoned_${eventData['feature']}`,
           severity: 'medium',
-          description: `User abandoned ${eventData.feature} feature`,
+          description: `User abandoned ${eventData['feature']} feature`,
           detectedAt: now,
         });
       }
@@ -588,15 +588,15 @@ export class UserBehaviorTrackingService {
 
         // Engagement distribution
         if (profile.engagementScore <= 20) {
-          analytics.engagementDistribution[0].count++;
+          analytics.engagementDistribution[0]!.count++;
         } else if (profile.engagementScore <= 40) {
-          analytics.engagementDistribution[1].count++;
+          analytics.engagementDistribution[1]!.count++;
         } else if (profile.engagementScore <= 60) {
-          analytics.engagementDistribution[2].count++;
+          analytics.engagementDistribution[2]!.count++;
         } else if (profile.engagementScore <= 80) {
-          analytics.engagementDistribution[3].count++;
+          analytics.engagementDistribution[3]!.count++;
         } else {
-          analytics.engagementDistribution[4].count++;
+          analytics.engagementDistribution[4]!.count++;
         }
 
         // Count risk factors

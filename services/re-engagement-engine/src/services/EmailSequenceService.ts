@@ -2,13 +2,13 @@ import sgMail from '@sendgrid/mail';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    CreateEmailSequenceRequest,
-    EmailDelivery,
-    EmailProviderConfig,
-    EmailSequence,
-    EmailSequenceExecution,
-    EmailStep,
-    UpdateEmailSequenceRequest,
+  CreateEmailSequenceRequest,
+  EmailDelivery,
+  EmailProviderConfig,
+  EmailSequence,
+  EmailSequenceExecution,
+  EmailStep,
+  UpdateEmailSequenceRequest,
 } from '../types';
 import { logBusinessEvent, logger } from '../utils/logger';
 
@@ -65,6 +65,8 @@ export class EmailSequenceService {
       const steps: EmailStep[] = [];
       for (let i = 0; i < request.steps.length; i++) {
         const stepRequest = request.steps[i];
+        if (!stepRequest) continue;
+
         const step: EmailStep = {
           id: uuidv4(),
           sequenceId,
@@ -73,7 +75,7 @@ export class EmailSequenceService {
           subject: stepRequest.subject,
           template: stepRequest.template,
           variables: stepRequest.variables,
-          conditions: stepRequest.conditions,
+          conditions: stepRequest.conditions || [],
           isActive: stepRequest.isActive,
           createdAt: now,
           updatedAt: now,
@@ -157,6 +159,8 @@ export class EmailSequenceService {
         const steps: EmailStep[] = [];
         for (let i = 0; i < request.steps.length; i++) {
           const stepRequest = request.steps[i];
+          if (!stepRequest) continue;
+
           const step: EmailStep = {
             id: uuidv4(),
             sequenceId,
@@ -165,7 +169,7 @@ export class EmailSequenceService {
             subject: stepRequest.subject,
             template: stepRequest.template,
             variables: stepRequest.variables,
-            conditions: stepRequest.conditions,
+            conditions: stepRequest.conditions || [],
             isActive: stepRequest.isActive,
             createdAt: now,
             updatedAt: now,
