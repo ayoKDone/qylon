@@ -247,70 +247,8 @@ jobs:
             fi
           done
 
-  # Integration Tests
-  integration-test:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    needs: test
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: qylon_integration_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      redis:
-        image: redis:7
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 6379:6379
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          npm ci
-          # Install dependencies for each service
-          cd services/api-gateway && npm install
-          cd ../meeting-intelligence && npm install
-          cd ../workflow-automation && npm install
-          cd ../integration-management && npm install
-          cd ../..
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run integration tests
-        env:
-          NODE_ENV: test
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/qylon_integration_test
-          REDIS_URL: redis://localhost:6379
-        run: |
-          chmod +x scripts/local-ci.sh
-          ./scripts/local-ci.sh --skip-lint --skip-build
+  # Integration tests are handled by the Quality Assurance pipeline
+  # to avoid duplicate execution and ensure proper coverage generation
 
   # Security Scan
   security:
@@ -510,7 +448,6 @@ jobs:
       [
         lint,
         test,
-        integration-test,
         security,
         build,
         deploy-staging,
