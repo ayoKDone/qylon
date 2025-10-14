@@ -1,58 +1,62 @@
 {
-    "name": "qylon",
-    "version": "1.0.0",
-    "description": "Qylon AI Automation Platform",
-    "private": true,
-    "scripts": {
-        "heroku-prebuild": "echo 'Pre-build: Setting up build environment'",
-        "build": "npm run build:frontend && npm run build:api-gateway && npm run build:meeting-intelligence && npm run build:workflow-automation && npm run build:integration-management",
-        "heroku-postbuild": "echo 'Post-build: All components built successfully'",
-        "heroku-cleanup": "echo 'Cleanup: Build artifacts processed'",
-        "build:frontend": "cd frontend && npm ci && npm run build",
-        "build:api-gateway": "cd services/api-gateway && npm ci && npm run build",
-        "build:meeting-intelligence": "cd services/meeting-intelligence && npm ci && npm run build",
-        "build:workflow-automation": "cd services/workflow-automation && npm ci && npm run build",
-        "build:integration-management": "cd services/integration-management && npm ci && npm run build",
-        "start": "npm run start:api-gateway",
-        "start:api-gateway": "cd services/api-gateway && npm start",
-        "dev": "echo 'Development handled by individual services'",
-        "ci:local": "./scripts/local-ci.sh",
-        "ci:local:verbose": "./scripts/local-ci.sh --verbose",
-        "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build",
-        "ci:local:lint-only": "./scripts/local-ci.sh --skip-tests --skip-build --skip-lint=false",
-        "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build",
-        "test": "echo 'Running all tests' && npm run test:unit && npm run test:integration && npm run test:e2e",
-        "test:unit": "echo 'Running unit tests' && npm run test:unit:meeting-intelligence && npm run test:unit:integration-management",
-        "test:unit:meeting-intelligence": "cd services/meeting-intelligence && npm test",
-        "test:unit:integration-management": "cd services/integration-management && npm test",
-        "test:integration": "echo 'Running integration tests' && npm run test:integration:meeting-intelligence && npm run test:integration:integration-management",
-        "test:integration:meeting-intelligence": "cd services/meeting-intelligence && npm run test:integration",
-        "test:integration:integration-management": "cd services/integration-management && npm run test:integration",
-        "test:e2e": "echo 'Running E2E tests' && npm run test:e2e:frontend",
-        "test:e2e:frontend": "cd frontend && npm run test:e2e",
-        "test:performance": "echo 'Running performance tests' && npm run test:performance:meeting-intelligence",
-        "test:performance:meeting-intelligence": "cd services/meeting-intelligence && npm run test:performance",
-        "test:performance:load": "echo 'Load tests not implemented yet'"
-    },
-    "engines": {
-        "node": "22.x",
-        "npm": ">=9.0.0"
-    },
-    "devDependencies": {
-        "@types/cypress": "^0.1.6",
-        "@types/express": "^5.0.3",
-        "@types/node": "^24.7.2",
-        "cypress": "^13.17.0",
-        "typescript": "^5.9.3"
-    },
-    "cacheDirectories": [
-        "frontend/node_modules",
-        "services/api-gateway/node_modules",
-        "services/meeting-intelligence/node_modules",
-        "services/workflow-automation/node_modules",
-        "services/integration-management/node_modules"
-    ],
-    "dependencies": {
-        "express": "^5.1.0"
-    }
+  "name": "qylon",
+  "version": "1.0.0",
+  "description": "Qylon AI Automation Platform",
+  "private": true,
+  "scripts": {
+    "heroku-prebuild": "echo 'Pre-build: Setting up build environment'",
+    "build": "npm run build:frontend && npm run build:api-gateway && npm run build:meeting-intelligence && npm run build:workflow-automation && npm run build:integration-management",
+    "heroku-postbuild": "echo 'Post-build: All components built successfully'",
+    "heroku-cleanup": "echo 'Cleanup: Build artifacts processed'",
+    "build:frontend": "cd frontend && npm ci && npm run build",
+    "build:api-gateway": "cd services/api-gateway && npm ci && npm run build",
+    "build:meeting-intelligence": "cd services/meeting-intelligence && npm ci && npm run build",
+    "build:workflow-automation": "cd services/workflow-automation && npm ci && npm run build",
+    "build:integration-management": "cd services/integration-management && npm ci && npm run build",
+    "start": "npm run start:api-gateway",
+    "start:api-gateway": "cd services/api-gateway && npm start",
+    "dev": "echo 'Development handled by individual services'",
+    "ci:local": "./scripts/local-ci.sh",
+    "ci:local:verbose": "./scripts/local-ci.sh --verbose",
+    "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build",
+    "ci:local:lint-only": "./scripts/local-ci.sh --skip-tests --skip-build --skip-lint=false",
+    "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build",
+    "test": "echo 'Running all tests' && npm run test:unit && npm run test:integration && npm run test:e2e",
+    "test:unit": "echo 'Running unit tests' && npm run test:unit:meeting-intelligence && npm run test:unit:integration-management",
+    "test:unit:meeting-intelligence": "cd services/meeting-intelligence && npm test",
+    "test:unit:integration-management": "cd services/integration-management && npm test",
+    "test:integration": "echo 'Running integration tests' && npm run test:integration:meeting-intelligence && npm run test:integration:integration-management",
+    "test:integration:meeting-intelligence": "cd services/meeting-intelligence && npm run test:integration",
+    "test:integration:integration-management": "cd services/integration-management && npm run test:integration",
+    "test:e2e": "echo 'Running E2E tests' && npm run test:e2e:frontend",
+    "test:e2e:frontend": "cd frontend && npm run test:e2e",
+    "test:performance": "echo 'Running performance tests' && npm run test:performance:meeting-intelligence",
+    "test:performance:meeting-intelligence": "cd services/meeting-intelligence && npm run test:performance",
+    "test:performance:load": "echo 'Load tests not implemented yet'"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@types/cypress": "^0.1.6",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.7.2",
+    "cypress": "^13.17.0",
+    "typescript": "^5.9.3"
+  },
+  "cacheDirectories": [
+    "frontend/node_modules",
+    "services/api-gateway/node_modules",
+    "services/meeting-intelligence/node_modules",
+    "services/workflow-automation/node_modules",
+    "services/integration-management/node_modules"
+  ],
+  "dependencies": {
+    "axios": "^1.12.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "k6": "^0.0.0"
+  }
 }

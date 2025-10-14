@@ -424,7 +424,7 @@ jobs:
     name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: build
-    if: false  # Disabled - only main branch should trigger deployments
+    if: false # Disabled - only main branch should trigger deployments
     environment:
       name: staging
     steps:
