@@ -28,6 +28,7 @@
         "test:unit:workflow-automation": "cd services/workflow-automation && npm test",
         "test:unit:integration-management": "cd services/integration-management && npm test",
         "test:integration": "echo 'Running integration tests' && npm run test:integration:api-gateway && npm run test:integration:meeting-intelligence && npm run test:integration:integration-management",
+        "test:integration:coverage": "echo 'Running integration tests with coverage' && jest tests/integration --coverage --coverageDirectory=coverage/integration",
         "test:integration:meeting-intelligence": "cd services/meeting-intelligence && npm run test:integration",
         "test:integration:integration-management": "cd services/integration-management && npm run test:integration",
         "test:integration:api-gateway": "jest tests/integration/api-gateway --testPathPatterns=gateway.test.ts",
