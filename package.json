@@ -21,6 +21,8 @@
         "ci:local:quick": "./scripts/local-ci.sh --skip-tests --skip-build",
         "ci:local:lint-only": "./scripts/local-ci.sh --skip-tests --skip-build --skip-lint=false",
         "ci:local:test-only": "./scripts/local-ci.sh --skip-lint --skip-build",
+        "ci:local:qa": "./scripts/local-ci.sh --run-qa-tests",
+        "ci:local:full": "./scripts/local-ci.sh --run-qa-tests",
         "test": "echo 'Running all tests' && npm run test:unit && npm run test:integration && npm run test:e2e",
         "test:unit": "echo 'Running unit tests' && npm run test:unit:api-gateway && npm run test:unit:meeting-intelligence && npm run test:unit:workflow-automation && npm run test:unit:integration-management",
         "test:unit:api-gateway": "cd services/api-gateway && npm test",

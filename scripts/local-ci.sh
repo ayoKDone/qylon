@@ -366,52 +366,47 @@ main() {
         print_warning "Skipping TypeScript compilation (--skip-build flag)"
     fi
 
-    # Step 6: Unit Tests
+    # Step 6: Unit Tests (CI Pipeline - only unit tests)
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "Unit Tests"
 
         # Clear Jest cache to prevent module resolution issues
         print_info "Clearing Jest cache..."
-        if [ -f "scripts/clear-jest-cache.sh" ]; then
-            if ! run_command "./scripts/clear-jest-cache.sh" "Clear Jest cache"; then
-                print_warning "Jest cache clearing failed, continuing..."
-            fi
-        else
-            print_warning "Jest cache clearing script not found, using fallback method"
-            if ! run_command "npx jest --clearCache || true" "Clear Jest cache (fallback)"; then
-                print_warning "Jest cache clearing failed, continuing..."
-            fi
-            if ! run_command "npm cache clean --force || true" "Clear npm cache (fallback)"; then
-                print_warning "npm cache clearing failed, continuing..."
-            fi
+        if ! run_command "npx jest --clearCache || true" "Clear Jest cache"; then
+            print_warning "Jest cache clearing failed, continuing..."
+        fi
+        if ! run_command "npm cache clean --force || true" "Clear npm cache"; then
+            print_warning "npm cache clearing failed, continuing..."
         fi
 
+        # Run unit tests for services that exist (matching GitHub Actions approach)
         for service in "${services[@]}"; do
-            if ! run_service_tests "$service"; then
-                exit_code=1
+            if [ -d "services/$service" ]; then
+                print_info "Running $service unit tests..."
+                cd "services/$service"
+                if [ -f "package.json" ] && grep -q '"test"' package.json; then
+                    if ! run_command "npm test" "Test $service"; then
+                        exit_code=1
+                    fi
+                else
+                    print_warning "No test script found for $service"
+                fi
+                cd "$REPO_ROOT"
+            else
+                print_warning "Service directory services/$service not found"
             fi
         done
     else
         print_warning "Skipping unit tests (--skip-tests flag)"
     fi
 
-    # Step 7: Integration Tests (if available)
+    # Step 7: Integration Tests (moved to QA pipeline to avoid duplication)
+    # Integration tests are now handled by the Quality Assurance pipeline
+    # to avoid duplicate execution and ensure proper coverage generation
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "Integration Tests"
-
-        if [ -d "tests/integration" ] && [ "$(ls -A tests/integration 2>/dev/null)" ]; then
-            print_info "Running integration tests..."
-            # Check if the script exists before running
-            if npm run | grep -q "test:integration"; then
-                if ! run_command "npm run test:integration" "Integration tests"; then
-                    exit_code=1
-                fi
-            else
-                print_warning "No integration test script found"
-            fi
-        else
-            print_warning "No integration tests found"
-        fi
+        print_info "Integration tests are handled by the Quality Assurance pipeline"
+        print_info "Run 'npm run test:integration:coverage' manually if needed"
     else
         print_warning "Skipping integration tests (--skip-tests flag)"
     fi
@@ -466,57 +461,13 @@ main() {
         print_warning "Skipping TypeScript compilation check (--skip-build flag)"
     fi
 
-    # Step 9: Performance Tests (if available)
+    # Step 9: Performance Tests (moved to QA pipeline to avoid duplication)
+    # Performance tests are now handled by the Quality Assurance pipeline
+    # to avoid duplicate execution and resource waste
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "Performance Tests"
-
-        # Check if K6 is installed
-        if command_exists k6; then
-            print_success "K6 is installed"
-        else
-            print_warning "K6 is not installed. Installing K6..."
-            if command_exists apt-get; then
-                # Ubuntu/Debian installation
-                if ! run_command "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69" "Add K6 repository key"; then
-                    print_warning "Failed to add K6 repository key"
-                fi
-                if ! run_command "echo 'deb https://dl.k6.io/deb stable main' | sudo tee /etc/apt/sources.list.d/k6.list" "Add K6 repository"; then
-                    print_warning "Failed to add K6 repository"
-                fi
-                if ! run_command "sudo apt-get update && sudo apt-get install k6" "Install K6"; then
-                    print_warning "Failed to install K6"
-                fi
-            elif command_exists brew; then
-                # macOS installation
-                if ! run_command "brew install k6" "Install K6"; then
-                    print_warning "Failed to install K6"
-                fi
-            else
-                print_warning "Cannot install K6 automatically. Please install K6 manually."
-                print_info "Installation instructions:"
-                print_info "  Ubuntu/Debian: sudo apt-get install k6"
-                print_info "  macOS: brew install k6"
-                print_info "  Windows: choco install k6"
-            fi
-        fi
-
-        if [ -d "tests/performance" ] && [ "$(ls -A tests/performance 2>/dev/null)" ]; then
-            print_info "Running performance tests..."
-            # Check if the performance test script exists
-            if [ -f "scripts/performance-test.sh" ]; then
-                if ! run_command "./scripts/performance-test.sh --test-type load" "Performance tests"; then
-                    exit_code=1
-                fi
-            elif npm run | grep -q "test:performance:"; then
-                if ! run_command "npm run test:performance:load" "Performance tests"; then
-                    exit_code=1
-                fi
-            else
-                print_warning "No performance test scripts found"
-            fi
-        else
-            print_warning "No performance tests found"
-        fi
+        print_info "Performance tests are handled by the Quality Assurance pipeline"
+        print_info "Run 'npm run test:performance:load' manually if needed"
     else
         print_warning "Skipping performance tests (--skip-tests flag)"
     fi
@@ -585,6 +536,44 @@ main() {
         print_warning "No coverage report found"
     fi
 
+    # Step 12: QA Pipeline Tests (Optional - run manually if needed)
+    if [ "$RUN_QA_TESTS" = "true" ]; then
+        print_section "Quality Assurance Tests"
+        print_info "Running QA pipeline tests (integration, performance, E2E)..."
+
+        # Integration Tests with Coverage
+        print_subsection "Integration Tests with Coverage"
+        if npm run | grep -q "test:integration:coverage"; then
+            if ! run_command "npm run test:integration:coverage" "Integration tests with coverage"; then
+                exit_code=1
+            fi
+        else
+            print_warning "No integration test coverage script found"
+        fi
+
+        # Performance Tests
+        print_subsection "Performance Tests"
+        if npm run | grep -q "test:performance:load"; then
+            if ! run_command "npm run test:performance:load" "Performance load tests"; then
+                exit_code=1
+            fi
+        else
+            print_warning "No performance test script found"
+        fi
+
+        # E2E Tests
+        print_subsection "End-to-End Tests"
+        if [ -d "frontend" ] && npm run | grep -q "test:e2e"; then
+            cd frontend
+            if ! run_command "npm run test:e2e" "E2E tests"; then
+                exit_code=1
+            fi
+            cd "$REPO_ROOT"
+        else
+            print_warning "No E2E test script found"
+        fi
+    fi
+
     # Final Summary
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
@@ -603,6 +592,9 @@ main() {
         echo "  1. git add ."
         echo "  2. git commit -m 'your commit message'"
         echo "  3. git push origin <branch>"
+        echo ""
+        echo "To run QA pipeline tests (integration, performance, E2E):"
+        echo "  ./scripts/local-ci.sh --run-qa-tests"
     else
         print_error "❌ CI/CD pipeline failed!"
         echo -e "${RED}❌ Please fix the issues above before committing${NC}"
@@ -623,6 +615,7 @@ VERBOSE=false
 SKIP_TESTS=false
 SKIP_LINT=false
 SKIP_BUILD=false
+RUN_QA_TESTS=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -646,6 +639,10 @@ while [[ $# -gt 0 ]]; do
             SKIP_BUILD=true
             shift
             ;;
+        --run-qa-tests)
+            RUN_QA_TESTS=true
+            shift
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
@@ -654,10 +651,20 @@ while [[ $# -gt 0 ]]; do
             echo "  --skip-lint     Skip linting"
             echo "  --skip-lint=false  Force enable linting (override other skip flags)"
             echo "  --skip-build    Skip building"
+            echo "  --run-qa-tests  Run QA pipeline tests (integration, performance, E2E)"
             echo "  --help          Show this help message"
             echo ""
             echo "This script runs the complete CI/CD pipeline locally to catch issues"
             echo "before they reach GitHub Actions, saving GitHub minutes."
+            echo ""
+            echo "Pipeline Structure:"
+            echo "  CI Pipeline: Linting, Unit Tests, Security, Build"
+            echo "  QA Pipeline: Integration Tests, Performance Tests, E2E Tests"
+            echo ""
+            echo "Examples:"
+            echo "  $0                    # Run full CI pipeline"
+            echo "  $0 --run-qa-tests     # Run CI + QA pipeline tests"
+            echo "  $0 --skip-tests       # Skip all tests"
             exit 0
             ;;
         *)
