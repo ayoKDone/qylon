@@ -1,17 +1,5 @@
 // src/components/TaskItem.tsx
-import {
-  User,
-  Calendar,
-  Zap,
-  Edit2,
-  ExternalLink,
-  Trash2,
-  ChevronDown,
-  Circle,
-  Clock,
-  AlertCircle,
-  CheckCircle2,
-} from 'lucide-react';
+import { User, Calendar, Zap, Edit2, ExternalLink, Trash2, ChevronDown } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 
@@ -35,7 +23,9 @@ interface TaskItemProps {
   status: 'pending' | 'in-progress' | 'completed' | 'overdue';
   actions?: TaskAction[];
   onStatusChange?: (id: string, status: string) => void;
+  onToggleComplete?: (id: string, completed: boolean) => void;
   isExpandable?: boolean;
+  showCheckbox?: boolean;
 }
 
 export default function TaskItem({
@@ -50,32 +40,35 @@ export default function TaskItem({
   status,
   actions,
   onStatusChange,
+  onToggleComplete,
   isExpandable = true,
+  showCheckbox = true,
 }: TaskItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const isCompleted = status === 'completed';
 
-  const statusConfig = {
-    pending: {
-      icon: Circle,
-      color: 'text-gray-400',
-      bgColor: 'bg-gray-50',
-    },
-    'in-progress': {
-      icon: Clock,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-50',
-    },
-    overdue: {
-      icon: AlertCircle,
-      color: 'text-red-500',
-      bgColor: 'bg-red-50',
-    },
-    completed: {
-      icon: CheckCircle2,
-      color: 'text-green-500',
-      bgColor: 'bg-green-50',
-    },
-  };
+  // const statusConfig = {
+  //   pending: {
+  //     icon: Circle,
+  //     color: "text-gray-400",
+  //     bgColor: "bg-gray-50",
+  //   },
+  //   "in-progress": {
+  //     icon: Clock,
+  //     color: "text-blue-500",
+  //     bgColor: "bg-blue-50",
+  //   },
+  //   overdue: {
+  //     icon: AlertCircle,
+  //     color: "text-red-500",
+  //     bgColor: "bg-red-50",
+  //   },
+  //   completed: {
+  //     icon: CheckCircle2,
+  //     color: "text-green-500",
+  //     bgColor: "bg-green-50",
+  //   },
+  // };
 
   const priorityConfig = {
     high: 'bg-red-100 text-red-700',
@@ -108,25 +101,65 @@ export default function TaskItem({
   ];
 
   const displayActions = actions || defaultActions;
-  const StatusIcon = statusConfig[status].icon;
+  // const StatusIcon = statusConfig[status].icon;
+
+  const handleCheckboxChange = () => {
+    if (onToggleComplete) {
+      onToggleComplete(id, !isCompleted);
+    } else if (onStatusChange) {
+      onStatusChange(id, isCompleted ? 'pending' : 'completed');
+    }
+  };
 
   return (
-    <div className='bg-white xui-bdr-rad-1-half border border-gray-200 p-4'>
+    <div
+      className={`bg-white xui-bdr-rad-1-half border border-gray-200 p-4 transition-all ${
+        isCompleted ? 'bg-gray-50' : 'hover:border-blue-300'
+      }`}
+    >
       <div className='xui-d-flex xui-flex-ai-flex-start gap-4'>
+        {/* Circular Checkbox */}
+        {showCheckbox && (
+          <div className='flex-shrink-0 pt-1'>
+            <button
+              onClick={handleCheckboxChange}
+              className={`w-5 h-5 rounded-full border-2 transition-all flex items-center justify-center ${
+                isCompleted
+                  ? 'bg-green-500 border-green-500'
+                  : 'border-gray-300 hover:border-blue-500'
+              }`}
+            >
+              {isCompleted && (
+                <svg
+                  className='w-3 h-3 text-white'
+                  fill='none'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                >
+                  <path d='M5 13l4 4L19 7'></path>
+                </svg>
+              )}
+            </button>
+          </div>
+        )}
+
         {/* Status Icon */}
-        <button
+        {/* <button
           onClick={() => onStatusChange?.(id, status)}
           className={`mt-1 w-6 h-6 rounded-full ${statusConfig[status].bgColor} xui-d-flex xui-flex-ai-center xui-flex-jc-center`}
         >
           <StatusIcon className={`w-4 h-4 ${statusConfig[status].color}`} />
-        </button>
+        </button> */}
 
         {/* Content */}
         <div className='flex-1'>
           {/* Title and Priority */}
           <div className='xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between gap-4 mb-2'>
             <h3
-              className={`text-base font-semibold text-gray-900 ${status === 'completed' ? 'line-through text-slate-300' : ''}`}
+              className={`text-base font-semibold text-gray-900 ${isCompleted ? 'line-through text-slate-400' : ''}`}
             >
               {title}
             </h3>
@@ -153,7 +186,9 @@ export default function TaskItem({
           </div>
 
           {/* Meta Info */}
-          <div className='flex items-center gap-4 text-sm text-gray-500 mb-3'>
+          <div
+            className={`flex items-center gap-4 text-sm mb-3 ${isCompleted ? 'text-gray-400' : 'text-gray-500'}`}
+          >
             <div className='flex items-center gap-1'>
               <User className='w-4 h-4' />
               <span>{assignee}</span>
@@ -171,7 +206,12 @@ export default function TaskItem({
           {/* Tags */}
           <div className='flex flex-wrap gap-2 mb-3'>
             {tags.map((tag, index) => (
-              <span key={index} className='px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded'>
+              <span
+                key={index}
+                className={`px-2 py-1 text-xs rounded ${
+                  isCompleted ? 'bg-gray-200 text-gray-500' : 'bg-gray-100 text-gray-700'
+                }`}
+              >
                 {tag}
               </span>
             ))}
@@ -179,7 +219,11 @@ export default function TaskItem({
 
           {/* Expanded Description */}
           {isExpanded && description && (
-            <p className='text-sm text-gray-600 mb-3 pb-3 border-b border-gray-100'>
+            <p
+              className={`text-sm mb-3 pb-3 border-b border-gray-100 ${
+                isCompleted ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
               {description}
             </p>
           )}
