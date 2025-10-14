@@ -184,6 +184,14 @@ jobs:
           # Database migrations are handled by the local CI pipeline
           echo "Database migrations handled by local CI pipeline"
 
+      - name: Install service dependencies for testing
+        run: |
+          # Install dependencies for each service
+          cd services/api-gateway && npm install && cd ../..
+          cd services/meeting-intelligence && npm install && cd ../..
+          cd services/workflow-automation && npm install && cd ../..
+          cd services/integration-management && npm install && cd ../..
+
       - name: Run Unit Tests
         env:
           NODE_ENV: test
