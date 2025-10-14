@@ -1,23 +1,84 @@
 module.exports = {
-  preset: 'ts-jest',
+  // Test environment
   testEnvironment: 'node',
-  roots: ['<rootDir>/tests'],
-  testMatch: [
-    '**/__tests__/**/*.ts',
-    '**/?(*.)+(spec|test).ts'
+
+  // Test file patterns
+  testMatch: ['**/__tests__/**/*.(js|jsx|ts|tsx)', '**/*.(test|spec).(js|jsx|ts|tsx)'],
+
+  // Exclude Cypress files
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/build/',
+    '/coverage/',
+    '/cypress/',
+    '.*\\.cy\\.ts$',
+    '.*\\.cy\\.tsx$',
   ],
+
+  // Test directories - include both src and services for our microservices architecture
+  roots: ['<rootDir>/src', '<rootDir>/services', '<rootDir>/tests'],
+
+  // Module file extensions
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
+
+  // Transform files
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.test.json',
+      },
+    ],
+    '^.+\\.(js|jsx)$': 'babel-jest',
   },
+
+  // TypeScript configuration
+  preset: 'ts-jest',
+
+  // Coverage configuration - include both src and services
   collectCoverageFrom: [
-    'services/**/*.ts',
+    'src/**/*.{js,jsx,ts,tsx}',
+    'services/**/*.{js,jsx,ts,tsx}',
+    '!src/**/*.d.ts',
     '!services/**/*.d.ts',
+    '!src/**/node_modules/**',
     '!services/**/node_modules/**',
-    '!services/**/dist/**'
+    '!src/**/dist/**',
+    '!services/**/dist/**',
+    '!src/**/build/**',
+    '!services/**/build/**',
+    '!**/__tests__/**',
+    '!**/cypress/**',
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
+
+  // Setup files - use our test setup
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+
+  // Test timeout
   testTimeout: 30000,
-  verbose: true
+
+  // Verbose output
+  verbose: true,
+
+  // Clear mocks between tests
+  clearMocks: true,
+
+  // Restore mocks after each test
+  restoreMocks: true,
+
+  // Module name mapping
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
+
+  // Transform ignore patterns - Allow transformation of specific node_modules
+  transformIgnorePatterns: ['node_modules/(?!(uuid|jsonwebtoken)/)'],
+
+  // Global setup
+  globals: {
+    'ts-jest': {
+      useESM: false,
+    },
+  },
 };
