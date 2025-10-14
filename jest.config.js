@@ -16,8 +16,8 @@ module.exports = {
     '.*\\.cy\\.tsx$',
   ],
 
-  // Test directories - include both src and services for our microservices architecture
-  roots: ['<rootDir>/src', '<rootDir>/services', '<rootDir>/tests'],
+  // Test directories - include services and tests for our microservices architecture
+  roots: ['<rootDir>/services', '<rootDir>/tests'],
 
   // Module file extensions
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
@@ -36,17 +36,12 @@ module.exports = {
   // TypeScript configuration
   preset: 'ts-jest',
 
-  // Coverage configuration - include both src and services
+  // Coverage configuration - include services for our microservices architecture
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
     'services/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
     '!services/**/*.d.ts',
-    '!src/**/node_modules/**',
     '!services/**/node_modules/**',
-    '!src/**/dist/**',
     '!services/**/dist/**',
-    '!src/**/build/**',
     '!services/**/build/**',
     '!**/__tests__/**',
     '!**/cypress/**',
