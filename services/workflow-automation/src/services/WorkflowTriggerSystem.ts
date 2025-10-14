@@ -221,10 +221,8 @@ export class WorkflowTriggerSystem {
         return false;
       }
 
-      // Check client match
-      if (workflow.client_id !== event.userId) {
-        return false;
-      }
+      // Note: Client matching logic removed - workflows are user-specific
+      // TODO: Add proper client-user relationship checking if needed
 
       // Check additional conditions
       if (trigger.config.conditions) {

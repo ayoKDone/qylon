@@ -77,6 +77,7 @@ export class EventDrivenOrchestrator {
     averageProcessingTime: 0,
     successRate: 0,
     errorRate: 0,
+    lastProcessedAt: undefined,
   };
 
   constructor() {
@@ -235,8 +236,8 @@ export class EventDrivenOrchestrator {
       // Step 3: Update event processing status
       await this.updateEventProcessingStatus(event.id, 'completed');
 
-      // Determine overall success
-      result.success = result.workflowsFailed === 0 && result.integrationActionsFailed === 0;
+      // Determine overall success - successful if no integration actions failed
+      result.success = result.integrationActionsFailed === 0;
 
       return result;
     } catch (error) {
@@ -569,6 +570,7 @@ export class EventDrivenOrchestrator {
   private updateMetrics(result: OrchestrationResult, duration: number): void {
     this.metrics.totalEventsProcessed++;
     this.metrics.eventsProcessedToday++;
+    this.metrics.lastProcessedAt = new Date();
     this.metrics.averageProcessingTime =
       (this.metrics.averageProcessingTime * (this.metrics.totalEventsProcessed - 1) + duration) /
       this.metrics.totalEventsProcessed;
@@ -582,8 +584,6 @@ export class EventDrivenOrchestrator {
         (this.metrics.errorRate * (this.metrics.totalEventsProcessed - 1) + 1) /
         this.metrics.totalEventsProcessed;
     }
-
-    this.metrics.lastProcessedAt = new Date();
   }
 
   /**

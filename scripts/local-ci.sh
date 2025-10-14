@@ -237,7 +237,7 @@ main() {
     echo ""
 
     # List of services to process
-    local services=("api-gateway" "meeting-intelligence" "workflow-automation" "integration-management")
+    local services=("api-gateway" "meeting-intelligence" "workflow-automation" "integration-management" "re-engagement-engine")
 
     # Step 1: Environment Setup
     print_section "Environment Setup"

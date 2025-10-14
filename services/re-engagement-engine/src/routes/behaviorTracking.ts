@@ -18,190 +18,212 @@ const trackEventSchema = Joi.object({
 
 // Initialize service
 const behaviorTrackingService = new UserBehaviorTrackingService(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env['SUPABASE_URL']!,
+  process.env['SUPABASE_SERVICE_ROLE_KEY']!,
 );
 
 /**
  * Track a user behavior event
  */
-router.post('/events', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.post(
+  '/events',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  const { error, value } = trackEventSchema.validate(req.body);
-  if (error) {
-    throw createError(`Validation error: ${error.details[0].message}`, 400, 'VALIDATION_ERROR');
-  }
+    const { error, value } = trackEventSchema.validate(req.body);
+    if (error) {
+      throw createError(
+        `Validation error: ${error.details?.[0]?.message || 'Unknown validation error'}`,
+        400,
+        'VALIDATION_ERROR',
+      );
+    }
 
-  const { eventType, eventData, sessionId, clientId } = value;
-  const ipAddress = req.ip || req.connection.remoteAddress;
-  const userAgent = req.get('User-Agent');
+    const { eventType, eventData, sessionId, clientId } = value;
+    const ipAddress = req.ip || req.connection.remoteAddress;
+    const userAgent = req.get('User-Agent');
 
-  const event = await behaviorTrackingService.trackEvent(
-    userId,
-    eventType,
-    eventData,
-    sessionId,
-    ipAddress,
-    userAgent,
-    clientId
-  );
+    const event = await behaviorTrackingService.trackEvent(
+      userId,
+      eventType,
+      eventData,
+      sessionId,
+      ipAddress,
+      userAgent,
+      clientId,
+    );
 
-  logger.info('User behavior event tracked', {
-    eventId: event.id,
-    userId,
-    eventType,
-    sessionId,
-    clientId,
-  });
+    logger.info('User behavior event tracked', {
+      eventId: event.id,
+      userId,
+      eventType,
+      sessionId,
+      clientId,
+    });
 
-  res.status(201).json({
-    success: true,
-    data: event,
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(201).json({
+      success: true,
+      data: event,
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 /**
  * Get user behavior profile
  */
-router.get('/profile', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.get(
+  '/profile',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  const clientId = req.query.clientId as string;
-  const profile = await behaviorTrackingService.getBehaviorProfile(userId, clientId);
+    const clientId = req.query['clientId'] as string;
+    const profile = await behaviorTrackingService.getBehaviorProfile(userId, clientId);
 
-  if (!profile) {
-    throw createError('Behavior profile not found', 404, 'NOT_FOUND');
-  }
+    if (!profile) {
+      throw createError('Behavior profile not found', 404, 'NOT_FOUND');
+    }
 
-  res.status(200).json({
-    success: true,
-    data: profile,
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(200).json({
+      success: true,
+      data: profile,
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 /**
  * Get behavior events for a user
  */
-router.get('/events', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.get(
+  '/events',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  const clientId = req.query.clientId as string;
-  const eventType = req.query.eventType as string;
-  const limit = parseInt(req.query.limit as string) || 100;
-  const offset = parseInt(req.query.offset as string) || 0;
+    const clientId = req.query['clientId'] as string;
+    const eventType = req.query['eventType'] as string;
+    const limit = parseInt(req.query['limit'] as string) || 100;
+    const offset = parseInt(req.query['offset'] as string) || 0;
 
-  const events = await behaviorTrackingService.getBehaviorEvents(
-    userId,
-    clientId,
-    eventType,
-    limit,
-    offset
-  );
+    const events = await behaviorTrackingService.getBehaviorEvents(
+      userId,
+      clientId,
+      eventType,
+      limit,
+      offset,
+    );
 
-  res.status(200).json({
-    success: true,
-    data: events,
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(200).json({
+      success: true,
+      data: events,
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 /**
  * Get users at risk of churning (admin only)
  */
-router.get('/at-risk', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.get(
+  '/at-risk',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  // Check if user is admin
-  const userRole = req.user?.role;
-  if (userRole !== 'admin' && userRole !== 'msp_admin') {
-    throw createError('Insufficient permissions', 403, 'FORBIDDEN');
-  }
+    // Check if user is admin
+    const userRole = (req as any).user?.role;
+    if (userRole !== 'admin' && userRole !== 'msp_admin') {
+      throw createError('Insufficient permissions', 403, 'FORBIDDEN');
+    }
 
-  const clientId = req.query.clientId as string;
-  const minRiskScore = parseInt(req.query.minRiskScore as string) || 50;
-  const limit = parseInt(req.query.limit as string) || 100;
+    const clientId = req.query['clientId'] as string;
+    const minRiskScore = parseInt(req.query['minRiskScore'] as string) || 50;
+    const limit = parseInt(req.query['limit'] as string) || 100;
 
-  const atRiskUsers = await behaviorTrackingService.getAtRiskUsers(
-    clientId,
-    minRiskScore,
-    limit
-  );
+    const atRiskUsers = await behaviorTrackingService.getAtRiskUsers(clientId, minRiskScore, limit);
 
-  res.status(200).json({
-    success: true,
-    data: atRiskUsers,
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(200).json({
+      success: true,
+      data: atRiskUsers,
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 /**
  * Get behavior analytics
  */
-router.get('/analytics', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.get(
+  '/analytics',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  const clientId = req.query.clientId as string;
-  const startDate = req.query.startDate as string;
-  const endDate = req.query.endDate as string;
+    const clientId = req.query['clientId'] as string;
+    const startDate = req.query['startDate'] as string;
+    const endDate = req.query['endDate'] as string;
 
-  const analytics = await behaviorTrackingService.getBehaviorAnalytics(
-    userId,
-    clientId,
-    startDate,
-    endDate
-  );
+    const analytics = await behaviorTrackingService.getBehaviorAnalytics(
+      userId,
+      clientId,
+      startDate,
+      endDate,
+    );
 
-  res.status(200).json({
-    success: true,
-    data: analytics,
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(200).json({
+      success: true,
+      data: analytics,
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 /**
  * Resolve a risk factor
  */
-router.post('/risk-factors/:factor/resolve', asyncHandler(async (req: Request, res: Response) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw createError('User not authenticated', 401, 'UNAUTHORIZED');
-  }
+router.post(
+  '/risk-factors/:factor/resolve',
+  asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      throw createError('User not authenticated', 401, 'UNAUTHORIZED');
+    }
 
-  const { factor } = req.params;
-  const clientId = req.body.clientId;
+    const { factor } = req.params;
+    const clientId = req.body.clientId as string | undefined;
 
-  await behaviorTrackingService.resolveRiskFactor(userId, factor, clientId);
+    await behaviorTrackingService.resolveRiskFactor(
+      userId,
+      factor,
+      ...(clientId ? [clientId] : []),
+    );
 
-  logger.info('Risk factor resolved', {
-    userId,
-    clientId,
-    factor,
-  });
+    logger.info('Risk factor resolved', {
+      userId,
+      clientId,
+      factor,
+    });
 
-  res.status(200).json({
-    success: true,
-    data: { message: 'Risk factor resolved successfully' },
-    timestamp: new Date().toISOString(),
-  });
-}));
+    res.status(200).json({
+      success: true,
+      data: { message: 'Risk factor resolved successfully' },
+      timestamp: new Date().toISOString(),
+    });
+  }),
+);
 
 // Add validation error handler
 router.use(validationErrorHandler);

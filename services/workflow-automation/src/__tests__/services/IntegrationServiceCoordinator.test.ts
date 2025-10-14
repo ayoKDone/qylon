@@ -25,11 +25,43 @@ enum IntegrationType {
 jest.mock('@supabase/supabase-js');
 jest.mock('../../utils/logger');
 
+// Create mock data for integration configs
+let mockIntegrationConfigData: any = null;
+let mockStatisticsData: any[] = [];
+let mockError: any = null;
+
 const mockSupabase = {
   from: jest.fn(() => ({
-    select: jest.fn().mockReturnThis(),
+    select: jest.fn().mockImplementation((columns?: string) => {
+      // If select is called directly (without eq), return statistics data
+      if (columns && typeof columns === 'string' && columns.includes('type, status')) {
+        return Promise.resolve({ data: mockStatisticsData, error: null });
+      }
+      // For healthCheck pattern (select with 'id')
+      if (columns && typeof columns === 'string' && columns.includes('id')) {
+        return {
+          limit: jest.fn().mockImplementation((limit: number) => {
+            return Promise.resolve({ data: [], error: mockError });
+          }),
+        };
+      }
+      return {
+        eq: jest.fn().mockReturnThis(),
+        single: jest.fn().mockImplementation(() => {
+          return Promise.resolve({
+            data: mockIntegrationConfigData,
+            error: null,
+          });
+        }),
+      };
+    }),
     eq: jest.fn().mockReturnThis(),
-    single: jest.fn(),
+    single: jest.fn().mockImplementation(() => {
+      return Promise.resolve({
+        data: mockIntegrationConfigData,
+        error: null,
+      });
+    }),
   })),
 };
 
@@ -48,6 +80,9 @@ describe('IntegrationServiceCoordinator', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIntegrationConfigData = null;
+    mockStatisticsData = [];
+    mockError = null;
     coordinator = new IntegrationServiceCoordinator();
 
     mockIntegrationConfig = {
@@ -97,23 +132,20 @@ describe('IntegrationServiceCoordinator', () => {
 
   describe('coordinateIntegrationActions', () => {
     it('should coordinate multiple integration actions successfully', async () => {
-      // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      // Mock integration config fetch - set the data that will be returned by single()
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock successful API responses
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -142,22 +174,19 @@ describe('IntegrationServiceCoordinator', () => {
 
     it('should handle integration action failures gracefully', async () => {
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock failed API response
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -180,10 +209,7 @@ describe('IntegrationServiceCoordinator', () => {
 
     it('should handle missing integration configuration', async () => {
       // Mock no integration config found
-      mockSupabase.from().single.mockResolvedValue({
-        data: null,
-        error: { message: 'No rows found' },
-      });
+      mockIntegrationConfigData = null;
 
       const actions = [mockAction];
       const results = await coordinator.coordinateIntegrationActions(actions, mockContext);
@@ -195,22 +221,19 @@ describe('IntegrationServiceCoordinator', () => {
 
     it('should retry failed actions with exponential backoff', async () => {
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock retryable error first, then success
       (global.fetch as jest.Mock)
@@ -241,22 +264,19 @@ describe('IntegrationServiceCoordinator', () => {
   describe('executeIntegrationAction', () => {
     it('should execute create_contact action successfully', async () => {
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock successful contact creation
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -303,22 +323,19 @@ describe('IntegrationServiceCoordinator', () => {
       };
 
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock successful contact update
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -357,22 +374,19 @@ describe('IntegrationServiceCoordinator', () => {
       };
 
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       // Mock successful sync
       (global.fetch as jest.Mock).mockResolvedValue({
@@ -404,22 +418,19 @@ describe('IntegrationServiceCoordinator', () => {
       };
 
       // Mock integration config fetch
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       const result = await (coordinator as any).executeIntegrationAction(unknownAction, mockContext);
 
@@ -446,22 +457,19 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should fetch from database when not cached', async () => {
-      mockSupabase.from().single.mockResolvedValue({
-        data: {
-          id: mockIntegrationConfig.id,
-          user_id: mockIntegrationConfig.userId,
-          client_id: mockIntegrationConfig.clientId,
-          type: mockIntegrationConfig.type,
-          name: mockIntegrationConfig.name,
-          status: mockIntegrationConfig.status,
-          credentials: mockIntegrationConfig.credentials,
-          settings: mockIntegrationConfig.settings,
-          last_sync: mockIntegrationConfig.lastSync,
-          created_at: mockIntegrationConfig.createdAt,
-          updated_at: mockIntegrationConfig.updatedAt,
-        },
-        error: null,
-      });
+      mockIntegrationConfigData = {
+        id: mockIntegrationConfig.id,
+        user_id: mockIntegrationConfig.userId,
+        client_id: mockIntegrationConfig.clientId,
+        type: mockIntegrationConfig.type,
+        name: mockIntegrationConfig.name,
+        status: mockIntegrationConfig.status,
+        credentials: mockIntegrationConfig.credentials,
+        settings: mockIntegrationConfig.settings,
+        last_sync: mockIntegrationConfig.lastSync,
+        created_at: mockIntegrationConfig.createdAt,
+        updated_at: mockIntegrationConfig.updatedAt,
+      };
 
       const config = await (coordinator as any).getIntegrationConfig(
         IntegrationType.CRM_SALESFORCE,
@@ -497,7 +505,7 @@ describe('IntegrationServiceCoordinator', () => {
       ];
 
       retryableErrors.forEach(error => {
-        const isRetryable = (coordinator as any).isRetryableError(error);
+        const isRetryable = coordinator.isRetryableError(error);
         expect(isRetryable).toBe(true);
       });
     });
@@ -511,7 +519,7 @@ describe('IntegrationServiceCoordinator', () => {
       ];
 
       nonRetryableErrors.forEach(error => {
-        const isRetryable = (coordinator as any).isRetryableError(error);
+        const isRetryable = coordinator.isRetryableError(error);
         expect(isRetryable).toBe(false);
       });
     });
@@ -519,16 +527,11 @@ describe('IntegrationServiceCoordinator', () => {
 
   describe('getCoordinationStatistics', () => {
     it('should return coordination statistics', async () => {
-      const mockData = [
+      mockStatisticsData = [
         { type: IntegrationType.CRM_SALESFORCE, status: 'active' },
         { type: IntegrationType.CRM_HUBSPOT, status: 'active' },
         { type: IntegrationType.CRM_PIPEDRIVE, status: 'inactive' },
       ];
-
-      mockSupabase.from().select.mockResolvedValue({
-        data: mockData,
-        error: null,
-      });
 
       const stats = await coordinator.getCoordinationStatistics();
 
@@ -555,20 +558,14 @@ describe('IntegrationServiceCoordinator', () => {
 
   describe('healthCheck', () => {
     it('should return true when database is accessible', async () => {
-      mockSupabase.from().select.mockResolvedValue({
-        data: [],
-        error: null,
-      });
+      // Mock data is already set up in the mock implementation
 
       const isHealthy = await coordinator.healthCheck();
       expect(isHealthy).toBe(true);
     });
 
     it('should return false when database is not accessible', async () => {
-      mockSupabase.from().select.mockResolvedValue({
-        data: null,
-        error: { message: 'Connection failed' },
-      });
+      mockError = { message: 'Connection failed' };
 
       const isHealthy = await coordinator.healthCheck();
       expect(isHealthy).toBe(false);
