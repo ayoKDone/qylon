@@ -57,6 +57,8 @@ export interface IntegrationAction {
     | 'update_contact'
     | 'create_opportunity'
     | 'update_opportunity'
+    | 'create_task'
+    | 'update_task'
     | 'sync_data'
     | 'send_notification';
   integrationType: IntegrationType;
@@ -209,6 +211,12 @@ export class IntegrationServiceCoordinator {
           break;
         case 'update_opportunity':
           result = await this.updateOpportunity(action.data, integrationConfig);
+          break;
+        case 'create_task':
+          result = await this.createTask(action.data, integrationConfig);
+          break;
+        case 'update_task':
+          result = await this.updateTask(action.data, integrationConfig);
           break;
         case 'sync_data':
           result = await this.syncData(action.data, integrationConfig);
@@ -517,6 +525,72 @@ export class IntegrationServiceCoordinator {
       return result.data;
     } catch (error) {
       logger.error('Failed to sync data', {
+        integrationType: config.type,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Create task in project management system
+   */
+  private async createTask(data: Record<string, any>, config: IntegrationConfig): Promise<any> {
+    try {
+      logger.info('Creating task in project management system', {
+        taskTitle: data.title,
+        integrationType: config.type,
+        clientId: config.clientId,
+      });
+
+      // For now, return a mock response since PM integrations are handled by another programmer
+      return {
+        success: true,
+        taskId: `task-${Date.now()}`,
+        title: data.title,
+        description: data.description,
+        assignee: data.assignee,
+        dueDate: data.dueDate,
+        priority: data.priority,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+      };
+    } catch (error) {
+      logger.error('Failed to create task', {
+        taskTitle: data.title,
+        integrationType: config.type,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Update task in project management system
+   */
+  private async updateTask(data: Record<string, any>, config: IntegrationConfig): Promise<any> {
+    try {
+      logger.info('Updating task in project management system', {
+        taskId: data.taskId,
+        integrationType: config.type,
+        clientId: config.clientId,
+      });
+
+      // For now, return a mock response since PM integrations are handled by another programmer
+      return {
+        success: true,
+        taskId: data.taskId,
+        title: data.title,
+        description: data.description,
+        assignee: data.assignee,
+        dueDate: data.dueDate,
+        priority: data.priority,
+        status: data.status,
+        updatedAt: new Date().toISOString(),
+      };
+    } catch (error) {
+      logger.error('Failed to update task', {
+        taskId: data.taskId,
         integrationType: config.type,
         error: error instanceof Error ? error.message : 'Unknown error',
       });

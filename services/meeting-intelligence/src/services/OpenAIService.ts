@@ -1,9 +1,11 @@
 import OpenAI from 'openai';
 import {
   ActionItem,
+  ActionItemCategory,
   MeetingSummary,
   MeetingTranscription,
   PriorityLevel,
+  RiskLevel,
   SentimentAnalysis,
   SpeakerSegment,
   TranscriptionError,
@@ -74,8 +76,31 @@ export class OpenAIService {
         description: item.description,
         assignee: item.assignee,
         due_date: item.due_date ? new Date(item.due_date) : undefined,
+        due_time: item.due_time,
         priority: this.mapPriority(item.priority),
         status: 'pending' as const,
+        category: this.mapCategory(item.category),
+        project: item.project,
+        dependencies: item.dependencies || [],
+        blockers: item.blockers || [],
+        resources_needed: item.resources_needed || [],
+        success_criteria: item.success_criteria,
+        budget_impact: item.budget_impact,
+        budget_allocation: item.budget_allocation,
+        cost_center: item.cost_center,
+        approval_required: item.approval_required,
+        spending_limit: item.spending_limit,
+        financial_impact: item.financial_impact,
+        stakeholders: item.stakeholders || [],
+        communication_requirements: item.communication_requirements,
+        technical_requirements: item.technical_requirements,
+        quality_standards: item.quality_standards,
+        location: item.location,
+        meeting_related: item.meeting_related,
+        tags: item.tags || [],
+        estimated_effort: item.estimated_effort,
+        risk_level: this.mapRiskLevel(item.risk_level),
+        context: item.context,
         created_at: new Date(),
         updated_at: new Date(),
       }));
@@ -259,16 +284,55 @@ export class OpenAIService {
    */
   private buildActionItemPrompt(content: string, meetingTitle: string): string {
     return `
-Analyze the following meeting transcription and extract all action items. Return a JSON array of action items with the following structure:
+You are an expert meeting analyst specializing in extracting comprehensive action items from meeting transcriptions. Your task is to identify ALL actionable items, commitments, deadlines, and follow-up tasks mentioned in the meeting.
+
+CRITICAL EXTRACTION REQUIREMENTS:
+1. Extract EVERY action item, commitment, or task mentioned - no matter how small
+2. Capture ALL dates, times, deadlines, and timeframes mentioned
+3. Identify project scope, implementation details, and technical requirements
+4. Extract dependencies, blockers, and prerequisites
+5. Capture COMPREHENSIVE budget, resource, and approval requirements
+6. Identify stakeholders, decision makers, and approval chains
+7. Extract quality standards, success criteria, and deliverables
+8. Capture communication requirements and reporting obligations
+9. Extract ALL financial information, budget allocations, and cost implications
+10. Capture key takeaways, decisions, and strategic insights
+11. Identify budget approvals, spending limits, and financial constraints
+12. Extract cost estimates, pricing discussions, and financial planning
+
+Return a JSON array with this comprehensive structure:
 
 {
   "action_items": [
     {
-      "title": "Brief action item title",
-      "description": "Detailed description of what needs to be done",
-      "assignee": "email@example.com or null if not specified",
+      "title": "Concise, actionable title (5-8 words max)",
+      "description": "Detailed description including scope, requirements, and context",
+      "assignee": "email@example.com or full name or null if not specified",
       "due_date": "YYYY-MM-DD or null if not specified",
-      "priority": "low|medium|high|urgent"
+      "due_time": "HH:MM or null if not specified",
+      "priority": "low|medium|high|urgent|critical",
+      "category": "development|design|testing|documentation|meeting|review|approval|research|planning|implementation|deployment|maintenance|other",
+      "project": "Project name or null if not specified",
+      "dependencies": ["List of other action items this depends on"],
+      "blockers": ["List of potential blockers or risks"],
+      "resources_needed": ["List of resources, tools, or approvals needed"],
+      "success_criteria": "How success will be measured",
+      "budget_impact": "Estimated cost or budget requirement or null",
+      "budget_allocation": "Specific budget allocation amount or null",
+      "cost_center": "Cost center or department responsible for budget or null",
+      "approval_required": "Budget approval required (true/false/null)",
+      "spending_limit": "Maximum spending limit or null",
+      "financial_impact": "High-level financial impact assessment or null",
+      "stakeholders": ["List of people who need to be informed or involved"],
+      "communication_requirements": "How and when to communicate progress",
+      "technical_requirements": "Technical specifications, tools, or platforms needed",
+      "quality_standards": "Quality requirements or standards to meet",
+      "location": "Where the work needs to be done or null",
+      "meeting_related": "Related to specific meeting agenda item or null",
+      "tags": ["Relevant tags for categorization"],
+      "estimated_effort": "Time estimate (e.g., '2 hours', '1 day', '1 week') or null",
+      "risk_level": "low|medium|high based on potential impact and likelihood",
+      "context": "Additional context, background, or reasoning for this action item"
     }
   ]
 }
@@ -278,13 +342,118 @@ Meeting Title: ${meetingTitle}
 Transcription:
 ${content}
 
-Guidelines:
-- Extract only concrete, actionable items
-- If no assignee is mentioned, set to null
-- If no due date is mentioned, set to null
-- Determine priority based on urgency and importance
-- Be specific and clear in descriptions
-- Return empty array if no action items found
+COMPREHENSIVE EXTRACTION GUIDELINES:
+
+1. **Temporal Information**: Extract ALL dates, times, deadlines, and timeframes:
+   - "by Friday" → due_date: next Friday
+   - "next week" → due_date: next Monday
+   - "end of month" → due_date: last day of current month
+   - "ASAP" → priority: urgent
+   - "before the meeting" → due_date: before next meeting
+   - "in 2 weeks" → due_date: 2 weeks from meeting date
+
+2. **Project & Scope Details**: Capture implementation scope:
+   - Technical requirements and specifications
+   - Feature descriptions and functionality
+   - Integration requirements
+   - Performance criteria
+   - User experience requirements
+
+3. **Resource & Approval Requirements**:
+   - Budget approvals needed
+   - Resource allocation requirements
+   - Tool or software needs
+   - External vendor requirements
+   - Legal or compliance approvals
+
+4. **COMPREHENSIVE BUDGETING & FINANCIAL INFORMATION**:
+   - Budget allocations and spending limits
+   - Cost estimates and pricing discussions
+   - Financial impact assessments
+   - Cost center assignments
+   - Budget approval requirements
+   - Spending authorization levels
+   - ROI calculations and financial justifications
+   - Vendor costs and contract negotiations
+   - Resource cost implications
+   - Financial constraints and limitations
+
+5. **Dependencies & Blockers**:
+   - Tasks that must be completed first
+   - External dependencies
+   - Resource constraints
+   - Technical blockers
+   - Approval dependencies
+
+6. **Communication & Reporting**:
+   - Who needs to be updated
+   - Reporting frequency and format
+   - Meeting requirements
+   - Documentation needs
+   - Stakeholder communication
+
+7. **Quality & Success Criteria**:
+   - Definition of done
+   - Quality standards
+   - Testing requirements
+   - Review processes
+   - Success metrics
+
+8. **Context & Background**:
+   - Why this action item exists
+   - Business impact
+   - Strategic importance
+   - Related decisions or discussions
+
+9. **KEY TAKEAWAYS & STRATEGIC INSIGHTS**:
+   - Important decisions made during the meeting
+   - Strategic direction changes
+   - Key insights and learnings
+   - Business implications
+   - Market considerations
+   - Competitive analysis
+   - Risk assessments
+   - Opportunity identification
+
+EXAMPLES OF WHAT TO EXTRACT:
+
+**Standard Action Items:**
+- "John will implement the user authentication by next Friday" → Action item with assignee, due date, technical scope
+- "Sarah should schedule a follow-up meeting with the client" → Action item with communication requirement
+- "The database migration needs to be tested before deployment" → Action item with dependency and quality requirement
+- "Mike will coordinate with the frontend team on the UI changes" → Action item with stakeholder involvement
+- "We need to document the API changes for the team" → Action item with documentation requirement
+- "The security review must be completed before we can go live" → Action item with blocker and compliance requirement
+
+**BUDGETING & FINANCIAL EXAMPLES:**
+- "We need to get budget approval for the new server" → Action item with budget_impact, approval_required: true
+- "The project has a $50,000 budget limit" → Action item with spending_limit: "$50,000"
+- "Marketing department will cover the advertising costs" → Action item with cost_center: "Marketing"
+- "We need CFO approval for any purchase over $10,000" → Action item with approval_required: true, spending_limit: "$10,000"
+- "The new software license costs $2,500 per month" → Action item with budget_allocation: "$2,500/month"
+- "This could save us $100,000 annually" → Action item with financial_impact: "Cost savings: $100,000 annually"
+- "We need to negotiate better pricing with the vendor" → Action item with budget_impact: "Vendor pricing negotiation"
+
+**KEY TAKEAWAYS & STRATEGIC INSIGHTS:**
+- "We decided to pivot to a mobile-first approach" → Action item with context: "Strategic pivot to mobile-first approach"
+- "The market research shows 40% growth potential" → Action item with context: "Market opportunity: 40% growth potential"
+- "Competitor X just launched a similar feature" → Action item with context: "Competitive threat: Competitor X feature launch"
+- "Customer feedback indicates high demand for this feature" → Action item with context: "Customer validation: High demand confirmed"
+- "We identified a new market segment worth $2M" → Action item with context: "New market opportunity: $2M segment identified"
+
+IMPORTANT NOTES:
+- Extract EVERY action item mentioned, even if it seems minor
+- If someone says "I'll do X" or "We need to do Y", extract it
+- Capture both explicit commitments and implicit follow-up requirements
+- Include action items that are conditional or dependent on other factors
+- Extract action items from questions that imply follow-up work
+- Capture action items that are mentioned as "next steps" or "follow-up items"
+- Include action items that require coordination between multiple people
+- Extract action items that involve external parties or vendors
+- Capture action items that require research, analysis, or investigation
+- Include action items that involve decision-making or approval processes
+
+Return empty array only if absolutely no action items, commitments, or follow-up tasks are mentioned in the entire transcription.
 `;
   }
 
@@ -392,6 +561,8 @@ Guidelines:
    */
   private mapPriority(priority: string): PriorityLevel {
     switch (priority.toLowerCase()) {
+      case 'critical':
+        return PriorityLevel.CRITICAL;
       case 'urgent':
         return PriorityLevel.URGENT;
       case 'high':
@@ -402,6 +573,62 @@ Guidelines:
         return PriorityLevel.LOW;
       default:
         return PriorityLevel.MEDIUM;
+    }
+  }
+
+  /**
+   * Map category string to enum
+   */
+  private mapCategory(category: string): ActionItemCategory | undefined {
+    if (!category) return undefined;
+
+    switch (category.toLowerCase()) {
+      case 'development':
+        return ActionItemCategory.DEVELOPMENT;
+      case 'design':
+        return ActionItemCategory.DESIGN;
+      case 'testing':
+        return ActionItemCategory.TESTING;
+      case 'documentation':
+        return ActionItemCategory.DOCUMENTATION;
+      case 'meeting':
+        return ActionItemCategory.MEETING;
+      case 'review':
+        return ActionItemCategory.REVIEW;
+      case 'approval':
+        return ActionItemCategory.APPROVAL;
+      case 'research':
+        return ActionItemCategory.RESEARCH;
+      case 'planning':
+        return ActionItemCategory.PLANNING;
+      case 'implementation':
+        return ActionItemCategory.IMPLEMENTATION;
+      case 'deployment':
+        return ActionItemCategory.DEPLOYMENT;
+      case 'maintenance':
+        return ActionItemCategory.MAINTENANCE;
+      case 'other':
+        return ActionItemCategory.OTHER;
+      default:
+        return ActionItemCategory.OTHER;
+    }
+  }
+
+  /**
+   * Map risk level string to enum
+   */
+  private mapRiskLevel(riskLevel: string): RiskLevel | undefined {
+    if (!riskLevel) return undefined;
+
+    switch (riskLevel.toLowerCase()) {
+      case 'high':
+        return RiskLevel.HIGH;
+      case 'medium':
+        return RiskLevel.MEDIUM;
+      case 'low':
+        return RiskLevel.LOW;
+      default:
+        return RiskLevel.MEDIUM;
     }
   }
 

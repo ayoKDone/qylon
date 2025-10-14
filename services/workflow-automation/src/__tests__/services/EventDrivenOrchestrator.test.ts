@@ -292,8 +292,8 @@ describe('EventDrivenOrchestrator', () => {
       const actions = await (orchestrator as any).generateIntegrationActions(mockEvent, mockWorkflowResults);
 
       expect(actions).toHaveLength(2); // One for project management, one for CRM
-      expect(actions[0].type).toBe('create_contact'); // This would be 'create_task' in real implementation
-      expect(actions[1].type).toBe('create_contact');
+      expect(actions[0].type).toBe('create_task'); // Project management task creation
+      expect(actions[1].type).toBe('create_contact'); // CRM contact creation
     });
 
     it('should generate meeting end integration actions', async () => {

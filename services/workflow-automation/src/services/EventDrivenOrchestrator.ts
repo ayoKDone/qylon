@@ -330,7 +330,7 @@ export class EventDrivenOrchestrator {
       if (actionItem.projectManagementIntegration) {
         actions.push({
           id: `create-task-${event.id}`,
-          type: 'create_contact', // This would be 'create_task' in a real implementation
+          type: 'create_task',
           integrationType: actionItem.projectManagementIntegration as any,
           config: {
             projectId: actionItem.projectId,

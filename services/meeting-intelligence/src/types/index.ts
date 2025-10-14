@@ -46,8 +46,31 @@ export interface ActionItem {
   description: string;
   assignee?: string;
   due_date?: Date;
+  due_time?: string;
   priority: PriorityLevel;
   status: ActionItemStatus;
+  category?: ActionItemCategory;
+  project?: string;
+  dependencies?: string[];
+  blockers?: string[];
+  resources_needed?: string[];
+  success_criteria?: string;
+  budget_impact?: string;
+  budget_allocation?: string;
+  cost_center?: string;
+  approval_required?: boolean;
+  spending_limit?: string;
+  financial_impact?: string;
+  stakeholders?: string[];
+  communication_requirements?: string;
+  technical_requirements?: string;
+  quality_standards?: string;
+  location?: string;
+  meeting_related?: string;
+  tags?: string[];
+  estimated_effort?: string;
+  risk_level?: RiskLevel;
+  context?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -106,6 +129,29 @@ export enum PriorityLevel {
   MEDIUM = 'medium',
   HIGH = 'high',
   URGENT = 'urgent',
+  CRITICAL = 'critical',
+}
+
+export enum ActionItemCategory {
+  DEVELOPMENT = 'development',
+  DESIGN = 'design',
+  TESTING = 'testing',
+  DOCUMENTATION = 'documentation',
+  MEETING = 'meeting',
+  REVIEW = 'review',
+  APPROVAL = 'approval',
+  RESEARCH = 'research',
+  PLANNING = 'planning',
+  IMPLEMENTATION = 'implementation',
+  DEPLOYMENT = 'deployment',
+  MAINTENANCE = 'maintenance',
+  OTHER = 'other',
+}
+
+export enum RiskLevel {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
 }
 
 export enum ActionItemStatus {
@@ -164,8 +210,31 @@ export interface ActionItemResponse {
   description: string;
   assignee?: string;
   due_date?: Date;
+  due_time?: string;
   priority: PriorityLevel;
   status: ActionItemStatus;
+  category?: ActionItemCategory;
+  project?: string;
+  dependencies?: string[];
+  blockers?: string[];
+  resources_needed?: string[];
+  success_criteria?: string;
+  budget_impact?: string;
+  budget_allocation?: string;
+  cost_center?: string;
+  approval_required?: boolean;
+  spending_limit?: string;
+  financial_impact?: string;
+  stakeholders?: string[];
+  communication_requirements?: string;
+  technical_requirements?: string;
+  quality_standards?: string;
+  location?: string;
+  meeting_related?: string;
+  tags?: string[];
+  estimated_effort?: string;
+  risk_level?: RiskLevel;
+  context?: string;
 }
 
 export interface MeetingSummaryResponse {
