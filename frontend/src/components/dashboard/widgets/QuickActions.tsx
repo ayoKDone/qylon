@@ -1,9 +1,10 @@
-// src/components/QuickActions.tsx
+// src/widgets/QuickActions.tsx
 import { LucideIcon } from 'lucide-react';
 
 interface Action {
   icon: LucideIcon;
   label: string;
+  description: string;
   iconColor: string;
   onClick: () => void;
 }
@@ -14,17 +15,22 @@ interface QuickActionsProps {
 
 export default function QuickActions({ actions }: QuickActionsProps) {
   return (
-    <div className='space-y-3'>
+    <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
       {actions.map((action, index) => {
         const Icon = action.icon;
         return (
           <button
             key={index}
             onClick={action.onClick}
-            className='w-full xui-d-flex xui-flex-ai-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left'
+            className='p-4 rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all text-left bg-white'
           >
-            <Icon className={`w-5 h-5 ${action.iconColor}`} />
-            <span className='text-gray-700 font-medium'>{action.label}</span>
+            <div className='flex flex-col gap-2'>
+              <Icon className={`w-5 h-5 ${action.iconColor}`} />
+              <div>
+                <h3 className='text-sm font-semibold text-gray-900'>{action.label}</h3>
+                <p className='text-xs text-gray-500 mt-1'>{action.description}</p>
+              </div>
+            </div>
           </button>
         );
       })}

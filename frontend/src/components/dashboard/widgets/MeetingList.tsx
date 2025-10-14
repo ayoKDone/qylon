@@ -19,28 +19,26 @@ interface Meeting {
 interface MeetingListProps {
   meetings?: Meeting[];
   isLoading?: boolean;
-  hasMore?: boolean;
-  onLoadMore?: () => void;
+  itemsPerPage?: number;
   onCreateMeeting?: () => void;
 }
 
 export default function MeetingList({
   meetings = [],
   isLoading = false,
-  hasMore = false,
-  onLoadMore,
+  itemsPerPage = 4,
   onCreateMeeting,
 }: MeetingListProps) {
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleLoadMore = async () => {
-    setLoadingMore(true);
-    await onLoadMore?.();
-    setLoadingMore(false);
-  };
+  // Calculate pagination
+  const totalPages = Math.ceil(meetings.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentMeetings = meetings.slice(startIndex, endIndex);
 
   // Group meetings by date
-  const groupedMeetings = meetings.reduce(
+  const groupedMeetings = currentMeetings.reduce(
     (acc, meeting) => {
       if (!acc[meeting.date]) {
         acc[meeting.date] = [];
@@ -50,6 +48,43 @@ export default function MeetingList({
     },
     {} as Record<string, Meeting[]>,
   );
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   // Empty State
   if (!isLoading && meetings.length === 0) {
@@ -104,22 +139,43 @@ export default function MeetingList({
             </div>
           ))}
 
-          {/* Load More Button */}
-          {hasMore && (
-            <div className='text-center pt-4'>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className='flex items-center justify-center gap-2 pt-4'>
               <button
-                onClick={handleLoadMore}
-                disabled={loadingMore}
-                className='px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed'
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+                className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white'
               >
-                {loadingMore ? (
-                  <span className='flex items-center gap-2'>
-                    <Loader2 className='w-5 h-5 animate-spin' />
-                    Loading...
-                  </span>
+                Previous
+              </button>
+              
+              {getPageNumbers().map((page, index) => (
+                typeof page === 'number' ? (
+                  <button
+                    key={index}
+                    onClick={() => handlePageClick(page)}
+                    className={`w-10 h-10 text-sm font-medium rounded-lg transition-colors ${
+                      currentPage === page
+                        ? 'bg-black text-white'
+                        : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
                 ) : (
-                  'Load More'
-                )}
+                  <span key={index} className='px-2 text-gray-500'>
+                    {page}
+                  </span>
+                )
+              ))}
+              
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className='px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white'
+              >
+                Next
               </button>
             </div>
           )}

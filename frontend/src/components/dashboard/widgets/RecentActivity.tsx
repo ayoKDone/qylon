@@ -1,53 +1,87 @@
-// src/components/RecentActivity.tsx
+// src/widgets/RecentActivity.tsx
+import { MessageSquare } from 'lucide-react';
+
+interface Meeting {
+  title: string;
+  time: string;
+  duration: string;
+  participants: number;
+  score?: string;
+  status?: 'processing' | 'completed';
+}
+
 export default function RecentActivity() {
-  const recentMeetings = [
+  const recentMeetings: Meeting[] = [
     {
-      title: 'Product Strategy Review',
-      subtitle: 'Product Team • 45 min',
+      title: 'Client Onboarding Call - Creative Agency',
       time: '2 hours ago',
+      duration: '22:15',
+      participants: 3,
+      score: '8.5/10',
       status: 'completed',
     },
     {
-      title: 'Client Onboarding Call',
-      subtitle: 'Sales Team • 30 min',
+      title: 'Product Strategy Meeting',
       time: '5 hours ago',
+      duration: '45:30',
+      participants: 5,
+      score: '9.2/10',
       status: 'completed',
     },
     {
-      title: 'Sprint Planning Session',
-      subtitle: 'Engineering Team • 1 hour',
+      title: 'Weekly Team Sync',
       time: 'Yesterday',
+      duration: '30:00',
+      participants: 8,
+      score: '7.8/10',
       status: 'completed',
     },
     {
-      title: 'Design System Workshop',
-      subtitle: 'Design Team • 2 hours',
-      time: 'Yesterday',
-      status: 'completed',
-    },
-    {
-      title: 'Quarterly Business Review',
-      subtitle: 'Leadership Team • 1.5 hours',
+      title: 'Investor Presentation Prep',
       time: '2 days ago',
+      duration: '1:15:00',
+      participants: 4,
+      status: 'processing',
+    },
+    {
+      title: 'Customer Feedback Session',
+      time: '3 days ago',
+      duration: '38:20',
+      participants: 2,
+      score: '8.9/10',
       status: 'completed',
     },
   ];
 
   return (
-    <div className='space-y-3'>
+    <div className='space-y-2'>
       {recentMeetings.map((meeting, index) => (
         <div
           key={index}
-          className='xui-d-flex xui-flex-ai-flex-start xui-flex-jc-space-between p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer'
+          className='flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer'
         >
-          <div className='flex-1'>
-            <p className='text-gray-800 font-medium text-sm'>{meeting.title}</p>
-            <p className='text-gray-500 text-xs mt-0.5'>{meeting.subtitle}</p>
+          <div className='flex items-start gap-3 flex-1'>
+            <div className='mt-0.5'>
+              <MessageSquare className='w-5 h-5 text-blue-500' />
+            </div>
+            <div className='flex-1 min-w-0'>
+              <p className='text-sm font-medium text-gray-900'>{meeting.title}</p>
+              <p className='text-xs text-gray-500 mt-0.5'>
+                {meeting.time} • {meeting.duration} • {meeting.participants} participants
+              </p>
+            </div>
           </div>
 
-          <div className='flex-shrink-0 ml-4 text-right'>
-            <span className='text-blue-500 text-xs font-medium block'>{meeting.time}</span>
-            <span className='text-green-600 text-xs mt-1 block'>{meeting.status}</span>
+          <div className='flex-shrink-0 ml-4'>
+            {meeting.status === 'processing' ? (
+              <span className='inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700'>
+                Processing
+              </span>
+            ) : (
+              <span className='inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-green-600 text-white'>
+                {meeting.score}
+              </span>
+            )}
           </div>
         </div>
       ))}
