@@ -34,6 +34,16 @@ jest.mock('@supabase/supabase-js');
 jest.mock('../../services/WorkflowEngine');
 jest.mock('../../utils/logger');
 
+const mockChain = {
+  select: jest.fn().mockReturnThis(),
+  eq: jest.fn().mockReturnThis(),
+  single: jest.fn(),
+  limit: jest.fn().mockResolvedValue({
+    data: [],
+    error: null,
+  }),
+};
+
 const mockSupabase = {
   from: jest.fn(() => ({
     upsert: jest.fn().mockResolvedValue({ error: null }),
@@ -112,6 +122,54 @@ describe('WorkflowTriggerSystem', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Reset the mock chain to return workflow data by default
+    mockChain.select.mockImplementation((query) => {
+      // Handle the multi-line select query from the service
+      if (typeof query === 'string' && query.includes('id,') && query.includes('client_id')) {
+        return Promise.resolve({
+          data: [
+            {
+              id: 'workflow-123',
+              client_id: 'user-123',
+              name: 'Action Item Workflow',
+              description: 'Processes action items from meetings',
+              definition: {
+                id: 'workflow-def-123',
+                name: 'Action Item Workflow',
+                version: '1.0.0',
+                triggers: [
+                  {
+                    id: 'trigger-123',
+                    type: 'event',
+                    name: 'Action Item Created Trigger',
+                    config: {
+                      event_type: 'action_item.created',
+                      aggregate_type: 'meeting',
+                    },
+                    enabled: true,
+                  },
+                ],
+                states: [],
+                transitions: [],
+              },
+              status: 'active',
+              version: 1,
+              is_active: true,
+              created_at: new Date('2024-01-01T09:00:00Z').toISOString(),
+              updated_at: new Date('2024-01-01T09:00:00Z').toISOString(),
+            },
+          ],
+          error: null,
+        });
+      }
+      // For other queries (like health check), return empty data
+      return Promise.resolve({
+        data: [],
+        error: null,
+      });
+    });
+
     triggerSystem = new WorkflowTriggerSystem();
 
     mockEvent = {
@@ -174,6 +232,7 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should process event and trigger matching workflows', async () => {
+<<<<<<< Updated upstream
       // Mock database response - the implementation expects this exact structure
       mockData = [{
         id: mockWorkflow.id,
@@ -189,6 +248,8 @@ describe('WorkflowTriggerSystem', () => {
       }];
 
       // Mock data is now ready to be returned by the database query
+=======
+>>>>>>> Stashed changes
 
       // Mock workflow execution
       mockWorkflowEngine.executeWorkflowFromEvent.mockResolvedValue({
@@ -226,7 +287,7 @@ describe('WorkflowTriggerSystem', () => {
 
     it('should return empty array when no matching workflows found', async () => {
       // Mock empty database response
-      mockSupabase.from().single.mockResolvedValue({
+      mockChain.select.mockResolvedValue({
         data: [],
         error: null,
       });
@@ -238,6 +299,7 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should handle workflow execution failures gracefully', async () => {
+<<<<<<< Updated upstream
       // Mock database response
       mockData = [{
         id: mockWorkflow.id,
@@ -251,6 +313,8 @@ describe('WorkflowTriggerSystem', () => {
         created_at: mockWorkflow.created_at.toISOString(),
         updated_at: mockWorkflow.updated_at.toISOString(),
       }];
+=======
+>>>>>>> Stashed changes
 
       // Mock workflow execution failure
       mockWorkflowEngine.executeWorkflowFromEvent.mockRejectedValue(
@@ -474,6 +538,14 @@ describe('WorkflowTriggerSystem', () => {
         },
       ];
 
+<<<<<<< Updated upstream
+=======
+      mockChain.select.mockResolvedValue({
+        data: mockData,
+        error: null,
+      });
+
+>>>>>>> Stashed changes
       const stats = await triggerSystem.getTriggerStatistics();
 
       expect(stats.totalWorkflows).toBe(2);
@@ -504,8 +576,11 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should return true when database is accessible', async () => {
+<<<<<<< Updated upstream
       mockSelectData = [];
 
+=======
+>>>>>>> Stashed changes
       const isHealthy = await triggerSystem.healthCheck();
       expect(isHealthy).toBe(true);
     });

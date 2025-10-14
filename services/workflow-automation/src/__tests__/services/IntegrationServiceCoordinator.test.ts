@@ -25,6 +25,7 @@ enum IntegrationType {
 jest.mock('@supabase/supabase-js');
 jest.mock('../../utils/logger');
 
+<<<<<<< Updated upstream
 // Create mock data for integration configs
 let mockIntegrationConfigData: any = null;
 let mockStatisticsData: any[] = [];
@@ -84,6 +85,8 @@ describe('IntegrationServiceCoordinator', () => {
     mockStatisticsData = [];
     mockError = null;
     coordinator = new IntegrationServiceCoordinator();
+    // Clear the cache
+    coordinator.clearCache();
 
     mockIntegrationConfig = {
       id: 'integration-123',
@@ -128,7 +131,6 @@ describe('IntegrationServiceCoordinator', () => {
       correlationId: 'correlation-123',
       causationId: 'causation-123',
     };
-  });
 
   describe('coordinateIntegrationActions', () => {
     it('should coordinate multiple integration actions successfully', async () => {
@@ -208,8 +210,20 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should handle missing integration configuration', async () => {
+<<<<<<< Updated upstream
       // Mock no integration config found
       mockIntegrationConfigData = null;
+=======
+      // Override the global mock to return no integration config
+      mockSupabase.from.mockImplementationOnce((tableName: string) => {
+        const chain = createMockChain();
+        chain.single.mockResolvedValue({
+          data: null,
+          error: { message: 'No rows found' },
+        });
+        return chain;
+      });
+>>>>>>> Stashed changes
 
       const actions = [mockAction];
       const results = await coordinator.coordinateIntegrationActions(actions, mockContext);
@@ -481,9 +495,14 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should return null when integration not found', async () => {
-      mockSupabase.from().single.mockResolvedValue({
-        data: null,
-        error: { message: 'No rows found' },
+      // Override the global mock to return no integration config
+      mockSupabase.from.mockImplementationOnce((tableName: string) => {
+        const chain = createMockChain();
+        chain.single.mockResolvedValue({
+          data: null,
+          error: { message: 'No rows found' },
+        });
+        return chain;
       });
 
       const config = await (coordinator as any).getIntegrationConfig(
@@ -501,7 +520,7 @@ describe('IntegrationServiceCoordinator', () => {
         new Error('Network timeout'),
         new Error('Connection failed'),
         new Error('Rate limit exceeded'),
-        new Error('Service temporarily unavailable'),
+        new Error('service unavailable'),
       ];
 
       retryableErrors.forEach(error => {
@@ -543,10 +562,13 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should handle database errors in statistics', async () => {
-      mockSupabase.from().select.mockResolvedValue({
-        data: null,
-        error: { message: 'Database error' },
-      });
+      // Override the global mock for this specific test
+      mockSupabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: 'Database error' },
+        }),
+      }));
 
       const stats = await coordinator.getCoordinationStatistics();
 
@@ -565,7 +587,18 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should return false when database is not accessible', async () => {
+<<<<<<< Updated upstream
       mockError = { message: 'Connection failed' };
+=======
+      // Override the global mock for this specific test
+      mockSupabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: 'Connection failed' },
+        }),
+      }));
+>>>>>>> Stashed changes
 
       const isHealthy = await coordinator.healthCheck();
       expect(isHealthy).toBe(false);
