@@ -138,7 +138,11 @@ export interface ConversionRecoveryCampaign {
   name: string;
   description: string;
   targetSegment: string;
-  recoveryStrategy: 'email_sequence' | 'personalized_outreach' | 'incentive_offer' | 'feature_highlight';
+  recoveryStrategy:
+    | 'email_sequence'
+    | 'personalized_outreach'
+    | 'incentive_offer'
+    | 'feature_highlight';
   isActive: boolean;
   userId: string;
   clientId?: string;

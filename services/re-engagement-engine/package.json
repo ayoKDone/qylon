@@ -13,7 +13,9 @@
         "test:integration": "jest --config jest.integration.config.js",
         "test:performance": "jest --config jest.performance.config.js",
         "lint": "npx eslint src/**/*.ts",
-        "lint:fix": "npx eslint src/**/*.ts --fix"
+        "lint:fix": "npx eslint src/**/*.ts --fix",
+        "format": "npx prettier --write src/**/*.ts",
+        "format:check": "npx prettier --check src/**/*.ts"
     },
     "dependencies": {
         "express": "^4.18.2",
@@ -57,7 +59,10 @@
         "supertest": "^6.3.3",
         "eslint": "^8.55.0",
         "@typescript-eslint/eslint-plugin": "^6.13.1",
-        "@typescript-eslint/parser": "^6.13.1"
+        "@typescript-eslint/parser": "^6.13.1",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "prettier": "^3.0.3"
     },
     "keywords": [
         "qylon",

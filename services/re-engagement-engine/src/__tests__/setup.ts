@@ -1,4 +1,3 @@
-
 // Mock Supabase client for testing
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
@@ -30,15 +29,17 @@ jest.mock('openai', () => {
       chat: {
         completions: {
           create: jest.fn().mockResolvedValue({
-            choices: [{
-              message: {
-                content: 'Mock AI response for testing'
-              }
-            }]
-          })
-        }
-      }
-    }))
+            choices: [
+              {
+                message: {
+                  content: 'Mock AI response for testing',
+                },
+              },
+            ],
+          }),
+        },
+      },
+    })),
   };
 });
 

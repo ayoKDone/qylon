@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  BehaviorPattern,
-  RiskFactor,
-  UserBehaviorEvent,
-  UserBehaviorProfile,
-} from '../types';
+import { BehaviorPattern, RiskFactor, UserBehaviorEvent, UserBehaviorProfile } from '../types';
 import { logBusinessEvent, logger } from '../utils/logger';
 
 export class UserBehaviorTrackingService {
@@ -34,17 +29,17 @@ export class UserBehaviorTrackingService {
       const event: UserBehaviorEvent = {
         id: eventId,
         userId,
-        clientId: clientId || undefined,
         eventType,
         eventData,
-        sessionId: sessionId || undefined,
-        ipAddress: ipAddress || undefined,
-        userAgent: userAgent || undefined,
         timestamp: now,
         metadata: {
           source: 're-engagement-engine',
           version: '1.0.0',
         },
+        ...(clientId && { clientId }),
+        ...(sessionId && { sessionId }),
+        ...(ipAddress && { ipAddress }),
+        ...(userAgent && { userAgent }),
       };
 
       const { data, error } = await this.supabase
@@ -91,7 +86,7 @@ export class UserBehaviorTrackingService {
   ): Promise<void> {
     try {
       // Get existing profile or create new one
-      let { data: profile, error: profileError } = await this.supabase
+      const { data: profile, error: profileError } = await this.supabase
         .from('user_behavior_profiles')
         .select('*')
         .eq('user_id', userId)
@@ -109,7 +104,6 @@ export class UserBehaviorTrackingService {
         const newProfile: UserBehaviorProfile = {
           id: uuidv4(),
           userId,
-          clientId: clientId || undefined,
           engagementScore: 0,
           lastActivityAt: now,
           totalSessions: 0,
@@ -119,6 +113,7 @@ export class UserBehaviorTrackingService {
           riskFactors: [],
           createdAt: now,
           updatedAt: now,
+          ...(clientId && { clientId }),
         };
 
         const { data: createdProfile, error: createError } = await this.supabase
@@ -218,11 +213,12 @@ export class UserBehaviorTrackingService {
     // Apply engagement decay (reduce score over time)
     const lastActivity = new Date(profile.lastActivityAt);
     const daysSinceLastActivity = (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24);
-    const decayFactor = Math.max(0, 1 - (daysSinceLastActivity * 0.1)); // 10% decay per day
+    const decayFactor = Math.max(0, 1 - daysSinceLastActivity * 0.1); // 10% decay per day
 
-    updates.engagementScore = Math.max(0, Math.min(100,
-      (profile.engagementScore * decayFactor) + engagementDelta
-    ));
+    updates.engagementScore = Math.max(
+      0,
+      Math.min(100, profile.engagementScore * decayFactor + engagementDelta),
+    );
 
     // Update session information
     if (eventType === 'session_start') {
@@ -230,7 +226,8 @@ export class UserBehaviorTrackingService {
     }
 
     if (eventType === 'session_end' && eventData['duration']) {
-      const totalDuration = profile.averageSessionDuration * profile.totalSessions + eventData['duration'];
+      const totalDuration =
+        profile.averageSessionDuration * profile.totalSessions + eventData['duration'];
       updates.averageSessionDuration = totalDuration / (profile.totalSessions + 1);
     }
 
@@ -394,7 +391,9 @@ export class UserBehaviorTrackingService {
 
     // Risk: Feature abandonment
     if (eventType === 'feature_abandoned' && eventData['feature']) {
-      const existingRisk = profile.riskFactors.find(r => r.factor === `abandoned_${eventData['feature']}`);
+      const existingRisk = profile.riskFactors.find(
+        r => r.factor === `abandoned_${eventData['feature']}`,
+      );
       if (!existingRisk) {
         riskFactors.push({
           factor: `abandoned_${eventData['feature']}`,
@@ -536,9 +535,7 @@ export class UserBehaviorTrackingService {
     engagementDistribution: Array<{ range: string; count: number }>;
   }> {
     try {
-      let query = this.supabase
-        .from('user_behavior_profiles')
-        .select('*');
+      let query = this.supabase.from('user_behavior_profiles').select('*');
 
       if (userId) {
         query = query.eq('user_id', userId);
@@ -606,7 +603,8 @@ export class UserBehaviorTrackingService {
 
         // Count behavior patterns
         profile.behaviorPatterns.forEach(pattern => {
-          patternCounts[pattern.pattern] = (patternCounts[pattern.pattern] || 0) + pattern.frequency;
+          patternCounts[pattern.pattern] =
+            (patternCounts[pattern.pattern] || 0) + pattern.frequency;
         });
       });
 
@@ -640,11 +638,7 @@ export class UserBehaviorTrackingService {
   /**
    * Resolve a risk factor
    */
-  async resolveRiskFactor(
-    userId: string,
-    factor: string,
-    clientId?: string,
-  ): Promise<void> {
+  async resolveRiskFactor(userId: string, factor: string, clientId?: string): Promise<void> {
     try {
       const { error } = await this.supabase
         .from('user_behavior_profiles')

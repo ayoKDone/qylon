@@ -150,10 +150,7 @@ export class EmailSequenceService {
       // Update steps if provided
       if (request.steps) {
         // Delete existing steps
-        await this.supabase
-          .from('email_steps')
-          .delete()
-          .eq('sequence_id', sequenceId);
+        await this.supabase.from('email_steps').delete().eq('sequence_id', sequenceId);
 
         // Create new steps
         const steps: EmailStep[] = [];
@@ -229,10 +226,12 @@ export class EmailSequenceService {
     try {
       let query = this.supabase
         .from('email_sequences')
-        .select(`
+        .select(
+          `
           *,
           email_steps (*)
-        `)
+        `,
+        )
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
@@ -264,10 +263,12 @@ export class EmailSequenceService {
     try {
       const { data, error } = await this.supabase
         .from('email_sequences')
-        .select(`
+        .select(
+          `
           *,
           email_steps (*)
-        `)
+        `,
+        )
         .eq('id', sequenceId)
         .eq('user_id', userId)
         .single();
@@ -296,10 +297,7 @@ export class EmailSequenceService {
   async deleteEmailSequence(sequenceId: string, userId: string): Promise<void> {
     try {
       // Delete steps first
-      await this.supabase
-        .from('email_steps')
-        .delete()
-        .eq('sequence_id', sequenceId);
+      await this.supabase.from('email_steps').delete().eq('sequence_id', sequenceId);
 
       // Delete sequence
       const { error } = await this.supabase
@@ -459,7 +457,9 @@ export class EmailSequenceService {
 
       // Update execution
       const nextStepNumber = execution.currentStep + 1;
-      const nextStepInSequence = sequence.steps.find(step => step.stepNumber === nextStepNumber + 1);
+      const nextStepInSequence = sequence.steps.find(
+        step => step.stepNumber === nextStepNumber + 1,
+      );
 
       let nextExecutionAt: string | undefined;
       if (nextStepInSequence) {
@@ -605,7 +605,8 @@ export class EmailSequenceService {
           .eq('id', deliveryId);
 
         deliveryData.status = 'failed';
-        deliveryData.errorMessage = emailError instanceof Error ? emailError.message : 'Unknown error';
+        deliveryData.errorMessage =
+          emailError instanceof Error ? emailError.message : 'Unknown error';
 
         logger.error('Failed to send email', {
           error: emailError instanceof Error ? emailError.message : 'Unknown error',
@@ -689,7 +690,10 @@ export class EmailSequenceService {
   /**
    * Get delivery statistics
    */
-  async getDeliveryStats(userId: string, clientId?: string): Promise<{
+  async getDeliveryStats(
+    userId: string,
+    clientId?: string,
+  ): Promise<{
     totalSent: number;
     totalDelivered: number;
     totalOpened: number;
@@ -701,10 +705,7 @@ export class EmailSequenceService {
     bounceRate: number;
   }> {
     try {
-      let query = this.supabase
-        .from('email_deliveries')
-        .select('status')
-        .eq('user_id', userId);
+      let query = this.supabase.from('email_deliveries').select('status').eq('user_id', userId);
 
       if (clientId) {
         query = query.eq('client_id', clientId);
