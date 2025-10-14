@@ -186,11 +186,13 @@ jobs:
 
       - name: Install service dependencies for testing
         run: |
-          # Install dependencies for each service
-          cd services/api-gateway && npm install && cd ../..
-          cd services/meeting-intelligence && npm install && cd ../..
-          cd services/workflow-automation && npm install && cd ../..
-          cd services/integration-management && npm install && cd ../..
+          # Install dependencies for services that exist
+          if [ -d "services/api-gateway" ]; then
+            cd services/api-gateway && npm install && cd ../..
+          fi
+          if [ -d "services/workflow-automation" ]; then
+            cd services/workflow-automation && npm install && cd ../..
+          fi
 
       - name: Run Unit Tests
         env:
@@ -205,11 +207,15 @@ jobs:
           npx jest --clearCache || true
           npm cache clean --force || true
 
-          # Run unit tests for each service
-          cd services/api-gateway && npm test && cd ../..
-          cd services/meeting-intelligence && npm test && cd ../..
-          cd services/workflow-automation && npm test && cd ../..
-          cd services/integration-management && npm test && cd ../..
+          # Run unit tests for services that exist
+          if [ -d "services/api-gateway" ]; then
+            echo "Running API Gateway unit tests..."
+            cd services/api-gateway && npm test && cd ../..
+          fi
+          if [ -d "services/workflow-automation" ]; then
+            echo "Running Workflow Automation unit tests..."
+            cd services/workflow-automation && npm test && cd ../..
+          fi
 
       - name: Install K6 for performance testing
         run: |

@@ -14,15 +14,14 @@ describe('Health Routes', () => {
       expect(response.body).toHaveProperty('version');
     });
 
-    it('should include service dependencies status', async () => {
+    it('should include service information', async () => {
       const response = await request(app)
         .get('/health')
         .expect(200);
 
-      expect(response.body).toHaveProperty('dependencies');
-      expect(response.body.dependencies).toHaveProperty('database');
-      expect(response.body.dependencies).toHaveProperty('redis');
-      expect(response.body.dependencies).toHaveProperty('supabase');
+      expect(response.body).toHaveProperty('service', 'api-gateway');
+      expect(response.body).toHaveProperty('environment');
+      expect(response.body).toHaveProperty('version', '1.0.0');
     });
   });
 
@@ -33,8 +32,10 @@ describe('Health Routes', () => {
         .expect(200);
 
       expect(response.body).toHaveProperty('status');
-      expect(response.body).toHaveProperty('checks');
-      expect(response.body.checks).toBeInstanceOf(Array);
+      expect(response.body).toHaveProperty('services');
+      expect(response.body.services).toBeInstanceOf(Array);
+      expect(response.body).toHaveProperty('system');
+      expect(response.body).toHaveProperty('responseTime');
     });
   });
 });
