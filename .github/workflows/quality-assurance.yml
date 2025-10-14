@@ -42,6 +42,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install service dependencies
+        run: |
+          # Install dependencies for each service
+          cd services/api-gateway && npm install && cd ../..
+          cd services/meeting-intelligence && npm install && cd ../..
+          cd services/workflow-automation && npm install && cd ../..
+          cd services/integration-management && npm install && cd ../..
+
       - name: Run Linting and Formatting
         run: |
           # Run linting for each service
