@@ -52,13 +52,13 @@ module.exports = {
     '!**/cypress/**',
   ],
 
-  // Coverage thresholds - Achievable targets for current development phase
+  // Coverage thresholds - Production quality standards
   coverageThreshold: {
     global: {
-      branches: 25,
-      functions: 50,
-      lines: 50,
-      statements: 50,
+      branches: 95,
+      functions: 95,
+      lines: 95,
+      statements: 95,
     },
   },
 

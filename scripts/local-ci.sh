@@ -16,7 +16,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Configuration
-COVERAGE_THRESHOLD=50
+COVERAGE_THRESHOLD=95
 TEST_TIMEOUT=30000
 PARALLEL_WORKERS=4
 
@@ -272,9 +272,19 @@ main() {
     # Step 2: Install Dependencies
     print_section "Dependency Installation"
 
+    # Setup CI environment
+    print_info "Setting up CI environment..."
+    if [ -f "scripts/ci-setup.sh" ]; then
+        if ! run_command "source scripts/ci-setup.sh" "Setup CI environment"; then
+            print_warning "CI environment setup failed, continuing..."
+        fi
+    else
+        print_warning "CI setup script not found, using default environment"
+    fi
+
     # Install root dependencies
     if [ -f "package.json" ]; then
-        if ! run_command "npm install" "Install root dependencies"; then
+        if ! run_command "npm ci" "Install root dependencies"; then
             exit_code=1
         fi
     fi
@@ -285,6 +295,33 @@ main() {
             exit_code=1
         fi
     done
+
+    # Install Python dependencies
+    if [ -f "requirements.txt" ]; then
+        if command_exists python3; then
+            # Check if we're in an externally managed environment
+            if python3 -m pip install --upgrade pip 2>&1 | grep -q "externally-managed-environment"; then
+                print_warning "Python environment is externally managed, skipping pip upgrade"
+                print_info "Using system Python packages or virtual environment"
+            else
+                if ! run_command "python3 -m pip install --upgrade pip" "Upgrade pip"; then
+                    print_warning "Failed to upgrade pip, continuing..."
+                fi
+            fi
+
+            # Try to install requirements, but don't fail if externally managed
+            if pip install -r requirements.txt 2>&1 | grep -q "externally-managed-environment"; then
+                print_warning "Python environment is externally managed, skipping requirements installation"
+                print_info "Please install Python dependencies manually or use a virtual environment"
+            else
+                if ! run_command "pip install -r requirements.txt" "Install Python dependencies"; then
+                    print_warning "Failed to install Python dependencies, continuing..."
+                fi
+            fi
+        else
+            print_warning "Python3 not found, skipping Python dependencies"
+        fi
+    fi
 
     # Step 3: Linting
     if [ "$SKIP_LINT" != "true" ]; then
@@ -325,6 +362,22 @@ main() {
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "Unit Tests"
 
+        # Clear Jest cache to prevent module resolution issues
+        print_info "Clearing Jest cache..."
+        if [ -f "scripts/clear-jest-cache.sh" ]; then
+            if ! run_command "./scripts/clear-jest-cache.sh" "Clear Jest cache"; then
+                print_warning "Jest cache clearing failed, continuing..."
+            fi
+        else
+            print_warning "Jest cache clearing script not found, using fallback method"
+            if ! run_command "npx jest --clearCache || true" "Clear Jest cache (fallback)"; then
+                print_warning "Jest cache clearing failed, continuing..."
+            fi
+            if ! run_command "npm cache clean --force || true" "Clear npm cache (fallback)"; then
+                print_warning "npm cache clearing failed, continuing..."
+            fi
+        fi
+
         for service in "${services[@]}"; do
             if ! run_service_tests "$service"; then
                 exit_code=1
@@ -355,6 +408,34 @@ main() {
         print_warning "Skipping integration tests (--skip-tests flag)"
     fi
 
+    # Step 7.5: Python Tests (if available)
+    if [ "$SKIP_TESTS" != "true" ]; then
+        print_section "Python Tests"
+
+        print_info "Running Python tests for content-creation service..."
+        if [ -d "services/content-creation" ] && [ -f "services/content-creation/test_basic.py" ]; then
+            cd services/content-creation
+            if command_exists python3; then
+                # Check if Python dependencies are available
+                if python3 -c "import openai, requests" 2>/dev/null; then
+                    if ! run_command "python3 test_basic.py" "Python content-creation tests"; then
+                        print_warning "Python tests failed, but continuing..."
+                    fi
+                else
+                    print_warning "Python dependencies not available, skipping Python tests"
+                    print_info "Install Python dependencies manually or use a virtual environment"
+                fi
+            else
+                print_warning "Python3 not found, skipping Python tests"
+            fi
+            cd "$REPO_ROOT"
+        else
+            print_warning "No Python tests found"
+        fi
+    else
+        print_warning "Skipping Python tests (--skip-tests flag)"
+    fi
+
     # Step 8: Security Scan (if available)
     print_section "Security Scan"
 
@@ -364,14 +445,61 @@ main() {
         # Don't fail the pipeline for security issues, just warn
     fi
 
+    # Step 8.5: TypeScript Compilation Check
+    if [ "$SKIP_BUILD" != "true" ]; then
+        print_section "TypeScript Compilation Check"
+
+        print_info "Running TypeScript type checking..."
+        if ! run_command "npx tsc --noEmit" "TypeScript type checking"; then
+            print_error "TypeScript compilation failed"
+            exit_code=1
+        fi
+    else
+        print_warning "Skipping TypeScript compilation check (--skip-build flag)"
+    fi
+
     # Step 9: Performance Tests (if available)
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "Performance Tests"
 
+        # Check if K6 is installed
+        if command_exists k6; then
+            print_success "K6 is installed"
+        else
+            print_warning "K6 is not installed. Installing K6..."
+            if command_exists apt-get; then
+                # Ubuntu/Debian installation
+                if ! run_command "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69" "Add K6 repository key"; then
+                    print_warning "Failed to add K6 repository key"
+                fi
+                if ! run_command "echo 'deb https://dl.k6.io/deb stable main' | sudo tee /etc/apt/sources.list.d/k6.list" "Add K6 repository"; then
+                    print_warning "Failed to add K6 repository"
+                fi
+                if ! run_command "sudo apt-get update && sudo apt-get install k6" "Install K6"; then
+                    print_warning "Failed to install K6"
+                fi
+            elif command_exists brew; then
+                # macOS installation
+                if ! run_command "brew install k6" "Install K6"; then
+                    print_warning "Failed to install K6"
+                fi
+            else
+                print_warning "Cannot install K6 automatically. Please install K6 manually."
+                print_info "Installation instructions:"
+                print_info "  Ubuntu/Debian: sudo apt-get install k6"
+                print_info "  macOS: brew install k6"
+                print_info "  Windows: choco install k6"
+            fi
+        fi
+
         if [ -d "tests/performance" ] && [ "$(ls -A tests/performance 2>/dev/null)" ]; then
             print_info "Running performance tests..."
-            # Check if the script exists before running
-            if npm run | grep -q "test:performance:"; then
+            # Check if the performance test script exists
+            if [ -f "scripts/performance-test.sh" ]; then
+                if ! run_command "./scripts/performance-test.sh --test-type load" "Performance tests"; then
+                    exit_code=1
+                fi
+            elif npm run | grep -q "test:performance:"; then
                 if ! run_command "npm run test:performance:load" "Performance tests"; then
                     exit_code=1
                 fi
@@ -389,9 +517,36 @@ main() {
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "End-to-End Tests"
 
-        if [ -d "tests/e2e" ] && [ "$(ls -A tests/e2e 2>/dev/null)" ]; then
+        # Check if Cypress is installed
+        if [ -d "frontend/node_modules/cypress" ] || [ -d "node_modules/cypress" ]; then
+            print_success "Cypress is installed"
+        else
+            print_warning "Cypress is not installed. Installing Cypress..."
+            if [ -d "frontend" ]; then
+                cd frontend
+                if ! run_command "npm install --save-dev cypress @cypress/react @cypress/webpack-dev-server" "Install Cypress"; then
+                    print_warning "Failed to install Cypress"
+                fi
+                cd "$REPO_ROOT"
+            else
+                print_warning "Frontend directory not found, cannot install Cypress"
+            fi
+        fi
+
+        # Check for E2E tests in frontend directory
+        if [ -d "frontend/cypress" ] && [ "$(ls -A frontend/cypress 2>/dev/null)" ]; then
             print_info "Running E2E tests..."
-            # Check if the script exists before running
+            cd frontend
+            if npm run | grep -q "test:e2e"; then
+                if ! run_command "npm run test:e2e" "E2E tests"; then
+                    exit_code=1
+                fi
+            else
+                print_warning "No E2E test script found in frontend"
+            fi
+            cd "$REPO_ROOT"
+        elif [ -d "tests/e2e" ] && [ "$(ls -A tests/e2e 2>/dev/null)" ]; then
+            print_info "Running E2E tests..."
             if npm run | grep -q "test:e2e"; then
                 if ! run_command "npm run test:e2e" "E2E tests"; then
                     exit_code=1
