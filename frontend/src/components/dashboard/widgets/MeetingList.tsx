@@ -100,7 +100,7 @@ export default function MeetingList({
           </p>
           <button
             onClick={onCreateMeeting}
-            className='inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-medium hover:from-cyan-600 hover:to-blue-600 transition-all shadow-md'
+            className='inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg font-medium'
           >
             <Plus className='w-5 h-5' />
             Create Meeting

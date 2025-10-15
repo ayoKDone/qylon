@@ -30,6 +30,12 @@ interface RecentMeeting {
   statusColor: 'green' | 'orange' | 'blue';
 }
 
+interface upcomingMeetings {
+  time: string;
+  title: string;
+  attendees: number;
+}
+
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
 };
@@ -51,118 +57,118 @@ export default function MeetingHistory() {
     fetchMeetings();
   }, []);
 
-  const upcomingMeetings = [
-    { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
-    { time: '4:30 PM', title: 'Client Review', attendees: 3 },
-    { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+  const upcomingMeetings: upcomingMeetings[] = [
+    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
   const recentMeetings: RecentMeeting[] = [
-    {
-      id: '1',
-      title: 'Product Strategy Session',
-      time: '48:12',
-      participants: 5,
-      date: '1/15/2024',
-      status: 'completed',
-      statusColor: 'green',
-    },
-    {
-      id: '2',
-      title: 'Client Onboarding Call',
-      time: '32:15',
-      participants: 3,
-      date: '1/14/2024',
-      status: 'completed',
-      statusColor: 'orange',
-    },
-    {
-      id: '3',
-      title: 'Team Standup',
-      time: '16:42',
-      participants: 7,
-      date: '1/14/2024',
-      status: 'active',
-      statusColor: 'green',
-    },
+    // {
+    //   id: '1',
+    //   title: 'Product Strategy Session',
+    //   time: '48:12',
+    //   participants: 5,
+    //   date: '1/15/2024',
+    //   status: 'completed',
+    //   statusColor: 'green',
+    // },
+    // {
+    //   id: '2',
+    //   title: 'Client Onboarding Call',
+    //   time: '32:15',
+    //   participants: 3,
+    //   date: '1/14/2024',
+    //   status: 'completed',
+    //   statusColor: 'orange',
+    // },
+    // {
+    //   id: '3',
+    //   title: 'Team Standup',
+    //   time: '16:42',
+    //   participants: 7,
+    //   date: '1/14/2024',
+    //   status: 'active',
+    //   statusColor: 'green',
+    // },
   ];
 
   const fetchMeetings = async () => {
     setIsLoading(true);
     // Replace with your API call
     const mockMeetings: Meeting[] = [
-      {
-        id: '1',
-        title: 'Client Onboarding Call - Creative Agency',
-        time: '10:00',
-        endTime: '10:22',
-        date: 'Oct 11, 2025',
-        owner: 'Jackson Schlachter',
-        duration: '22 min',
-        participants: 3,
-        platform: 'Zoom',
-        status: 'completed',
-      },
-      {
-        id: '2',
-        title: 'Product Strategy Meeting',
-        time: '14:00',
-        endTime: '14:45',
-        date: 'Oct 10, 2025',
-        owner: 'Sarah M.',
-        duration: '45 min',
-        participants: 5,
-        platform: 'Teams',
-        status: 'completed',
-      },
-      {
-        id: '3',
-        title: 'Daily CX Sprint',
-        time: '03:00',
-        endTime: '03:35 PM',
-        date: 'TODAY',
-        owner: 'Hermes Mallios',
-        duration: '35 min',
-        participants: 12,
-        platform: 'Teams',
-        status: 'completed',
-      },
-      {
-        id: '4',
-        title: 'Barkbase internal handoff',
-        time: '9:00',
-        endTime: '9:30 AM',
-        date: 'WED, APRIL 22',
-        owner: 'Cosmo S.',
-        duration: '30 min',
-        participants: 6,
-        platform: 'Zoom',
-        status: 'failed',
-      },
-      {
-        id: '5',
-        title: 'Barkbase internal handoff',
-        time: '9:00',
-        endTime: '9:30 AM',
-        date: 'WED, APRIL 22',
-        owner: 'Cosmo S.',
-        duration: '30 min',
-        participants: 6,
-        platform: 'Zoom',
-        status: 'failed',
-      },
-      {
-        id: '6',
-        title: 'Barkbase internal handoff',
-        time: '9:00',
-        endTime: '9:30 AM',
-        date: 'WED, APRIL 22',
-        owner: 'Cosmo S.',
-        duration: '30 min',
-        participants: 6,
-        platform: 'Zoom',
-        status: 'failed',
-      },
+      // {
+      //   id: '1',
+      //   title: 'Client Onboarding Call - Creative Agency',
+      //   time: '10:00',
+      //   endTime: '10:22',
+      //   date: 'Oct 11, 2025',
+      //   owner: 'Jackson Schlachter',
+      //   duration: '22 min',
+      //   participants: 3,
+      //   platform: 'Zoom',
+      //   status: 'completed',
+      // },
+      // {
+      //   id: '2',
+      //   title: 'Product Strategy Meeting',
+      //   time: '14:00',
+      //   endTime: '14:45',
+      //   date: 'Oct 10, 2025',
+      //   owner: 'Sarah M.',
+      //   duration: '45 min',
+      //   participants: 5,
+      //   platform: 'Teams',
+      //   status: 'completed',
+      // },
+      // {
+      //   id: '3',
+      //   title: 'Daily CX Sprint',
+      //   time: '03:00',
+      //   endTime: '03:35 PM',
+      //   date: 'TODAY',
+      //   owner: 'Hermes Mallios',
+      //   duration: '35 min',
+      //   participants: 12,
+      //   platform: 'Teams',
+      //   status: 'completed',
+      // },
+      // {
+      //   id: '4',
+      //   title: 'Barkbase internal handoff',
+      //   time: '9:00',
+      //   endTime: '9:30 AM',
+      //   date: 'WED, APRIL 22',
+      //   owner: 'Cosmo S.',
+      //   duration: '30 min',
+      //   participants: 6,
+      //   platform: 'Zoom',
+      //   status: 'failed',
+      // },
+      // {
+      //   id: '5',
+      //   title: 'Barkbase internal handoff',
+      //   time: '9:00',
+      //   endTime: '9:30 AM',
+      //   date: 'WED, APRIL 22',
+      //   owner: 'Cosmo S.',
+      //   duration: '30 min',
+      //   participants: 6,
+      //   platform: 'Zoom',
+      //   status: 'failed',
+      // },
+      // {
+      //   id: '6',
+      //   title: 'Barkbase internal handoff',
+      //   time: '9:00',
+      //   endTime: '9:30 AM',
+      //   date: 'WED, APRIL 22',
+      //   owner: 'Cosmo S.',
+      //   duration: '30 min',
+      //   participants: 6,
+      //   platform: 'Zoom',
+      //   status: 'failed',
+      // },
     ];
 
     setMeetings(mockMeetings);

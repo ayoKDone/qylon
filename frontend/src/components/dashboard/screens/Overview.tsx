@@ -18,6 +18,7 @@ type NavbarContext = {
 
 export default function DashboardOverview() {
   const { setNavbar } = useOutletContext<NavbarContext>();
+  
 
   const dashboardActions: Action[] = [
     {
@@ -43,24 +44,43 @@ export default function DashboardOverview() {
     },
   ];
 
-  const monthlyStats = [
-    { label: 'Conversations', value: '127', color: 'text-gray-900' },
-    { label: 'Tasks Created', value: '342', color: 'text-gray-900' },
-    { label: 'Completion Rate', value: '89%', color: 'text-green-600' },
-    { label: 'Time Saved', value: '23.5h', color: 'text-blue-600' },
+  interface StatItem {
+    label: string;
+    value: string;
+    color?: string;
+  }
+
+  const monthlyStats: StatItem[] = [
+    // { label: 'Conversations', value: '127', color: 'text-gray-900' },
+    // { label: 'Tasks Created', value: '342', color: 'text-gray-900' },
+    // { label: 'Completion Rate', value: '89%', color: 'text-green-600' },
+    // { label: 'Time Saved', value: '23.5h', color: 'text-blue-600' },
   ];
 
-  const teamMembers = [
-    { name: 'Sarah M.', performance: 95, color: 'bg-blue-500', tasks: 42 },
-    { name: 'Mike R.', performance: 88, color: 'bg-purple-500', tasks: 38 },
-    { name: 'Jennifer K.', performance: 92, color: 'bg-pink-500', tasks: 35 },
-    { name: 'David L.', performance: 85, color: 'bg-green-500', tasks: 29 },
+  interface TeamMember {
+    name: string;
+    performance: number;
+    color: string;
+    tasks: number;
+  }
+
+  const teamMembers: TeamMember[] = [
+    // { name: 'Sarah M.', performance: 95, color: 'bg-blue-500', tasks: 42 },
+    // { name: 'Mike R.', performance: 88, color: 'bg-purple-500', tasks: 38 },
+    // { name: 'Jennifer K.', performance: 92, color: 'bg-pink-500', tasks: 35 },
+    // { name: 'David L.', performance: 85, color: 'bg-green-500', tasks: 29 },
   ];
 
-  const upcomingMeetings = [
-    { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
-    { time: '4:30 PM', title: 'Client Review', attendees: 3 },
-    { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+  interface Meeting {
+    time: string;
+    title: string;
+    attendees: number;
+  }
+
+  const upcomingMeetings: Meeting[] = [
+    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
   useEffect(() => {
@@ -87,13 +107,15 @@ export default function DashboardOverview() {
           <StatsHeader
             title='Recent Meetings'
             rightContent={
-              <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
-                View All
-                <ArrowRight className='w-4 h-4' />
-              </button>
+              
+                <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+                  View All
+                  <ArrowRight className='w-4 h-4' />
+                </button>
+              
             }
           >
-            <RecentActivity />
+            <RecentActivity  />
           </StatsHeader>
 
           {/* Quick Actions */}

@@ -1,4 +1,4 @@
-import { Clock, Users } from 'lucide-react';
+import { Clock, Users, Calendar } from 'lucide-react';
 
 interface RecentMeeting {
   id: string;
@@ -28,6 +28,20 @@ export default function RecentMeetings({ meetings, onMeetingClick }: RecentMeeti
         return 'bg-gray-500';
     }
   };
+
+  if (!meetings || meetings.length === 0) {
+    return (
+      <div className='flex flex-col items-center justify-center py-12 px-4'>
+        <div className='w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4'>
+          <Calendar className='w-10 h-10 text-gray-400' />
+        </div>
+        <p className='text-base font-medium text-gray-900 mb-2'>No recent meetings</p>
+        <p className='text-sm text-gray-500 text-center max-w-xs'>
+          Recent meetings will appear here once you start scheduling or recording sessions
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-3'>
