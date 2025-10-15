@@ -262,7 +262,7 @@ router.get(
   requirePermission('manage_users'),
   asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
-      const { requestId } = req.params;
+      const { _requestId } = req.params;
 
       // TODO: Implement get provisioning request by ID
       // This would require adding a method to UserProvisioningService
@@ -293,7 +293,7 @@ router.get(
   requirePermission('bulk_operations'),
   asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
-      const { operationId } = req.params;
+      const { _operationId } = req.params;
 
       // TODO: Implement get bulk operation by ID
       // This would require adding a method to UserProvisioningService

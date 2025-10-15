@@ -128,7 +128,7 @@ describe('WorkflowTriggerSystem', () => {
     jest.clearAllMocks();
 
     // Reset the mock chain to return workflow data by default
-    mockChain.select.mockImplementation((query) => {
+    mockChain.select.mockImplementation(query => {
       // Handle the multi-line select query from the service
       if (typeof query === 'string' && query.includes('id,') && query.includes('client_id')) {
         return Promise.resolve({
@@ -236,24 +236,6 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should process event and trigger matching workflows', async () => {
-      // Mock database response - the implementation expects this exact structure
-      mockData = [
-        {
-          id: mockWorkflow.id,
-          client_id: mockWorkflow.client_id,
-          name: mockWorkflow.name,
-          description: mockWorkflow.description,
-          definition: mockWorkflow.definition,
-          status: mockWorkflow.status,
-          version: mockWorkflow.version,
-          is_active: mockWorkflow.is_active,
-          created_at: mockWorkflow.created_at.toISOString(),
-          updated_at: mockWorkflow.updated_at.toISOString(),
-        },
-      ];
-
-      // Mock data is now ready to be returned by the database query
-
       // Mock workflow execution
       mockWorkflowEngine.executeWorkflowFromEvent.mockResolvedValue({
         id: 'execution-123',
@@ -573,8 +555,6 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should return true when database is accessible', async () => {
-      mockSelectData = [];
-
       const isHealthy = await triggerSystem.healthCheck();
       expect(isHealthy).toBe(true);
     });
