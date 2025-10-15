@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  CreateTeamAdministratorSchema,
-  CreateTeamSchema,
   NotFoundError,
   Team,
   TeamAdministrator,
@@ -15,19 +13,13 @@ export class TeamAdministratorService {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
   }
 
   /**
    * Create a new team with administrator setup
    */
-  async createTeam(
-    teamData: any,
-    createdBy: string
-  ): Promise<Team> {
+  async createTeam(teamData: any, createdBy: string): Promise<Team> {
     try {
       // Validate team data
       const validatedData = CreateTeamSchema.parse(teamData);
@@ -47,20 +39,18 @@ export class TeamAdministratorService {
       };
 
       // Save team to database
-      const { error: teamError } = await this.supabase
-        .from('teams')
-        .insert({
-          id: team.id,
-          name: team.name,
-          description: team.description,
-          organization_id: team.organizationId,
-          settings: JSON.stringify(team.settings),
-          compliance_settings: JSON.stringify(team.complianceSettings),
-          is_active: team.isActive,
-          created_at: team.createdAt.toISOString(),
-          updated_at: team.updatedAt.toISOString(),
-          created_by: team.createdBy,
-        });
+      const { error: teamError } = await this.supabase.from('teams').insert({
+        id: team.id,
+        name: team.name,
+        description: team.description,
+        organization_id: team.organizationId,
+        settings: JSON.stringify(team.settings),
+        compliance_settings: JSON.stringify(team.complianceSettings),
+        is_active: team.isActive,
+        created_at: team.createdAt.toISOString(),
+        updated_at: team.updatedAt.toISOString(),
+        created_by: team.createdBy,
+      });
 
       if (teamError) {
         logger.error('Failed to create team', {
@@ -68,12 +58,7 @@ export class TeamAdministratorService {
           teamId,
           createdBy,
         });
-        throw new TeamOnboardingError(
-          'Failed to create team',
-          'DATABASE_ERROR',
-          500,
-          teamError
-        );
+        throw new TeamOnboardingError('Failed to create team', 'DATABASE_ERROR', 500, teamError);
       }
 
       logTeamOperation('team_created', teamId, createdBy, {
@@ -92,22 +77,14 @@ export class TeamAdministratorService {
         createdBy,
       });
 
-      throw new TeamOnboardingError(
-        'Team creation failed',
-        'TEAM_CREATION_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Team creation failed', 'TEAM_CREATION_ERROR', 500, error);
     }
   }
 
   /**
    * Create a team administrator
    */
-  async createTeamAdministrator(
-    adminData: any,
-    createdBy: string
-  ): Promise<TeamAdministrator> {
+  async createTeamAdministrator(adminData: any, createdBy: string): Promise<TeamAdministrator> {
     try {
       // Validate administrator data
       const validatedData = CreateTeamAdministratorSchema.parse(adminData);
@@ -148,7 +125,7 @@ export class TeamAdministratorService {
       }
 
       // Check if administrator already exists
-      const { data: existingAdmin, error: checkError } = await this.supabase
+      const { data: existingAdmin } = await this.supabase
         .from('team_administrators')
         .select('id')
         .eq('team_id', validatedData.teamId)
@@ -160,19 +137,17 @@ export class TeamAdministratorService {
       }
 
       // Save administrator to database
-      const { error: adminError } = await this.supabase
-        .from('team_administrators')
-        .insert({
-          id: administrator.id,
-          team_id: administrator.teamId,
-          user_id: administrator.userId,
-          role: administrator.role,
-          permissions: JSON.stringify(administrator.permissions),
-          is_active: administrator.isActive,
-          created_at: administrator.createdAt.toISOString(),
-          updated_at: administrator.updatedAt.toISOString(),
-          created_by: administrator.createdBy,
-        });
+      const { error: adminError } = await this.supabase.from('team_administrators').insert({
+        id: administrator.id,
+        team_id: administrator.teamId,
+        user_id: administrator.userId,
+        role: administrator.role,
+        permissions: JSON.stringify(administrator.permissions),
+        is_active: administrator.isActive,
+        created_at: administrator.createdAt.toISOString(),
+        updated_at: administrator.updatedAt.toISOString(),
+        created_by: administrator.createdBy,
+      });
 
       if (adminError) {
         logger.error('Failed to create team administrator', {
@@ -185,7 +160,7 @@ export class TeamAdministratorService {
           'Failed to create team administrator',
           'DATABASE_ERROR',
           500,
-          adminError
+          adminError,
         );
       }
 
@@ -211,7 +186,7 @@ export class TeamAdministratorService {
         'Team administrator creation failed',
         'ADMIN_CREATION_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -223,7 +198,8 @@ export class TeamAdministratorService {
     try {
       const { data, error } = await this.supabase
         .from('team_administrators')
-        .select(`
+        .select(
+          `
           id,
           team_id,
           user_id,
@@ -234,7 +210,8 @@ export class TeamAdministratorService {
           updated_at,
           created_by,
           users!inner(id, email, first_name, last_name)
-        `)
+        `,
+        )
         .eq('team_id', teamId)
         .eq('is_active', true);
 
@@ -247,7 +224,7 @@ export class TeamAdministratorService {
           'Failed to fetch team administrators',
           'DATABASE_ERROR',
           500,
-          error
+          error,
         );
       }
 
@@ -306,7 +283,9 @@ export class TeamAdministratorService {
         .from('team_administrators')
         .update({
           role: updates.role || existingAdmin.role,
-          permissions: updates.permissions ? JSON.stringify(updates.permissions) : existingAdmin.permissions,
+          permissions: updates.permissions
+            ? JSON.stringify(updates.permissions)
+            : existingAdmin.permissions,
           is_active: updates.isActive !== undefined ? updates.isActive : existingAdmin.is_active,
           updated_at: updatedData.updated_at,
         })
@@ -324,7 +303,7 @@ export class TeamAdministratorService {
           'Failed to update team administrator',
           'DATABASE_ERROR',
           500,
-          error
+          error,
         );
       }
 
@@ -364,10 +343,7 @@ export class TeamAdministratorService {
   /**
    * Delete team administrator
    */
-  async deleteTeamAdministrator(
-    adminId: string,
-    deletedBy: string
-  ): Promise<void> {
+  async deleteTeamAdministrator(adminId: string, deletedBy: string): Promise<void> {
     try {
       // Get administrator details for logging
       const { data: admin, error: fetchError } = await this.supabase
@@ -399,7 +375,7 @@ export class TeamAdministratorService {
           'Failed to delete team administrator',
           'DATABASE_ERROR',
           500,
-          error
+          error,
         );
       }
 
@@ -465,23 +441,14 @@ export class TeamAdministratorService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get team',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get team', 'FETCH_ERROR', 500, error);
     }
   }
 
   /**
    * Update team settings
    */
-  async updateTeamSettings(
-    teamId: string,
-    settings: any,
-    updatedBy: string
-  ): Promise<Team> {
+  async updateTeamSettings(teamId: string, settings: any, updatedBy: string): Promise<Team> {
     try {
       // Verify team exists
       const existingTeam = await this.getTeam(teamId);
@@ -491,10 +458,7 @@ export class TeamAdministratorService {
         updated_at: new Date().toISOString(),
       };
 
-      const { error } = await this.supabase
-        .from('teams')
-        .update(updatedData)
-        .eq('id', teamId);
+      const { error } = await this.supabase.from('teams').update(updatedData).eq('id', teamId);
 
       if (error) {
         logger.error('Failed to update team settings', {
@@ -506,7 +470,7 @@ export class TeamAdministratorService {
           'Failed to update team settings',
           'DATABASE_ERROR',
           500,
-          error
+          error,
         );
       }
 
