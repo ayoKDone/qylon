@@ -16,7 +16,7 @@ module.exports = {
     ecmaVersion: 2022,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'react-refresh'],
   rules: {
     // Basic rules - relaxed for development
     'no-console': 'off', // Allow console statements in development
