@@ -68,14 +68,14 @@ export default function Settings() {
 
   return (
     <>
-    <SettingsSidebar
-      items={settingsItems}
-      activeItem={activeSection}
-      onItemClick={setActiveSection}
-    />
-    <div className='xui-mt-1'>
-      <StatsHeader title={getActiveTitle()}>{renderContent()}</StatsHeader>
-    </div>
+      <SettingsSidebar
+        items={settingsItems}
+        activeItem={activeSection}
+        onItemClick={setActiveSection}
+      />
+      <div className='xui-mt-1'>
+        <StatsHeader title={getActiveTitle()}>{renderContent()}</StatsHeader>
+      </div>
     </>
   );
 }

@@ -103,15 +103,16 @@ export default function SecuritySettings() {
       {/* 🔐 Password Section */}
       <div className='p-6 border border-gray-200 rounded-lg space-y-4'>
         <div className='flex items-center gap-3'>
-          <div className="xui-d-inline-flex xui-flex-ai-center xui-flex-jc-center xui-w-40 xui-h-40 xui-bdr-rad-half xui-bg-light-blue-1">
-              <FaShieldAlt size={20} />
+          <div className='xui-d-inline-flex xui-flex-ai-center xui-flex-jc-center xui-w-40 xui-h-40 xui-bdr-rad-half xui-bg-light-blue-1'>
+            <FaShieldAlt size={20} />
           </div>
           <div>
             <h3 className='text-md font-semibold text-gray-900'>Password & Authentication</h3>
-            <p className='text-sm text-gray-500'>Change your password regularly to keep your account secure.</p>
+            <p className='text-sm text-gray-500'>
+              Change your password regularly to keep your account secure.
+            </p>
           </div>
         </div>
-
 
         <form onSubmit={handleSubmit(onSubmitPassword)} className='xui-form space-y-4'>
           {/* Current Password */}
