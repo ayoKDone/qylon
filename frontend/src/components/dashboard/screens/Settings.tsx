@@ -1,16 +1,18 @@
+import { Bell, CreditCard, Link, Shield, SlidersHorizontal, User, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { User, Bell, Link, Shield, CreditCard, Users, SlidersHorizontal } from 'lucide-react';
+import IntegrationSettings from '../widgets/IntegrationSettings';
+import NotificationSettings from '../widgets/NotificationSettings';
+import ProfileSettings from '../widgets/ProfileSettings';
+import SecuritySettings from '../widgets/SecuritySettings';
 import SettingsSidebar from '../widgets/SettingsSidebar';
 import StatsHeader from '../widgets/StatsHeader';
-import ProfileSettings from '../widgets/ProfileSettings';
-import NotificationSettings from '../widgets/NotificationSettings';
-import SecuritySettings from '../widgets/SecuritySettings';
-import IntegrationSettings from '../widgets/IntegrationSettings';
 // Optional new imports — create these components if not existing
 // import BillingSettings from "../widgets/BillingSettings";
 // import TeamSettings from "../widgets/TeamSettings";
 // import PreferencesSettings from "../widgets/PreferencesSettings";
+import '../../../settings.css';
+import BillingSettings from '../widgets/BillingSettings';
 
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
@@ -20,7 +22,7 @@ export default function Settings() {
   const [activeSection, setActiveSection] = useState('profile');
 
   const settingsItems = [
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'profile', label: 'Account', icon: User },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'integrations', label: 'Integrations', icon: Link },
     { id: 'billing', label: 'Billing', icon: CreditCard },
@@ -43,7 +45,7 @@ export default function Settings() {
       case 'integrations':
         return <IntegrationSettings />;
       case 'billing':
-        return <div>Billing settings go here.</div>; // Replace with <BillingSettings />
+        return <BillingSettings />; // Replace with <BillingSettings />
       case 'security':
         return <SecuritySettings />;
       case 'team':
@@ -65,20 +67,15 @@ export default function Settings() {
   }, [setNavbar]);
 
   return (
-    <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
-      <div className='lg:col-span-3'>
-        <StatsHeader title='Settings'>
-          <SettingsSidebar
-            items={settingsItems}
-            activeItem={activeSection}
-            onItemClick={setActiveSection}
-          />
-        </StatsHeader>
-      </div>
-
-      <div className='lg:col-span-9'>
-        <StatsHeader title={getActiveTitle()}>{renderContent()}</StatsHeader>
-      </div>
+    <>
+    <SettingsSidebar
+      items={settingsItems}
+      activeItem={activeSection}
+      onItemClick={setActiveSection}
+    />
+    <div className='xui-mt-1'>
+      <StatsHeader title={getActiveTitle()}>{renderContent()}</StatsHeader>
     </div>
+    </>
   );
 }
