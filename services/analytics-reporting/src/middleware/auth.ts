@@ -24,14 +24,18 @@ export class AuthMiddleware {
   /**
    * Authenticate user using JWT token
    */
-  authenticate = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  authenticate = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const authHeader = req.headers.authorization;
 
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         res.status(401).json({
           error: 'UNAUTHORIZED',
-          message: 'Missing or invalid authorization header'
+          message: 'Missing or invalid authorization header',
         });
         return;
       }
@@ -39,12 +43,15 @@ export class AuthMiddleware {
       const token = authHeader.substring(7);
 
       // Verify JWT token with Supabase
-      const { data: { user }, error } = await this.supabase.auth.getUser(token);
+      const {
+        data: { user },
+        error,
+      } = await this.supabase.auth.getUser(token);
 
       if (error || !user) {
         res.status(401).json({
           error: 'UNAUTHORIZED',
-          message: 'Invalid or expired token'
+          message: 'Invalid or expired token',
         });
         return;
       }
@@ -59,7 +66,7 @@ export class AuthMiddleware {
       if (userError || !userData) {
         res.status(401).json({
           error: 'UNAUTHORIZED',
-          message: 'User not found'
+          message: 'User not found',
         });
         return;
       }
@@ -75,14 +82,14 @@ export class AuthMiddleware {
         id: userData.id,
         email: userData.email,
         role: userData.role,
-        client_id: clientData?.id
+        client_id: clientData?.id,
       };
 
       next();
     } catch (error) {
       res.status(500).json({
         error: 'AUTHENTICATION_ERROR',
-        message: 'Internal authentication error'
+        message: 'Internal authentication error',
       });
     }
   };
@@ -94,7 +101,7 @@ export class AuthMiddleware {
     if (!req.user) {
       res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Authentication required'
+        message: 'Authentication required',
       });
       return;
     }
@@ -102,7 +109,7 @@ export class AuthMiddleware {
     if (req.user.role !== 'admin') {
       res.status(403).json({
         error: 'FORBIDDEN',
-        message: 'Admin access required'
+        message: 'Admin access required',
       });
       return;
     }
@@ -118,7 +125,7 @@ export class AuthMiddleware {
       if (!req.user) {
         res.status(401).json({
           error: 'UNAUTHORIZED',
-          message: 'Authentication required'
+          message: 'Authentication required',
         });
         return;
       }
@@ -126,7 +133,7 @@ export class AuthMiddleware {
       if (!roles.includes(req.user.role)) {
         res.status(403).json({
           error: 'FORBIDDEN',
-          message: `Access denied. Required roles: ${roles.join(', ')}`
+          message: `Access denied. Required roles: ${roles.join(', ')}`,
         });
         return;
       }
@@ -138,7 +145,11 @@ export class AuthMiddleware {
   /**
    * Optional authentication - doesn't fail if no token provided
    */
-  optionalAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+  optionalAuth = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       const authHeader = req.headers.authorization;
 
@@ -151,7 +162,10 @@ export class AuthMiddleware {
       const token = authHeader.substring(7);
 
       // Verify JWT token with Supabase
-      const { data: { user }, error } = await this.supabase.auth.getUser(token);
+      const {
+        data: { user },
+        error,
+      } = await this.supabase.auth.getUser(token);
 
       if (error || !user) {
         // Invalid token, continue without authentication
@@ -183,7 +197,7 @@ export class AuthMiddleware {
         id: userData.id,
         email: userData.email,
         role: userData.role,
-        client_id: clientData?.id
+        client_id: clientData?.id,
       };
 
       next();
@@ -200,7 +214,7 @@ export class AuthMiddleware {
     if (!req.user) {
       res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Authentication required'
+        message: 'Authentication required',
       });
       return;
     }
@@ -216,7 +230,7 @@ export class AuthMiddleware {
     if (!clientId) {
       res.status(400).json({
         error: 'BAD_REQUEST',
-        message: 'Client ID is required'
+        message: 'Client ID is required',
       });
       return;
     }
@@ -225,7 +239,7 @@ export class AuthMiddleware {
     if (req.user.client_id !== clientId) {
       res.status(403).json({
         error: 'FORBIDDEN',
-        message: 'Access denied to client data'
+        message: 'Access denied to client data',
       });
       return;
     }
@@ -240,7 +254,7 @@ export class AuthMiddleware {
     if (!req.user) {
       res.status(401).json({
         error: 'UNAUTHORIZED',
-        message: 'Authentication required'
+        message: 'Authentication required',
       });
       return;
     }
@@ -256,7 +270,7 @@ export class AuthMiddleware {
     if (!userId) {
       res.status(400).json({
         error: 'BAD_REQUEST',
-        message: 'User ID is required'
+        message: 'User ID is required',
       });
       return;
     }
@@ -265,7 +279,7 @@ export class AuthMiddleware {
     if (req.user.id !== userId) {
       res.status(403).json({
         error: 'FORBIDDEN',
-        message: 'Access denied to user data'
+        message: 'Access denied to user data',
       });
       return;
     }

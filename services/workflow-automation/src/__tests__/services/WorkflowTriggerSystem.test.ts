@@ -78,7 +78,11 @@ const mockSupabaseClient = {
           return mockChain; // Return chain to allow .limit() call
         }
         // For getTriggerStatistics pattern (select with 'id, is_active, definition')
-        if (columns && typeof columns === 'string' && (columns.includes('is_active') || columns.includes('definition'))) {
+        if (
+          columns &&
+          typeof columns === 'string' &&
+          (columns.includes('is_active') || columns.includes('definition'))
+        ) {
           return Promise.resolve({ data: mockSelectData, error: null });
         }
         return mockChain;
@@ -234,18 +238,20 @@ describe('WorkflowTriggerSystem', () => {
     it('should process event and trigger matching workflows', async () => {
 <<<<<<< Updated upstream
       // Mock database response - the implementation expects this exact structure
-      mockData = [{
-        id: mockWorkflow.id,
-        client_id: mockWorkflow.client_id,
-        name: mockWorkflow.name,
-        description: mockWorkflow.description,
-        definition: mockWorkflow.definition,
-        status: mockWorkflow.status,
-        version: mockWorkflow.version,
-        is_active: mockWorkflow.is_active,
-        created_at: mockWorkflow.created_at.toISOString(),
-        updated_at: mockWorkflow.updated_at.toISOString(),
-      }];
+      mockData = [
+        {
+          id: mockWorkflow.id,
+          client_id: mockWorkflow.client_id,
+          name: mockWorkflow.name,
+          description: mockWorkflow.description,
+          definition: mockWorkflow.definition,
+          status: mockWorkflow.status,
+          version: mockWorkflow.version,
+          is_active: mockWorkflow.is_active,
+          created_at: mockWorkflow.created_at.toISOString(),
+          updated_at: mockWorkflow.updated_at.toISOString(),
+        },
+      ];
 
       // Mock data is now ready to be returned by the database query
 =======
@@ -281,7 +287,7 @@ describe('WorkflowTriggerSystem', () => {
           eventId: mockEvent.id,
           eventType: mockEvent.eventType,
           aggregateId: mockEvent.aggregateId,
-        })
+        }),
       );
     });
 
@@ -301,24 +307,24 @@ describe('WorkflowTriggerSystem', () => {
     it('should handle workflow execution failures gracefully', async () => {
 <<<<<<< Updated upstream
       // Mock database response
-      mockData = [{
-        id: mockWorkflow.id,
-        client_id: mockWorkflow.client_id,
-        name: mockWorkflow.name,
-        description: mockWorkflow.description,
-        definition: mockWorkflow.definition,
-        status: mockWorkflow.status,
-        version: mockWorkflow.version,
-        is_active: mockWorkflow.is_active,
-        created_at: mockWorkflow.created_at.toISOString(),
-        updated_at: mockWorkflow.updated_at.toISOString(),
-      }];
-=======
->>>>>>> Stashed changes
+      mockData = [
+        {
+          id: mockWorkflow.id,
+          client_id: mockWorkflow.client_id,
+          name: mockWorkflow.name,
+          description: mockWorkflow.description,
+          definition: mockWorkflow.definition,
+          status: mockWorkflow.status,
+          version: mockWorkflow.version,
+          is_active: mockWorkflow.is_active,
+          created_at: mockWorkflow.created_at.toISOString(),
+          updated_at: mockWorkflow.updated_at.toISOString(),
+        },
+      ];
 
       // Mock workflow execution failure
       mockWorkflowEngine.executeWorkflowFromEvent.mockRejectedValue(
-        new Error('Workflow execution failed')
+        new Error('Workflow execution failed'),
       );
 
       const results = await triggerSystem.processEvent(mockEvent);
@@ -531,9 +537,7 @@ describe('WorkflowTriggerSystem', () => {
           id: 'workflow-2',
           is_active: false,
           definition: {
-            triggers: [
-              { type: TriggerType.WEBHOOK, enabled: true },
-            ],
+            triggers: [{ type: TriggerType.WEBHOOK, enabled: true }],
           },
         },
       ];

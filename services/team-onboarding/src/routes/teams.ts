@@ -1,5 +1,10 @@
 import { Response, Router } from 'express';
-import { AuthenticatedRequest, authenticateToken, requireAdminAccess, requireTeamAccess } from '../middleware/auth';
+import {
+  AuthenticatedRequest,
+  authenticateToken,
+  requireAdminAccess,
+  requireTeamAccess,
+} from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
 import { TeamAdministratorService } from '../services/TeamAdministratorService';
 import { ApiResponse } from '../types';
@@ -42,7 +47,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -71,7 +76,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -90,7 +95,7 @@ router.put(
       const updatedTeam = await teamAdministratorService.updateTeamSettings(
         teamId,
         settings,
-        userId
+        userId,
       );
 
       logger.info('Team settings updated successfully', {
@@ -113,7 +118,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -131,7 +136,7 @@ router.post(
 
       const administrator = await teamAdministratorService.createTeamAdministrator(
         adminData,
-        userId
+        userId,
       );
 
       logger.info('Team administrator created successfully', {
@@ -157,7 +162,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -186,7 +191,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -205,7 +210,7 @@ router.put(
       const updatedAdministrator = await teamAdministratorService.updateTeamAdministrator(
         adminId,
         updates,
-        userId
+        userId,
       );
 
       logger.info('Team administrator updated successfully', {
@@ -229,7 +234,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -266,7 +271,7 @@ router.delete(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

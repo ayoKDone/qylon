@@ -45,9 +45,7 @@ describe('API Gateway Integration Tests', () => {
     });
 
     it('should reject unauthorized requests', async () => {
-      await request(app)
-        .get('/api/meetings')
-        .expect(401);
+      await request(app).get('/api/meetings').expect(401);
     });
   });
 });

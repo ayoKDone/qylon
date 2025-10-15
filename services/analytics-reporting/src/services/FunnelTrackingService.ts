@@ -5,12 +5,12 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-    AnalyticsServiceError,
-    CompleteFunnelStepRequest,
-    CreateFunnelStepRequest,
-    FunnelAnalyticsFilter,
-    FunnelConversionRate,
-    OnboardingFunnel
+  AnalyticsServiceError,
+  CompleteFunnelStepRequest,
+  CreateFunnelStepRequest,
+  FunnelAnalyticsFilter,
+  FunnelConversionRate,
+  OnboardingFunnel,
 } from '../types/analytics';
 
 export class FunnelTrackingService {
@@ -35,7 +35,7 @@ export class FunnelTrackingService {
           step_name: request.step_name,
           step_description: request.step_description,
           time_spent_seconds: request.time_spent_seconds,
-          metadata: request.metadata || {}
+          metadata: request.metadata || {},
         })
         .select()
         .single();
@@ -44,7 +44,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STEP_CREATE_FAILED',
           `Failed to create funnel step: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -56,7 +56,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_STEP_CREATE_ERROR',
         `Unexpected error creating funnel step: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -72,7 +72,7 @@ export class FunnelTrackingService {
           completed_at: new Date().toISOString(),
           time_spent_seconds: request.time_spent_seconds,
           metadata: request.metadata || {},
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', request.funnel_step_id)
         .select()
@@ -82,7 +82,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STEP_COMPLETE_FAILED',
           `Failed to complete funnel step: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -90,7 +90,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STEP_NOT_FOUND',
           `Funnel step with ID ${request.funnel_step_id} not found`,
-          { request }
+          { request },
         );
       }
 
@@ -102,7 +102,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_STEP_COMPLETE_ERROR',
         `Unexpected error completing funnel step: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -128,7 +128,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STEPS_FETCH_FAILED',
           `Failed to fetch funnel steps: ${error.message}`,
-          { error, userId, funnelName }
+          { error, userId, funnelName },
         );
       }
 
@@ -140,7 +140,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_STEPS_FETCH_ERROR',
         `Unexpected error fetching funnel steps: ${error.message}`,
-        { error, userId, funnelName }
+        { error, userId, funnelName },
       );
     }
   }
@@ -153,7 +153,7 @@ export class FunnelTrackingService {
     startStep: number,
     endStep: number,
     startDate?: Date,
-    endDate?: Date
+    endDate?: Date,
   ): Promise<FunnelConversionRate[]> {
     try {
       const { data, error } = await this.supabase.rpc('calculate_funnel_conversion_rate', {
@@ -161,14 +161,14 @@ export class FunnelTrackingService {
         start_step: startStep,
         end_step: endStep,
         start_date: startDate?.toISOString() || null,
-        end_date: endDate?.toISOString() || null
+        end_date: endDate?.toISOString() || null,
       });
 
       if (error) {
         throw new AnalyticsServiceError(
           'FUNNEL_CONVERSION_RATE_FAILED',
           `Failed to calculate funnel conversion rate: ${error.message}`,
-          { error, funnelName, startStep, endStep, startDate, endDate }
+          { error, funnelName, startStep, endStep, startDate, endDate },
         );
       }
 
@@ -180,7 +180,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_CONVERSION_RATE_ERROR',
         `Unexpected error calculating funnel conversion rate: ${error.message}`,
-        { error, funnelName, startStep, endStep, startDate, endDate }
+        { error, funnelName, startStep, endStep, startDate, endDate },
       );
     }
   }
@@ -221,7 +221,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_ANALYTICS_FETCH_FAILED',
           `Failed to fetch funnel analytics: ${error.message}`,
-          { error, filter }
+          { error, filter },
         );
       }
 
@@ -233,7 +233,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_ANALYTICS_FETCH_ERROR',
         `Unexpected error fetching funnel analytics: ${error.message}`,
-        { error, filter }
+        { error, filter },
       );
     }
   }
@@ -264,7 +264,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STATS_TOTAL_FAILED',
           `Failed to get total users: ${totalError.message}`,
-          { error: totalError, funnelName }
+          { error: totalError, funnelName },
         );
       }
 
@@ -279,7 +279,7 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STATS_COMPLETED_FAILED',
           `Failed to get completed users: ${completedError.message}`,
-          { error: completedError, funnelName }
+          { error: completedError, funnelName },
         );
       }
 
@@ -293,37 +293,42 @@ export class FunnelTrackingService {
         throw new AnalyticsServiceError(
           'FUNNEL_STATS_STEPS_FAILED',
           `Failed to get step statistics: ${stepError.message}`,
-          { error: stepError, funnelName }
+          { error: stepError, funnelName },
         );
       }
 
       const totalUsersCount = new Set(totalUsers?.map(u => u.user_id) || []).size;
       const completedUsersCount = new Set(completedUsers?.map(u => u.user_id) || []).size;
-      const completionRate = totalUsersCount > 0 ? (completedUsersCount / totalUsersCount) * 100 : 0;
+      const completionRate =
+        totalUsersCount > 0 ? (completedUsersCount / totalUsersCount) * 100 : 0;
 
       // Calculate step completion rates
-      const stepCompletionRates = stepStats?.reduce((acc, step) => {
-        const existing = acc.find(s => s.step_number === step.step_number);
-        if (existing) {
-          existing.total++;
-          if (step.completed_at) {
-            existing.completed++;
-          }
-        } else {
-          acc.push({
-            step_number: step.step_number,
-            step_name: step.step_name,
-            total: 1,
-            completed: step.completed_at ? 1 : 0
-          });
-        }
-        return acc;
-      }, [] as Array<{ step_number: number; step_name: string; total: number; completed: number }>) || [];
+      const stepCompletionRates =
+        stepStats?.reduce(
+          (acc, step) => {
+            const existing = acc.find(s => s.step_number === step.step_number);
+            if (existing) {
+              existing.total++;
+              if (step.completed_at) {
+                existing.completed++;
+              }
+            } else {
+              acc.push({
+                step_number: step.step_number,
+                step_name: step.step_name,
+                total: 1,
+                completed: step.completed_at ? 1 : 0,
+              });
+            }
+            return acc;
+          },
+          [] as Array<{ step_number: number; step_name: string; total: number; completed: number }>,
+        ) || [];
 
       const stepCompletionRatesFormatted = stepCompletionRates.map(step => ({
         step_number: step.step_number,
         step_name: step.step_name,
-        completion_rate: step.total > 0 ? (step.completed / step.total) * 100 : 0
+        completion_rate: step.total > 0 ? (step.completed / step.total) * 100 : 0,
       }));
 
       // Calculate average time to complete (simplified)
@@ -334,7 +339,7 @@ export class FunnelTrackingService {
         completed_users: completedUsersCount,
         completion_rate: Math.round(completionRate * 100) / 100,
         avg_time_to_complete: avgTimeToComplete,
-        step_completion_rates: stepCompletionRatesFormatted
+        step_completion_rates: stepCompletionRatesFormatted,
       };
     } catch (error) {
       if (error instanceof AnalyticsServiceError) {
@@ -343,7 +348,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_STATS_ERROR',
         `Unexpected error getting funnel completion stats: ${error.message}`,
-        { error, funnelName }
+        { error, funnelName },
       );
     }
   }
@@ -358,7 +363,7 @@ export class FunnelTrackingService {
     stepNumber: number,
     stepName: string,
     timeSpentSeconds?: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<OnboardingFunnel> {
     try {
       // Check if step already exists
@@ -375,7 +380,7 @@ export class FunnelTrackingService {
         return await this.completeFunnelStep({
           funnel_step_id: existingStep.id,
           time_spent_seconds: timeSpentSeconds,
-          metadata
+          metadata,
         });
       } else {
         // Create new step
@@ -386,7 +391,7 @@ export class FunnelTrackingService {
           step_number: stepNumber,
           step_name: stepName,
           time_spent_seconds: timeSpentSeconds,
-          metadata
+          metadata,
         });
       }
     } catch (error) {
@@ -396,7 +401,7 @@ export class FunnelTrackingService {
       throw new AnalyticsServiceError(
         'FUNNEL_PROGRESS_TRACK_ERROR',
         `Unexpected error tracking funnel progress: ${error.message}`,
-        { error, userId, clientId, funnelName, stepNumber, stepName }
+        { error, userId, clientId, funnelName, stepNumber, stepName },
       );
     }
   }

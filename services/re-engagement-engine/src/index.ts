@@ -113,7 +113,8 @@ app.get('/api/docs', (_req, res) => {
   res.json({
     title: 'Qylon Re-engagement Engine API',
     version: '1.0.0',
-    description: 'API for managing email sequences, user behavior tracking, and conversion recovery',
+    description:
+      'API for managing email sequences, user behavior tracking, and conversion recovery',
     endpoints: {
       health: {
         'GET /health': 'Basic health check',

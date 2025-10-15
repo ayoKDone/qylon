@@ -15,10 +15,7 @@ export class AnalyticsRoutes {
   private authMiddleware: AuthMiddleware;
   private validationMiddleware: ValidationMiddleware;
 
-  constructor(
-    analyticsService: AnalyticsService,
-    authMiddleware: AuthMiddleware
-  ) {
+  constructor(analyticsService: AnalyticsService, authMiddleware: AuthMiddleware) {
     this.router = Router();
     this.analyticsService = analyticsService;
     this.authMiddleware = authMiddleware;
@@ -33,14 +30,14 @@ export class AnalyticsRoutes {
       '/events',
       this.validationMiddleware.validateBody(ValidationSchemas.trackEvent),
       this.authMiddleware.optionalAuth,
-      this.trackEvent.bind(this)
+      this.trackEvent.bind(this),
     );
 
     this.router.get(
       '/events',
       this.validationMiddleware.validateQuery(ValidationSchemas.analyticsFilter),
       this.authMiddleware.authenticate,
-      this.getEvents.bind(this)
+      this.getEvents.bind(this),
     );
 
     // Conversion tracking routes
@@ -48,14 +45,14 @@ export class AnalyticsRoutes {
       '/conversions',
       this.validationMiddleware.validateBody(ValidationSchemas.trackConversion),
       this.authMiddleware.optionalAuth,
-      this.trackConversion.bind(this)
+      this.trackConversion.bind(this),
     );
 
     this.router.get(
       '/conversions',
       this.validationMiddleware.validateQuery(ValidationSchemas.analyticsFilter),
       this.authMiddleware.authenticate,
-      this.getConversions.bind(this)
+      this.getConversions.bind(this),
     );
 
     // User analytics routes
@@ -64,7 +61,7 @@ export class AnalyticsRoutes {
       this.validationMiddleware.validateParams(ValidationSchemas.userIdParam),
       this.authMiddleware.authenticate,
       this.authMiddleware.validateUserAccess,
-      this.getUserAnalytics.bind(this)
+      this.getUserAnalytics.bind(this),
     );
 
     // Client analytics routes
@@ -73,7 +70,7 @@ export class AnalyticsRoutes {
       this.validationMiddleware.validateParams(ValidationSchemas.clientIdParam),
       this.authMiddleware.authenticate,
       this.authMiddleware.validateClientAccess,
-      this.getClientAnalytics.bind(this)
+      this.getClientAnalytics.bind(this),
     );
 
     // Dashboard route
@@ -81,7 +78,7 @@ export class AnalyticsRoutes {
       '/dashboard',
       this.validationMiddleware.validateQuery(ValidationSchemas.analyticsFilter.partial()),
       this.authMiddleware.authenticate,
-      this.getDashboard.bind(this)
+      this.getDashboard.bind(this),
     );
 
     // Funnel tracking routes
@@ -89,7 +86,7 @@ export class AnalyticsRoutes {
       '/funnels/steps',
       this.validationMiddleware.validateBody(ValidationSchemas.createFunnelStep),
       this.authMiddleware.authenticate,
-      this.createFunnelStep.bind(this)
+      this.createFunnelStep.bind(this),
     );
 
     this.router.put(
@@ -97,21 +94,21 @@ export class AnalyticsRoutes {
       this.validationMiddleware.validateParams(ValidationSchemas.idParam),
       this.validationMiddleware.validateBody(ValidationSchemas.completeFunnelStep),
       this.authMiddleware.authenticate,
-      this.completeFunnelStep.bind(this)
+      this.completeFunnelStep.bind(this),
     );
 
     this.router.get(
       '/funnels/:funnelName/conversion-rate',
       this.validationMiddleware.validateQuery(ValidationSchemas.funnelConversionRate),
       this.authMiddleware.authenticate,
-      this.getFunnelConversionRate.bind(this)
+      this.getFunnelConversionRate.bind(this),
     );
 
     this.router.get(
       '/funnels/analytics',
       this.validationMiddleware.validateQuery(ValidationSchemas.funnelAnalyticsFilter),
       this.authMiddleware.authenticate,
-      this.getFunnelAnalytics.bind(this)
+      this.getFunnelAnalytics.bind(this),
     );
 
     // Experiment routes
@@ -119,49 +116,49 @@ export class AnalyticsRoutes {
       '/experiments',
       this.validationMiddleware.validateBody(ValidationSchemas.createExperiment),
       this.authMiddleware.authenticate,
-      this.createExperiment.bind(this)
+      this.createExperiment.bind(this),
     );
 
     this.router.get(
       '/experiments',
       this.validationMiddleware.validateQuery(ValidationSchemas.experimentFilter),
       this.authMiddleware.authenticate,
-      this.getExperiments.bind(this)
+      this.getExperiments.bind(this),
     );
 
     this.router.get(
       '/experiments/:experimentId',
       this.validationMiddleware.validateParams(ValidationSchemas.experimentIdParam),
       this.authMiddleware.authenticate,
-      this.getExperiment.bind(this)
+      this.getExperiment.bind(this),
     );
 
     this.router.post(
       '/experiments/:experimentId/start',
       this.validationMiddleware.validateParams(ValidationSchemas.experimentIdParam),
       this.authMiddleware.authenticate,
-      this.startExperiment.bind(this)
+      this.startExperiment.bind(this),
     );
 
     this.router.post(
       '/experiments/:experimentId/stop',
       this.validationMiddleware.validateParams(ValidationSchemas.experimentIdParam),
       this.authMiddleware.authenticate,
-      this.stopExperiment.bind(this)
+      this.stopExperiment.bind(this),
     );
 
     this.router.get(
       '/experiments/:experimentId/results',
       this.validationMiddleware.validateParams(ValidationSchemas.experimentIdParam),
       this.authMiddleware.authenticate,
-      this.getExperimentResults.bind(this)
+      this.getExperimentResults.bind(this),
     );
 
     this.router.post(
       '/experiments/:experimentId/assign',
       this.validationMiddleware.validateParams(ValidationSchemas.experimentIdParam),
       this.authMiddleware.authenticate,
-      this.assignUserToExperiment.bind(this)
+      this.assignUserToExperiment.bind(this),
     );
 
     // Personalization routes
@@ -169,28 +166,30 @@ export class AnalyticsRoutes {
       '/personalization/triggers',
       this.validationMiddleware.validateBody(ValidationSchemas.createPersonalizationTrigger),
       this.authMiddleware.authenticate,
-      this.createPersonalizationTrigger.bind(this)
+      this.createPersonalizationTrigger.bind(this),
     );
 
     this.router.get(
       '/personalization/triggers',
       this.authMiddleware.authenticate,
-      this.getPersonalizationTriggers.bind(this)
+      this.getPersonalizationTriggers.bind(this),
     );
 
     this.router.put(
       '/personalization/triggers/:id',
       this.validationMiddleware.validateParams(ValidationSchemas.idParam),
-      this.validationMiddleware.validateBody(ValidationSchemas.createPersonalizationTrigger.partial()),
+      this.validationMiddleware.validateBody(
+        ValidationSchemas.createPersonalizationTrigger.partial(),
+      ),
       this.authMiddleware.authenticate,
-      this.updatePersonalizationTrigger.bind(this)
+      this.updatePersonalizationTrigger.bind(this),
     );
 
     this.router.delete(
       '/personalization/triggers/:id',
       this.validationMiddleware.validateParams(ValidationSchemas.idParam),
       this.authMiddleware.authenticate,
-      this.deletePersonalizationTrigger.bind(this)
+      this.deletePersonalizationTrigger.bind(this),
     );
 
     // User segments routes
@@ -198,28 +197,24 @@ export class AnalyticsRoutes {
       '/segments',
       this.validationMiddleware.validateBody(ValidationSchemas.createUserSegment),
       this.authMiddleware.authenticate,
-      this.createUserSegment.bind(this)
+      this.createUserSegment.bind(this),
     );
 
-    this.router.get(
-      '/segments',
-      this.authMiddleware.authenticate,
-      this.getUserSegments.bind(this)
-    );
+    this.router.get('/segments', this.authMiddleware.authenticate, this.getUserSegments.bind(this));
 
     this.router.put(
       '/segments/:id',
       this.validationMiddleware.validateParams(ValidationSchemas.idParam),
       this.validationMiddleware.validateBody(ValidationSchemas.createUserSegment.partial()),
       this.authMiddleware.authenticate,
-      this.updateUserSegment.bind(this)
+      this.updateUserSegment.bind(this),
     );
 
     this.router.delete(
       '/segments/:id',
       this.validationMiddleware.validateParams(ValidationSchemas.idParam),
       this.authMiddleware.authenticate,
-      this.deleteUserSegment.bind(this)
+      this.deleteUserSegment.bind(this),
     );
 
     this.router.get(
@@ -227,7 +222,7 @@ export class AnalyticsRoutes {
       this.validationMiddleware.validateParams(ValidationSchemas.userIdParam),
       this.authMiddleware.authenticate,
       this.authMiddleware.validateUserAccess,
-      this.getUserSegmentMemberships.bind(this)
+      this.getUserSegmentMemberships.bind(this),
     );
 
     this.router.post(
@@ -235,7 +230,7 @@ export class AnalyticsRoutes {
       this.validationMiddleware.validateParams(ValidationSchemas.userIdParam),
       this.authMiddleware.authenticate,
       this.authMiddleware.validateUserAccess,
-      this.updateUserSegmentMemberships.bind(this)
+      this.updateUserSegmentMemberships.bind(this),
     );
   }
 
@@ -246,7 +241,7 @@ export class AnalyticsRoutes {
       res.status(201).json({
         success: true,
         data: event,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -259,7 +254,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         data: events,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -273,7 +268,7 @@ export class AnalyticsRoutes {
       res.status(201).json({
         success: true,
         data: conversion,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -286,7 +281,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         data: conversions,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -300,7 +295,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         data: analytics,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -314,7 +309,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         data: analytics,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -324,11 +319,13 @@ export class AnalyticsRoutes {
   // Dashboard handler
   private async getDashboard(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const dashboard = await this.analyticsService.getAnalyticsDashboard(req.query.client_id as string);
+      const dashboard = await this.analyticsService.getAnalyticsDashboard(
+        req.query.client_id as string,
+      );
       res.json({
         success: true,
         data: dashboard,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -342,7 +339,7 @@ export class AnalyticsRoutes {
       res.status(201).json({
         success: true,
         data: funnelStep,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -353,12 +350,12 @@ export class AnalyticsRoutes {
     try {
       const funnelStep = await this.analyticsService.getFunnelTracking().completeFunnelStep({
         funnel_step_id: req.params.id,
-        ...req.body
+        ...req.body,
       });
       res.json({
         success: true,
         data: funnelStep,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -367,17 +364,19 @@ export class AnalyticsRoutes {
 
   private async getFunnelConversionRate(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const conversionRate = await this.analyticsService.getFunnelTracking().getFunnelConversionRates(
-        req.query.funnel_name as string,
-        parseInt(req.query.start_step as string) || 1,
-        parseInt(req.query.end_step as string) || 10,
-        req.query.start_date ? new Date(req.query.start_date as string) : undefined,
-        req.query.end_date ? new Date(req.query.end_date as string) : undefined
-      );
+      const conversionRate = await this.analyticsService
+        .getFunnelTracking()
+        .getFunnelConversionRates(
+          req.query.funnel_name as string,
+          parseInt(req.query.start_step as string) || 1,
+          parseInt(req.query.end_step as string) || 10,
+          req.query.start_date ? new Date(req.query.start_date as string) : undefined,
+          req.query.end_date ? new Date(req.query.end_date as string) : undefined,
+        );
       res.json({
         success: true,
         data: conversionRate,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -386,11 +385,13 @@ export class AnalyticsRoutes {
 
   private async getFunnelAnalytics(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const analytics = await this.analyticsService.getFunnelTracking().getFunnelAnalytics(req.query);
+      const analytics = await this.analyticsService
+        .getFunnelTracking()
+        .getFunnelAnalytics(req.query);
       res.json({
         success: true,
         data: analytics,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -400,14 +401,13 @@ export class AnalyticsRoutes {
   // Experiment handlers
   private async createExperiment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const experiment = await this.analyticsService.getConversionOptimization().createExperiment(
-        req.body,
-        req.user!.id
-      );
+      const experiment = await this.analyticsService
+        .getConversionOptimization()
+        .createExperiment(req.body, req.user!.id);
       res.status(201).json({
         success: true,
         data: experiment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -416,11 +416,13 @@ export class AnalyticsRoutes {
 
   private async getExperiments(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const experiments = await this.analyticsService.getConversionOptimization().getExperiments(req.query);
+      const experiments = await this.analyticsService
+        .getConversionOptimization()
+        .getExperiments(req.query);
       res.json({
         success: true,
         data: experiments,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -431,13 +433,13 @@ export class AnalyticsRoutes {
     try {
       const experiments = await this.analyticsService.getConversionOptimization().getExperiments({
         ...req.query,
-        id: req.params.experimentId
+        id: req.params.experimentId,
       });
 
       if (experiments.length === 0) {
         res.status(404).json({
           error: 'EXPERIMENT_NOT_FOUND',
-          message: 'Experiment not found'
+          message: 'Experiment not found',
         });
         return;
       }
@@ -445,7 +447,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         data: experiments[0],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -454,13 +456,13 @@ export class AnalyticsRoutes {
 
   private async startExperiment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const experiment = await this.analyticsService.getConversionOptimization().startExperiment(
-        req.params.experimentId
-      );
+      const experiment = await this.analyticsService
+        .getConversionOptimization()
+        .startExperiment(req.params.experimentId);
       res.json({
         success: true,
         data: experiment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -469,13 +471,13 @@ export class AnalyticsRoutes {
 
   private async stopExperiment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const experiment = await this.analyticsService.getConversionOptimization().stopExperiment(
-        req.params.experimentId
-      );
+      const experiment = await this.analyticsService
+        .getConversionOptimization()
+        .stopExperiment(req.params.experimentId);
       res.json({
         success: true,
         data: experiment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -484,13 +486,13 @@ export class AnalyticsRoutes {
 
   private async getExperimentResults(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const results = await this.analyticsService.getConversionOptimization().getExperimentResults(
-        req.params.experimentId
-      );
+      const results = await this.analyticsService
+        .getConversionOptimization()
+        .getExperimentResults(req.params.experimentId);
       res.json({
         success: true,
         data: results,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -499,14 +501,13 @@ export class AnalyticsRoutes {
 
   private async assignUserToExperiment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const assignment = await this.analyticsService.getConversionOptimization().assignUserToExperiment(
-        req.user!.id,
-        req.params.experimentId
-      );
+      const assignment = await this.analyticsService
+        .getConversionOptimization()
+        .assignUserToExperiment(req.user!.id, req.params.experimentId);
       res.json({
         success: true,
         data: assignment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -514,61 +515,73 @@ export class AnalyticsRoutes {
   }
 
   // Personalization handlers
-  private async createPersonalizationTrigger(req: AuthenticatedRequest, res: Response): Promise<void> {
+  private async createPersonalizationTrigger(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
-      const trigger = await this.analyticsService.getPersonalization().createPersonalizationTrigger(
-        req.body,
-        req.user!.id
-      );
+      const trigger = await this.analyticsService
+        .getPersonalization()
+        .createPersonalizationTrigger(req.body, req.user!.id);
       res.status(201).json({
         success: true,
         data: trigger,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
     }
   }
 
-  private async getPersonalizationTriggers(req: AuthenticatedRequest, res: Response): Promise<void> {
+  private async getPersonalizationTriggers(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
-      const triggers = await this.analyticsService.getPersonalization().getPersonalizationTriggers(
-        req.query.is_active ? req.query.is_active === 'true' : undefined,
-        req.query.trigger_type as string
-      );
+      const triggers = await this.analyticsService
+        .getPersonalization()
+        .getPersonalizationTriggers(
+          req.query.is_active ? req.query.is_active === 'true' : undefined,
+          req.query.trigger_type as string,
+        );
       res.json({
         success: true,
         data: triggers,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
     }
   }
 
-  private async updatePersonalizationTrigger(req: AuthenticatedRequest, res: Response): Promise<void> {
+  private async updatePersonalizationTrigger(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
-      const trigger = await this.analyticsService.getPersonalization().updatePersonalizationTrigger(
-        req.params.id,
-        req.body
-      );
+      const trigger = await this.analyticsService
+        .getPersonalization()
+        .updatePersonalizationTrigger(req.params.id, req.body);
       res.json({
         success: true,
         data: trigger,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
     }
   }
 
-  private async deletePersonalizationTrigger(req: AuthenticatedRequest, res: Response): Promise<void> {
+  private async deletePersonalizationTrigger(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
       await this.analyticsService.getPersonalization().deletePersonalizationTrigger(req.params.id);
       res.json({
         success: true,
         message: 'Personalization trigger deleted successfully',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -578,14 +591,13 @@ export class AnalyticsRoutes {
   // User segment handlers
   private async createUserSegment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const segment = await this.analyticsService.getPersonalization().createUserSegment(
-        req.body,
-        req.user!.id
-      );
+      const segment = await this.analyticsService
+        .getPersonalization()
+        .createUserSegment(req.body, req.user!.id);
       res.status(201).json({
         success: true,
         data: segment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -594,13 +606,13 @@ export class AnalyticsRoutes {
 
   private async getUserSegments(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const segments = await this.analyticsService.getPersonalization().getUserSegments(
-        req.query.is_active ? req.query.is_active === 'true' : undefined
-      );
+      const segments = await this.analyticsService
+        .getPersonalization()
+        .getUserSegments(req.query.is_active ? req.query.is_active === 'true' : undefined);
       res.json({
         success: true,
         data: segments,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -609,14 +621,13 @@ export class AnalyticsRoutes {
 
   private async updateUserSegment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const segment = await this.analyticsService.getPersonalization().updateUserSegment(
-        req.params.id,
-        req.body
-      );
+      const segment = await this.analyticsService
+        .getPersonalization()
+        .updateUserSegment(req.params.id, req.body);
       res.json({
         success: true,
         data: segment,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -629,7 +640,7 @@ export class AnalyticsRoutes {
       res.json({
         success: true,
         message: 'User segment deleted successfully',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -638,28 +649,31 @@ export class AnalyticsRoutes {
 
   private async getUserSegmentMemberships(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const memberships = await this.analyticsService.getPersonalization().getUserSegmentMemberships(
-        req.params.userId
-      );
+      const memberships = await this.analyticsService
+        .getPersonalization()
+        .getUserSegmentMemberships(req.params.userId);
       res.json({
         success: true,
         data: memberships,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
     }
   }
 
-  private async updateUserSegmentMemberships(req: AuthenticatedRequest, res: Response): Promise<void> {
+  private async updateUserSegmentMemberships(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
     try {
-      const memberships = await this.analyticsService.getPersonalization().updateUserSegmentMemberships(
-        req.params.userId
-      );
+      const memberships = await this.analyticsService
+        .getPersonalization()
+        .updateUserSegmentMemberships(req.params.userId);
       res.json({
         success: true,
         data: memberships,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       this.handleError(error, res);
@@ -675,7 +689,7 @@ export class AnalyticsRoutes {
         error: error.code,
         message: error.message,
         details: error.details,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
@@ -683,7 +697,7 @@ export class AnalyticsRoutes {
     res.status(500).json({
       error: 'INTERNAL_SERVER_ERROR',
       message: 'An unexpected error occurred',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 

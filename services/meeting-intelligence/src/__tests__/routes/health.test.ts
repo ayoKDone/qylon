@@ -50,9 +50,7 @@ describe('Health Routes', () => {
 
   describe('GET /health', () => {
     it('should return basic health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toEqual({
         success: true,
@@ -66,9 +64,7 @@ describe('Health Routes', () => {
 
   describe('GET /health/detailed', () => {
     it('should return detailed health status with all dependencies healthy', async () => {
-      const response = await request(app)
-        .get('/health/detailed')
-        .expect(200);
+      const response = await request(app).get('/health/detailed').expect(200);
 
       expect(response.body).toEqual({
         status: 'healthy',
@@ -95,9 +91,7 @@ describe('Health Routes', () => {
 
   describe('GET /health/ready', () => {
     it('should return ready status when database is healthy', async () => {
-      const response = await request(app)
-        .get('/health/ready')
-        .expect(200);
+      const response = await request(app).get('/health/ready').expect(200);
 
       expect(response.body).toEqual({
         status: 'ready',
@@ -109,9 +103,7 @@ describe('Health Routes', () => {
 
   describe('GET /health/live', () => {
     it('should return alive status', async () => {
-      const response = await request(app)
-        .get('/health/live')
-        .expect(200);
+      const response = await request(app).get('/health/live').expect(200);
 
       expect(response.body).toEqual({
         status: 'alive',
@@ -130,9 +122,7 @@ describe('Health Routes', () => {
       delete process.env.SUPABASE_URL;
       delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body.success).toBe(true);
 

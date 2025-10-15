@@ -1,5 +1,10 @@
 import { Response, Router } from 'express';
-import { AuthenticatedRequest, authenticateToken, requirePermission, requireTeamAccess } from '../middleware/auth';
+import {
+  AuthenticatedRequest,
+  authenticateToken,
+  requirePermission,
+  requireTeamAccess,
+} from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
 import { ComplianceManagementService } from '../services/ComplianceManagementService';
 import { ApiResponse } from '../types';
@@ -26,7 +31,7 @@ router.post(
       const complianceSettings = await complianceService.createComplianceSettings(
         teamId,
         req.body,
-        userId
+        userId,
       );
 
       logger.info('Compliance settings created successfully', {
@@ -49,7 +54,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -79,7 +84,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -97,7 +102,7 @@ router.put(
       const updatedSettings = await complianceService.updateComplianceSettings(
         teamId,
         req.body,
-        userId
+        userId,
       );
 
       logger.info('Compliance settings updated successfully', {
@@ -120,7 +125,7 @@ router.put(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -133,14 +138,7 @@ router.post(
     try {
       const { teamId } = req.params;
       const userId = req.user!.id;
-      const {
-        action,
-        resource,
-        resourceId,
-        details,
-        success = true,
-        errorMessage,
-      } = req.body;
+      const { action, resource, resourceId, details, success = true, errorMessage } = req.body;
 
       const auditLog = await complianceService.createAuditLog(
         teamId,
@@ -152,7 +150,7 @@ router.post(
         req.ip || 'unknown',
         req.get('User-Agent') || 'unknown',
         success,
-        errorMessage
+        errorMessage,
       );
 
       const response: ApiResponse<any> = {
@@ -170,7 +168,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -234,7 +232,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -260,11 +258,7 @@ router.post(
         return;
       }
 
-      const assessment = await complianceService.runComplianceAssessment(
-        teamId,
-        framework,
-        userId
-      );
+      const assessment = await complianceService.runComplianceAssessment(teamId, framework, userId);
 
       logger.info('Compliance assessment completed successfully', {
         teamId,
@@ -288,7 +282,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -327,7 +321,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -362,7 +356,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

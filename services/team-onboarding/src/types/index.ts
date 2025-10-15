@@ -307,20 +307,24 @@ export const CreateTeamSchema = z.object({
       gdprCompliance: z.boolean(),
       ccpaCompliance: z.boolean(),
     }),
-    regulatoryCompliance: z.array(z.object({
-      framework: z.enum(['GDPR', 'CCPA', 'HIPAA', 'SOX', 'ISO27001']),
-      status: z.enum(['compliant', 'partial', 'non_compliant']),
-      lastAssessment: z.date(),
-      nextAssessment: z.date(),
-      requirements: z.array(z.object({
-        id: z.string(),
-        name: z.string(),
-        description: z.string(),
-        status: z.enum(['met', 'partial', 'not_met']),
-        evidence: z.array(z.string()),
-        lastChecked: z.date(),
-      })),
-    })),
+    regulatoryCompliance: z.array(
+      z.object({
+        framework: z.enum(['GDPR', 'CCPA', 'HIPAA', 'SOX', 'ISO27001']),
+        status: z.enum(['compliant', 'partial', 'non_compliant']),
+        lastAssessment: z.date(),
+        nextAssessment: z.date(),
+        requirements: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            description: z.string(),
+            status: z.enum(['met', 'partial', 'not_met']),
+            evidence: z.array(z.string()),
+            lastChecked: z.date(),
+          }),
+        ),
+      }),
+    ),
   }),
 });
 
@@ -333,15 +337,20 @@ export const CreateTeamAdministratorSchema = z.object({
 
 export const UserProvisioningRequestSchema = z.object({
   teamId: z.string().uuid(),
-  users: z.array(z.object({
-    email: z.string().email(),
-    firstName: z.string().min(1).max(100),
-    lastName: z.string().min(1).max(100),
-    role: z.string(),
-    department: z.string().optional(),
-    manager: z.string().optional(),
-    customFields: z.record(z.any()).optional(),
-  })).min(1).max(1000),
+  users: z
+    .array(
+      z.object({
+        email: z.string().email(),
+        firstName: z.string().min(1).max(100),
+        lastName: z.string().min(1).max(100),
+        role: z.string(),
+        department: z.string().optional(),
+        manager: z.string().optional(),
+        customFields: z.record(z.any()).optional(),
+      }),
+    )
+    .min(1)
+    .max(1000),
 });
 
 export const BulkUserOperationSchema = z.object({
@@ -357,7 +366,7 @@ export class TeamOnboardingError extends Error {
     message: string,
     public code: string,
     public statusCode: number = 500,
-    public details?: any
+    public details?: any,
   ) {
     super(message);
     this.name = 'TeamOnboardingError';

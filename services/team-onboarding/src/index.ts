@@ -17,16 +17,18 @@ const app = express();
 const PORT = process.env.PORT || 3009;
 
 // Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
     },
-  },
-}));
+  }),
+);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -45,12 +47,17 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3002'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
-}));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || [
+      'http://localhost:3000',
+      'http://localhost:3002',
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID'],
+  }),
+);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -92,7 +99,9 @@ app.get('/health/detailed', async (req, res) => {
 
     res.status(200).json(healthStatus);
   } catch (error) {
-    logger.error('Health check failed', { error: error instanceof Error ? error.message : 'Unknown error' });
+    logger.error('Health check failed', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
     res.status(500).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),

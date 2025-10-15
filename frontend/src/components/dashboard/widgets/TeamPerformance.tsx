@@ -4,6 +4,7 @@ interface TeamMember {
   name: string;
   performance: number;
   color: string;
+  tasks: number;
 }
 
 interface TeamPerformanceProps {
@@ -12,37 +13,23 @@ interface TeamPerformanceProps {
 
 export default function TeamPerformance({ members }: TeamPerformanceProps) {
   return (
-    <div className='grid grid-cols-3 gap-4'>
+    <div className='space-y-3'>
       {members.map((member, idx) => (
-        <div key={idx} className='flex flex-col items-center'>
-          <div className='relative w-16 h-16'>
-            <svg className='transform -rotate-90 w-16 h-16'>
-              <circle
-                cx='32'
-                cy='32'
-                r='28'
-                stroke='currentColor'
-                strokeWidth='4'
-                fill='none'
-                className='text-gray-200'
-              />
-              <circle
-                cx='32'
-                cy='32'
-                r='28'
-                stroke='currentColor'
-                strokeWidth='4'
-                fill='none'
-                strokeDasharray={`${2 * Math.PI * 28}`}
-                strokeDashoffset={`${2 * Math.PI * 28 * (1 - member.performance / 100)}`}
-                className={member.color.replace('bg-', 'text-')}
-              />
-            </svg>
-            <div className='absolute inset-0 flex items-center justify-center'>
-              <span className='text-xs font-semibold'>{member.name}</span>
+        <div key={idx} className='flex items-center justify-between'>
+          <div className='flex items-center gap-3'>
+            <div
+              className={`w-10 h-10 rounded-full ${member.color} flex items-center justify-center text-white font-semibold text-sm`}
+            >
+              {member.name.charAt(0)}
+            </div>
+            <div>
+              <p className='font-medium text-sm text-gray-900'>
+                {member.name.split(' ')[0]} {member.name.split(' ')[1]?.[0]}.
+              </p>
+              <p className='text-xs text-gray-500'>{member.tasks} tasks</p>
             </div>
           </div>
-          <span className='text-xs text-gray-600 mt-1'>{member.performance}%</span>
+          <span className='text-sm font-semibold text-gray-700'>{member.performance}%</span>
         </div>
       ))}
     </div>

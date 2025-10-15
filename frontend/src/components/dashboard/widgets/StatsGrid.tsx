@@ -1,5 +1,5 @@
 // src/components/StatsGrid.tsx
-import { Zap, Clock, Target } from 'lucide-react';
+import { Zap, Clock, Target, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import StatCard from './StatCard';
 
@@ -8,6 +8,7 @@ interface Stats {
   tasksToday: number;
   timeSaved: string;
   accuracy: number;
+  conversations: number;
 }
 
 export default function StatsGrid() {
@@ -16,6 +17,7 @@ export default function StatsGrid() {
     tasksToday: 5,
     timeSaved: '47m',
     accuracy: 94,
+    conversations: 127,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +45,7 @@ export default function StatsGrid() {
         tasksToday: prev.tasksToday + (Math.random() > 0.8 ? 1 : 0),
         timeSaved: `${parseInt(prev.timeSaved) + (Math.random() > 0.7 ? 2 : 0)}m`,
         accuracy: Math.min(99, prev.accuracy + (Math.random() > 0.9 ? 1 : 0)),
+        conversations: prev.conversations + (Math.random() > 0.85 ? 1 : 0),
       }));
     }, 5000); // Update every 5 seconds for demo
 
@@ -50,7 +53,7 @@ export default function StatsGrid() {
   }, []);
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+    <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
       <StatCard
         icon={Zap}
         iconColor='text-blue-500'
@@ -75,8 +78,17 @@ export default function StatsGrid() {
         icon={Target}
         iconColor='text-purple-500'
         value={`${stats.accuracy}%`}
-        label='Accuracy'
+        label='AI Accuracy'
         subtitle='AI precision'
+        subtitleColor='text-purple-600'
+        isAnimating={isLoading}
+      />
+      <StatCard
+        icon={MessageSquare}
+        iconColor='text-purple-500'
+        value={`${stats.conversations}`}
+        label='Conversations'
+        subtitle='from last week'
         subtitleColor='text-purple-600'
         isAnimating={isLoading}
       />

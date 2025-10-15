@@ -3,7 +3,6 @@
  * Analytics & A/B Testing Backend Tests
  */
 
-
 // Mock Supabase client
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => ({
@@ -20,11 +19,11 @@ jest.mock('@supabase/supabase-js', () => ({
       range: jest.fn().mockReturnThis(),
       single: jest.fn().mockResolvedValue({ data: null, error: null }),
       auth: {
-        getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null })
+        getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
       },
-      rpc: jest.fn().mockResolvedValue({ data: null, error: null })
-    }))
-  }))
+      rpc: jest.fn().mockResolvedValue({ data: null, error: null }),
+    })),
+  })),
 }));
 
 // Mock environment variables
@@ -57,14 +56,14 @@ afterEach(() => {
     id: 'test-user-id',
     email: 'test@example.com',
     role: 'user',
-    client_id: 'test-client-id'
+    client_id: 'test-client-id',
   }),
 
   createMockClient: () => ({
     id: 'test-client-id',
     user_id: 'test-user-id',
     name: 'Test Client',
-    status: 'active'
+    status: 'active',
   }),
 
   createMockEvent: () => ({
@@ -74,7 +73,7 @@ afterEach(() => {
     event_type: 'page_view',
     event_name: 'homepage_visit',
     event_data: { page: '/home' },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }),
 
   createMockConversion: () => ({
@@ -83,7 +82,7 @@ afterEach(() => {
     client_id: 'test-client-id',
     conversion_type: 'signup',
     conversion_value: 100,
-    converted_at: new Date().toISOString()
+    converted_at: new Date().toISOString(),
   }),
 
   createMockFunnelStep: () => ({
@@ -93,7 +92,7 @@ afterEach(() => {
     funnel_name: 'onboarding',
     step_number: 1,
     step_name: 'welcome',
-    completed_at: new Date().toISOString()
+    completed_at: new Date().toISOString(),
   }),
 
   createMockExperiment: () => ({
@@ -101,7 +100,7 @@ afterEach(() => {
     name: 'Test Experiment',
     experiment_type: 'onboarding',
     status: 'active',
-    created_by: 'test-user-id'
+    created_by: 'test-user-id',
   }),
 
   createMockPersonalizationTrigger: () => ({
@@ -111,7 +110,7 @@ afterEach(() => {
     conditions: { event_type: 'page_view' },
     actions: { send_email: true },
     is_active: true,
-    created_by: 'test-user-id'
+    created_by: 'test-user-id',
   }),
 
   createMockUserSegment: () => ({
@@ -120,6 +119,6 @@ afterEach(() => {
     segment_criteria: { user_role: 'user' },
     user_count: 0,
     is_active: true,
-    created_by: 'test-user-id'
-  })
+    created_by: 'test-user-id',
+  }),
 };

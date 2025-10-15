@@ -104,9 +104,9 @@ describe('TeamAdministratorService', () => {
       };
       const createdBy = 'user-123';
 
-      await expect(
-        teamAdministratorService.createTeam(invalidTeamData, createdBy)
-      ).rejects.toThrow(ValidationError);
+      await expect(teamAdministratorService.createTeam(invalidTeamData, createdBy)).rejects.toThrow(
+        ValidationError,
+      );
     });
 
     it('should throw TeamOnboardingError for database errors', async () => {
@@ -116,14 +116,18 @@ describe('TeamAdministratorService', () => {
       };
       const createdBy = 'user-123';
 
-      mockSupabase.from().insert().select().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Database error' },
-      });
+      mockSupabase
+        .from()
+        .insert()
+        .select()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Database error' },
+        });
 
-      await expect(
-        teamAdministratorService.createTeam(teamData, createdBy)
-      ).rejects.toThrow(TeamOnboardingError);
+      await expect(teamAdministratorService.createTeam(teamData, createdBy)).rejects.toThrow(
+        TeamOnboardingError,
+      );
     });
   });
 
@@ -174,7 +178,7 @@ describe('TeamAdministratorService', () => {
       const createdBy = 'user-123';
 
       await expect(
-        teamAdministratorService.createTeamAdministrator(invalidAdminData, createdBy)
+        teamAdministratorService.createTeamAdministrator(invalidAdminData, createdBy),
       ).rejects.toThrow(ValidationError);
     });
   });
@@ -211,10 +215,14 @@ describe('TeamAdministratorService', () => {
     it('should throw NotFoundError when team does not exist', async () => {
       const teamId = 'non-existent-team';
 
-      mockSupabase.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       await expect(teamAdministratorService.getTeam(teamId)).rejects.toThrow(NotFoundError);
     });
@@ -291,7 +299,7 @@ describe('TeamAdministratorService', () => {
       const result = await teamAdministratorService.updateTeamAdministrator(
         adminId,
         updates,
-        updatedBy
+        updatedBy,
       );
 
       expect(result).toEqual({
@@ -317,7 +325,7 @@ describe('TeamAdministratorService', () => {
       });
 
       await expect(
-        teamAdministratorService.deleteTeamAdministrator(adminId, deletedBy)
+        teamAdministratorService.deleteTeamAdministrator(adminId, deletedBy),
       ).resolves.not.toThrow();
 
       expect(mockSupabase.from).toHaveBeenCalledWith('team_administrators');
@@ -349,11 +357,7 @@ describe('TeamAdministratorService', () => {
         error: null,
       });
 
-      const result = await teamAdministratorService.updateTeamSettings(
-        teamId,
-        settings,
-        updatedBy
-      );
+      const result = await teamAdministratorService.updateTeamSettings(teamId, settings, updatedBy);
 
       expect(result).toEqual({
         id: 'team-123',
@@ -372,7 +376,9 @@ describe('TeamAdministratorService', () => {
       delete process.env.SUPABASE_URL;
       delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-      expect(() => new TeamAdministratorService()).toThrow('Supabase environment variables are not set.');
+      expect(() => new TeamAdministratorService()).toThrow(
+        'Supabase environment variables are not set.',
+      );
     });
   });
 });

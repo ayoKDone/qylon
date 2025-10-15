@@ -4,9 +4,7 @@ import app from '../../index';
 describe('Health Routes', () => {
   describe('GET /health', () => {
     it('should return 200 and health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toHaveProperty('status', 'healthy');
       expect(response.body).toHaveProperty('timestamp');
@@ -15,9 +13,7 @@ describe('Health Routes', () => {
     });
 
     it('should include service information', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toHaveProperty('service', 'api-gateway');
       expect(response.body).toHaveProperty('environment');
@@ -27,9 +23,7 @@ describe('Health Routes', () => {
 
   describe('GET /health/detailed', () => {
     it('should return detailed health information', async () => {
-      const response = await request(app)
-        .get('/health/detailed')
-        .expect(200);
+      const response = await request(app).get('/health/detailed').expect(200);
 
       expect(response.body).toHaveProperty('status');
       expect(response.body).toHaveProperty('services');

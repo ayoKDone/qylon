@@ -17,17 +17,14 @@ export const logger = winston.createLogger({
       }
 
       return log;
-    })
+    }),
   ),
   defaultMeta: {
     service: 'team-onboarding',
   },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
   ],
 });
@@ -38,21 +35,15 @@ if (process.env.NODE_ENV === 'production') {
     new winston.transports.File({
       filename: 'logs/error.log',
       level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-    })
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+    }),
   );
 
   logger.add(
     new winston.transports.File({
       filename: 'logs/combined.log',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      ),
-    })
+      format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+    }),
   );
 }
 
@@ -61,7 +52,7 @@ export const logTeamOperation = (
   operation: string,
   teamId: string,
   userId: string,
-  details?: any
+  details?: any,
 ) => {
   logger.info('Team operation', {
     operation,
@@ -76,7 +67,7 @@ export const logUserProvisioning = (
   teamId: string,
   userId: string,
   userCount: number,
-  details?: any
+  details?: any,
 ) => {
   logger.info('User provisioning operation', {
     operation,
@@ -92,7 +83,7 @@ export const logComplianceEvent = (
   teamId: string,
   userId: string,
   complianceType: string,
-  details?: any
+  details?: any,
 ) => {
   logger.info('Compliance event', {
     event,
@@ -108,7 +99,7 @@ export const logBulkOperation = (
   teamId: string,
   userId: string,
   itemCount: number,
-  details?: any
+  details?: any,
 ) => {
   logger.info('Bulk operation', {
     operation,
@@ -119,11 +110,7 @@ export const logBulkOperation = (
   });
 };
 
-export const logError = (
-  error: Error,
-  context: string,
-  details?: any
-) => {
+export const logError = (error: Error, context: string, details?: any) => {
   logger.error('Error occurred', {
     error: error.message,
     stack: error.stack,

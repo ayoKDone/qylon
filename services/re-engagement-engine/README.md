@@ -1,10 +1,13 @@
 # Re-engagement Engine Service
 
-The Re-engagement Engine is a microservice that handles email sequence automation, user behavior tracking, and conversion recovery for the Qylon AI Automation Platform.
+The Re-engagement Engine is a microservice that handles email sequence
+automation, user behavior tracking, and conversion recovery for the Qylon AI
+Automation Platform.
 
 ## Features
 
 ### 1. Email Sequence Automation (Sub-feature 2.5.1)
+
 - Create and manage automated email sequences
 - Trigger-based email campaigns
 - Multi-step email workflows with delays
@@ -13,6 +16,7 @@ The Re-engagement Engine is a microservice that handles email sequence automatio
 - Conditional email sending
 
 ### 2. User Behavior Tracking (Sub-feature 2.5.2)
+
 - Track user behavior events in real-time
 - Generate user behavior profiles
 - Calculate engagement scores
@@ -21,6 +25,7 @@ The Re-engagement Engine is a microservice that handles email sequence automatio
 - Analytics and reporting
 
 ### 3. Conversion Recovery (Sub-feature 2.5.3)
+
 - Create recovery campaigns for at-risk users
 - AI-powered personalized content generation
 - Multiple recovery strategies (email, outreach, incentives)
@@ -31,6 +36,7 @@ The Re-engagement Engine is a microservice that handles email sequence automatio
 ## API Endpoints
 
 ### Email Sequences
+
 - `POST /api/email-sequences` - Create email sequence
 - `GET /api/email-sequences` - Get user's email sequences
 - `GET /api/email-sequences/:id` - Get specific sequence
@@ -40,6 +46,7 @@ The Re-engagement Engine is a microservice that handles email sequence automatio
 - `GET /api/email-sequences/stats/delivery` - Get delivery stats
 
 ### Behavior Tracking
+
 - `POST /api/behavior-tracking/events` - Track behavior event
 - `GET /api/behavior-tracking/profile` - Get user profile
 - `GET /api/behavior-tracking/events` - Get behavior events
@@ -48,6 +55,7 @@ The Re-engagement Engine is a microservice that handles email sequence automatio
 - `POST /api/behavior-tracking/risk-factors/:factor/resolve` - Resolve risk
 
 ### Conversion Recovery
+
 - `POST /api/conversion-recovery/campaigns` - Create campaign
 - `GET /api/conversion-recovery/campaigns` - Get campaigns
 - `GET /api/conversion-recovery/campaigns/:id` - Get specific campaign
@@ -87,6 +95,7 @@ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 ## Development
 
 ### Prerequisites
+
 - Node.js 22.x
 - npm >=9.0.0
 - Supabase account
@@ -96,17 +105,20 @@ ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
 ### Installation
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Set up environment variables:
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 3. Run the service:
+
 ```bash
 npm run dev
 ```
@@ -114,16 +126,19 @@ npm run dev
 ### Testing
 
 Run unit tests:
+
 ```bash
 npm test
 ```
 
 Run tests with coverage:
+
 ```bash
 npm run test:coverage
 ```
 
 Run integration tests:
+
 ```bash
 npm run test:integration
 ```
@@ -131,6 +146,7 @@ npm run test:integration
 ### Building
 
 Build the service:
+
 ```bash
 npm run build
 ```
@@ -138,6 +154,7 @@ npm run build
 ## Database Schema
 
 The service uses the following main tables:
+
 - `email_sequences` - Email sequence definitions
 - `email_steps` - Individual steps in sequences
 - `email_sequence_executions` - Active executions
@@ -151,6 +168,7 @@ The service uses the following main tables:
 ## Architecture
 
 The service follows a clean architecture pattern with:
+
 - **Routes** - HTTP request handling and validation
 - **Services** - Business logic implementation
 - **Types** - TypeScript type definitions
@@ -176,6 +194,7 @@ The service follows a clean architecture pattern with:
 ## Deployment
 
 The service is containerized with Docker and can be deployed to:
+
 - DigitalOcean App Platform
 - Kubernetes clusters
 - Docker Swarm
