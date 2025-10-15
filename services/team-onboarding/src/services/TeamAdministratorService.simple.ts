@@ -1,14 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    AdministratorPermission,
-    CreateTeamAdministratorSchema,
-    CreateTeamSchema,
-    NotFoundError,
-    Team,
-    TeamAdministrator,
-    TeamOnboardingError,
-    ValidationError
+  AdministratorPermission,
+  CreateTeamAdministratorSchema,
+  CreateTeamSchema,
+  NotFoundError,
+  Team,
+  TeamAdministrator,
+  TeamOnboardingError,
+  ValidationError,
 } from '../types';
 import { logger, logTeamOperation } from '../utils/logger';
 
@@ -19,19 +19,13 @@ export class TeamAdministratorService {
     if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Supabase environment variables are not set.');
     }
-    this.supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   }
 
   /**
    * Create a new team with administrator setup
    */
-  async createTeam(
-    teamData: any,
-    createdBy: string
-  ): Promise<Team> {
+  async createTeam(teamData: any, createdBy: string): Promise<Team> {
     try {
       // Validate team data
       const validatedData = CreateTeamSchema.parse(teamData);
@@ -74,10 +68,7 @@ export class TeamAdministratorService {
   /**
    * Create a team administrator
    */
-  async createTeamAdministrator(
-    adminData: any,
-    createdBy: string
-  ): Promise<TeamAdministrator> {
+  async createTeamAdministrator(adminData: any, createdBy: string): Promise<TeamAdministrator> {
     try {
       // Validate administrator data
       const validatedData = CreateTeamAdministratorSchema.parse(adminData);
@@ -135,12 +126,7 @@ export class TeamAdministratorService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get team administrators',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get team administrators', 'FETCH_ERROR', 500, error);
     }
   }
 
@@ -150,7 +136,7 @@ export class TeamAdministratorService {
   async updateTeamAdministrator(
     adminId: string,
     updates: Partial<Pick<TeamAdministrator, 'role' | 'permissions' | 'isActive'>>,
-    updatedBy: string
+    updatedBy: string,
   ): Promise<TeamAdministrator> {
     try {
       // For testing, return a mock updated administrator
@@ -158,7 +144,7 @@ export class TeamAdministratorService {
         id: adminId,
         teamId: 'team-123',
         userId: 'user-456',
-        role: updates.role || 'team_admin' as any,
+        role: updates.role || ('team_admin' as any),
         permissions: updates.permissions || [AdministratorPermission.MANAGE_USERS],
         isActive: updates.isActive !== undefined ? updates.isActive : true,
         createdAt: new Date(),
@@ -178,22 +164,14 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Team administrator update failed',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Team administrator update failed', 'UPDATE_ERROR', 500, error);
     }
   }
 
   /**
    * Delete team administrator
    */
-  async deleteTeamAdministrator(
-    adminId: string,
-    deletedBy: string
-  ): Promise<void> {
+  async deleteTeamAdministrator(adminId: string, deletedBy: string): Promise<void> {
     try {
       // For testing, just log the operation
       logTeamOperation('administrator_deleted', 'team-123', deletedBy, {
@@ -214,7 +192,7 @@ export class TeamAdministratorService {
         'Team administrator deletion failed',
         'DELETE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -310,11 +288,7 @@ export class TeamAdministratorService {
   /**
    * Update team settings
    */
-  async updateTeamSettings(
-    teamId: string,
-    settings: any,
-    updatedBy: string
-  ): Promise<Team> {
+  async updateTeamSettings(teamId: string, settings: any, updatedBy: string): Promise<Team> {
     try {
       const team = await this.getTeam(teamId);
       const updatedTeam = { ...team, settings, updatedAt: new Date() };
@@ -330,12 +304,7 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to update team settings',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to update team settings', 'UPDATE_ERROR', 500, error);
     }
   }
 }

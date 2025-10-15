@@ -17,7 +17,7 @@ describe('UserBehaviorTrackingService', () => {
     jest.clearAllMocks();
     behaviorTrackingService = new UserBehaviorTrackingService(
       'https://test.supabase.co',
-      'test-key'
+      'test-key',
     );
   });
 
@@ -58,9 +58,9 @@ describe('UserBehaviorTrackingService', () => {
                   userId,
                   clientId,
                   engagementScore: 0.5,
-                  lastActivityAt: '2023-01-01T00:00:00Z'
+                  lastActivityAt: '2023-01-01T00:00:00Z',
                 },
-                error: null
+                error: null,
               }),
             }),
           }),
@@ -76,7 +76,15 @@ describe('UserBehaviorTrackingService', () => {
         }),
       });
 
-      const result = await behaviorTrackingService.trackEvent(userId, eventType, eventData, undefined, undefined, undefined, clientId);
+      const result = await behaviorTrackingService.trackEvent(
+        userId,
+        eventType,
+        eventData,
+        undefined,
+        undefined,
+        undefined,
+        clientId,
+      );
 
       expect(result).toEqual(mockEvent);
     });
@@ -127,15 +135,23 @@ describe('UserBehaviorTrackingService', () => {
                 userId,
                 clientId,
                 engagementScore: 0.1,
-                lastActivityAt: '2023-01-01T00:00:00Z'
+                lastActivityAt: '2023-01-01T00:00:00Z',
               },
-              error: null
+              error: null,
             }),
           }),
         }),
       });
 
-      const result = await behaviorTrackingService.trackEvent(userId, eventType, eventData, undefined, undefined, undefined, clientId);
+      const result = await behaviorTrackingService.trackEvent(
+        userId,
+        eventType,
+        eventData,
+        undefined,
+        undefined,
+        undefined,
+        clientId,
+      );
 
       expect(result).toEqual(mockEvent);
     });
@@ -229,7 +245,7 @@ describe('UserBehaviorTrackingService', () => {
         clientId,
         'page_view',
         0,
-        10
+        10,
       );
 
       expect(result).toEqual(mockEvents);
@@ -263,11 +279,7 @@ describe('UserBehaviorTrackingService', () => {
         }),
       });
 
-      const result = await behaviorTrackingService.getAtRiskUsers(
-        clientId,
-        0.3,
-        10
-      );
+      const result = await behaviorTrackingService.getAtRiskUsers(clientId, 0.3, 10);
 
       expect(result).toEqual(mockAtRiskUsers);
     });
@@ -305,10 +317,7 @@ describe('UserBehaviorTrackingService', () => {
         }),
       });
 
-      const result = await behaviorTrackingService.getBehaviorAnalytics(
-        userId,
-        clientId
-      );
+      const result = await behaviorTrackingService.getBehaviorAnalytics(userId, clientId);
 
       expect(result).toBeDefined();
       expect(result.totalUsers).toBe(2);
@@ -331,8 +340,9 @@ describe('UserBehaviorTrackingService', () => {
         }),
       });
 
-      await expect(behaviorTrackingService.resolveRiskFactor(userId, factor, clientId))
-        .resolves.not.toThrow();
+      await expect(
+        behaviorTrackingService.resolveRiskFactor(userId, factor, clientId),
+      ).resolves.not.toThrow();
     });
   });
 });

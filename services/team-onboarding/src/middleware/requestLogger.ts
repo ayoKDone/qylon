@@ -6,7 +6,8 @@ import { logger } from '../utils/logger';
  */
 export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   const startTime = Date.now();
-  const requestId = req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const requestId =
+    req.headers['x-request-id'] || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // Add request ID to headers for response
   res.setHeader('x-request-id', requestId);
@@ -23,7 +24,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
 
   // Override res.end to log response
   const originalEnd = res.end;
-  res.end = function(chunk?: any, encoding?: any, cb?: any) {
+  res.end = function (chunk?: any, encoding?: any, cb?: any) {
     const duration = Date.now() - startTime;
 
     logger.info('Request completed', {

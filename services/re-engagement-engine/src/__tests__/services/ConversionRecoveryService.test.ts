@@ -35,7 +35,7 @@ describe('ConversionRecoveryService', () => {
     conversionRecoveryService = new ConversionRecoveryService(
       'https://test.supabase.co',
       'test-key',
-      'test-openai-key'
+      'test-openai-key',
     );
   });
 
@@ -100,13 +100,16 @@ describe('ConversionRecoveryService', () => {
       mockSupabaseClient.from.mockReturnValue({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
+            single: jest
+              .fn()
+              .mockResolvedValue({ data: null, error: { message: 'Database error' } }),
           }),
         }),
       });
 
-      await expect(conversionRecoveryService.createRecoveryCampaign(userId, request))
-        .rejects.toThrow('Failed to create recovery campaign: Database error');
+      await expect(
+        conversionRecoveryService.createRecoveryCampaign(userId, request),
+      ).rejects.toThrow('Failed to create recovery campaign: Database error');
     });
   });
 
@@ -264,7 +267,7 @@ describe('ConversionRecoveryService', () => {
       const result = await conversionRecoveryService.updateRecoveryCampaign(
         campaignId,
         userId,
-        updateRequest
+        updateRequest,
       );
 
       expect(result).toEqual(mockUpdatedCampaign);
@@ -285,8 +288,9 @@ describe('ConversionRecoveryService', () => {
         }),
       });
 
-      await expect(conversionRecoveryService.deleteRecoveryCampaign(campaignId, userId))
-        .resolves.not.toThrow();
+      await expect(
+        conversionRecoveryService.deleteRecoveryCampaign(campaignId, userId),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -355,7 +359,12 @@ describe('ConversionRecoveryService', () => {
                 single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
                 limit: jest.fn().mockResolvedValue({ data: [], error: null }),
               }),
-              single: jest.fn().mockResolvedValue({ data: { email: 'test@example.com', full_name: 'Test User' }, error: null }),
+              single: jest
+                .fn()
+                .mockResolvedValue({
+                  data: { email: 'test@example.com', full_name: 'Test User' },
+                  error: null,
+                }),
             }),
           }),
           insert: jest.fn().mockReturnValue({
@@ -373,7 +382,7 @@ describe('ConversionRecoveryService', () => {
         campaignId,
         targetUserId,
         userId,
-        clientId
+        clientId,
       );
 
       expect(result).toEqual(mockExecution);
@@ -396,12 +405,14 @@ describe('ConversionRecoveryService', () => {
         }),
       });
 
-      await expect(conversionRecoveryService.executeRecoveryCampaign(
-        campaignId,
-        targetUserId,
-        userId,
-        clientId
-      )).rejects.toThrow('Recovery campaign not found');
+      await expect(
+        conversionRecoveryService.executeRecoveryCampaign(
+          campaignId,
+          targetUserId,
+          userId,
+          clientId,
+        ),
+      ).rejects.toThrow('Recovery campaign not found');
     });
 
     it('should throw error when campaign is not active', async () => {
@@ -441,12 +452,14 @@ describe('ConversionRecoveryService', () => {
         }),
       });
 
-      await expect(conversionRecoveryService.executeRecoveryCampaign(
-        campaignId,
-        targetUserId,
-        userId,
-        clientId
-      )).rejects.toThrow('Recovery campaign is not active');
+      await expect(
+        conversionRecoveryService.executeRecoveryCampaign(
+          campaignId,
+          targetUserId,
+          userId,
+          clientId,
+        ),
+      ).rejects.toThrow('Recovery campaign is not active');
     });
   });
 
@@ -455,7 +468,7 @@ describe('ConversionRecoveryService', () => {
       const executionId = 'test-execution-id';
       const result: RecoveryResult = {
         outcome: 'converted',
-        conversionValue: 150.00,
+        conversionValue: 150.0,
         feedback: 'User successfully re-engaged',
         followUpRequired: false,
         completedAt: new Date().toISOString(),
@@ -499,10 +512,9 @@ describe('ConversionRecoveryService', () => {
         };
       });
 
-      await expect(conversionRecoveryService.completeRecoveryExecution(
-        executionId,
-        result
-      )).resolves.not.toThrow();
+      await expect(
+        conversionRecoveryService.completeRecoveryExecution(executionId, result),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -559,7 +571,7 @@ describe('ConversionRecoveryService', () => {
             totalRecovered: 5,
             totalAttempted: 20,
             averageRecoveryTime: 2.5,
-            costPerRecovery: 10.00,
+            costPerRecovery: 10.0,
           },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

@@ -5,12 +5,12 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-    AnalyticsServiceError,
-    CreatePersonalizationTriggerRequest,
-    CreateUserSegmentRequest,
-    PersonalizationTrigger,
-    UserSegment,
-    UserSegmentMembership
+  AnalyticsServiceError,
+  CreatePersonalizationTriggerRequest,
+  CreateUserSegmentRequest,
+  PersonalizationTrigger,
+  UserSegment,
+  UserSegmentMembership,
 } from '../types/analytics';
 
 export class PersonalizationService {
@@ -25,7 +25,7 @@ export class PersonalizationService {
    */
   async createPersonalizationTrigger(
     request: CreatePersonalizationTriggerRequest,
-    createdBy: string
+    createdBy: string,
   ): Promise<PersonalizationTrigger> {
     try {
       const { data, error } = await this.supabase
@@ -38,7 +38,7 @@ export class PersonalizationService {
           actions: request.actions,
           priority: request.priority || 0,
           is_active: true,
-          created_by: createdBy
+          created_by: createdBy,
         })
         .select()
         .single();
@@ -47,7 +47,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'PERSONALIZATION_TRIGGER_CREATE_FAILED',
           `Failed to create personalization trigger: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -59,7 +59,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'PERSONALIZATION_TRIGGER_CREATE_ERROR',
         `Unexpected error creating personalization trigger: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -69,7 +69,7 @@ export class PersonalizationService {
    */
   async getPersonalizationTriggers(
     isActive?: boolean,
-    triggerType?: string
+    triggerType?: string,
   ): Promise<PersonalizationTrigger[]> {
     try {
       let query = this.supabase
@@ -92,7 +92,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'PERSONALIZATION_TRIGGERS_FETCH_FAILED',
           `Failed to fetch personalization triggers: ${error.message}`,
-          { error, isActive, triggerType }
+          { error, isActive, triggerType },
         );
       }
 
@@ -104,7 +104,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'PERSONALIZATION_TRIGGERS_FETCH_ERROR',
         `Unexpected error fetching personalization triggers: ${error.message}`,
-        { error, isActive, triggerType }
+        { error, isActive, triggerType },
       );
     }
   }
@@ -114,14 +114,14 @@ export class PersonalizationService {
    */
   async updatePersonalizationTrigger(
     triggerId: string,
-    updates: Partial<CreatePersonalizationTriggerRequest>
+    updates: Partial<CreatePersonalizationTriggerRequest>,
   ): Promise<PersonalizationTrigger> {
     try {
       const { data, error } = await this.supabase
         .from('personalization_triggers')
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', triggerId)
         .select()
@@ -131,7 +131,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'PERSONALIZATION_TRIGGER_UPDATE_FAILED',
           `Failed to update personalization trigger: ${error.message}`,
-          { error, triggerId, updates }
+          { error, triggerId, updates },
         );
       }
 
@@ -139,7 +139,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'PERSONALIZATION_TRIGGER_NOT_FOUND',
           `Personalization trigger with ID ${triggerId} not found`,
-          { triggerId }
+          { triggerId },
         );
       }
 
@@ -151,7 +151,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'PERSONALIZATION_TRIGGER_UPDATE_ERROR',
         `Unexpected error updating personalization trigger: ${error.message}`,
-        { error, triggerId, updates }
+        { error, triggerId, updates },
       );
     }
   }
@@ -170,7 +170,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'PERSONALIZATION_TRIGGER_DELETE_FAILED',
           `Failed to delete personalization trigger: ${error.message}`,
-          { error, triggerId }
+          { error, triggerId },
         );
       }
     } catch (error) {
@@ -180,7 +180,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'PERSONALIZATION_TRIGGER_DELETE_ERROR',
         `Unexpected error deleting personalization trigger: ${error.message}`,
-        { error, triggerId }
+        { error, triggerId },
       );
     }
   }
@@ -190,7 +190,7 @@ export class PersonalizationService {
    */
   async createUserSegment(
     request: CreateUserSegmentRequest,
-    createdBy: string
+    createdBy: string,
   ): Promise<UserSegment> {
     try {
       const { data, error } = await this.supabase
@@ -201,7 +201,7 @@ export class PersonalizationService {
           segment_criteria: request.segment_criteria,
           user_count: 0,
           is_active: true,
-          created_by: createdBy
+          created_by: createdBy,
         })
         .select()
         .single();
@@ -210,7 +210,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'USER_SEGMENT_CREATE_FAILED',
           `Failed to create user segment: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -222,7 +222,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'USER_SEGMENT_CREATE_ERROR',
         `Unexpected error creating user segment: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -247,7 +247,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'USER_SEGMENTS_FETCH_FAILED',
           `Failed to fetch user segments: ${error.message}`,
-          { error, isActive }
+          { error, isActive },
         );
       }
 
@@ -259,7 +259,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'USER_SEGMENTS_FETCH_ERROR',
         `Unexpected error fetching user segments: ${error.message}`,
-        { error, isActive }
+        { error, isActive },
       );
     }
   }
@@ -269,14 +269,14 @@ export class PersonalizationService {
    */
   async updateUserSegment(
     segmentId: string,
-    updates: Partial<CreateUserSegmentRequest>
+    updates: Partial<CreateUserSegmentRequest>,
   ): Promise<UserSegment> {
     try {
       const { data, error } = await this.supabase
         .from('user_segments')
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', segmentId)
         .select()
@@ -286,7 +286,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'USER_SEGMENT_UPDATE_FAILED',
           `Failed to update user segment: ${error.message}`,
-          { error, segmentId, updates }
+          { error, segmentId, updates },
         );
       }
 
@@ -294,7 +294,7 @@ export class PersonalizationService {
         throw new AnalyticsServiceError(
           'USER_SEGMENT_NOT_FOUND',
           `User segment with ID ${segmentId} not found`,
-          { segmentId }
+          { segmentId },
         );
       }
 
@@ -306,7 +306,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'USER_SEGMENT_UPDATE_ERROR',
         `Unexpected error updating user segment: ${error.message}`,
-        { error, segmentId, updates }
+        { error, segmentId, updates },
       );
     }
   }
@@ -316,16 +316,13 @@ export class PersonalizationService {
    */
   async deleteUserSegment(segmentId: string): Promise<void> {
     try {
-      const { error } = await this.supabase
-        .from('user_segments')
-        .delete()
-        .eq('id', segmentId);
+      const { error } = await this.supabase.from('user_segments').delete().eq('id', segmentId);
 
       if (error) {
         throw new AnalyticsServiceError(
           'USER_SEGMENT_DELETE_FAILED',
           `Failed to delete user segment: ${error.message}`,
-          { error, segmentId }
+          { error, segmentId },
         );
       }
     } catch (error) {
@@ -335,7 +332,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'USER_SEGMENT_DELETE_ERROR',
         `Unexpected error deleting user segment: ${error.message}`,
-        { error, segmentId }
+        { error, segmentId },
       );
     }
   }
@@ -345,7 +342,7 @@ export class PersonalizationService {
    */
   async evaluateUserForSegment(
     userId: string,
-    segmentCriteria: Record<string, any>
+    segmentCriteria: Record<string, any>,
   ): Promise<boolean> {
     try {
       // Get user data
@@ -383,13 +380,13 @@ export class PersonalizationService {
       return this.evaluateCriteria(segmentCriteria, {
         user,
         clients: clients || [],
-        analytics: analytics || []
+        analytics: analytics || [],
       });
     } catch (error) {
       throw new AnalyticsServiceError(
         'SEGMENT_EVALUATION_ERROR',
         `Unexpected error evaluating user for segment: ${error.message}`,
-        { error, userId, segmentCriteria }
+        { error, userId, segmentCriteria },
       );
     }
   }
@@ -403,7 +400,7 @@ export class PersonalizationService {
       user: any;
       clients: any[];
       analytics: any[];
-    }
+    },
   ): boolean {
     try {
       for (const [key, value] of Object.entries(criteria)) {
@@ -427,7 +424,7 @@ export class PersonalizationService {
       user: any;
       clients: any[];
       analytics: any[];
-    }
+    },
   ): boolean {
     const { user, clients, analytics } = userData;
 
@@ -515,7 +512,7 @@ export class PersonalizationService {
             .insert({
               user_id: userId,
               segment_id: segment.id,
-              joined_at: new Date().toISOString()
+              joined_at: new Date().toISOString(),
             })
             .select()
             .single();
@@ -543,7 +540,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'SEGMENT_MEMBERSHIPS_UPDATE_ERROR',
         `Unexpected error updating user segment memberships: ${error.message}`,
-        { error, userId }
+        { error, userId },
       );
     }
   }
@@ -583,17 +580,19 @@ export class PersonalizationService {
     try {
       const { data, error } = await this.supabase
         .from('user_segment_memberships')
-        .select(`
+        .select(
+          `
           *,
           user_segments!inner(*)
-        `)
+        `,
+        )
         .eq('user_id', userId);
 
       if (error) {
         throw new AnalyticsServiceError(
           'USER_SEGMENT_MEMBERSHIPS_FETCH_FAILED',
           `Failed to fetch user segment memberships: ${error.message}`,
-          { error, userId }
+          { error, userId },
         );
       }
 
@@ -605,7 +604,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'USER_SEGMENT_MEMBERSHIPS_FETCH_ERROR',
         `Unexpected error fetching user segment memberships: ${error.message}`,
-        { error, userId }
+        { error, userId },
       );
     }
   }
@@ -616,7 +615,7 @@ export class PersonalizationService {
   async executePersonalizationTriggers(
     userId: string,
     eventType?: string,
-    eventData?: Record<string, any>
+    eventData?: Record<string, any>,
   ): Promise<Array<{ trigger: PersonalizationTrigger; executed: boolean; result?: any }>> {
     try {
       const triggers = await this.getPersonalizationTriggers(true);
@@ -627,7 +626,7 @@ export class PersonalizationService {
           trigger,
           userId,
           eventType,
-          eventData
+          eventData,
         );
 
         if (shouldExecute) {
@@ -643,7 +642,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'PERSONALIZATION_TRIGGERS_EXECUTION_ERROR',
         `Unexpected error executing personalization triggers: ${error.message}`,
-        { error, userId, eventType, eventData }
+        { error, userId, eventType, eventData },
       );
     }
   }
@@ -655,7 +654,7 @@ export class PersonalizationService {
     trigger: PersonalizationTrigger,
     userId: string,
     eventType?: string,
-    eventData?: Record<string, any>
+    eventData?: Record<string, any>,
   ): Promise<boolean> {
     try {
       // Check trigger type conditions
@@ -685,7 +684,7 @@ export class PersonalizationService {
    */
   private async evaluateUserBehaviorConditions(
     conditions: Record<string, any>,
-    userId: string
+    userId: string,
   ): Promise<boolean> {
     // Implementation would depend on specific behavior conditions
     // This is a simplified version
@@ -721,15 +720,13 @@ export class PersonalizationService {
    */
   private async evaluateSegmentBasedConditions(
     conditions: Record<string, any>,
-    userId: string
+    userId: string,
   ): Promise<boolean> {
     if (conditions.segment_ids) {
       const memberships = await this.getUserSegmentMemberships(userId);
       const userSegmentIds = memberships.map(m => m.segment_id);
 
-      return conditions.segment_ids.some((segmentId: string) =>
-        userSegmentIds.includes(segmentId)
-      );
+      return conditions.segment_ids.some((segmentId: string) => userSegmentIds.includes(segmentId));
     }
 
     return false;
@@ -741,7 +738,7 @@ export class PersonalizationService {
   private async executeTrigger(
     trigger: PersonalizationTrigger,
     userId: string,
-    eventData?: Record<string, any>
+    eventData?: Record<string, any>,
   ): Promise<any> {
     try {
       // This would execute the actual trigger actions
@@ -751,7 +748,7 @@ export class PersonalizationService {
       // Log the trigger execution
       console.log(`Executing trigger ${trigger.name} for user ${userId}`, {
         actions,
-        eventData
+        eventData,
       });
 
       return { success: true, actions };
@@ -759,7 +756,7 @@ export class PersonalizationService {
       throw new AnalyticsServiceError(
         'TRIGGER_EXECUTION_ERROR',
         `Failed to execute trigger: ${error.message}`,
-        { error, trigger, userId, eventData }
+        { error, trigger, userId, eventData },
       );
     }
   }

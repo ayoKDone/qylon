@@ -2,7 +2,9 @@ describe('Dashboard E2E Tests', () => {
   beforeEach(() => {
     // Mock authentication
     cy.intercept('GET', '/api/auth/user', { fixture: 'user.json' }).as('getUser');
-    cy.intercept('GET', '/api/dashboard/overview', { fixture: 'dashboard-overview.json' }).as('getDashboard');
+    cy.intercept('GET', '/api/dashboard/overview', { fixture: 'dashboard-overview.json' }).as(
+      'getDashboard',
+    );
   });
 
   it('should load the dashboard page with all components', () => {

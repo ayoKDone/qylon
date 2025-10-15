@@ -31,7 +31,7 @@ describe('EmailSequenceService', () => {
     emailSequenceService = new EmailSequenceService(
       'https://test.supabase.co',
       'test-key',
-      mockEmailProvider
+      mockEmailProvider,
     );
   });
 
@@ -126,13 +126,16 @@ describe('EmailSequenceService', () => {
       mockSupabaseClient.from.mockReturnValueOnce({
         insert: jest.fn().mockReturnValue({
           select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
+            single: jest
+              .fn()
+              .mockResolvedValue({ data: null, error: { message: 'Database error' } }),
           }),
         }),
       });
 
-      await expect(emailSequenceService.createEmailSequence(userId, request))
-        .rejects.toThrow('Failed to create email sequence: Database error');
+      await expect(emailSequenceService.createEmailSequence(userId, request)).rejects.toThrow(
+        'Failed to create email sequence: Database error',
+      );
     });
   });
 
@@ -306,7 +309,11 @@ describe('EmailSequenceService', () => {
         }),
       });
 
-      const result = await emailSequenceService.updateEmailSequence(sequenceId, userId, updateRequest);
+      const result = await emailSequenceService.updateEmailSequence(
+        sequenceId,
+        userId,
+        updateRequest,
+      );
 
       expect(result).toEqual(mockUpdatedSequence);
     });
@@ -331,8 +338,9 @@ describe('EmailSequenceService', () => {
         }),
       });
 
-      await expect(emailSequenceService.deleteEmailSequence(sequenceId, userId))
-        .resolves.not.toThrow();
+      await expect(
+        emailSequenceService.deleteEmailSequence(sequenceId, userId),
+      ).resolves.not.toThrow();
     });
   });
 
@@ -403,7 +411,7 @@ describe('EmailSequenceService', () => {
       const result = await emailSequenceService.startEmailSequenceExecution(
         sequenceId,
         userId,
-        clientId
+        clientId,
       );
 
       expect(result).toEqual(mockExecution);

@@ -1,4 +1,7 @@
-import { EventDrivenOrchestrator, OrchestrationContext } from '../../services/EventDrivenOrchestrator';
+import {
+  EventDrivenOrchestrator,
+  OrchestrationContext,
+} from '../../services/EventDrivenOrchestrator';
 import { IntegrationResult } from '../../services/IntegrationServiceCoordinator';
 import { TriggerResult } from '../../services/WorkflowTriggerSystem';
 
@@ -65,9 +68,9 @@ const mockIntegrationCoordinator = {
     totalIntegrations: 10,
     activeIntegrations: 8,
     integrationTypes: {
-      'crm_salesforce': 3,
-      'crm_hubspot': 2,
-      'crm_pipedrive': 1,
+      crm_salesforce: 3,
+      crm_hubspot: 2,
+      crm_pipedrive: 1,
     },
   }),
 };
@@ -168,7 +171,9 @@ describe('EventDrivenOrchestrator', () => {
       ];
 
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
-      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(mockIntegrationResults);
+      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(
+        mockIntegrationResults,
+      );
       mockSupabase.from().upsert.mockResolvedValue({ error: null });
 
       const result = await orchestrator.processEvent(mockEvent);
@@ -235,7 +240,9 @@ describe('EventDrivenOrchestrator', () => {
       ];
 
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
-      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(mockIntegrationResults);
+      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(
+        mockIntegrationResults,
+      );
       mockSupabase.from().upsert.mockResolvedValue({ error: null });
 
       const result = await orchestrator.processEvent(mockEvent);
@@ -267,7 +274,9 @@ describe('EventDrivenOrchestrator', () => {
       const mockIntegrationResults: IntegrationResult[] = [];
 
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
-      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(mockIntegrationResults);
+      mockIntegrationCoordinator.coordinateIntegrationActions.mockResolvedValue(
+        mockIntegrationResults,
+      );
       mockSupabase.from().upsert.mockResolvedValue({ error: null });
 
       // Start first processing
@@ -289,7 +298,10 @@ describe('EventDrivenOrchestrator', () => {
       const mockWorkflowResults: TriggerResult[] = [];
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
 
-      const actions = await (orchestrator as any).generateIntegrationActions(mockEvent, mockWorkflowResults);
+      const actions = await (orchestrator as any).generateIntegrationActions(
+        mockEvent,
+        mockWorkflowResults,
+      );
 
       expect(actions).toHaveLength(2); // One for project management, one for CRM
       expect(actions[0].type).toBe('create_contact'); // This would be 'create_task' in real implementation
@@ -316,7 +328,10 @@ describe('EventDrivenOrchestrator', () => {
       const mockWorkflowResults: TriggerResult[] = [];
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
 
-      const actions = await (orchestrator as any).generateIntegrationActions(meetingEvent, mockWorkflowResults);
+      const actions = await (orchestrator as any).generateIntegrationActions(
+        meetingEvent,
+        mockWorkflowResults,
+      );
 
       expect(actions).toHaveLength(2); // One for calendar sync, one for notification
       expect(actions[0].type).toBe('sync_data');
@@ -340,7 +355,10 @@ describe('EventDrivenOrchestrator', () => {
       const mockWorkflowResults: TriggerResult[] = [];
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
 
-      const actions = await (orchestrator as any).generateIntegrationActions(clientEvent, mockWorkflowResults);
+      const actions = await (orchestrator as any).generateIntegrationActions(
+        clientEvent,
+        mockWorkflowResults,
+      );
 
       expect(actions).toHaveLength(1);
       expect(actions[0].type).toBe('create_contact');
@@ -363,7 +381,10 @@ describe('EventDrivenOrchestrator', () => {
       const mockWorkflowResults: TriggerResult[] = [];
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
 
-      const actions = await (orchestrator as any).generateIntegrationActions(userEvent, mockWorkflowResults);
+      const actions = await (orchestrator as any).generateIntegrationActions(
+        userEvent,
+        mockWorkflowResults,
+      );
 
       expect(actions).toHaveLength(1);
       expect(actions[0].type).toBe('send_notification');
@@ -379,7 +400,10 @@ describe('EventDrivenOrchestrator', () => {
       const mockWorkflowResults: TriggerResult[] = [];
       mockWorkflowTriggerSystem.processEvent.mockResolvedValue(mockWorkflowResults);
 
-      const actions = await (orchestrator as any).generateIntegrationActions(unknownEvent, mockWorkflowResults);
+      const actions = await (orchestrator as any).generateIntegrationActions(
+        unknownEvent,
+        mockWorkflowResults,
+      );
 
       expect(actions).toHaveLength(0);
     });
@@ -394,7 +418,8 @@ describe('EventDrivenOrchestrator', () => {
       expect(mockSupabase.from).toHaveBeenCalledWith('event_processing_status');
 
       // Get the last call to from() and check its upsert method
-      const lastFromCall = mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
+      const lastFromCall =
+        mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
       expect(lastFromCall.value.upsert).toHaveBeenCalledWith({
         event_id: 'event-123',
         status: 'completed',
@@ -411,7 +436,8 @@ describe('EventDrivenOrchestrator', () => {
       expect(mockSupabase.from).toHaveBeenCalledWith('event_processing_status');
 
       // Get the last call to from() and check its upsert method
-      const lastFromCall = mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
+      const lastFromCall =
+        mockSupabase.from.mock.results[mockSupabase.from.mock.results.length - 1];
       expect(lastFromCall.value.upsert).toHaveBeenCalledWith({
         event_id: 'event-123',
         status: 'failed',
@@ -425,7 +451,7 @@ describe('EventDrivenOrchestrator', () => {
 
       // Should not throw
       await expect(
-        (orchestrator as any).updateEventProcessingStatus('event-123', 'completed')
+        (orchestrator as any).updateEventProcessingStatus('event-123', 'completed'),
       ).resolves.not.toThrow();
     });
   });

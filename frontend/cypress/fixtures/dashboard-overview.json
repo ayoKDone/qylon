@@ -1,58 +1,55 @@
 {
-    "overview": {
-        "total_meetings": 25,
-        "upcoming_meetings": 5,
-        "completed_meetings": 20,
-        "total_integrations": 8,
-        "active_integrations": 6,
-        "total_workflows": 12,
-        "active_workflows": 10
+  "overview": {
+    "total_meetings": 25,
+    "upcoming_meetings": 5,
+    "completed_meetings": 20,
+    "total_integrations": 8,
+    "active_integrations": 6,
+    "total_workflows": 12,
+    "active_workflows": 10
+  },
+  "recent_meetings": [
+    {
+      "id": "meeting-1",
+      "title": "Weekly Team Standup",
+      "date": "2024-12-01T10:00:00Z",
+      "duration": 30,
+      "status": "completed",
+      "participants": 5
     },
-    "recent_meetings": [
-        {
-            "id": "meeting-1",
-            "title": "Weekly Team Standup",
-            "date": "2024-12-01T10:00:00Z",
-            "duration": 30,
-            "status": "completed",
-            "participants": 5
-        },
-        {
-            "id": "meeting-2",
-            "title": "Product Planning Session",
-            "date": "2024-12-02T14:00:00Z",
-            "duration": 60,
-            "status": "scheduled",
-            "participants": 8
-        }
-    ],
-    "integrations": [
-        {
-            "id": "slack",
-            "name": "Slack",
-            "status": "active",
-            "last_sync": "2024-12-01T15:30:00Z"
-        },
-        {
-            "id": "zoom",
-            "name": "Zoom",
-            "status": "active",
-            "last_sync": "2024-12-01T16:00:00Z"
-        }
-    ],
-    "analytics": {
-        "meeting_insights": {
-            "average_duration": 45,
-            "most_productive_time": "10:00-11:00",
-            "top_participants": [
-                "john@example.com",
-                "jane@example.com"
-            ]
-        },
-        "workflow_efficiency": {
-            "automation_rate": 85,
-            "time_saved": "12 hours",
-            "tasks_completed": 150
-        }
+    {
+      "id": "meeting-2",
+      "title": "Product Planning Session",
+      "date": "2024-12-02T14:00:00Z",
+      "duration": 60,
+      "status": "scheduled",
+      "participants": 8
     }
+  ],
+  "integrations": [
+    {
+      "id": "slack",
+      "name": "Slack",
+      "status": "active",
+      "last_sync": "2024-12-01T15:30:00Z"
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "status": "active",
+      "last_sync": "2024-12-01T16:00:00Z"
+    }
+  ],
+  "analytics": {
+    "meeting_insights": {
+      "average_duration": 45,
+      "most_productive_time": "10:00-11:00",
+      "top_participants": ["john@example.com", "jane@example.com"]
+    },
+    "workflow_efficiency": {
+      "automation_rate": 85,
+      "time_saved": "12 hours",
+      "tasks_completed": 150
+    }
+  }
 }

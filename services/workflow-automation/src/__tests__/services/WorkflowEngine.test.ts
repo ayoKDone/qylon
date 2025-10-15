@@ -14,7 +14,7 @@ jest.mock('../../services/WorkflowEngine', () => {
             success: true,
             executionId: 'mock-execution-id',
             executedSteps: ['step1'],
-            state: {}
+            state: {},
           };
         }
         // Mock error for invalid workflows
@@ -23,7 +23,7 @@ jest.mock('../../services/WorkflowEngine', () => {
             success: false,
             error: 'Invalid action: invalid-action',
             executedSteps: [],
-            state: {}
+            state: {},
           };
         }
         // Mock conditional workflow
@@ -32,7 +32,7 @@ jest.mock('../../services/WorkflowEngine', () => {
             success: true,
             executionId: 'mock-execution-id',
             executedSteps: ['admin-action'],
-            state: { user: { role: 'admin' } }
+            state: { user: { role: 'admin' } },
           };
         }
         // Mock state workflow
@@ -41,17 +41,17 @@ jest.mock('../../services/WorkflowEngine', () => {
             success: true,
             executionId: 'mock-execution-id',
             executedSteps: ['step1'],
-            state: { testVar: 'testValue' }
+            state: { testVar: 'testValue' },
           };
         }
         return {
           success: false,
           error: 'Unknown workflow',
           executedSteps: [],
-          state: {}
+          state: {},
         };
-      })
-    }))
+      }),
+    })),
   };
 });
 
@@ -72,9 +72,9 @@ describe('WorkflowEngine', () => {
             id: 'step1',
             type: 'action',
             action: 'send-email',
-            parameters: { to: 'test@example.com', subject: 'Test' }
-          }
-        ]
+            parameters: { to: 'test@example.com', subject: 'Test' },
+          },
+        ],
       };
 
       const result = await workflowEngine.executeWorkflow(workflowDef, {});
@@ -92,9 +92,9 @@ describe('WorkflowEngine', () => {
             id: 'error-step',
             type: 'action',
             action: 'invalid-action',
-            parameters: {}
-          }
-        ]
+            parameters: {},
+          },
+        ],
       };
 
       const result = await workflowEngine.executeWorkflow(workflowDef, {});
@@ -117,19 +117,19 @@ describe('WorkflowEngine', () => {
                 id: 'admin-action',
                 type: 'action',
                 action: 'admin-notification',
-                parameters: {}
-              }
+                parameters: {},
+              },
             ],
             falseSteps: [
               {
                 id: 'user-action',
                 type: 'action',
                 action: 'user-notification',
-                parameters: {}
-              }
-            ]
-          }
-        ]
+                parameters: {},
+              },
+            ],
+          },
+        ],
       };
 
       const result = await workflowEngine.executeWorkflow(workflowDef, { user: { role: 'admin' } });
@@ -149,9 +149,9 @@ describe('WorkflowEngine', () => {
             id: 'step1',
             type: 'action',
             action: 'set-variable',
-            parameters: { name: 'testVar', value: 'testValue' }
-          }
-        ]
+            parameters: { name: 'testVar', value: 'testValue' },
+          },
+        ],
       };
 
       const result = await workflowEngine.executeWorkflow(workflowDef, {});

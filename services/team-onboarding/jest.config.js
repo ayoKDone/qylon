@@ -2,10 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
-  testMatch: [
-    '**/__tests__/**/*.test.ts',
-    '**/?(*.)+(spec|test).ts'
-  ],
+  testMatch: ['**/__tests__/**/*.test.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
@@ -13,14 +10,10 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.d.ts',
     '!src/**/__tests__/**',
-    '!src/**/index.ts'
+    '!src/**/index.ts',
   ],
   coverageDirectory: '../../coverage/team-onboarding',
-  coverageReporters: [
-    'text',
-    'lcov',
-    'html'
-  ],
+  coverageReporters: ['text', 'lcov', 'html'],
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   testTimeout: 10000,
   // Coverage thresholds - temporarily lowered for development

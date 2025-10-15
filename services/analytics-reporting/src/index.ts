@@ -37,21 +37,18 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.errors({ stack: true }),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      )
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
     new winston.transports.File({
       filename: 'logs/analytics-reporting-error.log',
-      level: 'error'
+      level: 'error',
     }),
     new winston.transports.File({
-      filename: 'logs/analytics-reporting.log'
+      filename: 'logs/analytics-reporting.log',
     }),
   ],
 });
@@ -59,12 +56,12 @@ const logger = winston.createLogger({
 // Initialize services
 const analyticsService = new AnalyticsService(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 const authMiddleware = new AuthMiddleware(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 const analyticsRoutes = new AnalyticsRoutes(analyticsService, authMiddleware);
@@ -75,30 +72,34 @@ const limiter = rateLimit({
   max: 1000, // Limit each IP to 1000 requests per windowMs
   message: {
     error: 'RATE_LIMIT_EXCEEDED',
-    message: 'Too many requests from this IP, please try again later.'
+    message: 'Too many requests from this IP, please try again later.',
   },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 // Middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+      },
     },
-  },
-}));
+  }),
+);
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  }),
+);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -110,7 +111,7 @@ app.use((req, res, next) => {
     method: req.method,
     url: req.url,
     ip: req.ip,
-    userAgent: req.get('User-Agent')
+    userAgent: req.get('User-Agent'),
   });
   next();
 });
@@ -124,7 +125,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 
@@ -151,7 +152,7 @@ app.use('*', (req, res) => {
   res.status(404).json({
     error: 'NOT_FOUND',
     message: 'Endpoint not found',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -162,13 +163,13 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
     stack: error.stack,
     url: req.url,
     method: req.method,
-    ip: req.ip
+    ip: req.ip,
   });
 
   res.status(500).json({
     error: 'INTERNAL_SERVER_ERROR',
     message: 'An unexpected error occurred',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -188,7 +189,7 @@ const server = app.listen(port, () => {
   logger.info(`Analytics & Reporting Service running on port ${port}`, {
     port,
     environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 

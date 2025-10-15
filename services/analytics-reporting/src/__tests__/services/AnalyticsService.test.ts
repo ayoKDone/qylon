@@ -21,11 +21,11 @@ jest.mock('@supabase/supabase-js', () => ({
       range: jest.fn().mockReturnThis(),
       single: jest.fn().mockResolvedValue({ data: { id: 'test-id' }, error: null }),
       auth: {
-        getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null })
+        getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
       },
-      rpc: jest.fn().mockResolvedValue({ data: [], error: null })
-    }))
-  }))
+      rpc: jest.fn().mockResolvedValue({ data: [], error: null }),
+    })),
+  })),
 }));
 
 describe('AnalyticsService', () => {
@@ -33,10 +33,7 @@ describe('AnalyticsService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    analyticsService = new AnalyticsService(
-      'https://test.supabase.co',
-      'test-service-role-key'
-    );
+    analyticsService = new AnalyticsService('https://test.supabase.co', 'test-service-role-key');
   });
 
   describe('constructor', () => {
@@ -52,7 +49,7 @@ describe('AnalyticsService', () => {
         client_id: 'test-client-id',
         event_type: 'page_view',
         event_name: 'homepage_visit',
-        event_data: { page: '/home' }
+        event_data: { page: '/home' },
       };
 
       const result = await analyticsService.trackEvent(eventData);
@@ -66,7 +63,7 @@ describe('AnalyticsService', () => {
         client_id: '',
         event_type: '',
         event_name: '',
-        event_data: {}
+        event_data: {},
       };
 
       const result = await analyticsService.trackEvent(invalidEventData);
@@ -80,7 +77,7 @@ describe('AnalyticsService', () => {
         user_id: 'test-user-id',
         client_id: 'test-client-id',
         conversion_type: 'signup',
-        conversion_value: 100
+        conversion_value: 100,
       };
 
       const result = await analyticsService.trackConversion(conversionData);
@@ -93,7 +90,7 @@ describe('AnalyticsService', () => {
         user_id: '',
         client_id: '',
         conversion_type: '',
-        conversion_value: -1
+        conversion_value: -1,
       };
 
       const result = await analyticsService.trackConversion(invalidConversionData);
@@ -107,7 +104,7 @@ describe('AnalyticsService', () => {
         user_id: 'test-user-id',
         event_type: 'page_view',
         start_date: new Date('2024-01-01'),
-        end_date: new Date('2024-12-31')
+        end_date: new Date('2024-12-31'),
       };
 
       const result = await analyticsService.getAnalyticsEvents(filters);
@@ -126,7 +123,7 @@ describe('AnalyticsService', () => {
         user_id: 'test-user-id',
         conversion_type: 'signup',
         start_date: new Date('2024-01-01'),
-        end_date: new Date('2024-12-31')
+        end_date: new Date('2024-12-31'),
       };
 
       const result = await analyticsService.getConversionEvents(filters);

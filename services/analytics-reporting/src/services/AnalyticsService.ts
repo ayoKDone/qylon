@@ -5,14 +5,14 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-    AnalyticsEvent,
-    AnalyticsFilter,
-    AnalyticsServiceError,
-    ClientAnalytics,
-    ConversionEvent,
-    TrackConversionRequest,
-    TrackEventRequest,
-    UserAnalytics
+  AnalyticsEvent,
+  AnalyticsFilter,
+  AnalyticsServiceError,
+  ClientAnalytics,
+  ConversionEvent,
+  TrackConversionRequest,
+  TrackEventRequest,
+  UserAnalytics,
 } from '../types/analytics';
 import { ConversionOptimizationService } from './ConversionOptimizationService';
 import { FunnelTrackingService } from './FunnelTrackingService';
@@ -49,7 +49,7 @@ export class AnalyticsService {
           referrer: request.referrer,
           user_agent: request.user_agent,
           ip_address: request.ip_address,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
         .select()
         .single();
@@ -58,7 +58,7 @@ export class AnalyticsService {
         throw new AnalyticsServiceError(
           'EVENT_TRACK_FAILED',
           `Failed to track event: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -67,7 +67,7 @@ export class AnalyticsService {
         await this.personalization.executePersonalizationTriggers(
           request.user_id,
           request.event_type,
-          request.event_data
+          request.event_data,
         );
       } catch (triggerError) {
         // Log trigger error but don't fail the event tracking
@@ -82,7 +82,7 @@ export class AnalyticsService {
       throw new AnalyticsServiceError(
         'EVENT_TRACK_ERROR',
         `Unexpected error tracking event: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -103,7 +103,7 @@ export class AnalyticsService {
           variant_id: request.variant_id,
           funnel_step_id: request.funnel_step_id,
           metadata: request.metadata || {},
-          converted_at: new Date().toISOString()
+          converted_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -112,7 +112,7 @@ export class AnalyticsService {
         throw new AnalyticsServiceError(
           'CONVERSION_TRACK_FAILED',
           `Failed to track conversion: ${error.message}`,
-          { error, request }
+          { error, request },
         );
       }
 
@@ -123,7 +123,7 @@ export class AnalyticsService {
             request.user_id,
             request.experiment_id,
             request.conversion_value,
-            request.metadata
+            request.metadata,
           );
         } catch (experimentError) {
           // Log experiment error but don't fail the conversion tracking
@@ -139,7 +139,7 @@ export class AnalyticsService {
       throw new AnalyticsServiceError(
         'CONVERSION_TRACK_ERROR',
         `Unexpected error tracking conversion: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -188,7 +188,7 @@ export class AnalyticsService {
         throw new AnalyticsServiceError(
           'ANALYTICS_EVENTS_FETCH_FAILED',
           `Failed to fetch analytics events: ${error.message}`,
-          { error, filter }
+          { error, filter },
         );
       }
 
@@ -200,7 +200,7 @@ export class AnalyticsService {
       throw new AnalyticsServiceError(
         'ANALYTICS_EVENTS_FETCH_ERROR',
         `Unexpected error fetching analytics events: ${error.message}`,
-        { error, filter }
+        { error, filter },
       );
     }
   }
@@ -249,7 +249,7 @@ export class AnalyticsService {
         throw new AnalyticsServiceError(
           'CONVERSION_EVENTS_FETCH_FAILED',
           `Failed to fetch conversion events: ${error.message}`,
-          { error, filter }
+          { error, filter },
         );
       }
 
@@ -261,7 +261,7 @@ export class AnalyticsService {
       throw new AnalyticsServiceError(
         'CONVERSION_EVENTS_FETCH_ERROR',
         `Unexpected error fetching conversion events: ${error.message}`,
-        { error, filter }
+        { error, filter },
       );
     }
   }
@@ -281,7 +281,8 @@ export class AnalyticsService {
       const segmentMemberships = await this.personalization.getUserSegmentMemberships(userId);
 
       // Get user's experiment assignments
-      const experimentAssignments = await this.conversionOptimization.getUserExperimentAssignments(userId);
+      const experimentAssignments =
+        await this.conversionOptimization.getUserExperimentAssignments(userId);
 
       const totalEvents = events.length;
       const totalConversions = conversions.length;
@@ -291,9 +292,10 @@ export class AnalyticsService {
         .filter(a => !a.converted_at)
         .map(a => a.experiment_id);
 
-      const lastActivity = events.length > 0
-        ? new Date(Math.max(...events.map(e => new Date(e.timestamp).getTime())))
-        : new Date();
+      const lastActivity =
+        events.length > 0
+          ? new Date(Math.max(...events.map(e => new Date(e.timestamp).getTime())))
+          : new Date();
 
       return {
         user_id: userId,
@@ -302,13 +304,13 @@ export class AnalyticsService {
         conversion_rate: Math.round(conversionRate * 100) / 100,
         segments,
         active_experiments: activeExperiments,
-        last_activity: lastActivity
+        last_activity: lastActivity,
       };
     } catch (error) {
       throw new AnalyticsServiceError(
         'USER_ANALYTICS_ERROR',
         `Unexpected error getting user analytics: ${error.message}`,
-        { error, userId }
+        { error, userId },
       );
     }
   }
@@ -328,7 +330,7 @@ export class AnalyticsService {
         throw new AnalyticsServiceError(
           'CLIENT_USERS_FETCH_FAILED',
           `Failed to fetch client users: ${usersError.message}`,
-          { error: usersError, clientId }
+          { error: usersError, clientId },
         );
       }
 
@@ -346,22 +348,28 @@ export class AnalyticsService {
 
       // Get top funnels (simplified)
       const funnelEvents = events.filter(e => e.event_type === 'funnel_step');
-      const funnelStats = funnelEvents.reduce((acc, event) => {
-        const funnelName = event.event_data?.funnel_name || 'unknown';
-        if (!acc[funnelName]) {
-          acc[funnelName] = { total: 0, completed: 0 };
-        }
-        acc[funnelName].total++;
-        if (event.event_data?.completed) {
-          acc[funnelName].completed++;
-        }
-        return acc;
-      }, {} as Record<string, { total: number; completed: number }>);
+      const funnelStats = funnelEvents.reduce(
+        (acc, event) => {
+          const funnelName = event.event_data?.funnel_name || 'unknown';
+          if (!acc[funnelName]) {
+            acc[funnelName] = { total: 0, completed: 0 };
+          }
+          acc[funnelName].total++;
+          if (event.event_data?.completed) {
+            acc[funnelName].completed++;
+          }
+          return acc;
+        },
+        {} as Record<string, { total: number; completed: number }>,
+      );
 
-      const topFunnels = Object.entries(funnelStats).map(([funnelName, stats]) => ({
-        funnel_name: funnelName,
-        completion_rate: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0
-      })).sort((a, b) => b.completion_rate - a.completion_rate).slice(0, 5);
+      const topFunnels = Object.entries(funnelStats)
+        .map(([funnelName, stats]) => ({
+          funnel_name: funnelName,
+          completion_rate: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0,
+        }))
+        .sort((a, b) => b.completion_rate - a.completion_rate)
+        .slice(0, 5);
 
       // Get active experiments count (simplified)
       const activeExperiments = 0; // This would require more complex querying
@@ -374,13 +382,13 @@ export class AnalyticsService {
         total_conversions: totalConversions,
         conversion_rate: Math.round(conversionRate * 100) / 100,
         top_funnels: topFunnels,
-        active_experiments: activeExperiments
+        active_experiments: activeExperiments,
       };
     } catch (error) {
       throw new AnalyticsServiceError(
         'CLIENT_ANALYTICS_ERROR',
         `Unexpected error getting client analytics: ${error.message}`,
-        { error, clientId }
+        { error, clientId },
       );
     }
   }
@@ -409,10 +417,13 @@ export class AnalyticsService {
       const conversionRate = totalEvents > 0 ? (totalConversions / totalEvents) * 100 : 0;
 
       // Get top events
-      const eventCounts = events.reduce((acc, event) => {
-        acc[event.event_type] = (acc[event.event_type] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const eventCounts = events.reduce(
+        (acc, event) => {
+          acc[event.event_type] = (acc[event.event_type] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
       const topEvents = Object.entries(eventCounts)
         .map(([event_type, count]) => ({ event_type, count }))
@@ -423,15 +434,16 @@ export class AnalyticsService {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const recentConversions = conversions.filter(c =>
-        new Date(c.converted_at) >= thirtyDaysAgo
-      );
+      const recentConversions = conversions.filter(c => new Date(c.converted_at) >= thirtyDaysAgo);
 
-      const conversionTrends = recentConversions.reduce((acc, conversion) => {
-        const date = new Date(conversion.converted_at).toISOString().split('T')[0];
-        acc[date] = (acc[date] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const conversionTrends = recentConversions.reduce(
+        (acc, conversion) => {
+          const date = new Date(conversion.converted_at).toISOString().split('T')[0];
+          acc[date] = (acc[date] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
       const conversionTrendsArray = Object.entries(conversionTrends)
         .map(([date, conversions]) => ({ date, conversions }))
@@ -439,22 +451,27 @@ export class AnalyticsService {
 
       // Get funnel performance
       const funnelEvents = events.filter(e => e.event_type === 'funnel_step');
-      const funnelStats = funnelEvents.reduce((acc, event) => {
-        const funnelName = event.event_data?.funnel_name || 'unknown';
-        if (!acc[funnelName]) {
-          acc[funnelName] = { total: 0, completed: 0 };
-        }
-        acc[funnelName].total++;
-        if (event.event_data?.completed) {
-          acc[funnelName].completed++;
-        }
-        return acc;
-      }, {} as Record<string, { total: number; completed: number }>);
+      const funnelStats = funnelEvents.reduce(
+        (acc, event) => {
+          const funnelName = event.event_data?.funnel_name || 'unknown';
+          if (!acc[funnelName]) {
+            acc[funnelName] = { total: 0, completed: 0 };
+          }
+          acc[funnelName].total++;
+          if (event.event_data?.completed) {
+            acc[funnelName].completed++;
+          }
+          return acc;
+        },
+        {} as Record<string, { total: number; completed: number }>,
+      );
 
-      const funnelPerformance = Object.entries(funnelStats).map(([funnel_name, stats]) => ({
-        funnel_name,
-        completion_rate: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0
-      })).sort((a, b) => b.completion_rate - a.completion_rate);
+      const funnelPerformance = Object.entries(funnelStats)
+        .map(([funnel_name, stats]) => ({
+          funnel_name,
+          completion_rate: stats.total > 0 ? (stats.completed / stats.total) * 100 : 0,
+        }))
+        .sort((a, b) => b.completion_rate - a.completion_rate);
 
       // Get active experiments count
       const activeExperiments = 0; // This would require querying the experiments table
@@ -466,13 +483,13 @@ export class AnalyticsService {
         active_experiments: activeExperiments,
         top_events: topEvents,
         conversion_trends: conversionTrendsArray,
-        funnel_performance: funnelPerformance
+        funnel_performance: funnelPerformance,
       };
     } catch (error) {
       throw new AnalyticsServiceError(
         'ANALYTICS_DASHBOARD_ERROR',
         `Unexpected error getting analytics dashboard: ${error.message}`,
-        { error, clientId }
+        { error, clientId },
       );
     }
   }
