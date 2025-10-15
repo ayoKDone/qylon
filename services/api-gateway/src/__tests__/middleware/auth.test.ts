@@ -7,7 +7,7 @@ describe('Authentication Middleware', () => {
       await request(app)
         .get('/api/v1/test-protected-route')
         .expect(401)
-        .expect((res) => {
+        .expect(res => {
           expect(res.body).toHaveProperty('error', 'Authorization header required');
         });
     });
@@ -17,7 +17,7 @@ describe('Authentication Middleware', () => {
         .get('/api/v1/test-protected-route')
         .set('Authorization', 'Bearer invalid-token')
         .expect(401)
-        .expect((res) => {
+        .expect(res => {
           expect(res.body).toHaveProperty('error', 'Invalid token');
         });
     });
@@ -39,11 +39,7 @@ describe('Authentication Middleware', () => {
 
       // Make 100 requests quickly
       for (let i = 0; i < 100; i++) {
-        promises.push(
-          request(app)
-            .get('/api/health')
-            .set('Authorization', 'Bearer valid-token')
-        );
+        promises.push(request(app).get('/api/health').set('Authorization', 'Bearer valid-token'));
       }
 
       const responses = await Promise.all(promises);

@@ -5,14 +5,14 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-    AnalyticsServiceError,
-    ConversionExperiment,
-    CreateExperimentRequest,
-    CreateVariantRequest,
-    ExperimentFilter,
-    ExperimentResults,
-    ExperimentVariant,
-    UserExperimentAssignment
+  AnalyticsServiceError,
+  ConversionExperiment,
+  CreateExperimentRequest,
+  CreateVariantRequest,
+  ExperimentFilter,
+  ExperimentResults,
+  ExperimentVariant,
+  UserExperimentAssignment,
 } from '../types/analytics';
 
 export class ConversionOptimizationService {
@@ -25,15 +25,21 @@ export class ConversionOptimizationService {
   /**
    * Create a new conversion experiment
    */
-  async createExperiment(request: CreateExperimentRequest, createdBy: string): Promise<ConversionExperiment> {
+  async createExperiment(
+    request: CreateExperimentRequest,
+    createdBy: string,
+  ): Promise<ConversionExperiment> {
     try {
       // Validate traffic percentages
-      const totalTraffic = request.variants.reduce((sum, variant) => sum + variant.traffic_percentage, 0);
+      const totalTraffic = request.variants.reduce(
+        (sum, variant) => sum + variant.traffic_percentage,
+        0,
+      );
       if (Math.abs(totalTraffic - 100) > 0.01) {
         throw new AnalyticsServiceError(
           'INVALID_TRAFFIC_PERCENTAGES',
           'Total traffic percentage must equal 100%',
-          { totalTraffic, variants: request.variants }
+          { totalTraffic, variants: request.variants },
         );
       }
 
@@ -43,7 +49,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'MISSING_CONTROL_VARIANT',
           'At least one variant must be marked as control',
-          { variants: request.variants }
+          { variants: request.variants },
         );
       }
 
@@ -58,7 +64,7 @@ export class ConversionOptimizationService {
           success_metrics: request.success_metrics,
           configuration: request.configuration || {},
           created_by: createdBy,
-          status: 'draft'
+          status: 'draft',
         })
         .select()
         .single();
@@ -67,7 +73,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENT_CREATE_FAILED',
           `Failed to create experiment: ${experimentError.message}`,
-          { error: experimentError, request }
+          { error: experimentError, request },
         );
       }
 
@@ -76,7 +82,7 @@ export class ConversionOptimizationService {
 
       return {
         ...experiment,
-        variants
+        variants,
       } as ConversionExperiment & { variants: ExperimentVariant[] };
     } catch (error) {
       if (error instanceof AnalyticsServiceError) {
@@ -85,7 +91,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENT_CREATE_ERROR',
         `Unexpected error creating experiment: ${error.message}`,
-        { error, request }
+        { error, request },
       );
     }
   }
@@ -95,7 +101,7 @@ export class ConversionOptimizationService {
    */
   private async createExperimentVariants(
     experimentId: string,
-    variants: CreateVariantRequest[]
+    variants: CreateVariantRequest[],
   ): Promise<ExperimentVariant[]> {
     try {
       const variantData = variants.map(variant => ({
@@ -104,7 +110,7 @@ export class ConversionOptimizationService {
         variant_description: variant.variant_description,
         traffic_percentage: variant.traffic_percentage,
         configuration: variant.configuration,
-        is_control: variant.is_control || false
+        is_control: variant.is_control || false,
       }));
 
       const { data, error } = await this.supabase
@@ -116,7 +122,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'VARIANT_CREATE_FAILED',
           `Failed to create variants: ${error.message}`,
-          { error, experimentId, variants }
+          { error, experimentId, variants },
         );
       }
 
@@ -128,7 +134,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'VARIANT_CREATE_ERROR',
         `Unexpected error creating variants: ${error.message}`,
-        { error, experimentId, variants }
+        { error, experimentId, variants },
       );
     }
   }
@@ -143,7 +149,7 @@ export class ConversionOptimizationService {
         .update({
           status: 'active',
           start_date: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', experimentId)
         .select()
@@ -153,7 +159,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENT_START_FAILED',
           `Failed to start experiment: ${error.message}`,
-          { error, experimentId }
+          { error, experimentId },
         );
       }
 
@@ -161,7 +167,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENT_NOT_FOUND',
           `Experiment with ID ${experimentId} not found`,
-          { experimentId }
+          { experimentId },
         );
       }
 
@@ -173,7 +179,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENT_START_ERROR',
         `Unexpected error starting experiment: ${error.message}`,
-        { error, experimentId }
+        { error, experimentId },
       );
     }
   }
@@ -188,7 +194,7 @@ export class ConversionOptimizationService {
         .update({
           status: 'completed',
           end_date: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', experimentId)
         .select()
@@ -198,7 +204,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENT_STOP_FAILED',
           `Failed to stop experiment: ${error.message}`,
-          { error, experimentId }
+          { error, experimentId },
         );
       }
 
@@ -206,7 +212,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENT_NOT_FOUND',
           `Experiment with ID ${experimentId} not found`,
-          { experimentId }
+          { experimentId },
         );
       }
 
@@ -218,7 +224,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENT_STOP_ERROR',
         `Unexpected error stopping experiment: ${error.message}`,
-        { error, experimentId }
+        { error, experimentId },
       );
     }
   }
@@ -228,7 +234,7 @@ export class ConversionOptimizationService {
    */
   async assignUserToExperiment(
     userId: string,
-    experimentId: string
+    experimentId: string,
   ): Promise<UserExperimentAssignment> {
     try {
       // Check if user is already assigned
@@ -254,7 +260,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'VARIANT_FETCH_FAILED',
           `Failed to fetch variants: ${variantsError.message}`,
-          { error: variantsError, experimentId }
+          { error: variantsError, experimentId },
         );
       }
 
@@ -262,7 +268,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'NO_VARIANTS_FOUND',
           `No variants found for experiment ${experimentId}`,
-          { experimentId }
+          { experimentId },
         );
       }
 
@@ -275,7 +281,7 @@ export class ConversionOptimizationService {
           user_id: userId,
           experiment_id: experimentId,
           variant_id: assignedVariant.id,
-          assigned_at: new Date().toISOString()
+          assigned_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -284,7 +290,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'USER_ASSIGNMENT_FAILED',
           `Failed to assign user to experiment: ${error.message}`,
-          { error, userId, experimentId, assignedVariant }
+          { error, userId, experimentId, assignedVariant },
         );
       }
 
@@ -296,7 +302,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'USER_ASSIGNMENT_ERROR',
         `Unexpected error assigning user to experiment: ${error.message}`,
-        { error, userId, experimentId }
+        { error, userId, experimentId },
       );
     }
   }
@@ -328,7 +334,7 @@ export class ConversionOptimizationService {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash;
@@ -340,14 +346,14 @@ export class ConversionOptimizationService {
   async getExperimentResults(experimentId: string): Promise<ExperimentResults[]> {
     try {
       const { data, error } = await this.supabase.rpc('get_experiment_results', {
-        experiment_id_param: experimentId
+        experiment_id_param: experimentId,
       });
 
       if (error) {
         throw new AnalyticsServiceError(
           'EXPERIMENT_RESULTS_FAILED',
           `Failed to get experiment results: ${error.message}`,
-          { error, experimentId }
+          { error, experimentId },
         );
       }
 
@@ -359,7 +365,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENT_RESULTS_ERROR',
         `Unexpected error getting experiment results: ${error.message}`,
-        { error, experimentId }
+        { error, experimentId },
       );
     }
   }
@@ -400,7 +406,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'EXPERIMENTS_FETCH_FAILED',
           `Failed to fetch experiments: ${error.message}`,
-          { error, filter }
+          { error, filter },
         );
       }
 
@@ -412,7 +418,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENTS_FETCH_ERROR',
         `Unexpected error fetching experiments: ${error.message}`,
-        { error, filter }
+        { error, filter },
       );
     }
   }
@@ -424,18 +430,20 @@ export class ConversionOptimizationService {
     try {
       const { data, error } = await this.supabase
         .from('user_experiment_assignments')
-        .select(`
+        .select(
+          `
           *,
           conversion_experiments!inner(*),
           experiment_variants!inner(*)
-        `)
+        `,
+        )
         .eq('user_id', userId);
 
       if (error) {
         throw new AnalyticsServiceError(
           'USER_ASSIGNMENTS_FETCH_FAILED',
           `Failed to fetch user experiment assignments: ${error.message}`,
-          { error, userId }
+          { error, userId },
         );
       }
 
@@ -447,7 +455,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'USER_ASSIGNMENTS_FETCH_ERROR',
         `Unexpected error fetching user experiment assignments: ${error.message}`,
-        { error, userId }
+        { error, userId },
       );
     }
   }
@@ -459,7 +467,7 @@ export class ConversionOptimizationService {
     userId: string,
     experimentId: string,
     conversionValue?: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<UserExperimentAssignment> {
     try {
       const { data, error } = await this.supabase
@@ -468,7 +476,7 @@ export class ConversionOptimizationService {
           converted_at: new Date().toISOString(),
           conversion_value: conversionValue,
           metadata: metadata || {},
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('experiment_id', experimentId)
@@ -479,7 +487,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'CONVERSION_TRACK_FAILED',
           `Failed to track conversion: ${error.message}`,
-          { error, userId, experimentId, conversionValue }
+          { error, userId, experimentId, conversionValue },
         );
       }
 
@@ -487,7 +495,7 @@ export class ConversionOptimizationService {
         throw new AnalyticsServiceError(
           'USER_ASSIGNMENT_NOT_FOUND',
           `User assignment not found for user ${userId} in experiment ${experimentId}`,
-          { userId, experimentId }
+          { userId, experimentId },
         );
       }
 
@@ -499,7 +507,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'CONVERSION_TRACK_ERROR',
         `Unexpected error tracking conversion: ${error.message}`,
-        { error, userId, experimentId, conversionValue }
+        { error, userId, experimentId, conversionValue },
       );
     }
   }
@@ -535,7 +543,7 @@ export class ConversionOptimizationService {
         overall_conversion_rate: Math.round(overallConversionRate * 100) / 100,
         statistical_significance: statisticalSignificance,
         confidence_interval: confidenceInterval,
-        variants: results
+        variants: results,
       };
     } catch (error) {
       if (error instanceof AnalyticsServiceError) {
@@ -544,7 +552,7 @@ export class ConversionOptimizationService {
       throw new AnalyticsServiceError(
         'EXPERIMENT_METRICS_ERROR',
         `Unexpected error getting experiment performance metrics: ${error.message}`,
-        { error, experimentId }
+        { error, experimentId },
       );
     }
   }
@@ -577,7 +585,10 @@ export class ConversionOptimizationService {
   /**
    * Calculate confidence interval (simplified)
    */
-  private calculateConfidenceInterval(results: ExperimentResults[]): { lower: number; upper: number } {
+  private calculateConfidenceInterval(results: ExperimentResults[]): {
+    lower: number;
+    upper: number;
+  } {
     const control = results.find(r => r.is_control);
     if (!control) {
       return { lower: 0, upper: 0 };
@@ -591,7 +602,7 @@ export class ConversionOptimizationService {
 
     return {
       lower: Math.max(0, (rate - margin) * 100),
-      upper: Math.min(100, (rate + margin) * 100)
+      upper: Math.min(100, (rate + margin) * 100),
     };
   }
 }

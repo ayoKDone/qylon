@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
-    AdministratorPermission,
-    AdministratorRole,
-    CreateTeamAdministratorSchema,
-    CreateTeamSchema,
-    NotFoundError,
-    Team,
-    TeamAdministrator,
-    TeamOnboardingError,
-    ValidationError
+  AdministratorPermission,
+  AdministratorRole,
+  CreateTeamAdministratorSchema,
+  CreateTeamSchema,
+  NotFoundError,
+  Team,
+  TeamAdministrator,
+  TeamOnboardingError,
+  ValidationError,
 } from '../types';
 import { logger, logTeamOperation } from '../utils/logger';
 
@@ -121,12 +121,7 @@ export class TeamAdministratorService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get team administrators',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get team administrators', 'FETCH_ERROR', 500, error);
     }
   }
 
@@ -136,7 +131,7 @@ export class TeamAdministratorService {
   async updateTeamAdministrator(
     adminId: string,
     updates: Partial<Pick<TeamAdministrator, 'role' | 'permissions' | 'isActive'>>,
-    updatedBy: string
+    updatedBy: string,
   ): Promise<TeamAdministrator> {
     try {
       // Return a mock updated administrator
@@ -164,12 +159,7 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Team administrator update failed',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Team administrator update failed', 'UPDATE_ERROR', 500, error);
     }
   }
 
@@ -197,7 +187,7 @@ export class TeamAdministratorService {
         'Team administrator deletion failed',
         'DELETE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -309,12 +299,7 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to update team settings',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to update team settings', 'UPDATE_ERROR', 500, error);
     }
   }
 }

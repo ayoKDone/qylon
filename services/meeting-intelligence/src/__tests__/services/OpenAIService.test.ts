@@ -137,7 +137,7 @@ describe('OpenAIService', () => {
       mockOpenAI.chat.completions.create.mockRejectedValue(new Error('API Error'));
 
       await expect(
-        openAIService.extractActionItems(mockTranscription, 'Test Meeting')
+        openAIService.extractActionItems(mockTranscription, 'Test Meeting'),
       ).rejects.toThrow('API Error');
 
       expect(logger.error).toHaveBeenCalledWith(
@@ -145,7 +145,7 @@ describe('OpenAIService', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'test-meeting-id',
-        })
+        }),
       );
     });
 
@@ -161,7 +161,7 @@ describe('OpenAIService', () => {
       });
 
       await expect(
-        openAIService.extractActionItems(mockTranscription, 'Test Meeting')
+        openAIService.extractActionItems(mockTranscription, 'Test Meeting'),
       ).rejects.toThrow('Failed to extract action items');
     });
   });
@@ -189,7 +189,7 @@ describe('OpenAIService', () => {
       sentiment: {
         overall_sentiment: 'positive',
         confidence: 0.8,
-        speaker_sentiments: {}
+        speaker_sentiments: {},
       },
       created_at: new Date(),
       updated_at: new Date(),
@@ -240,7 +240,7 @@ describe('OpenAIService', () => {
       mockOpenAI.chat.completions.create.mockRejectedValue(new Error('API Error'));
 
       await expect(
-        openAIService.generateMeetingSummary(mockTranscription, 'Test Meeting')
+        openAIService.generateMeetingSummary(mockTranscription, 'Test Meeting'),
       ).rejects.toThrow('API Error');
 
       expect(logger.error).toHaveBeenCalledWith(
@@ -248,7 +248,7 @@ describe('OpenAIService', () => {
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'test-meeting-id',
-        })
+        }),
       );
     });
   });
@@ -270,15 +270,15 @@ describe('OpenAIService', () => {
       overall_sentiment: 'positive',
       confidence: 0.85,
       speaker_sentiments: {
-        'John': {
+        John: {
           sentiment: 'positive',
-          confidence: 0.9
+          confidence: 0.9,
         },
-        'Jane': {
+        Jane: {
           sentiment: 'positive',
-          confidence: 0.8
-        }
-      }
+          confidence: 0.8,
+        },
+      },
     };
 
     it('should analyze sentiment successfully', async () => {
@@ -311,16 +311,14 @@ describe('OpenAIService', () => {
     it('should handle API errors gracefully', async () => {
       mockOpenAI.chat.completions.create.mockRejectedValue(new Error('API Error'));
 
-      await expect(
-        openAIService.analyzeSentiment(mockTranscription)
-      ).rejects.toThrow('API Error');
+      await expect(openAIService.analyzeSentiment(mockTranscription)).rejects.toThrow('API Error');
 
       expect(logger.error).toHaveBeenCalledWith(
         'Failed to analyze sentiment',
         expect.objectContaining({
           error: expect.any(String),
           meetingId: 'test-meeting-id',
-        })
+        }),
       );
     });
   });
@@ -340,14 +338,12 @@ describe('OpenAIService', () => {
       };
 
       await expect(
-        openAIService.extractActionItems(emptyTranscription, 'Test Meeting')
+        openAIService.extractActionItems(emptyTranscription, 'Test Meeting'),
       ).rejects.toThrow();
     });
 
     it('should handle null transcription', async () => {
-      await expect(
-        openAIService.extractActionItems(null as any, 'Test Meeting')
-      ).rejects.toThrow();
+      await expect(openAIService.extractActionItems(null as any, 'Test Meeting')).rejects.toThrow();
     });
   });
 });

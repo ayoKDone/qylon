@@ -32,7 +32,7 @@ describe('Analytics Routes', () => {
       getAnalyticsDashboard: jest.fn(),
       getFunnelTracking: jest.fn(),
       getConversionOptimization: jest.fn(),
-      getPersonalization: jest.fn()
+      getPersonalization: jest.fn(),
     } as any;
 
     mockAuthMiddleware = {
@@ -41,7 +41,7 @@ describe('Analytics Routes', () => {
       requireRole: jest.fn(() => (req, res, next) => next()),
       optionalAuth: jest.fn((req, res, next) => next()),
       validateClientAccess: jest.fn((req, res, next) => next()),
-      validateUserAccess: jest.fn((req, res, next) => next())
+      validateUserAccess: jest.fn((req, res, next) => next()),
     } as any;
 
     // Create Express app
@@ -60,14 +60,14 @@ describe('Analytics Routes', () => {
         client_id: 'test-client-id',
         event_type: 'page_view',
         event_name: 'homepage_visit',
-        event_data: { page: '/home' }
+        event_data: { page: '/home' },
       };
 
       const mockEvent = {
         id: 'event-id',
         ...eventData,
         timestamp: new Date().toISOString(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       mockAnalyticsService.trackEvent.mockResolvedValue(mockEvent);
@@ -80,7 +80,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockEvent,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.trackEvent).toHaveBeenCalledWith(eventData);
     });
@@ -90,7 +90,7 @@ describe('Analytics Routes', () => {
         user_id: 'invalid-uuid',
         client_id: 'test-client-id',
         event_type: 'page_view',
-        event_name: 'homepage_visit'
+        event_name: 'homepage_visit',
       };
 
       const response = await request(app)
@@ -111,8 +111,8 @@ describe('Analytics Routes', () => {
           user_id: 'test-user-id',
           event_type: 'page_view',
           event_name: 'homepage_visit',
-          timestamp: '2024-01-15T10:00:00Z'
-        }
+          timestamp: '2024-01-15T10:00:00Z',
+        },
       ];
 
       mockAnalyticsService.getAnalyticsEvents.mockResolvedValue(mockEvents);
@@ -125,10 +125,10 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockEvents,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.getAnalyticsEvents).toHaveBeenCalledWith({
-        user_id: 'test-user-id'
+        user_id: 'test-user-id',
       });
     });
   });
@@ -139,14 +139,14 @@ describe('Analytics Routes', () => {
         user_id: 'test-user-id',
         client_id: 'test-client-id',
         conversion_type: 'signup',
-        conversion_value: 100
+        conversion_value: 100,
       };
 
       const mockConversion = {
         id: 'conversion-id',
         ...conversionData,
         converted_at: new Date().toISOString(),
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       mockAnalyticsService.trackConversion.mockResolvedValue(mockConversion);
@@ -159,7 +159,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockConversion,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.trackConversion).toHaveBeenCalledWith(conversionData);
     });
@@ -175,19 +175,17 @@ describe('Analytics Routes', () => {
         conversion_rate: 20,
         segments: ['segment-1'],
         active_experiments: ['exp-1'],
-        last_activity: new Date('2024-01-15T10:00:00Z')
+        last_activity: new Date('2024-01-15T10:00:00Z'),
       };
 
       mockAnalyticsService.getUserAnalytics.mockResolvedValue(mockUserAnalytics);
 
-      const response = await request(app)
-        .get(`/api/v1/analytics/users/${userId}`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/analytics/users/${userId}`).expect(200);
 
       expect(response.body).toEqual({
         success: true,
         data: mockUserAnalytics,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.getUserAnalytics).toHaveBeenCalledWith(userId);
     });
@@ -203,22 +201,18 @@ describe('Analytics Routes', () => {
         total_events: 50,
         total_conversions: 10,
         conversion_rate: 20,
-        top_funnels: [
-          { funnel_name: 'onboarding', completion_rate: 80 }
-        ],
-        active_experiments: 2
+        top_funnels: [{ funnel_name: 'onboarding', completion_rate: 80 }],
+        active_experiments: 2,
       };
 
       mockAnalyticsService.getClientAnalytics.mockResolvedValue(mockClientAnalytics);
 
-      const response = await request(app)
-        .get(`/api/v1/analytics/clients/${clientId}`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/analytics/clients/${clientId}`).expect(200);
 
       expect(response.body).toEqual({
         success: true,
         data: mockClientAnalytics,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.getClientAnalytics).toHaveBeenCalledWith(clientId);
     });
@@ -231,27 +225,19 @@ describe('Analytics Routes', () => {
         total_conversions: 20,
         conversion_rate: 20,
         active_experiments: 3,
-        top_events: [
-          { event_type: 'page_view', count: 50 }
-        ],
-        conversion_trends: [
-          { date: '2024-01-15', conversions: 5 }
-        ],
-        funnel_performance: [
-          { funnel_name: 'onboarding', completion_rate: 75 }
-        ]
+        top_events: [{ event_type: 'page_view', count: 50 }],
+        conversion_trends: [{ date: '2024-01-15', conversions: 5 }],
+        funnel_performance: [{ funnel_name: 'onboarding', completion_rate: 75 }],
       };
 
       mockAnalyticsService.getAnalyticsDashboard.mockResolvedValue(mockDashboard);
 
-      const response = await request(app)
-        .get('/api/v1/analytics/dashboard')
-        .expect(200);
+      const response = await request(app).get('/api/v1/analytics/dashboard').expect(200);
 
       expect(response.body).toEqual({
         success: true,
         data: mockDashboard,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockAnalyticsService.getAnalyticsDashboard).toHaveBeenCalledWith(undefined);
     });
@@ -264,18 +250,18 @@ describe('Analytics Routes', () => {
         client_id: 'test-client-id',
         funnel_name: 'onboarding',
         step_number: 1,
-        step_name: 'welcome'
+        step_name: 'welcome',
       };
 
       const mockFunnelStep = {
         id: 'funnel-step-id',
         ...funnelStepData,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       const mockFunnelTracking = {
-        createFunnelStep: jest.fn().mockResolvedValue(mockFunnelStep)
+        createFunnelStep: jest.fn().mockResolvedValue(mockFunnelStep),
       };
 
       mockAnalyticsService.getFunnelTracking.mockReturnValue(mockFunnelTracking as any);
@@ -288,7 +274,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockFunnelStep,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockFunnelTracking.createFunnelStep).toHaveBeenCalledWith(funnelStepData);
     });
@@ -299,18 +285,18 @@ describe('Analytics Routes', () => {
       const stepId = 'funnel-step-id';
       const completionData = {
         time_spent_seconds: 60,
-        metadata: { completed: true }
+        metadata: { completed: true },
       };
 
       const mockCompletedStep = {
         id: stepId,
         user_id: 'test-user-id',
         completed_at: new Date().toISOString(),
-        ...completionData
+        ...completionData,
       };
 
       const mockFunnelTracking = {
-        completeFunnelStep: jest.fn().mockResolvedValue(mockCompletedStep)
+        completeFunnelStep: jest.fn().mockResolvedValue(mockCompletedStep),
       };
 
       mockAnalyticsService.getFunnelTracking.mockReturnValue(mockFunnelTracking as any);
@@ -323,11 +309,11 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockCompletedStep,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockFunnelTracking.completeFunnelStep).toHaveBeenCalledWith({
         funnel_step_id: stepId,
-        ...completionData
+        ...completionData,
       });
     });
   });
@@ -344,15 +330,15 @@ describe('Analytics Routes', () => {
             variant_name: 'Control',
             traffic_percentage: 50,
             configuration: { button_color: 'blue' },
-            is_control: true
+            is_control: true,
           },
           {
             variant_name: 'Variant A',
             traffic_percentage: 50,
             configuration: { button_color: 'red' },
-            is_control: false
-          }
-        ]
+            is_control: false,
+          },
+        ],
       };
 
       const mockExperiment = {
@@ -360,14 +346,16 @@ describe('Analytics Routes', () => {
         ...experimentData,
         status: 'draft',
         created_by: 'test-user-id',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       const mockConversionOptimization = {
-        createExperiment: jest.fn().mockResolvedValue(mockExperiment)
+        createExperiment: jest.fn().mockResolvedValue(mockExperiment),
       };
 
-      mockAnalyticsService.getConversionOptimization.mockReturnValue(mockConversionOptimization as any);
+      mockAnalyticsService.getConversionOptimization.mockReturnValue(
+        mockConversionOptimization as any,
+      );
 
       const response = await request(app)
         .post('/api/v1/analytics/experiments')
@@ -377,11 +365,11 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockExperiment,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockConversionOptimization.createExperiment).toHaveBeenCalledWith(
         experimentData,
-        'test-user-id'
+        'test-user-id',
       );
     });
   });
@@ -393,15 +381,17 @@ describe('Analytics Routes', () => {
           id: 'exp-1',
           name: 'Experiment 1',
           status: 'active',
-          experiment_type: 'onboarding'
-        }
+          experiment_type: 'onboarding',
+        },
       ];
 
       const mockConversionOptimization = {
-        getExperiments: jest.fn().mockResolvedValue(mockExperiments)
+        getExperiments: jest.fn().mockResolvedValue(mockExperiments),
       };
 
-      mockAnalyticsService.getConversionOptimization.mockReturnValue(mockConversionOptimization as any);
+      mockAnalyticsService.getConversionOptimization.mockReturnValue(
+        mockConversionOptimization as any,
+      );
 
       const response = await request(app)
         .get('/api/v1/analytics/experiments')
@@ -411,10 +401,10 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockExperiments,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockConversionOptimization.getExperiments).toHaveBeenCalledWith({
-        status: 'active'
+        status: 'active',
       });
     });
   });
@@ -426,14 +416,16 @@ describe('Analytics Routes', () => {
         id: experimentId,
         name: 'Test Experiment',
         status: 'active',
-        start_date: new Date().toISOString()
+        start_date: new Date().toISOString(),
       };
 
       const mockConversionOptimization = {
-        startExperiment: jest.fn().mockResolvedValue(mockStartedExperiment)
+        startExperiment: jest.fn().mockResolvedValue(mockStartedExperiment),
       };
 
-      mockAnalyticsService.getConversionOptimization.mockReturnValue(mockConversionOptimization as any);
+      mockAnalyticsService.getConversionOptimization.mockReturnValue(
+        mockConversionOptimization as any,
+      );
 
       const response = await request(app)
         .post(`/api/v1/analytics/experiments/${experimentId}/start`)
@@ -442,7 +434,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockStartedExperiment,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockConversionOptimization.startExperiment).toHaveBeenCalledWith(experimentId);
     });
@@ -454,7 +446,7 @@ describe('Analytics Routes', () => {
         name: 'Test Trigger',
         trigger_type: 'event_based',
         conditions: { event_type: 'page_view' },
-        actions: { send_email: true }
+        actions: { send_email: true },
       };
 
       const mockTrigger = {
@@ -462,11 +454,11 @@ describe('Analytics Routes', () => {
         ...triggerData,
         is_active: true,
         created_by: 'test-user-id',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       const mockPersonalization = {
-        createPersonalizationTrigger: jest.fn().mockResolvedValue(mockTrigger)
+        createPersonalizationTrigger: jest.fn().mockResolvedValue(mockTrigger),
       };
 
       mockAnalyticsService.getPersonalization.mockReturnValue(mockPersonalization as any);
@@ -479,11 +471,11 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockTrigger,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockPersonalization.createPersonalizationTrigger).toHaveBeenCalledWith(
         triggerData,
-        'test-user-id'
+        'test-user-id',
       );
     });
   });
@@ -495,12 +487,12 @@ describe('Analytics Routes', () => {
           id: 'segment-1',
           name: 'Active Users',
           user_count: 100,
-          is_active: true
-        }
+          is_active: true,
+        },
       ];
 
       const mockPersonalization = {
-        getUserSegments: jest.fn().mockResolvedValue(mockSegments)
+        getUserSegments: jest.fn().mockResolvedValue(mockSegments),
       };
 
       mockAnalyticsService.getPersonalization.mockReturnValue(mockPersonalization as any);
@@ -513,7 +505,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         success: true,
         data: mockSegments,
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
       expect(mockPersonalization.getUserSegments).toHaveBeenCalledWith(true);
     });
@@ -525,7 +517,7 @@ describe('Analytics Routes', () => {
         user_id: 'test-user-id',
         client_id: 'test-client-id',
         event_type: 'page_view',
-        event_name: 'homepage_visit'
+        event_name: 'homepage_visit',
       };
 
       const mockError = new Error('Service error');
@@ -539,7 +531,7 @@ describe('Analytics Routes', () => {
       expect(response.body).toEqual({
         error: 'INTERNAL_SERVER_ERROR',
         message: 'An unexpected error occurred',
-        timestamp: expect.any(String)
+        timestamp: expect.any(String),
       });
     });
   });

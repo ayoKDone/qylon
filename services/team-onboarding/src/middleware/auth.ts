@@ -14,10 +14,7 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 /**
  * Authentication middleware
@@ -25,7 +22,7 @@ const supabase = createClient(
 export const authenticateToken = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
@@ -36,7 +33,10 @@ export const authenticateToken = async (
     }
 
     // Verify JWT token with Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       logger.warn('Invalid token provided', {
@@ -121,8 +121,8 @@ export const requirePermission = (permissions: string | string[]) => {
     const userPermissions = req.user.permissions || [];
     const requiredPermissions = Array.isArray(permissions) ? permissions : [permissions];
 
-    const hasPermission = requiredPermissions.some(permission => 
-      userPermissions.includes(permission)
+    const hasPermission = requiredPermissions.some(permission =>
+      userPermissions.includes(permission),
     );
 
     if (!hasPermission) {
@@ -142,13 +142,17 @@ export const requirePermission = (permissions: string | string[]) => {
 /**
  * Require team access middleware
  */
-export const requireTeamAccess = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireTeamAccess = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     throw createUnauthorizedError('Authentication required');
   }
 
   const teamId = req.params.teamId || req.body.teamId || req.query.teamId;
-  
+
   if (!teamId) {
     throw createForbiddenError('Team ID required');
   }
@@ -169,13 +173,17 @@ export const requireTeamAccess = (req: AuthenticatedRequest, res: Response, next
 /**
  * Require admin access middleware
  */
-export const requireAdminAccess = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+export const requireAdminAccess = (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
   if (!req.user) {
     throw createUnauthorizedError('Authentication required');
   }
 
   const adminRoles = ['super_admin', 'team_admin'];
-  
+
   if (!adminRoles.includes(req.user.role)) {
     logger.warn('Non-admin user attempted admin operation', {
       userId: req.user.id,
@@ -194,7 +202,7 @@ export const requireAdminAccess = (req: AuthenticatedRequest, res: Response, nex
 export const optionalAuth = async (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;

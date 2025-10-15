@@ -22,15 +22,15 @@ export class ValidationMiddleware {
             details: error.errors.map(err => ({
               field: err.path.join('.'),
               message: err.message,
-              code: err.code
-            }))
+              code: err.code,
+            })),
           });
           return;
         }
 
         res.status(500).json({
           error: 'VALIDATION_ERROR',
-          message: 'Internal validation error'
+          message: 'Internal validation error',
         });
       }
     };
@@ -52,15 +52,15 @@ export class ValidationMiddleware {
             details: error.errors.map(err => ({
               field: err.path.join('.'),
               message: err.message,
-              code: err.code
-            }))
+              code: err.code,
+            })),
           });
           return;
         }
 
         res.status(500).json({
           error: 'VALIDATION_ERROR',
-          message: 'Internal validation error'
+          message: 'Internal validation error',
         });
       }
     };
@@ -82,15 +82,15 @@ export class ValidationMiddleware {
             details: error.errors.map(err => ({
               field: err.path.join('.'),
               message: err.message,
-              code: err.code
-            }))
+              code: err.code,
+            })),
           });
           return;
         }
 
         res.status(500).json({
           error: 'VALIDATION_ERROR',
-          message: 'Internal validation error'
+          message: 'Internal validation error',
         });
       }
     };
@@ -105,22 +105,27 @@ export const ValidationSchemas = {
   // Pagination
   pagination: z.object({
     limit: z.coerce.number().int().min(1).max(100).default(20),
-    offset: z.coerce.number().int().min(0).default(0)
+    offset: z.coerce.number().int().min(0).default(0),
   }),
 
   // Date range
-  dateRange: z.object({
-    start_date: z.coerce.date().optional(),
-    end_date: z.coerce.date().optional()
-  }).refine(data => {
-    if (data.start_date && data.end_date) {
-      return data.start_date <= data.end_date;
-    }
-    return true;
-  }, {
-    message: 'Start date must be before or equal to end date',
-    path: ['start_date']
-  }),
+  dateRange: z
+    .object({
+      start_date: z.coerce.date().optional(),
+      end_date: z.coerce.date().optional(),
+    })
+    .refine(
+      data => {
+        if (data.start_date && data.end_date) {
+          return data.start_date <= data.end_date;
+        }
+        return true;
+      },
+      {
+        message: 'Start date must be before or equal to end date',
+        path: ['start_date'],
+      },
+    ),
 
   // Event tracking
   trackEvent: z.object({
@@ -133,7 +138,7 @@ export const ValidationSchemas = {
     page_url: z.string().url().optional(),
     referrer: z.string().optional(),
     user_agent: z.string().optional(),
-    ip_address: z.string().ip().optional()
+    ip_address: z.string().ip().optional(),
   }),
 
   // Conversion tracking
@@ -145,7 +150,7 @@ export const ValidationSchemas = {
     experiment_id: z.string().uuid().optional(),
     variant_id: z.string().uuid().optional(),
     funnel_step_id: z.string().uuid().optional(),
-    metadata: z.record(z.any()).optional()
+    metadata: z.record(z.any()).optional(),
   }),
 
   // Funnel step creation
@@ -157,14 +162,14 @@ export const ValidationSchemas = {
     step_name: z.string().min(1, 'Step name is required'),
     step_description: z.string().optional(),
     time_spent_seconds: z.number().int().min(0).optional(),
-    metadata: z.record(z.any()).optional()
+    metadata: z.record(z.any()).optional(),
   }),
 
   // Complete funnel step
   completeFunnelStep: z.object({
     funnel_step_id: z.string().uuid('Invalid funnel step ID'),
     time_spent_seconds: z.number().int().min(0).optional(),
-    metadata: z.record(z.any()).optional()
+    metadata: z.record(z.any()).optional(),
   }),
 
   // Create experiment
@@ -175,13 +180,20 @@ export const ValidationSchemas = {
     target_audience: z.record(z.any()),
     success_metrics: z.record(z.any()),
     configuration: z.record(z.any()).optional(),
-    variants: z.array(z.object({
-      variant_name: z.string().min(1, 'Variant name is required'),
-      variant_description: z.string().optional(),
-      traffic_percentage: z.number().min(0).max(100, 'Traffic percentage must be between 0 and 100'),
-      configuration: z.record(z.any()),
-      is_control: z.boolean().optional()
-    })).min(2, 'At least 2 variants are required')
+    variants: z
+      .array(
+        z.object({
+          variant_name: z.string().min(1, 'Variant name is required'),
+          variant_description: z.string().optional(),
+          traffic_percentage: z
+            .number()
+            .min(0)
+            .max(100, 'Traffic percentage must be between 0 and 100'),
+          configuration: z.record(z.any()),
+          is_control: z.boolean().optional(),
+        }),
+      )
+      .min(2, 'At least 2 variants are required'),
   }),
 
   // Create personalization trigger
@@ -191,14 +203,14 @@ export const ValidationSchemas = {
     trigger_type: z.enum(['user_behavior', 'time_based', 'event_based', 'segment_based']),
     conditions: z.record(z.any()),
     actions: z.record(z.any()),
-    priority: z.number().int().min(0).optional()
+    priority: z.number().int().min(0).optional(),
   }),
 
   // Create user segment
   createUserSegment: z.object({
     name: z.string().min(1, 'Segment name is required'),
     description: z.string().optional(),
-    segment_criteria: z.record(z.any())
+    segment_criteria: z.record(z.any()),
   }),
 
   // Analytics filter
@@ -209,7 +221,7 @@ export const ValidationSchemas = {
     start_date: z.coerce.date().optional(),
     end_date: z.coerce.date().optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
-    offset: z.coerce.number().int().min(0).default(0)
+    offset: z.coerce.number().int().min(0).default(0),
   }),
 
   // Funnel analytics filter
@@ -218,46 +230,50 @@ export const ValidationSchemas = {
     user_id: z.string().uuid().optional(),
     client_id: z.string().uuid().optional(),
     start_date: z.coerce.date().optional(),
-    end_date: z.coerce.date().optional()
+    end_date: z.coerce.date().optional(),
   }),
 
   // Experiment filter
   experimentFilter: z.object({
     status: z.enum(['draft', 'active', 'paused', 'completed', 'cancelled']).optional(),
-    experiment_type: z.enum(['onboarding', 'feature_adoption', 'retention', 'conversion']).optional(),
+    experiment_type: z
+      .enum(['onboarding', 'feature_adoption', 'retention', 'conversion'])
+      .optional(),
     created_by: z.string().uuid().optional(),
     start_date: z.coerce.date().optional(),
-    end_date: z.coerce.date().optional()
+    end_date: z.coerce.date().optional(),
   }),
 
   // URL parameters
   idParam: z.object({
-    id: z.string().uuid('Invalid ID format')
+    id: z.string().uuid('Invalid ID format'),
   }),
 
   userIdParam: z.object({
-    userId: z.string().uuid('Invalid user ID format')
+    userId: z.string().uuid('Invalid user ID format'),
   }),
 
   clientIdParam: z.object({
-    clientId: z.string().uuid('Invalid client ID format')
+    clientId: z.string().uuid('Invalid client ID format'),
   }),
 
   experimentIdParam: z.object({
-    experimentId: z.string().uuid('Invalid experiment ID format')
+    experimentId: z.string().uuid('Invalid experiment ID format'),
   }),
 
   // Funnel conversion rate calculation
-  funnelConversionRate: z.object({
-    funnel_name: z.string().min(1, 'Funnel name is required'),
-    start_step: z.number().int().positive('Start step must be positive'),
-    end_step: z.number().int().positive('End step must be positive'),
-    start_date: z.coerce.date().optional(),
-    end_date: z.coerce.date().optional()
-  }).refine(data => data.start_step <= data.end_step, {
-    message: 'Start step must be less than or equal to end step',
-    path: ['start_step']
-  })
+  funnelConversionRate: z
+    .object({
+      funnel_name: z.string().min(1, 'Funnel name is required'),
+      start_step: z.number().int().positive('Start step must be positive'),
+      end_step: z.number().int().positive('End step must be positive'),
+      start_date: z.coerce.date().optional(),
+      end_date: z.coerce.date().optional(),
+    })
+    .refine(data => data.start_step <= data.end_step, {
+      message: 'Start step must be less than or equal to end step',
+      path: ['start_step'],
+    }),
 };
 
 // Helper function to create validation middleware

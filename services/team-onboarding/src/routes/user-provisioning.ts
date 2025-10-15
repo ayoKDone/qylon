@@ -1,6 +1,11 @@
 import { Response, Router } from 'express';
 import multer from 'multer';
-import { AuthenticatedRequest, authenticateToken, requirePermission, requireTeamAccess } from '../middleware/auth';
+import {
+  AuthenticatedRequest,
+  authenticateToken,
+  requirePermission,
+  requireTeamAccess,
+} from '../middleware/auth';
 import { asyncHandler } from '../middleware/errorHandler';
 import { UserProvisioningService } from '../services/UserProvisioningService';
 import { ApiResponse } from '../types';
@@ -37,10 +42,7 @@ router.post(
   asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
-      const request = await userProvisioningService.createUserProvisioningRequest(
-        req.body,
-        userId
-      );
+      const request = await userProvisioningService.createUserProvisioningRequest(req.body, userId);
 
       logger.info('User provisioning request created successfully', {
         requestId: request.id,
@@ -63,7 +65,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -80,7 +82,7 @@ router.post(
 
       const processedRequest = await userProvisioningService.processUserProvisioningRequest(
         requestId,
-        userId
+        userId,
       );
 
       logger.info('User provisioning request processed successfully', {
@@ -105,7 +107,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -134,13 +136,13 @@ router.post(
       // Parse CSV file
       const users = await userProvisioningService.parseCSVForUserProvisioning(
         req.file.buffer,
-        teamId
+        teamId,
       );
 
       // Create provisioning request
       const request = await userProvisioningService.createUserProvisioningRequest(
         { teamId, users },
-        userId
+        userId,
       );
 
       logger.info('CSV file uploaded and processed successfully', {
@@ -168,7 +170,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -181,10 +183,7 @@ router.post(
   asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
       const userId = req.user!.id;
-      const operation = await userProvisioningService.createBulkUserOperation(
-        req.body,
-        userId
-      );
+      const operation = await userProvisioningService.createBulkUserOperation(req.body, userId);
 
       logger.info('Bulk user operation created successfully', {
         operationId: operation.id,
@@ -208,7 +207,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -225,7 +224,7 @@ router.post(
 
       const processedOperation = await userProvisioningService.processBulkUserOperation(
         operationId,
-        userId
+        userId,
       );
 
       logger.info('Bulk user operation processed successfully', {
@@ -251,7 +250,7 @@ router.post(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -282,7 +281,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 /**
@@ -313,7 +312,7 @@ router.get(
       });
       throw error;
     }
-  })
+  }),
 );
 
 export default router;

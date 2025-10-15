@@ -63,7 +63,7 @@ describe('EventBusService', () => {
       // This test verifies that the service doesn't crash on errors
       // The actual error handling would be implemented in the real event bus
       await expect(
-        eventBusService.publishMeetingEvent('meeting.created', 'test-id')
+        eventBusService.publishMeetingEvent('meeting.created', 'test-id'),
       ).resolves.not.toThrow();
     });
   });
@@ -107,7 +107,7 @@ describe('EventBusService', () => {
       // This test verifies that the service doesn't crash on errors
       // The actual error handling would be implemented in the real event bus
       await expect(
-        eventBusService.publishBotEvent('bot.created', 'test-id')
+        eventBusService.publishBotEvent('bot.created', 'test-id'),
       ).resolves.not.toThrow();
     });
   });
@@ -151,7 +151,7 @@ describe('EventBusService', () => {
       // This test verifies that the service doesn't crash on errors
       // The actual error handling would be implemented in the real event bus
       await expect(
-        eventBusService.publishTranscriptionEvent('transcription.completed', 'test-id')
+        eventBusService.publishTranscriptionEvent('transcription.completed', 'test-id'),
       ).resolves.not.toThrow();
     });
   });

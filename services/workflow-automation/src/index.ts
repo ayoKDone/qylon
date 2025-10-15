@@ -17,14 +17,15 @@ const app: express.Application = express();
 const PORT = process.env.PORT || 3005;
 
 // Initialize Workflow Orchestration Service
-const orchestrationService = new (require('./services/WorkflowOrchestrationService').WorkflowOrchestrationService)({
-  enableWorkflowTriggers: true,
-  enableIntegrationCoordination: true,
-  enableEventDrivenArchitecture: true,
-  maxConcurrentEvents: 100,
-  retryAttempts: 3,
-  retryDelay: 1000,
-});
+const orchestrationService =
+  new (require('./services/WorkflowOrchestrationService').WorkflowOrchestrationService)({
+    enableWorkflowTriggers: true,
+    enableIntegrationCoordination: true,
+    enableEventDrivenArchitecture: true,
+    maxConcurrentEvents: 100,
+    retryAttempts: 3,
+    retryDelay: 1000,
+  });
 
 // Security middleware
 app.use(

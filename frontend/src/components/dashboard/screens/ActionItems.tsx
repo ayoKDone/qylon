@@ -4,6 +4,9 @@ import { Search, Filter } from 'lucide-react';
 import TaskStats from '../widgets/TaskStats';
 import TasksList from '../widgets/TasksList';
 import BulkActions from '../widgets/BulkActions';
+import RecentMeetings from '../widgets/RecentMeeting';
+import StatsHeader from '../widgets/StatsHeader';
+import UpcomingMeetings from '../widgets/UpcomingMeetings';
 
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
@@ -24,6 +27,16 @@ interface Task {
   tags: string[];
 }
 
+interface RecentMeeting {
+  id: string;
+  title: string;
+  time: string;
+  participants: number;
+  date: string;
+  status: 'active' | 'completed' | 'scheduled';
+  statusColor: 'green' | 'orange' | 'blue';
+}
+
 export default function ActionItems() {
   const { setNavbar } = useOutletContext<NavbarContext>();
   const [selectAll, setSelectAll] = useState(false);
@@ -33,6 +46,42 @@ export default function ActionItems() {
   const [showFilter, setShowFilter] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
+
+  const upcomingMeetings = [
+    { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+  ];
+
+  const recentMeetings: RecentMeeting[] = [
+    {
+      id: '1',
+      title: 'Product Strategy Session',
+      time: '48:12',
+      participants: 5,
+      date: '1/15/2024',
+      status: 'completed',
+      statusColor: 'green',
+    },
+    {
+      id: '2',
+      title: 'Client Onboarding Call',
+      time: '32:15',
+      participants: 3,
+      date: '1/14/2024',
+      status: 'completed',
+      statusColor: 'orange',
+    },
+    {
+      id: '3',
+      title: 'Team Standup',
+      time: '16:42',
+      participants: 7,
+      date: '1/14/2024',
+      status: 'active',
+      statusColor: 'green',
+    },
+  ];
 
   const [tasks, setTasks] = useState<Task[]>([
     {
@@ -206,157 +255,176 @@ export default function ActionItems() {
   };
 
   return (
-    <div>
-      {/* Header */}
-      <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between mb-6'>
-        <h2 className='text-2xl font-bold text-gray-900'>Action Items ({filteredTasks.length})</h2>
-        <div className='xui-d-flex gap-3'>
-          <div className='relative'>
-            <button
-              onClick={() => setShowFilter(!showFilter)}
-              className={`p-2 rounded-lg transition-colors ${showFilter ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
-            >
-              <Filter className='w-5 h-5' />
-            </button>
-
-            {showFilter && (
-              <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10'>
-                <h3 className='font-semibold text-sm text-gray-900 mb-3'>Filter Tasks</h3>
-
-                <div className='mb-4'>
-                  <label className='block text-xs font-medium text-gray-700 mb-2'>Status</label>
-                  <select
-                    value={filterStatus}
-                    onChange={e => setFilterStatus(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                  >
-                    <option value='all'>All Status</option>
-                    <option value='pending'>Pending</option>
-                    <option value='in-progress'>In Progress</option>
-                    <option value='completed'>Completed</option>
-                    <option value='overdue'>Overdue</option>
-                  </select>
-                </div>
-
-                <div className='mb-4'>
-                  <label className='block text-xs font-medium text-gray-700 mb-2'>Priority</label>
-                  <select
-                    value={filterPriority}
-                    onChange={e => setFilterPriority(e.target.value)}
-                    className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-                  >
-                    <option value='all'>All Priorities</option>
-                    <option value='high'>High</option>
-                    <option value='medium'>Medium</option>
-                    <option value='low'>Low</option>
-                  </select>
-                </div>
-
-                <button
-                  onClick={() => {
-                    setFilterStatus('all');
-                    setFilterPriority('all');
-                  }}
-                  className='w-full px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
-                >
-                  Clear Filters
-                </button>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={() => setShowSearch(!showSearch)}
-            className={`p-2 rounded-lg transition-colors ${showSearch ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
-          >
-            <Search className='w-5 h-5' />
-          </button>
-        </div>
-      </div>
-
-      {/* Search Bar */}
-      {showSearch && (
-        <div className='mb-6'>
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400' />
-            <input
-              type='text'
-              placeholder='Search tasks by title, description, assignee, or tags...'
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className='w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-            />
-            {searchQuery && (
+    <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+      {/* Main Content - Left Column */}
+      <div className='lg:col-span-8'>
+        {/* Header */}
+        <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between mb-6'>
+          <h2 className='text-xl text-gray-900'>Action Items ({filteredTasks.length})</h2>
+          <div className='xui-d-flex gap-3'>
+            <div className='relative'>
               <button
-                onClick={() => setSearchQuery('')}
-                className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
+                onClick={() => setShowFilter(!showFilter)}
+                className={`p-2 rounded-lg transition-colors ${showFilter ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
               >
-                ✕
+                <Filter className='w-5 h-5' />
               </button>
-            )}
+
+              {showFilter && (
+                <div className='absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10'>
+                  <h3 className='font-semibold text-sm text-gray-900 mb-3'>Filter Tasks</h3>
+
+                  <div className='mb-4'>
+                    <label className='block text-xs font-medium text-gray-700 mb-2'>Status</label>
+                    <select
+                      value={filterStatus}
+                      onChange={e => setFilterStatus(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    >
+                      <option value='all'>All Status</option>
+                      <option value='pending'>Pending</option>
+                      <option value='in-progress'>In Progress</option>
+                      <option value='completed'>Completed</option>
+                      <option value='overdue'>Overdue</option>
+                    </select>
+                  </div>
+
+                  <div className='mb-4'>
+                    <label className='block text-xs font-medium text-gray-700 mb-2'>Priority</label>
+                    <select
+                      value={filterPriority}
+                      onChange={e => setFilterPriority(e.target.value)}
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    >
+                      <option value='all'>All Priorities</option>
+                      <option value='high'>High</option>
+                      <option value='medium'>Medium</option>
+                      <option value='low'>Low</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setFilterStatus('all');
+                      setFilterPriority('all');
+                    }}
+                    className='w-full px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setShowSearch(!showSearch)}
+              className={`p-2 rounded-lg transition-colors ${showSearch ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+            >
+              <Search className='w-5 h-5' />
+            </button>
           </div>
         </div>
-      )}
 
-      {/* Task Stats */}
-      <div className='mb-6'>
-        <TaskStats
-          totalTasks={totalTasks}
-          completedTasks={completedTasks}
-          overdueTasks={overdueTasks}
-          inProgressTasks={inProgressTasks}
-        />
-      </div>
-
-      {/* Bulk Actions */}
-      <BulkActions
-        selectedCount={selectedTasks.length}
-        onMarkComplete={handleMarkSelectedComplete}
-        onExport={handleExportTasks}
-        onCancel={handleCancelSelection}
-        allSelectedCompleted={allSelectedCompleted}
-      />
-
-      {/* Select All */}
-      <div className='mb-4 xui-d-flex xui-flex-ai-center xui-flex-jc-space-between pb-4 px-3'>
-        <div className='xui-d-flex xui-flex-ai-center gap-3'>
-          <button
-            onClick={handleSelectAll}
-            className={`w-5 h-5 rounded border-2 transition-all flex items-center justify-center ${
-              selectAll ? 'bg-blue-600 border-blue-600' : 'border-gray-300 hover:border-blue-500'
-            }`}
-          >
-            {selectAll && (
-              <svg
-                className='w-3 h-3 text-white'
-                fill='none'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-              >
-                <path d='M5 13l4 4L19 7'></path>
-              </svg>
-            )}
-          </button>
-          <label
-            onClick={handleSelectAll}
-            className='text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors'
-          >
-            Select All Tasks
-          </label>
-        </div>
-        {selectedTasks.length > 0 && (
-          <span className='text-sm text-blue-600 font-medium'>
-            {selectedTasks.length} of {filteredTasks.length} selected
-          </span>
+        {/* Search Bar */}
+        {showSearch && (
+          <div className='mb-6'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400' />
+              <input
+                type='text'
+                placeholder='Search tasks by title, description, assignee, or tags...'
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className='w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
         )}
+
+        {/* Task Stats */}
+        <div className='mb-6'>
+          <TaskStats
+            totalTasks={totalTasks}
+            completedTasks={completedTasks}
+            overdueTasks={overdueTasks}
+            inProgressTasks={inProgressTasks}
+          />
+        </div>
+
+        {/* Bulk Actions */}
+        <BulkActions
+          selectedCount={selectedTasks.length}
+          onMarkComplete={handleMarkSelectedComplete}
+          onExport={handleExportTasks}
+          onCancel={handleCancelSelection}
+          allSelectedCompleted={allSelectedCompleted}
+        />
+
+        {/* Select All */}
+        <div className='mb-4 xui-d-flex xui-flex-ai-center xui-flex-jc-space-between pb-4 px-3'>
+          <div className='xui-d-flex xui-flex-ai-center gap-3'>
+            <button
+              onClick={handleSelectAll}
+              className={`w-5 h-5 rounded border-2 transition-all flex items-center justify-center ${
+                selectAll ? 'bg-blue-600 border-blue-600' : 'border-gray-300 hover:border-blue-500'
+              }`}
+            >
+              {selectAll && (
+                <svg
+                  className='w-3 h-3 text-white'
+                  fill='none'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                >
+                  <path d='M5 13l4 4L19 7'></path>
+                </svg>
+              )}
+            </button>
+            <label
+              onClick={handleSelectAll}
+              className='text-sm font-medium text-gray-700 cursor-pointer hover:text-gray-900 transition-colors'
+            >
+              Select All Tasks
+            </label>
+          </div>
+          {selectedTasks.length > 0 && (
+            <span className='text-sm text-blue-600 font-medium'>
+              {selectedTasks.length} of {filteredTasks.length} selected
+            </span>
+          )}
+        </div>
+
+        {/* Tasks List */}
+        <div className='mt-6'>
+          <TasksList tasks={filteredTasks} onToggleComplete={handleToggleComplete} />
+        </div>
       </div>
 
-      {/* Tasks List */}
-      <div className='mt-6'>
-        <TasksList tasks={filteredTasks} onToggleComplete={handleToggleComplete} />
+      {/* Right Sidebar - Right Column */}
+      <div className='lg:col-span-4 flex flex-col gap-4'>
+        {/* Upcoming Meetings */}
+        <StatsHeader title='Upcoming Meetings'>
+          <UpcomingMeetings meetings={upcomingMeetings} />
+        </StatsHeader>
+
+        {/* Recent Meetings */}
+        <StatsHeader title='Recent Meetings'>
+          <RecentMeetings
+            meetings={recentMeetings}
+            onMeetingClick={id => console.log('Clicked meeting:', id)}
+          />
+        </StatsHeader>
       </div>
     </div>
   );

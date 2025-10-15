@@ -1,4 +1,8 @@
-import { CoordinationContext, IntegrationAction, IntegrationServiceCoordinator } from '../../services/IntegrationServiceCoordinator';
+import {
+  CoordinationContext,
+  IntegrationAction,
+  IntegrationServiceCoordinator,
+} from '../../services/IntegrationServiceCoordinator';
 
 // Local type definitions for testing
 interface IntegrationConfig {
@@ -303,10 +307,10 @@ describe('IntegrationServiceCoordinator', () => {
           method: 'POST',
           headers: expect.objectContaining({
             'Content-Type': 'application/json',
-            'Authorization': expect.stringContaining('Bearer'),
+            Authorization: expect.stringContaining('Bearer'),
           }),
           body: expect.stringContaining('test@example.com'),
-        })
+        }),
       );
     });
 
@@ -358,7 +362,7 @@ describe('IntegrationServiceCoordinator', () => {
         expect.stringContaining('/api/v1/crm/contacts/contact-123'),
         expect.objectContaining({
           method: 'PUT',
-        })
+        }),
       );
     });
 
@@ -407,7 +411,7 @@ describe('IntegrationServiceCoordinator', () => {
         expect.stringContaining('/api/v1/sync'),
         expect.objectContaining({
           method: 'POST',
-        })
+        }),
       );
     });
 
@@ -432,7 +436,10 @@ describe('IntegrationServiceCoordinator', () => {
         updated_at: mockIntegrationConfig.updatedAt,
       };
 
-      const result = await (coordinator as any).executeIntegrationAction(unknownAction, mockContext);
+      const result = await (coordinator as any).executeIntegrationAction(
+        unknownAction,
+        mockContext,
+      );
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Unknown action type');
@@ -444,12 +451,12 @@ describe('IntegrationServiceCoordinator', () => {
       // Add to cache
       (coordinator as any).setCachedIntegrationConfig(
         `${IntegrationType.CRM_SALESFORCE}:client-123`,
-        mockIntegrationConfig
+        mockIntegrationConfig,
       );
 
       const config = await (coordinator as any).getIntegrationConfig(
         IntegrationType.CRM_SALESFORCE,
-        'client-123'
+        'client-123',
       );
 
       expect(config).toEqual(mockIntegrationConfig);
@@ -473,7 +480,7 @@ describe('IntegrationServiceCoordinator', () => {
 
       const config = await (coordinator as any).getIntegrationConfig(
         IntegrationType.CRM_SALESFORCE,
-        'client-123'
+        'client-123',
       );
 
       expect(config).toEqual(mockIntegrationConfig);
@@ -488,7 +495,7 @@ describe('IntegrationServiceCoordinator', () => {
 
       const config = await (coordinator as any).getIntegrationConfig(
         IntegrationType.CRM_SALESFORCE,
-        'client-123'
+        'client-123',
       );
 
       expect(config).toBeNull();
