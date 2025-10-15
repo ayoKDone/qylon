@@ -51,7 +51,7 @@ export default function FilterTabs({
   return (
     <div className='flex items-center justify-between gap-4 pb-4'>
       {/* Tabs */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-1 z-10'>
         {tabs.map(tab => (
           <button
             key={tab.id}

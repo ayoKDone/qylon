@@ -196,7 +196,7 @@ export default function Workflow() {
 
   return (
     <div className=''>
-      <div className='sticky top-0 bg-white'>
+      <div className='sticky top-0 z-10 bg-white'>
         <FilterTabs
           tabs={[
             { id: 'all', label: 'View all', count: integrations.length },
