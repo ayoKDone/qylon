@@ -34,12 +34,20 @@ describe('Complete User Journey Tests', () => {
 
   it('should navigate to dashboard meetings', () => {
     cy.visit('/dashboard');
+
+    // Wait for the page to load and navigation to be visible
+    cy.get('.navigator').should('be.visible');
+
     // Use the actual navigation link text that exists
-    cy.contains('Live Meetings').click();
+    cy.contains('Live Meetings').should('be.visible').click();
     cy.url().should('include', '/dashboard/live-meetings');
 
-    // Navigate back and try meeting history
-    cy.contains('Meeting History').click();
+    // Navigate back to dashboard first
+    cy.visit('/dashboard');
+    cy.get('.navigator').should('be.visible');
+
+    // Navigate to meeting history
+    cy.contains('Meeting History').should('be.visible').click();
     cy.url().should('include', '/dashboard/meeting-history');
   });
 });
