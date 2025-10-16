@@ -30,6 +30,12 @@ interface RecentMeeting {
   statusColor: 'green' | 'orange' | 'blue';
 }
 
+interface upcomingMeetings {
+  time: string;
+  title: string;
+  attendees: number;
+}
+
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
 };
@@ -51,46 +57,46 @@ export default function MeetingHistory() {
     fetchMeetings();
   }, []);
 
-  const upcomingMeetings = [
-    { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
-    { time: '4:30 PM', title: 'Client Review', attendees: 3 },
-    { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+  const upcomingMeetingsData: upcomingMeetings[] = [
+    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
-  const recentMeetings: RecentMeeting[] = [
-    {
-      id: '1',
-      title: 'Product Strategy Session',
-      time: '48:12',
-      participants: 5,
-      date: '1/15/2024',
-      status: 'completed',
-      statusColor: 'green',
-    },
-    {
-      id: '2',
-      title: 'Client Onboarding Call',
-      time: '32:15',
-      participants: 3,
-      date: '1/14/2024',
-      status: 'completed',
-      statusColor: 'orange',
-    },
-    {
-      id: '3',
-      title: 'Team Standup',
-      time: '16:42',
-      participants: 7,
-      date: '1/14/2024',
-      status: 'active',
-      statusColor: 'green',
-    },
+  const recentMeetingsData: RecentMeeting[] = [
+    // {
+    //   id: '1',
+    //   title: 'Product Strategy Session',
+    //   time: '48:12',
+    //   participants: 5,
+    //   date: '1/15/2024',
+    //   status: 'completed',
+    //   statusColor: 'green',
+    // },
+    // {
+    //   id: '2',
+    //   title: 'Client Onboarding Call',
+    //   time: '32:15',
+    //   participants: 3,
+    //   date: '1/14/2024',
+    //   status: 'completed',
+    //   statusColor: 'orange',
+    // },
+    // {
+    //   id: '3',
+    //   title: 'Team Standup',
+    //   time: '16:42',
+    //   participants: 7,
+    //   date: '1/14/2024',
+    //   status: 'active',
+    //   statusColor: 'green',
+    // },
   ];
 
   const fetchMeetings = async () => {
     setIsLoading(true);
     // Replace with your API call
-    const mockMeetings: Meeting[] = [
+    const Meetingsdata: Meeting[] = [
       {
         id: '1',
         title: 'Client Onboarding Call - Creative Agency',
@@ -165,7 +171,7 @@ export default function MeetingHistory() {
       },
     ];
 
-    setMeetings(mockMeetings);
+    setMeetings(Meetingsdata);
     setIsLoading(false);
   };
 
@@ -189,7 +195,7 @@ export default function MeetingHistory() {
           <option>Custom</option>
         </select>
 
-        <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 xui-bg-black xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
+        <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 bg-blue-950 xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
           <PiExport size={16} /> Export
         </button>
       </div>
@@ -211,12 +217,12 @@ export default function MeetingHistory() {
           {/* Your sidebar content here */}
           {/* Upcoming Meetings */}
           <StatsHeader title='Upcoming Meetings'>
-            <UpcomingMeetings meetings={upcomingMeetings} />
+            <UpcomingMeetings meetings={upcomingMeetingsData} />
           </StatsHeader>
 
           <StatsHeader title='Recent Meetings'>
             <RecentMeetings
-              meetings={recentMeetings}
+              meetings={recentMeetingsData}
               onMeetingClick={id => console.log('Clicked meeting:', id)}
             />
           </StatsHeader>

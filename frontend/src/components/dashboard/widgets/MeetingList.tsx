@@ -94,13 +94,13 @@ export default function MeetingList({
           <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
             <Video className='w-8 h-8 text-gray-400' />
           </div>
-          <h3 className='text-xl font-semibold text-gray-900 mb-2'>No meetings yet</h3>
-          <p className='text-gray-500 mb-6'>
+          <p className='text-base font-medium text-gray-900 mb-2'>No meetings yet</p>
+          <p className='text-gray-500 text-sm mb-6'>
             Get started by creating your first meeting or uploading a recording.
           </p>
           <button
             onClick={onCreateMeeting}
-            className='inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-medium hover:from-cyan-600 hover:to-blue-600 transition-all shadow-md'
+            className='inline-flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-lg font-medium'
           >
             <Plus className='w-5 h-5' />
             Create Meeting
@@ -115,7 +115,7 @@ export default function MeetingList({
       {/* Loading State */}
       {isLoading ? (
         <div className='flex items-center justify-center py-12'>
-          <Loader2 className='w-8 h-8 text-blue-500 animate-spin' />
+          <Loader2 className='w-8 h-8 text-blue-950 animate-spin' />
         </div>
       ) : (
         <>
@@ -157,7 +157,7 @@ export default function MeetingList({
                     onClick={() => handlePageClick(page)}
                     className={`w-10 h-10 text-sm font-medium rounded-lg transition-colors ${
                       currentPage === page
-                        ? 'bg-black text-white'
+                        ? 'bg-blue-950 text-white'
                         : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                     }`}
                   >

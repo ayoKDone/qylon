@@ -1,6 +1,6 @@
 // src/widgets/UpcomingMeetings.tsx
 import { Calendar, Users } from 'lucide-react';
-
+import { EmptyState } from '@/components/UI/EmptyState';
 interface Meeting {
   time: string;
   title: string;
@@ -12,6 +12,16 @@ interface UpcomingMeetingsProps {
 }
 
 export default function UpcomingMeetings({ meetings }: UpcomingMeetingsProps) {
+  if (!meetings || meetings.length === 0) {
+    return (
+      <EmptyState
+        icon={Calendar}
+        title="No upcoming meetings"
+        message="Your scheduled meetings will appear here"
+      />
+    );
+  }
+
   return (
     <div className='space-y-3'>
       {meetings.map((meeting, idx) => (

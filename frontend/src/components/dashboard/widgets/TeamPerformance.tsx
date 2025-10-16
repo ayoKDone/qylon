@@ -1,4 +1,6 @@
 // src/widgets/TeamPerformance.tsx
+import { Users } from 'lucide-react';
+import { EmptyState } from '@/components/UI/EmptyState';
 
 interface TeamMember {
   name: string;
@@ -12,6 +14,16 @@ interface TeamPerformanceProps {
 }
 
 export default function TeamPerformance({ members }: TeamPerformanceProps) {
+  if (!members || members.length === 0) {
+    return (
+      <EmptyState
+        icon={Users}
+        title="No team members yet"
+        message="Team performance data will appear here once members are added"
+      />
+    );
+  }
+
   return (
     <div className='space-y-3'>
       {members.map((member, idx) => (

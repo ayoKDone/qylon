@@ -1,4 +1,5 @@
-import { Clock, Users } from 'lucide-react';
+import { Clock, Users, Calendar } from 'lucide-react';
+import { EmptyState } from '@/components/UI/EmptyState';
 
 interface RecentMeeting {
   id: string;
@@ -28,6 +29,16 @@ export default function RecentMeetings({ meetings, onMeetingClick }: RecentMeeti
         return 'bg-gray-500';
     }
   };
+
+  if (!meetings || meetings.length === 0) {
+    return (
+      <EmptyState
+        icon={Calendar}
+        title="No recent meetings"
+        message="Recent meetings will appear here once you start scheduling or recording sessions"
+      />
+    );
+  }
 
   return (
     <div className='space-y-3'>

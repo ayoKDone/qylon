@@ -1,4 +1,6 @@
 // src/widgets/MonthlyStats.tsx
+import { BarChart3 } from 'lucide-react';
+import { EmptyState } from '@/components/UI/EmptyState';
 
 interface StatItem {
   label: string;
@@ -11,6 +13,16 @@ interface MonthlyStatsProps {
 }
 
 export default function MonthlyStats({ stats }: MonthlyStatsProps) {
+  if (!stats || stats.length === 0) {
+    return (
+      <EmptyState
+        icon={BarChart3}
+        title="No stats available"
+        message="Monthly statistics will be displayed here once data is available"
+      />
+    );
+  }
+
   return (
     <div className='space-y-4'>
       {stats.map((stat, idx) => (
