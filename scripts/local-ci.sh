@@ -589,7 +589,10 @@ main() {
         print_subsection "End-to-End Tests"
         if [ -d "frontend" ] && npm run | grep -q "test:e2e"; then
             cd frontend
-            if ! run_command "npm run test:e2e" "E2E tests"; then
+            if run_command "npm run test:e2e" "E2E tests"; then
+                print_success "E2E tests passed successfully"
+            else
+                print_error "E2E tests failed"
                 exit_code=1
             fi
             cd "$REPO_ROOT"
@@ -605,6 +608,7 @@ main() {
     print_section "Pipeline Summary"
     echo "Duration: ${duration}s"
     echo "End time: $(date)"
+    echo "Exit code: $exit_code"
     echo ""
 
     if [ $exit_code -eq 0 ]; then
