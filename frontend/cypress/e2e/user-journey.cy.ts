@@ -1,7 +1,8 @@
 describe('Complete User Journey Tests', () => {
   it('should complete setup flow', () => {
     // Start at setup welcome - this should show "We are Qylon" and "Get started" button
-    cy.visit('/setup');
+    cy.visit('/setup', { timeout: 60000 });
+    cy.get('body').should('be.visible'); // Wait for body to be visible first
     cy.contains('We are Qylon').should('be.visible');
     cy.contains('Get started').should('be.visible');
 
