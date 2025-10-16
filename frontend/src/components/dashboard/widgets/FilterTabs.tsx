@@ -63,7 +63,7 @@ export default function FilterTabs({
             {tab.label}
             {tab.count !== undefined && <span className='ml-1.5 text-xs'>({tab.count})</span>}
             {activeTab === tab.id && (
-              <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500'></div>
+              <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-blue-950'></div>
             )}
           </button>
         ))}
@@ -95,7 +95,7 @@ export default function FilterTabs({
         {/* Action Button */}
         <button
           onClick={onAction}
-          className='flex items-center gap-2 px-4 py-2 xui-bg-black text-white rounded-lg text-sm font-medium transition-all shadow-sm'
+          className='flex items-center gap-2 px-4 py-2 bg-blue-950 text-white rounded-lg text-sm font-medium transition-all shadow-sm'
         >
           <Plus className='w-4 h-4' />
           {actionLabel}

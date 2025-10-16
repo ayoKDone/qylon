@@ -53,13 +53,13 @@ export default function ActionItems() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
-  const upcomingMeetings: upcomingMeetings [] = [
+  const upcomingMeetingsData: upcomingMeetings [] = [
     // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
     // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
     // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
-  const recentMeetings: RecentMeeting[] = [
+  const recentMeetingsData: RecentMeeting[] = [
     // {
     //   id: '1',
     //   title: 'Product Strategy Session',
@@ -271,7 +271,7 @@ export default function ActionItems() {
             <div className='relative'>
               <button
                 onClick={() => setShowFilter(!showFilter)}
-                className={`p-2 rounded-lg transition-colors ${showFilter ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+                className={`p-2 rounded-lg transition-colors ${showFilter ? 'bg-blue-100 text-blue-950' : 'hover:bg-gray-100'}`}
               >
                 <Filter className='w-5 h-5' />
               </button>
@@ -285,7 +285,7 @@ export default function ActionItems() {
                     <select
                       value={filterStatus}
                       onChange={e => setFilterStatus(e.target.value)}
-                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-950'
                     >
                       <option value='all'>All Status</option>
                       <option value='pending'>Pending</option>
@@ -300,7 +300,7 @@ export default function ActionItems() {
                     <select
                       value={filterPriority}
                       onChange={e => setFilterPriority(e.target.value)}
-                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+                      className='w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-950'
                     >
                       <option value='all'>All Priorities</option>
                       <option value='high'>High</option>
@@ -314,7 +314,7 @@ export default function ActionItems() {
                       setFilterStatus('all');
                       setFilterPriority('all');
                     }}
-                    className='w-full px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors'
+                    className='w-full px-3 py-2 text-sm text-blue-950 hover:bg-blue-50 rounded-lg transition-colors'
                   >
                     Clear Filters
                   </button>
@@ -324,7 +324,7 @@ export default function ActionItems() {
 
             <button
               onClick={() => setShowSearch(!showSearch)}
-              className={`p-2 rounded-lg transition-colors ${showSearch ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100'}`}
+              className={`p-2 rounded-lg transition-colors ${showSearch ? 'bg-blue-100 text-blue-950' : 'hover:bg-gray-100'}`}
             >
               <Search className='w-5 h-5' />
             </button>
@@ -341,7 +341,7 @@ export default function ActionItems() {
                 placeholder='Search tasks by title, description, assignee, or tags...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className='w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                className='w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-950 focus:border-transparent'
               />
               {searchQuery && (
                 <button
@@ -380,7 +380,7 @@ export default function ActionItems() {
             <button
               onClick={handleSelectAll}
               className={`w-5 h-5 rounded border-2 transition-all flex items-center justify-center ${
-                selectAll ? 'bg-blue-600 border-blue-600' : 'border-gray-300 hover:border-blue-500'
+                selectAll ? 'bg-blue-950 border-blue-950' : 'border-gray-300 hover:border-blue-950'
               }`}
             >
               {selectAll && (
@@ -405,7 +405,7 @@ export default function ActionItems() {
             </label>
           </div>
           {selectedTasks.length > 0 && (
-            <span className='text-sm text-blue-600 font-medium'>
+            <span className='text-sm text-blue-950 font-medium'>
               {selectedTasks.length} of {filteredTasks.length} selected
             </span>
           )}
@@ -421,13 +421,13 @@ export default function ActionItems() {
       <div className='lg:col-span-4 flex flex-col gap-4'>
         {/* Upcoming Meetings */}
         <StatsHeader title='Upcoming Meetings'>
-          <UpcomingMeetings meetings={upcomingMeetings} />
+          <UpcomingMeetings meetings={upcomingMeetingsData} />
         </StatsHeader>
 
         {/* Recent Meetings */}
         <StatsHeader title='Recent Meetings'>
           <RecentMeetings
-            meetings={recentMeetings}
+            meetings={recentMeetingsData}
             onMeetingClick={id => console.log('Clicked meeting:', id)}
           />
         </StatsHeader>

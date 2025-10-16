@@ -115,7 +115,7 @@ export default function TemplateCard({ template, onUseTemplate }: TemplateCardPr
         {/* Action Button */}
         <button
           onClick={() => onUseTemplate?.(template.id)}
-          className='w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg text-sm font-medium hover:from-cyan-600 hover:to-blue-600 transition-all'
+          className='w-full py-2 bg-blue-950 text-white rounded-lg text-sm font-medium hover:bg-blue-900 transition-all'
         >
           Use Template
         </button>

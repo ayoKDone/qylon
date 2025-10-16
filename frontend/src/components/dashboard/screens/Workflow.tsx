@@ -200,7 +200,7 @@ export default function Workflow() {
     <div className='bg-white rounded-lg border border-gray-200 p-16'>
       <div className='flex flex-col items-center justify-center max-w-md mx-auto text-center'>
         <div className='w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-6'>
-          <WorkflowIcon className='w-10 h-10 text-blue-600' />
+          <WorkflowIcon className='w-10 h-10 text-blue-950' />
         </div>
         <h3 className='text-xl font-semibold text-gray-900 mb-3'>
           {searchQuery
@@ -211,15 +211,25 @@ export default function Workflow() {
                 ? 'No inactive automations'
                 : 'No automations yet'}
         </h3>
-        <p className='text-sm text-gray-500 mb-6'>
+        <p className='text-sm text-gray-500 mb-6 relative inline-block group'>
           {searchQuery
             ? 'Try adjusting your search terms or create a new automation.'
             : 'Get started by creating your first automation or browse templates for inspiration.'}
+          <div className="xui-tooltip" xui-set="bottom-right">
+            <span className='ml-1 text-blue-950 text-xs cursor-pointer group-hover:underline'>
+              Learn more
+            </span>
+            <span className='xui-tooltip-content'>
+              Automations let you visually build workflows by connecting triggers and actions.  
+              Templates are pre-built examples you can customize or share with your team.
+            </span>
+          </div>
         </p>
+
         <div className='flex gap-3'>
           <button
             onClick={() => navigate('/dashboard/workflow/new')}
-            className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2'
+            className='px-4 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-900 transition-colors flex items-center gap-2'
           >
             <Plus className='w-4 h-4' />
             Create Automation
@@ -249,7 +259,7 @@ export default function Workflow() {
         </p>
         <button
           onClick={() => navigate('/dashboard/workflow/new')}
-          className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2'
+          className='px-4 py-2 bg-blue-950 text-white rounded-lg hover:bg-blue-900 transition-colors flex items-center gap-2'
         >
           <Plus className='w-4 h-4' />
           Create Custom Automation

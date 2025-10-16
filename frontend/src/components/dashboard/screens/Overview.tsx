@@ -64,20 +64,20 @@ export default function DashboardOverview() {
     tasks: number;
   }
 
-  const teamMembers: TeamMember[] = [
+  const teamMembersData: TeamMember[] = [
     // { name: 'Sarah M.', performance: 95, color: 'bg-blue-500', tasks: 42 },
     // { name: 'Mike R.', performance: 88, color: 'bg-purple-500', tasks: 38 },
     // { name: 'Jennifer K.', performance: 92, color: 'bg-pink-500', tasks: 35 },
     // { name: 'David L.', performance: 85, color: 'bg-green-500', tasks: 29 },
   ];
 
-  interface Meeting {
+  interface upcomingMeetings {
     time: string;
     title: string;
     attendees: number;
   }
 
-  const upcomingMeetings: Meeting[] = [
+  const upcomingMeetingsData: upcomingMeetings[] = [
     // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
     // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
     // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
@@ -133,12 +133,12 @@ export default function DashboardOverview() {
 
           {/* Team Performance */}
           <StatsHeader title='Team Performance'>
-            <TeamPerformance members={teamMembers} />
+            <TeamPerformance members={teamMembersData} />
           </StatsHeader>
 
           {/* Upcoming Meetings */}
           <StatsHeader title='Upcoming Meetings'>
-            <UpcomingMeetings meetings={upcomingMeetings} />
+            <UpcomingMeetings meetings={upcomingMeetingsData} />
           </StatsHeader>
         </div>
       </div>

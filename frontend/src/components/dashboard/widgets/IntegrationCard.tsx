@@ -149,7 +149,7 @@ export default function IntegrationCard({ integration, onToggle }: IntegrationCa
                 handleToggle();
               }}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                isActive ? 'bg-blue-500' : 'bg-gray-300'
+                isActive ? 'bg-blue-950' : 'bg-gray-300'
               }`}
             >
               <span

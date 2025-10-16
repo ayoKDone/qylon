@@ -66,7 +66,7 @@ export default function Navbar({ title, subtitle, userName = 'Amaka', avatarUrl 
                 className='xui-w-32 xui-h-32 xui-bdr-rad-circle xui-img-cover'
               />
             ) : (
-              <div className='xui-w-30 xui-h-30 xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-bdr-rad-circle xui-bg-black xui-text-white'>
+              <div className='xui-w-30 xui-h-30 xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-bdr-rad-circle bg-blue-950 xui-text-white'>
                 <FiUser size={18} />
               </div>
             )}

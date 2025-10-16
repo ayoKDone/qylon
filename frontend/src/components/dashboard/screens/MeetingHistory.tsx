@@ -57,13 +57,13 @@ export default function MeetingHistory() {
     fetchMeetings();
   }, []);
 
-  const upcomingMeetings: upcomingMeetings[] = [
+  const upcomingMeetingsData: upcomingMeetings[] = [
     // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
     // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
     // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
-  const recentMeetings: RecentMeeting[] = [
+  const recentMeetingsData: RecentMeeting[] = [
     // {
     //   id: '1',
     //   title: 'Product Strategy Session',
@@ -96,82 +96,82 @@ export default function MeetingHistory() {
   const fetchMeetings = async () => {
     setIsLoading(true);
     // Replace with your API call
-    const mockMeetings: Meeting[] = [
-      // {
-      //   id: '1',
-      //   title: 'Client Onboarding Call - Creative Agency',
-      //   time: '10:00',
-      //   endTime: '10:22',
-      //   date: 'Oct 11, 2025',
-      //   owner: 'Jackson Schlachter',
-      //   duration: '22 min',
-      //   participants: 3,
-      //   platform: 'Zoom',
-      //   status: 'completed',
-      // },
-      // {
-      //   id: '2',
-      //   title: 'Product Strategy Meeting',
-      //   time: '14:00',
-      //   endTime: '14:45',
-      //   date: 'Oct 10, 2025',
-      //   owner: 'Sarah M.',
-      //   duration: '45 min',
-      //   participants: 5,
-      //   platform: 'Teams',
-      //   status: 'completed',
-      // },
-      // {
-      //   id: '3',
-      //   title: 'Daily CX Sprint',
-      //   time: '03:00',
-      //   endTime: '03:35 PM',
-      //   date: 'TODAY',
-      //   owner: 'Hermes Mallios',
-      //   duration: '35 min',
-      //   participants: 12,
-      //   platform: 'Teams',
-      //   status: 'completed',
-      // },
-      // {
-      //   id: '4',
-      //   title: 'Barkbase internal handoff',
-      //   time: '9:00',
-      //   endTime: '9:30 AM',
-      //   date: 'WED, APRIL 22',
-      //   owner: 'Cosmo S.',
-      //   duration: '30 min',
-      //   participants: 6,
-      //   platform: 'Zoom',
-      //   status: 'failed',
-      // },
-      // {
-      //   id: '5',
-      //   title: 'Barkbase internal handoff',
-      //   time: '9:00',
-      //   endTime: '9:30 AM',
-      //   date: 'WED, APRIL 22',
-      //   owner: 'Cosmo S.',
-      //   duration: '30 min',
-      //   participants: 6,
-      //   platform: 'Zoom',
-      //   status: 'failed',
-      // },
-      // {
-      //   id: '6',
-      //   title: 'Barkbase internal handoff',
-      //   time: '9:00',
-      //   endTime: '9:30 AM',
-      //   date: 'WED, APRIL 22',
-      //   owner: 'Cosmo S.',
-      //   duration: '30 min',
-      //   participants: 6,
-      //   platform: 'Zoom',
-      //   status: 'failed',
-      // },
+    const Meetingsdata: Meeting[] = [
+      {
+        id: '1',
+        title: 'Client Onboarding Call - Creative Agency',
+        time: '10:00',
+        endTime: '10:22',
+        date: 'Oct 11, 2025',
+        owner: 'Jackson Schlachter',
+        duration: '22 min',
+        participants: 3,
+        platform: 'Zoom',
+        status: 'completed',
+      },
+      {
+        id: '2',
+        title: 'Product Strategy Meeting',
+        time: '14:00',
+        endTime: '14:45',
+        date: 'Oct 10, 2025',
+        owner: 'Sarah M.',
+        duration: '45 min',
+        participants: 5,
+        platform: 'Teams',
+        status: 'completed',
+      },
+      {
+        id: '3',
+        title: 'Daily CX Sprint',
+        time: '03:00',
+        endTime: '03:35 PM',
+        date: 'TODAY',
+        owner: 'Hermes Mallios',
+        duration: '35 min',
+        participants: 12,
+        platform: 'Teams',
+        status: 'completed',
+      },
+      {
+        id: '4',
+        title: 'Barkbase internal handoff',
+        time: '9:00',
+        endTime: '9:30 AM',
+        date: 'WED, APRIL 22',
+        owner: 'Cosmo S.',
+        duration: '30 min',
+        participants: 6,
+        platform: 'Zoom',
+        status: 'failed',
+      },
+      {
+        id: '5',
+        title: 'Barkbase internal handoff',
+        time: '9:00',
+        endTime: '9:30 AM',
+        date: 'WED, APRIL 22',
+        owner: 'Cosmo S.',
+        duration: '30 min',
+        participants: 6,
+        platform: 'Zoom',
+        status: 'failed',
+      },
+      {
+        id: '6',
+        title: 'Barkbase internal handoff',
+        time: '9:00',
+        endTime: '9:30 AM',
+        date: 'WED, APRIL 22',
+        owner: 'Cosmo S.',
+        duration: '30 min',
+        participants: 6,
+        platform: 'Zoom',
+        status: 'failed',
+      },
     ];
 
-    setMeetings(mockMeetings);
+    setMeetings(Meetingsdata);
     setIsLoading(false);
   };
 
@@ -195,7 +195,7 @@ export default function MeetingHistory() {
           <option>Custom</option>
         </select>
 
-        <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 xui-bg-black xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
+        <button className='xui-d-flex xui-flex-ai-center gap-2 px-4 py-2.5 bg-blue-950 xui-bdr-rad-half xui-text-white xui-rounded-lg hover:xui-bg-gray-900 transition-colors'>
           <PiExport size={16} /> Export
         </button>
       </div>
@@ -217,12 +217,12 @@ export default function MeetingHistory() {
           {/* Your sidebar content here */}
           {/* Upcoming Meetings */}
           <StatsHeader title='Upcoming Meetings'>
-            <UpcomingMeetings meetings={upcomingMeetings} />
+            <UpcomingMeetings meetings={upcomingMeetingsData} />
           </StatsHeader>
 
           <StatsHeader title='Recent Meetings'>
             <RecentMeetings
-              meetings={recentMeetings}
+              meetings={recentMeetingsData}
               onMeetingClick={id => console.log('Clicked meeting:', id)}
             />
           </StatsHeader>
