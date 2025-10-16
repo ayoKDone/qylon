@@ -8,6 +8,7 @@ import { IoVideocamOutline } from 'react-icons/io5';
 import { LuBuilding2 } from 'react-icons/lu';
 import { HiOutlineLink } from 'react-icons/hi';
 import RecordingStatus from './RecordingStatus';
+import logoImage from '../../assets/images/qylon-logo.png';
 
 export default function Navigator() {
   const location = useLocation();
@@ -44,7 +45,7 @@ export default function Navigator() {
     <div className='navigator'>
       <div className='brand'>
         <img
-          src='/src/assets/images/qylon-logo.png'
+          src={logoImage}
           alt='Qylon Logo'
           className='xui-img-100 xui-h-auto'
         />
