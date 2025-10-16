@@ -224,22 +224,18 @@ export class EmailSequenceService {
    */
   async getEmailSequences(userId: string, clientId?: string): Promise<EmailSequence[]> {
     try {
-      let query = this.supabase
+      let chain = this.supabase
         .from('email_sequences')
-        .select(
-          `
-          *,
-          email_steps (*)
-        `,
-        )
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .select('*')
+        .eq('user_id', userId);
 
       if (clientId) {
-        query = query.eq('client_id', clientId);
+        chain = chain.eq('client_id', clientId);
       }
 
-      const { data, error } = await query;
+      chain = chain.order('created_at', { ascending: false });
+
+      const { data, error } = await chain;
 
       if (error) {
         throw new Error(`Failed to get email sequences: ${error.message}`);
@@ -261,14 +257,9 @@ export class EmailSequenceService {
    */
   async getEmailSequence(sequenceId: string, userId: string): Promise<EmailSequence | null> {
     try {
-      const { data, error } = await this.supabase
+      const { data: sequence, error } = await this.supabase
         .from('email_sequences')
-        .select(
-          `
-          *,
-          email_steps (*)
-        `,
-        )
+        .select('*')
         .eq('id', sequenceId)
         .eq('user_id', userId)
         .single();
@@ -280,7 +271,18 @@ export class EmailSequenceService {
         throw new Error(`Failed to get email sequence: ${error.message}`);
       }
 
-      return data;
+      // Fetch steps separately to align with expected behavior
+      const { data: steps, error: stepsError } = await this.supabase
+        .from('email_steps')
+        .select('*')
+        .eq('sequence_id', sequenceId)
+        .order('step_number');
+
+      if (stepsError) {
+        throw new Error(`Failed to get email steps: ${stepsError.message}`);
+      }
+
+      return { ...sequence, steps };
     } catch (error) {
       logger.error('Failed to get email sequence', {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -660,17 +662,18 @@ export class EmailSequenceService {
    */
   async getExecutions(userId: string, clientId?: string): Promise<EmailSequenceExecution[]> {
     try {
-      let query = this.supabase
+      let chain = this.supabase
         .from('email_sequence_executions')
         .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .eq('user_id', userId);
 
       if (clientId) {
-        query = query.eq('client_id', clientId);
+        chain = chain.eq('client_id', clientId);
       }
 
-      const { data, error } = await query;
+      chain = chain.order('created_at', { ascending: false });
+
+      const { data, error } = await chain;
 
       if (error) {
         throw new Error(`Failed to get executions: ${error.message}`);
@@ -705,13 +708,13 @@ export class EmailSequenceService {
     bounceRate: number;
   }> {
     try {
-      let query = this.supabase.from('email_deliveries').select('status').eq('user_id', userId);
+      let chain = this.supabase.from('email_deliveries').select('status').eq('user_id', userId);
 
       if (clientId) {
-        query = query.eq('client_id', clientId);
+        chain = chain.eq('client_id', clientId);
       }
 
-      const { data, error } = await query;
+      const { data, error } = await chain;
 
       if (error) {
         throw new Error(`Failed to get delivery stats: ${error.message}`);
