@@ -472,75 +472,12 @@ main() {
         print_warning "Skipping performance tests (--skip-tests flag)"
     fi
 
-    # Step 10: End-to-End Tests (if available)
+    # Step 10: E2E Tests (moved to QA pipeline to avoid duplication)
     if [ "$SKIP_TESTS" != "true" ]; then
         print_section "End-to-End Tests"
-
-        # Check if Cypress is installed
-        if [ -d "frontend/node_modules/cypress" ] || [ -d "node_modules/cypress" ]; then
-            print_success "Cypress is installed"
-        else
-            print_warning "Cypress is not installed. Installing Cypress..."
-            if [ -d "frontend" ]; then
-                cd frontend
-                if ! run_command "npm install --save-dev cypress @cypress/react @cypress/webpack-dev-server" "Install Cypress"; then
-                    print_warning "Failed to install Cypress"
-                fi
-                cd "$REPO_ROOT"
-            else
-                print_warning "Frontend directory not found, cannot install Cypress"
-            fi
-        fi
-
-        # Start frontend preview server in background and wait for it
-        if [ -d "frontend" ]; then
-            print_info "Starting frontend preview server on port 3002..."
-            # Ensure port 3002 is free before starting
-            print_info "Ensuring port 3002 is free..."
-            if command_exists lsof; then
-                if lsof -ti:3002 >/dev/null 2>&1; then
-                    kill -9 $(lsof -ti:3002) >/dev/null 2>&1 || true
-                    sleep 1
-                fi
-            fi
-            cd frontend
-            npm run preview &
-            PREVIEW_PID=$!
-            cd "$REPO_ROOT"
-
-            print_info "Waiting for http://localhost:3002 to become available..."
-            ATTEMPTS=30
-            until curl -fsS http://localhost:3002 >/dev/null 2>&1 || [ $ATTEMPTS -eq 0 ]; do
-                sleep 1
-                ATTEMPTS=$((ATTEMPTS-1))
-            done
-
-            if [ $ATTEMPTS -eq 0 ]; then
-                print_error "Frontend did not start in time; skipping E2E"
-                exit_code=1
-            else
-                # Run Cypress E2E against the running preview
-                # Always attempt to run frontend E2E tests (script is defined in package.json)
-                if [ -d "frontend" ]; then
-                    print_info "Running frontend E2E tests..."
-                    cd frontend
-                    if ! run_command "npm run test:e2e" "E2E tests"; then
-                        exit_code=1
-                    fi
-                    cd "$REPO_ROOT"
-                else
-                    print_warning "Frontend directory not found; skipping E2E"
-                fi
-            fi
-
-            # Cleanup preview server
-            if [ -n "$PREVIEW_PID" ]; then
-                print_info "Stopping frontend preview server (PID $PREVIEW_PID)"
-                kill $PREVIEW_PID >/dev/null 2>&1 || true
-            fi
-        else
-            print_warning "Frontend directory not found; skipping E2E"
-        fi
+        print_info "E2E tests are now part of the QA pipeline"
+        print_info "Run './scripts/local-ci.sh --run-qa-tests' to include E2E tests"
+        print_info "Or run E2E tests manually: cd frontend && npm run test:e2e"
     else
         print_warning "Skipping E2E tests (--skip-tests flag)"
     fi
