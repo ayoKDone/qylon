@@ -588,14 +588,46 @@ main() {
         # E2E Tests
         print_subsection "End-to-End Tests"
         if [ -d "frontend" ] && npm run | grep -q "test:e2e"; then
-            cd frontend
-            if run_command "npm run test:e2e" "E2E tests"; then
-                print_success "E2E tests passed successfully"
-            else
-                print_error "E2E tests failed"
-                exit_code=1
+            # Start frontend preview server
+            print_info "Starting frontend preview server on port 3002..."
+            if command_exists lsof; then
+                if lsof -ti:3002 >/dev/null 2>&1; then
+                    kill -9 $(lsof -ti:3002) >/dev/null 2>&1 || true
+                    sleep 1
+                fi
             fi
+            cd frontend
+            npm run preview &
+            PREVIEW_PID=$!
             cd "$REPO_ROOT"
+
+            print_info "Waiting for http://localhost:3002 to become available..."
+            ATTEMPTS=30
+            until curl -fsS http://localhost:3002 >/dev/null 2>&1 || [ $ATTEMPTS -eq 0 ]; do
+                sleep 1
+                ATTEMPTS=$((ATTEMPTS-1))
+            done
+
+            if [ $ATTEMPTS -eq 0 ]; then
+                print_error "Frontend did not start in time; skipping E2E"
+                exit_code=1
+            else
+                print_info "Frontend server is ready, running E2E tests..."
+                cd frontend
+                if run_command "npm run test:e2e" "E2E tests"; then
+                    print_success "E2E tests passed successfully"
+                else
+                    print_error "E2E tests failed"
+                    exit_code=1
+                fi
+                cd "$REPO_ROOT"
+            fi
+
+            # Cleanup preview server
+            if [ -n "$PREVIEW_PID" ]; then
+                print_info "Stopping frontend preview server (PID $PREVIEW_PID)"
+                kill $PREVIEW_PID >/dev/null 2>&1 || true
+            fi
         else
             print_warning "No E2E test script found"
         fi
