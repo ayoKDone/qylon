@@ -224,10 +224,7 @@ export class EmailSequenceService {
    */
   async getEmailSequences(userId: string, clientId?: string): Promise<EmailSequence[]> {
     try {
-      let chain = this.supabase
-        .from('email_sequences')
-        .select('*')
-        .eq('user_id', userId);
+      let chain = this.supabase.from('email_sequences').select('*').eq('user_id', userId);
 
       if (clientId) {
         chain = chain.eq('client_id', clientId);
@@ -662,10 +659,7 @@ export class EmailSequenceService {
    */
   async getExecutions(userId: string, clientId?: string): Promise<EmailSequenceExecution[]> {
     try {
-      let chain = this.supabase
-        .from('email_sequence_executions')
-        .select('*')
-        .eq('user_id', userId);
+      let chain = this.supabase.from('email_sequence_executions').select('*').eq('user_id', userId);
 
       if (clientId) {
         chain = chain.eq('client_id', clientId);

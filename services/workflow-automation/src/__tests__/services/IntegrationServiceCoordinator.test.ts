@@ -134,6 +134,7 @@ describe('IntegrationServiceCoordinator', () => {
       correlationId: 'correlation-123',
       causationId: 'causation-123',
     };
+  });
 
   describe('coordinateIntegrationActions', () => {
     it('should coordinate multiple integration actions successfully', async () => {

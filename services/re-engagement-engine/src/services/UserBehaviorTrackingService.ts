@@ -98,7 +98,7 @@ export class UserBehaviorTrackingService {
       }
 
       const now = new Date().toISOString();
-      let profile = existingProfile;
+      const profile = existingProfile;
 
       if (!profile) {
         // Create new profile
@@ -458,10 +458,7 @@ export class UserBehaviorTrackingService {
     offset: number = 0,
   ): Promise<UserBehaviorEvent[]> {
     try {
-      let chain = this.supabase
-        .from('user_behavior_events')
-        .select('*')
-        .eq('user_id', userId);
+      let chain = this.supabase.from('user_behavior_events').select('*').eq('user_id', userId);
 
       if (clientId) {
         chain = chain.eq('client_id', clientId);
@@ -500,9 +497,7 @@ export class UserBehaviorTrackingService {
     limit: number = 100,
   ): Promise<UserBehaviorProfile[]> {
     try {
-      let chain = this.supabase
-        .from('user_behavior_profiles')
-        .select('*');
+      let chain = this.supabase.from('user_behavior_profiles').select('*');
 
       if (clientId) {
         chain = chain.eq('client_id', clientId);
@@ -587,9 +582,11 @@ export class UserBehaviorTrackingService {
       const patternCounts: Record<string, number> = {};
 
       profiles.forEach((profile: UserBehaviorProfile) => {
-        const engagementScore = (profile as any).engagementScore ?? (profile as any).engagement_score ?? 0;
+        const engagementScore =
+          (profile as any).engagementScore ?? (profile as any).engagement_score ?? 0;
         const riskFactors = (profile as any).riskFactors ?? (profile as any).risk_factors ?? [];
-        const behaviorPatterns = (profile as any).behaviorPatterns ?? (profile as any).behavior_patterns ?? [];
+        const behaviorPatterns =
+          (profile as any).behaviorPatterns ?? (profile as any).behavior_patterns ?? [];
 
         // Count active users (engagement score > 30)
         if (engagementScore > 30) {
