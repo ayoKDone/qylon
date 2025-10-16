@@ -1,8 +1,8 @@
 'use client';
+import { FileText, Globe, Smartphone, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Lock, Smartphone, Globe, Trash2, FileText } from 'lucide-react';
-import { FaSpinner } from 'react-icons/fa';
+import { FaShieldAlt, FaSpinner } from 'react-icons/fa';
 
 interface Session {
   device: string;
@@ -103,12 +103,16 @@ export default function SecuritySettings() {
       {/* 🔐 Password Section */}
       <div className='p-6 border border-gray-200 rounded-lg space-y-4'>
         <div className='flex items-center gap-3'>
-          <Lock className='text-blue-600' />
-          <h3 className='text-md font-semibold text-gray-900'>Password</h3>
+          <div className='xui-d-inline-flex xui-flex-ai-center xui-flex-jc-center xui-w-40 xui-h-40 xui-bdr-rad-half xui-bg-light-blue-1'>
+            <FaShieldAlt size={20} />
+          </div>
+          <div>
+            <h3 className='text-md font-semibold text-gray-900'>Password & Authentication</h3>
+            <p className='text-sm text-gray-500'>
+              Change your password regularly to keep your account secure.
+            </p>
+          </div>
         </div>
-        <p className='text-sm text-gray-500'>
-          Change your password regularly to keep your account secure.
-        </p>
 
         <form onSubmit={handleSubmit(onSubmitPassword)} className='xui-form space-y-4'>
           {/* Current Password */}
@@ -170,7 +174,7 @@ export default function SecuritySettings() {
           <button
             type='submit'
             disabled={isSubmitting}
-            className='px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 flex items-center justify-center transition'
+            className='px-4 py-2 bg-black text-white text-sm rounded-lg hover:bg-blue-700 flex items-center justify-center transition'
           >
             {isSubmitting ? <FaSpinner className='animate-spin h-5 w-5' /> : 'Change Password'}
           </button>

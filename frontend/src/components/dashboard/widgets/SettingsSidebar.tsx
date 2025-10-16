@@ -1,5 +1,5 @@
 // src/components/SettingsSidebar.tsx
-import { LucideIcon, ChevronRight } from 'lucide-react';
+import { LucideIcon } from 'lucide-react';
 
 interface SettingsItem {
   id: string;
@@ -15,27 +15,22 @@ interface SettingsSidebarProps {
 
 export default function SettingsSidebar({ items, activeItem, onItemClick }: SettingsSidebarProps) {
   return (
-    <div className='space-y-1'>
-      {items.map(item => {
-        const Icon = item.icon;
-        const isActive = activeItem === item.id;
+    <>
+      <section className='xui-d-flex bg-[#F1F1F1] qylon-tab'>
+        {items.map(item => {
+          const isActive = activeItem === item.id;
 
-        return (
-          <button
-            key={item.id}
-            onClick={() => onItemClick(item.id)}
-            className={`w-full xui-d-flex xui-flex-ai-center xui-flex-jc-space-between p-3 rounded-lg transition-colors ${
-              isActive ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
-            }`}
-          >
-            <div className='xui-d-flex xui-flex-ai-center gap-3'>
-              <Icon className='w-5 h-5' />
-              <span className='font-medium'>{item.label}</span>
+          return (
+            <div
+              key={item.id}
+              onClick={() => onItemClick(item.id)}
+              className={`xui-px-1-half xui-py-1 ${isActive ? 'qylon-tab-active' : ''} xui-cursor-pointer`}
+            >
+              <span>{item.label}</span>
             </div>
-            <ChevronRight className='w-5 h-5' />
-          </button>
-        );
-      })}
-    </div>
+          );
+        })}
+      </section>
+    </>
   );
 }
