@@ -517,6 +517,7 @@ main() {
 
             if [ $ATTEMPTS -eq 0 ]; then
                 print_error "Frontend did not start in time; skipping E2E"
+                exit_code=1
             else
                 # Run Cypress E2E against the running preview
                 # Always attempt to run frontend E2E tests (script is defined in package.json)
