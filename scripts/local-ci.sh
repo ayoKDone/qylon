@@ -649,10 +649,20 @@ main() {
         echo -e "${GREEN}✅ Ready for commit and push to GitHub${NC}"
         echo -e "${GREEN}✅ No GitHub Actions minutes will be wasted${NC}"
         echo ""
-        echo "Next steps:"
-        echo "  1. git add ."
-        echo "  2. git commit -m 'your commit message'"
-        echo "  3. git push origin <branch>"
+        # Check if we're in a feature branch and can create a PR
+        current_branch=$(git branch --show-current 2>/dev/null || echo "")
+        if [[ "$current_branch" =~ ^(fix|feature|feat)/ ]]; then
+            echo "Next steps:"
+            echo "  1. git push origin $current_branch"
+            echo "  2. Create PR: gh pr create --base dev --title '$(git log -1 --pretty=%s)'"
+            echo ""
+            echo "Or run: ./scripts/create-pr.sh"
+        else
+            echo "Next steps:"
+            echo "  1. git add ."
+            echo "  2. git commit -m 'your commit message'"
+            echo "  3. git push origin <branch>"
+        fi
         echo ""
         echo "To run QA pipeline tests (integration, performance, E2E):"
         echo "  ./scripts/local-ci.sh --run-qa-tests"
