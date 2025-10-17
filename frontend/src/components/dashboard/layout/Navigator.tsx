@@ -3,9 +3,7 @@ import { FaRegCircleCheck } from 'react-icons/fa6';
 import { FiActivity, FiBarChart2, FiSettings } from 'react-icons/fi';
 import { GoWorkflow } from 'react-icons/go';
 import { GrHistory } from 'react-icons/gr';
-import { HiOutlineLink } from 'react-icons/hi';
 import { IoVideocamOutline } from 'react-icons/io5';
-import { LuBuilding2 } from 'react-icons/lu';
 import { Link, useLocation } from 'react-router-dom';
 import logoImage from '../../assets/images/qylon-logo.png';
 import RecordingStatus from './RecordingStatus';
@@ -32,12 +30,6 @@ export default function Navigator() {
     },
     { to: '/dashboard/analytics', label: 'Analytics', icon: <FiBarChart2 /> },
     { to: '/dashboard/workflow', label: 'Workflow', icon: <GoWorkflow /> },
-    { to: '/dashboard/contents', label: 'Contents', icon: <LuBuilding2 /> },
-    {
-      to: '/dashboard/integration',
-      label: 'Integration',
-      icon: <HiOutlineLink />,
-    },
     { to: '/dashboard/settings', label: 'Settings', icon: <FiSettings /> },
   ];
 
