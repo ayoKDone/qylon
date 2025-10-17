@@ -569,6 +569,8 @@ main() {
         else
             print_warning "No E2E test script found"
         fi
+    else
+        print_info "QA pipeline tests skipped (use --run-qa-tests to include them)"
     fi
 
     # Final Summary
