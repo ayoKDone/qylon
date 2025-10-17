@@ -18,8 +18,8 @@ export default function TeamPerformance({ members }: TeamPerformanceProps) {
     return (
       <EmptyState
         icon={Users}
-        title="No team members yet"
-        message="Team performance data will appear here once members are added"
+        title='No team members yet'
+        message='Team performance data will appear here once members are added'
       />
     );
   }

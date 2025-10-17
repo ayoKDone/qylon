@@ -5,7 +5,7 @@ import {
   Team,
   TeamAdministrator,
   TeamOnboardingError,
-  ValidationError
+  ValidationError,
 } from '../types';
 import { logger, logTeamOperation } from '../utils/logger';
 

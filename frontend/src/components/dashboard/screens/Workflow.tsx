@@ -215,12 +215,12 @@ export default function Workflow() {
           {searchQuery
             ? 'Try adjusting your search terms or create a new automation.'
             : 'Get started by creating your first automation or browse templates for inspiration.'}
-          <div className="xui-tooltip" xui-set="bottom-right">
+          <div className='xui-tooltip' xui-set='bottom-right'>
             <span className='ml-1 text-blue-950 text-xs cursor-pointer group-hover:underline'>
               Learn more
             </span>
             <span className='xui-tooltip-content'>
-              Automations let you visually build workflows by connecting triggers and actions.  
+              Automations let you visually build workflows by connecting triggers and actions.
               Templates are pre-built examples you can customize or share with your team.
             </span>
           </div>
