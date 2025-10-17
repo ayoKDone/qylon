@@ -499,6 +499,7 @@ main() {
     fi
 
     # Step 12: QA Pipeline Tests (Optional - run manually if needed)
+    echo "DEBUG: RUN_QA_TESTS = '$RUN_QA_TESTS'"
     if [ "$RUN_QA_TESTS" = "true" ]; then
         print_section "Quality Assurance Tests"
         print_info "Running QA pipeline tests (integration, performance, E2E)..."
@@ -524,6 +525,7 @@ main() {
         fi
 
         # E2E Tests
+        echo "DEBUG: About to run E2E tests in QA pipeline"
         print_subsection "End-to-End Tests"
         if [ -d "frontend" ] && npm run | grep -q "test:e2e"; then
             # Start frontend preview server
