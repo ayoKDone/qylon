@@ -264,6 +264,5 @@ export default function IntegrationSettings() {
         </div>
       </section>
     </>
-
   );
 }

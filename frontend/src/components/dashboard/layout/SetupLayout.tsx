@@ -28,11 +28,11 @@ export default function SetUpLayout() {
 
   return (
     <>
-    <section className='xui-containermin-h-[100dvh] min-h-[100vh] xui-h-fluid-100 xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-py-1 xui-md-py-2'>
-      <div className='xui-max-w-600 xui-w-fluid-100 xui-mx-auto'>
-        <Outlet />
-      </div>
-    </section>
+      <section className='xui-containermin-h-[100dvh] min-h-[100vh] xui-h-fluid-100 xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-py-1 xui-md-py-2'>
+        <div className='xui-max-w-600 xui-w-fluid-100 xui-mx-auto'>
+          <Outlet />
+        </div>
+      </section>
     </>
   );
 }
