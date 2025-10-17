@@ -30,13 +30,7 @@ export default function SetUpLayout() {
   return (
     <>
       <nav className='xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
-        <img
-          src={logoImage}
-          alt='Qylon Logo'
-          className='xui-img-100'
-          width={118}
-          height={45}
-        />
+        <img src={logoImage} alt='Qylon Logo' className='xui-img-100' width={118} height={45} />
         <p className='text-sm text-gray-500'>
           <button
             onClick={handleSkipOnboarding}

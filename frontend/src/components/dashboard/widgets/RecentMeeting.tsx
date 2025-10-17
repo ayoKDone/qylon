@@ -34,8 +34,8 @@ export default function RecentMeetings({ meetings, onMeetingClick }: RecentMeeti
     return (
       <EmptyState
         icon={Calendar}
-        title="No recent meetings"
-        message="Recent meetings will appear here once you start scheduling or recording sessions"
+        title='No recent meetings'
+        message='Recent meetings will appear here once you start scheduling or recording sessions'
       />
     );
   }

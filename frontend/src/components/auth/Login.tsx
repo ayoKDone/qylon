@@ -64,22 +64,31 @@ export default function Login() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              <img src='/static/images/logo-full.png' alt='Qylon Logo' width={118} height={45} className='xui-img-100 xui-h-auto' />
+              <img
+                src='/static/images/logo-full.png'
+                alt='Qylon Logo'
+                width={118}
+                height={45}
+                className='xui-img-100 xui-h-auto'
+              />
             </a>
           </div>
           <h1 className='xui-font-w-600 text-[28px]'>Log In</h1>
           <p className='xui-opacity-7 xui-font-sz-[14px]'>Let's pick up from where you left off</p>
-          <form
-            className='xui-form xui-mt-2'
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className='xui-form xui-mt-2' onSubmit={handleSubmit(onSubmit)}>
             {error && <div className='text-red-500 text-sm xui-my-1 text-center'>{error}</div>}
             {/* Email */}
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               {/* <label>Email</label> */}
               <div className='input-holder' xui-border={'false'}>
                 <div className='left'>
-                  <img src='/static/images/icons/envelope.png' alt='Key Icon' width={16} height={16} className='w-[16px] xui-h-auto' />
+                  <img
+                    src='/static/images/icons/envelope.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
                 </div>
                 <input
                   {...register('email')}
@@ -96,7 +105,13 @@ export default function Login() {
               {/* <label>Password</label> */}
               <div className='input-holder' xui-border={'false'}>
                 <div className='left'>
-                  <img src='/static/images/icons/key.png' alt='Key Icon' width={16} height={16} className='w-[16px] xui-h-auto' />
+                  <img
+                    src='/static/images/icons/key.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
                 </div>
                 <div className='relative xui-w-fluid-100'>
                   <input
@@ -150,9 +165,12 @@ export default function Login() {
             </a>
           </p>
         </div>
-        <div style={{
-          backgroundImage: 'url("/static/images/side-right.png")'
-        }} className='xui-d-none xui-md-d-block qylon-auth-visuals xui-bg-position-center-center xui-bg-size-cover xui-h-fluid-100 xui-bdr-rad-half'></div>
+        <div
+          style={{
+            backgroundImage: 'url("/static/images/side-right.png")',
+          }}
+          className='xui-d-none xui-md-d-block qylon-auth-visuals xui-bg-position-center-center xui-bg-size-cover xui-h-fluid-100 xui-bdr-rad-half'
+        ></div>
         <div className='qylon-gradient-top-left'></div>
       </section>
     </>

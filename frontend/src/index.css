@@ -158,11 +158,16 @@
   left: -240px;
   width: 800px;
   height: 300px;
-  background: radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.3) 0%, rgba(103, 232, 249, 0.15) 50%, rgba(103, 232, 249, 0) 100%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(147, 197, 253, 0.3) 0%,
+    rgba(103, 232, 249, 0.15) 50%,
+    rgba(103, 232, 249, 0) 100%
+  );
   transform: rotate(-30deg);
   -webkit-backdrop-filter: blur(40px);
   backdrop-filter: blur(40px);
-  opacity: .6;
+  opacity: 0.6;
 }
 .qylon-auth-visuals {
   background-color: #266987;

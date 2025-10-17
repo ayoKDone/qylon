@@ -44,11 +44,7 @@ export default function Navigator() {
   return (
     <div className='navigator'>
       <div className='brand'>
-        <img
-          src={logoImage}
-          alt='Qylon Logo'
-          className='xui-img-100 xui-h-auto'
-        />
+        <img src={logoImage} alt='Qylon Logo' className='xui-img-100 xui-h-auto' />
       </div>
 
       <div className='links'>
@@ -58,10 +54,11 @@ export default function Navigator() {
             <Link
               key={to}
               to={to}
-              className={`link-box xui-d-flex xui-flex-ai-center gap-3 xui-bdr-rad-2 xui-text-[var(--black)] ${isActive
-                ? 'xui-text-[var(--black)] border border-[var(--gray-300)] xui-bdr-rad-2'
-                : 'text-gray-600'
-                }`}
+              className={`link-box xui-d-flex xui-flex-ai-center gap-3 xui-bdr-rad-2 xui-text-[var(--black)] ${
+                isActive
+                  ? 'xui-text-[var(--black)] border border-[var(--gray-300)] xui-bdr-rad-2'
+                  : 'text-gray-600'
+              }`}
             >
               <div className='icon text-lg'>{icon}</div>
               <span className='text'>{label}</span>

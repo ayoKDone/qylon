@@ -45,9 +45,12 @@ export default function Signup() {
   return (
     <>
       <section className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-half xui-flex-ai-center xui-w-fluid-100 h-[100dvh] h-[100vh] xui-h-fluid-100 p-[16px]'>
-        <div style={{
-          backgroundImage: 'url("/static/images/signup-visual.png")'
-        }} className='xui-d-none xui-md-d-block qylon-auth-visuals xui-bg-position-center-center xui-bg-size-cover xui-h-fluid-100 xui-bdr-rad-half'></div>
+        <div
+          style={{
+            backgroundImage: 'url("/static/images/signup-visual.png")',
+          }}
+          className='xui-d-none xui-md-d-block qylon-auth-visuals xui-bg-position-center-center xui-bg-size-cover xui-h-fluid-100 xui-bdr-rad-half'
+        ></div>
         <div className='xui-py-2 xui-md-py-4 xui-px-2 xui-md-px-4 xui-max-w-600 xui-w-fluid-100 xui-mx-auto lg:min-h-100'>
           {/* Back to Home Button */}
           <div className='xui-mb-2'>
@@ -55,23 +58,32 @@ export default function Signup() {
               href='/'
               className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
             >
-              <img src='/static/images/logo-full.png' alt='Qylon Logo' width={118} height={45} className='xui-img-100 xui-h-auto' />
+              <img
+                src='/static/images/logo-full.png'
+                alt='Qylon Logo'
+                width={118}
+                height={45}
+                className='xui-img-100 xui-h-auto'
+              />
             </a>
           </div>
           <h1 className='xui-font-w-600 text-[28px]'>Sign Up</h1>
           <p className='xui-opacity-7 xui-font-sz-[14px]'>
             Get started with Qylon and let's set your account.
           </p>
-          <form
-            className='xui-form xui-mt-2'
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className='xui-form xui-mt-2' onSubmit={handleSubmit(onSubmit)}>
             {/* Email */}
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
               {/* <label>Work Email</label> */}
               <div className='input-holder' xui-border={'false'}>
                 <div className='left'>
-                  <img src='/static/images/icons/envelope.png' alt='Key Icon' width={16} height={16} className='w-[16px] xui-h-auto' />
+                  <img
+                    src='/static/images/icons/envelope.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
                 </div>
                 <input
                   {...register('email')}
@@ -87,7 +99,13 @@ export default function Signup() {
               {/* <label>Password</label> */}
               <div className='input-holder' xui-border={'false'}>
                 <div className='left'>
-                  <img src='/static/images/icons/key.png' alt='Key Icon' width={16} height={16} className='w-[16px] xui-h-auto' />
+                  <img
+                    src='/static/images/icons/key.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
                 </div>
                 <div className='relative xui-w-fluid-100'>
                   <input
