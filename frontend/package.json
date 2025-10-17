@@ -9,13 +9,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "preview": "vite preview --port 3002",
+    "preview": "vite preview --port 3002 --strictPort",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:ci": "vitest run",
-    "test:e2e": "cypress run --browser chrome --headless",
+    "test:e2e": "cypress run --browser electron --headless",
     "test:e2e:open": "cypress open",
-    "test:e2e:ci": "cypress run --browser chrome --headless --record",
+    "test:e2e:ci": "cypress run --browser electron --headless --record",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

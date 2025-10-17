@@ -236,7 +236,6 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should process event and trigger matching workflows', async () => {
-<<<<<<< Updated upstream
       // Mock database response - the implementation expects this exact structure
       mockData = [
         {
@@ -254,8 +253,6 @@ describe('WorkflowTriggerSystem', () => {
       ];
 
       // Mock data is now ready to be returned by the database query
-=======
->>>>>>> Stashed changes
 
       // Mock workflow execution
       mockWorkflowEngine.executeWorkflowFromEvent.mockResolvedValue({
@@ -305,7 +302,6 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should handle workflow execution failures gracefully', async () => {
-<<<<<<< Updated upstream
       // Mock database response
       mockData = [
         {
@@ -542,14 +538,11 @@ describe('WorkflowTriggerSystem', () => {
         },
       ];
 
-<<<<<<< Updated upstream
-=======
       mockChain.select.mockResolvedValue({
         data: mockData,
         error: null,
       });
 
->>>>>>> Stashed changes
       const stats = await triggerSystem.getTriggerStatistics();
 
       expect(stats.totalWorkflows).toBe(2);
@@ -580,11 +573,8 @@ describe('WorkflowTriggerSystem', () => {
     });
 
     it('should return true when database is accessible', async () => {
-<<<<<<< Updated upstream
       mockSelectData = [];
 
-=======
->>>>>>> Stashed changes
       const isHealthy = await triggerSystem.healthCheck();
       expect(isHealthy).toBe(true);
     });

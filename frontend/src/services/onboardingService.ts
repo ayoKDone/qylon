@@ -233,6 +233,7 @@ export const onboardingService = {
     return [
       { id: 'welcome', name: 'Welcome', completed: false },
       { id: 'profile', name: 'Profile Setup', completed: false },
+      { id: 'team-setup', name: 'Team Setup', completed: false },
       { id: 'add-calendar', name: 'Calendar Integration', completed: false },
       { id: 'integrations', name: 'Additional Integrations', completed: false },
       { id: 'demo', name: 'Demo Setup', completed: false },

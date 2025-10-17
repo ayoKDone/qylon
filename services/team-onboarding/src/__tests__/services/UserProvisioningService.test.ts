@@ -31,33 +31,36 @@ describe('UserProvisioningService', () => {
     // Create mock Supabase client
     mockSupabase = {
       from: jest.fn(() => ({
-        insert: jest.fn(() => ({
-          select: jest.fn(() => ({
+        insert: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
             single: jest.fn(),
-          })),
-        })),
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
+          }),
+        }),
+        select: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
             single: jest.fn(),
-          })),
-          in: jest.fn(() => ({
-            select: jest.fn(),
-          })),
-        })),
-        update: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            select: jest.fn(() => ({
-              single: jest.fn(),
-            })),
-          })),
-        })),
-        delete: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            lt: jest.fn(() => ({
+            in: jest.fn().mockReturnValue({
               select: jest.fn(),
-            })),
-          })),
-        })),
+            }),
+          }),
+          in: jest.fn().mockReturnValue({
+            select: jest.fn(),
+          }),
+        }),
+        update: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            select: jest.fn().mockReturnValue({
+              single: jest.fn(),
+            }),
+          }),
+        }),
+        delete: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            lt: jest.fn().mockReturnValue({
+              select: jest.fn(),
+            }),
+          }),
+        }),
       })),
     };
 

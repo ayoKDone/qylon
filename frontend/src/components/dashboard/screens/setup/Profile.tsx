@@ -80,11 +80,11 @@ export default function Profile() {
       });
 
       // Navigate to next step
-      navigate('/setup/add-calendar');
+      navigate('/setup/team-setup');
     } catch (error) {
       console.error('Error saving profile:', error);
       // Still navigate to next step even if save fails
-      navigate('/setup/add-calendar');
+      navigate('/setup/team-setup');
     }
   };
 

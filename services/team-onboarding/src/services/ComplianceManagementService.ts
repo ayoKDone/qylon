@@ -15,7 +15,10 @@ export class ComplianceManagementService {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('Supabase environment variables are not set.');
+    }
+    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   }
 
   /**
@@ -87,6 +90,14 @@ export class ComplianceManagementService {
       return complianceSettings;
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 
@@ -218,6 +229,14 @@ export class ComplianceManagementService {
       };
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 
