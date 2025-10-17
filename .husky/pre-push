@@ -1,14 +1,21 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🚀 Running lightweight pre-push checks..."
+echo "🚀 Running lightweight pre-push checks && CI/CD Pipeline..."
 
-# 1️⃣ Lint all TypeScript/JS files
+# Exit on first error
+set -e
+
+# 1️⃣ Run ESLint
 echo "📝 Linting code..."
 npm run lint
 
-# 2️⃣ Prettier format check
+# 2️⃣ Run Prettier check
 echo "🎨 Checking code formatting..."
-npm run prettier:check
+npm run format:check
 
-echo "✅ Lightweight pre-push checks completed!"
+# 3️⃣ Run local CI only if all checks pass
+echo "🧪 Running local CI..."
+npm run ci:local
+
+echo "✅ All checks passed! Proceeding with push..."

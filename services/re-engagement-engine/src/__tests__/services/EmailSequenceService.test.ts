@@ -118,14 +118,10 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock the sequence creation
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ data: mockSequence, error: null }),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ data: mockSequence, error: null }));
 
       // Mock the step creation
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ data: mockStep, error: null }),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ data: mockStep, error: null }));
 
       const result = await emailSequenceService.createEmailSequence(userId, request);
 
@@ -232,9 +228,7 @@ describe('EmailSequenceService', () => {
       );
 
       // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ data: [], error: null }, 'order'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ data: [], error: null }, 'order'));
 
       const result = await emailSequenceService.getEmailSequence(sequenceId, userId);
 
@@ -278,9 +272,7 @@ describe('EmailSequenceService', () => {
       );
 
       // Mock the steps query (if fetched)
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ data: [], error: null }, 'order'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ data: [], error: null }, 'order'));
 
       const result = await emailSequenceService.updateEmailSequence(
         sequenceId,
@@ -298,14 +290,10 @@ describe('EmailSequenceService', () => {
       const userId = 'test-user-id';
 
       // Mock the steps deletion
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ error: null }, 'eq2'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ error: null }, 'eq2'));
 
       // Mock the sequence deletion
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ error: null }, 'eq2'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ error: null }, 'eq2'));
 
       await expect(
         emailSequenceService.deleteEmailSequence(sequenceId, userId),

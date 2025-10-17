@@ -81,25 +81,26 @@ describe('UserBehaviorTrackingService', () => {
 
       // Mock behavior profile update (existing profile)
       mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({
-          data: {
-            id: 'profile-id',
-            userId,
-            clientId,
-            engagementScore: 0.5,
-            lastActivityAt: '2023-01-01T00:00:00Z',
-            preferredChannels: [],
-            behaviorPatterns: [],
-            riskFactors: [],
+        buildChain(
+          {
+            data: {
+              id: 'profile-id',
+              userId,
+              clientId,
+              engagementScore: 0.5,
+              lastActivityAt: '2023-01-01T00:00:00Z',
+              preferredChannels: [],
+              behaviorPatterns: [],
+              riskFactors: [],
+            },
+            error: null,
           },
-          error: null,
-        }, 'single'),
+          'single',
+        ),
       );
 
       // Mock profile update
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ error: null }, 'eq'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ error: null }, 'eq'));
 
       const result = await behaviorTrackingService.trackEvent(
         userId,
@@ -142,19 +143,22 @@ describe('UserBehaviorTrackingService', () => {
 
       // Mock profile creation
       mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({
-          data: {
-            id: 'profile-id',
-            userId,
-            clientId,
-            engagementScore: 0.1,
-            lastActivityAt: '2023-01-01T00:00:00Z',
-            preferredChannels: [],
-            behaviorPatterns: [],
-            riskFactors: [],
+        buildChain(
+          {
+            data: {
+              id: 'profile-id',
+              userId,
+              clientId,
+              engagementScore: 0.1,
+              lastActivityAt: '2023-01-01T00:00:00Z',
+              preferredChannels: [],
+              behaviorPatterns: [],
+              riskFactors: [],
+            },
+            error: null,
           },
-          error: null,
-        }, 'single'),
+          'single',
+        ),
       );
 
       const result = await behaviorTrackingService.trackEvent(
@@ -312,9 +316,7 @@ describe('UserBehaviorTrackingService', () => {
       const clientId = 'test-client-id';
 
       // Mock the risk factor resolution
-      mockSupabaseClient.from.mockReturnValueOnce(
-        buildChain({ error: null }, 'eq2'),
-      );
+      mockSupabaseClient.from.mockReturnValueOnce(buildChain({ error: null }, 'eq2'));
 
       await expect(
         behaviorTrackingService.resolveRiskFactor(userId, factor, clientId),
