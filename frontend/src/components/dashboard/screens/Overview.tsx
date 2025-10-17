@@ -9,7 +9,7 @@ import QuickActions from '../widgets/QuickActions';
 import RecentActivity from '../widgets/RecentActivity';
 import StatsGrid from '../widgets/StatsGrid';
 import StatsHeader from '../widgets/StatsHeader';
-import TeamPerformance from '../widgets/TeamPerformance';
+import UpcomingCalendarMeetings from '../widgets/UpcomingCalendarMeetings';
 import UpcomingMeetings from '../widgets/UpcomingMeetings';
 
 type NavbarContext = {
@@ -56,20 +56,6 @@ export default function DashboardOverview() {
     // { label: 'Time Saved', value: '23.5h', color: 'text-blue-600' },
   ];
 
-  interface TeamMember {
-    name: string;
-    performance: number;
-    color: string;
-    tasks: number;
-  }
-
-  const teamMembersData: TeamMember[] = [
-    // { name: 'Sarah M.', performance: 95, color: 'bg-blue-500', tasks: 42 },
-    // { name: 'Mike R.', performance: 88, color: 'bg-purple-500', tasks: 38 },
-    // { name: 'Jennifer K.', performance: 92, color: 'bg-pink-500', tasks: 35 },
-    // { name: 'David L.', performance: 85, color: 'bg-green-500', tasks: 29 },
-  ];
-
   interface upcomingMeetings {
     time: string;
     title: string;
@@ -77,9 +63,9 @@ export default function DashboardOverview() {
   }
 
   const upcomingMeetingsData: upcomingMeetings[] = [
-    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
-    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
-    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+    { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
   useEffect(() => {
@@ -128,9 +114,9 @@ export default function DashboardOverview() {
             <MonthlyStats stats={monthlyStats} />
           </StatsHeader>
 
-          {/* Team Performance */}
-          <StatsHeader title='Team Performance'>
-            <TeamPerformance members={teamMembersData} />
+          {/* Upcoming Calendar Meetings */}
+          <StatsHeader>
+            <UpcomingCalendarMeetings />
           </StatsHeader>
 
           {/* Upcoming Meetings */}

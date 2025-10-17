@@ -23,7 +23,7 @@ export default function AIProcessingLive() {
           </div>
         </div>
 
-        <button className='flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-blue-600 font-medium text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap'>
+        <button className='flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-gray-50 text-blue-950 font-medium text-sm rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 whitespace-nowrap'>
           View Live
           <LuArrowRight className='w-4 h-4' />
         </button>
