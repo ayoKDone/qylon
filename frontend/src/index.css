@@ -152,3 +152,28 @@
   color: var(--black);
   border-radius: 10px;
 }
+.qylon-gradient-top-left {
+  position: fixed;
+  top: -240px;
+  left: -240px;
+  width: 800px;
+  height: 300px;
+  background: radial-gradient(circle at 50% 50%, rgba(147, 197, 253, 0.3) 0%, rgba(103, 232, 249, 0.15) 50%, rgba(103, 232, 249, 0) 100%);
+  transform: rotate(-30deg);
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+  opacity: .6;
+}
+.qylon-auth-visuals {
+  background-color: #266987;
+}
+/* .qylon-gradient::before {
+  background: red;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 200px;
+  z-index: 1000000;
+  border-radius: 200px;
+} */
