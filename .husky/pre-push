@@ -12,7 +12,7 @@ npm run lint
 
 # 2️⃣ Run Prettier check
 echo "🎨 Checking code formatting..."
-npm run prettier:check
+npm run format:check
 
 # 3️⃣ Run local CI only if all checks pass
 echo "🧪 Running local CI..."
