@@ -44,7 +44,7 @@ const mockSupabase = {
       // For healthCheck pattern (select with 'id')
       if (columns && typeof columns === 'string' && columns.includes('id')) {
         return {
-          limit: jest.fn().mockImplementation((limit: number) => {
+          limit: jest.fn().mockImplementation((_limit: number) => {
             return Promise.resolve({ data: [], error: mockError });
           }),
         };
@@ -135,7 +135,6 @@ describe('IntegrationServiceCoordinator', () => {
       causationId: 'causation-123',
     };
   });
-
   describe('coordinateIntegrationActions', () => {
     it('should coordinate multiple integration actions successfully', async () => {
       // Mock integration config fetch - set the data that will be returned by single()
@@ -214,8 +213,15 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should handle missing integration configuration', async () => {
-      // Mock no integration config found
-      mockIntegrationConfigData = null;
+      // Override the global mock to return no integration config
+      mockSupabase.from.mockImplementationOnce((_tableName: string) => {
+        const chain = createMockChain();
+        chain.single.mockResolvedValue({
+          data: null,
+          error: { message: 'No rows found' },
+        });
+        return chain;
+      });
 
       const actions = [mockAction];
       const results = await coordinator.coordinateIntegrationActions(actions, mockContext);
@@ -490,8 +496,15 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should return null when integration not found', async () => {
-      // Simulate no integration config found via mock state
-      mockIntegrationConfigData = null;
+      // Override the global mock to return no integration config
+      mockSupabase.from.mockImplementationOnce((_tableName: string) => {
+        const chain = createMockChain();
+        chain.single.mockResolvedValue({
+          data: null,
+          error: { message: 'No rows found' },
+        });
+        return chain;
+      });
 
       const config = await (coordinator as any).getIntegrationConfig(
         IntegrationType.CRM_SALESFORCE,
@@ -556,8 +569,6 @@ describe('IntegrationServiceCoordinator', () => {
           data: null,
           error: { message: 'Database error' },
         }),
-        eq: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({ data: null, error: { message: 'Database error' } }),
       }));
 
       const stats = await coordinator.getCoordinationStatistics();
@@ -577,7 +588,14 @@ describe('IntegrationServiceCoordinator', () => {
     });
 
     it('should return false when database is not accessible', async () => {
-      mockError = { message: 'Connection failed' };
+      // Override the global mock for this specific test
+      mockSupabase.from.mockImplementationOnce(() => ({
+        select: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: 'Connection failed' },
+        }),
+      }));
 
       const isHealthy = await coordinator.healthCheck();
       expect(isHealthy).toBe(false);

@@ -18,7 +18,6 @@ type NavbarContext = {
 
 export default function DashboardOverview() {
   const { setNavbar } = useOutletContext<NavbarContext>();
-  
 
   const dashboardActions: Action[] = [
     {
@@ -107,15 +106,13 @@ export default function DashboardOverview() {
           <StatsHeader
             title='Recent Meetings'
             rightContent={
-              
-                <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
-                  View All
-                  <ArrowRight className='w-4 h-4' />
-                </button>
-              
+              <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+                View All
+                <ArrowRight className='w-4 h-4' />
+              </button>
             }
           >
-            <RecentActivity  />
+            <RecentActivity />
           </StatsHeader>
 
           {/* Quick Actions */}

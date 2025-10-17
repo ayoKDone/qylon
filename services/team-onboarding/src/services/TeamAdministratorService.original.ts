@@ -127,7 +127,7 @@ export class TeamAdministratorService {
       }
 
       // Check if administrator already exists
-      const { data: existingAdmin, error: checkError } = await this.supabase
+      const { data: existingAdmin, error: _checkError } = await this.supabase
         .from('team_administrators')
         .select('id')
         .eq('team_id', validatedData.teamId)

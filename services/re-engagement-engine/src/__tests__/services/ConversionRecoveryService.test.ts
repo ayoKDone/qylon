@@ -359,12 +359,10 @@ describe('ConversionRecoveryService', () => {
                 single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
                 limit: jest.fn().mockResolvedValue({ data: [], error: null }),
               }),
-              single: jest
-                .fn()
-                .mockResolvedValue({
-                  data: { email: 'test@example.com', full_name: 'Test User' },
-                  error: null,
-                }),
+              single: jest.fn().mockResolvedValue({
+                data: { email: 'test@example.com', full_name: 'Test User' },
+                error: null,
+              }),
             }),
           }),
           insert: jest.fn().mockReturnValue({

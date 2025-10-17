@@ -16,8 +16,8 @@ export default function UpcomingMeetings({ meetings }: UpcomingMeetingsProps) {
     return (
       <EmptyState
         icon={Calendar}
-        title="No upcoming meetings"
-        message="Your scheduled meetings will appear here"
+        title='No upcoming meetings'
+        message='Your scheduled meetings will appear here'
       />
     );
   }

@@ -17,8 +17,8 @@ export default function MonthlyStats({ stats }: MonthlyStatsProps) {
     return (
       <EmptyState
         icon={BarChart3}
-        title="No stats available"
-        message="Monthly statistics will be displayed here once data is available"
+        title='No stats available'
+        message='Monthly statistics will be displayed here once data is available'
       />
     );
   }

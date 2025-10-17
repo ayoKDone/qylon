@@ -157,7 +157,7 @@ app.use('*', (req, res) => {
 });
 
 // Global error handler
-app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((error: any, req: express.Request, res: express.Response) => {
   logger.error('Unhandled error', {
     error: error.message,
     stack: error.stack,
@@ -205,9 +205,11 @@ server.on('error', (error: any) => {
     case 'EACCES':
       logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
+      break;
     case 'EADDRINUSE':
       logger.error(`${bind} is already in use`);
       process.exit(1);
+      break;
     default:
       throw error;
   }
