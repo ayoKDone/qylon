@@ -5,6 +5,7 @@ import Completed from '../components/dashboard/screens/setup/Completed';
 import DemoSetup from '../components/dashboard/screens/setup/DemoSetup';
 import IntegrateGoogle from '../components/dashboard/screens/setup/IntegrateGoogle';
 import Profile from '../components/dashboard/screens/setup/Profile';
+import TeamOnboarding from '../components/dashboard/screens/setup/TeamOnboarding';
 import Welcome from '../components/dashboard/screens/setup/Welcome';
 
 export default function Setup() {
@@ -14,6 +15,7 @@ export default function Setup() {
         <Route element={<SetUpLayout />}>
           <Route index element={<Welcome />} />
           <Route path='profile' element={<Profile />} />
+          <Route path='team-setup' element={<TeamOnboarding />} />
           <Route path='add-calendar' element={<IntegrateGoogle />} />
           <Route path='integrations' element={<AllIntegrations />} />
           <Route path='demo' element={<DemoSetup />} />

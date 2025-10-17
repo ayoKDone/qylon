@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    AuditLog,
-    ComplianceRequirement,
-    ComplianceSettings,
-    NotFoundError,
-    RegulatoryCompliance,
-    TeamOnboardingError,
-    ValidationError
+  AuditLog,
+  ComplianceRequirement,
+  ComplianceSettings,
+  NotFoundError,
+  RegulatoryCompliance,
+  TeamOnboardingError,
+  ValidationError
 } from '../types';
 import { logComplianceEvent, logger } from '../utils/logger';
 
@@ -15,10 +15,10 @@ export class ComplianceManagementService {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('Supabase environment variables are not set.');
+    }
+    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   }
 
   /**
@@ -92,6 +92,14 @@ export class ComplianceManagementService {
       return complianceSettings;
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 
@@ -223,6 +231,14 @@ export class ComplianceManagementService {
       };
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 

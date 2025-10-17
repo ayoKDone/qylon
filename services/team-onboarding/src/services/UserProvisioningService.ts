@@ -3,19 +3,19 @@ import csv from 'csv-parser';
 import { Readable } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    BulkOperationResult,
-    BulkOperationStatus,
-    BulkOperationType,
-    BulkUserOperation,
-    BulkUserOperationSchema,
-    NotFoundError,
-    ProvisioningResult,
-    ProvisioningStatus,
-    TeamOnboardingError,
-    UserProvisioningData,
-    UserProvisioningRequest,
-    UserProvisioningRequestSchema,
-    ValidationError,
+  BulkOperationResult,
+  BulkOperationStatus,
+  BulkOperationType,
+  BulkUserOperation,
+  BulkUserOperationSchema,
+  NotFoundError,
+  ProvisioningResult,
+  ProvisioningStatus,
+  TeamOnboardingError,
+  UserProvisioningData,
+  UserProvisioningRequest,
+  UserProvisioningRequestSchema,
+  ValidationError,
 } from '../types';
 import { logBulkOperation, logger, logUserProvisioning } from '../utils/logger';
 
@@ -23,10 +23,10 @@ export class UserProvisioningService {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('Supabase environment variables are not set.');
+    }
+    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
   }
 
   /**
@@ -109,6 +109,14 @@ export class UserProvisioningService {
       return request;
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 
@@ -226,6 +234,14 @@ export class UserProvisioningService {
       };
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 
@@ -446,6 +462,14 @@ export class UserProvisioningService {
       return operation;
     } catch (error) {
       if (error instanceof TeamOnboardingError) {
+        throw error;
+      }
+
+      if (error instanceof ValidationError) {
+        throw error;
+      }
+
+      if (error instanceof NotFoundError) {
         throw error;
       }
 

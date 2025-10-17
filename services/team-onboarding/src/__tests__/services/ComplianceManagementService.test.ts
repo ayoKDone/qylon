@@ -30,49 +30,68 @@ describe('ComplianceManagementService', () => {
     // Create mock Supabase client
     mockSupabase = {
       from: jest.fn(() => ({
-        insert: jest.fn(() => ({
-          select: jest.fn(() => ({
+        insert: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
             single: jest.fn(),
-          })),
-        })),
-        select: jest.fn(() => ({
-          eq: jest.fn(() => ({
+          }),
+        }),
+        select: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
             single: jest.fn(),
-          })),
-          gte: jest.fn(() => ({
-            lte: jest.fn(() => ({
-              eq: jest.fn(() => ({
-                order: jest.fn(() => ({
+            gte: jest.fn().mockReturnValue({
+              lte: jest.fn().mockReturnValue({
+                eq: jest.fn().mockReturnValue({
+                  order: jest.fn().mockReturnValue({
+                    range: jest.fn(),
+                  }),
+                }),
+              }),
+            }),
+            lte: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                order: jest.fn().mockReturnValue({
                   range: jest.fn(),
-                })),
-              })),
-            })),
-          })),
-          lte: jest.fn(() => ({
-            eq: jest.fn(() => ({
-              order: jest.fn(() => ({
+                }),
+              }),
+            }),
+            order: jest.fn().mockReturnValue({
+              range: jest.fn(),
+            }),
+          }),
+          gte: jest.fn().mockReturnValue({
+            lte: jest.fn().mockReturnValue({
+              eq: jest.fn().mockReturnValue({
+                order: jest.fn().mockReturnValue({
+                  range: jest.fn(),
+                }),
+              }),
+            }),
+          }),
+          lte: jest.fn().mockReturnValue({
+            eq: jest.fn().mockReturnValue({
+              order: jest.fn().mockReturnValue({
                 range: jest.fn(),
-              })),
-            })),
-          })),
-          order: jest.fn(() => ({
+              }),
+            }),
+          }),
+          order: jest.fn().mockReturnValue({
             range: jest.fn(),
-          })),
-        })),
-        update: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            select: jest.fn(() => ({
+          }),
+        }),
+        update: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            select: jest.fn().mockReturnValue({
               single: jest.fn(),
-            })),
-          })),
-        })),
-        delete: jest.fn(() => ({
-          eq: jest.fn(() => ({
-            lt: jest.fn(() => ({
+            }),
+          }),
+        }),
+        delete: jest.fn().mockReturnValue({
+          eq: jest.fn().mockReturnValue({
+            lt: jest.fn().mockReturnValue({
               select: jest.fn(),
-            })),
-          })),
-        })),
+            }),
+          }),
+        }),
       })),
     };
 
@@ -95,18 +114,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: ['192.168.1.0/24'],
           sessionTimeout: 30,
+          ipWhitelist: ['192.168.1.0/24'],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -154,18 +181,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -191,18 +226,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -244,7 +287,7 @@ describe('ComplianceManagementService', () => {
         }),
         audit_logging: JSON.stringify({
           enabled: true,
-          logLevel: 'detailed',
+          logLevel: 'detailed' as const,
           retentionDays: 2555,
         }),
         access_controls: JSON.stringify({
@@ -275,18 +318,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       });
@@ -320,8 +371,11 @@ describe('ComplianceManagementService', () => {
       const mockSettings = {
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
       };
 
@@ -377,8 +431,11 @@ describe('ComplianceManagementService', () => {
       const mockSettings = {
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
       };
 
@@ -499,18 +556,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -543,18 +608,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -586,18 +659,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
@@ -624,18 +705,26 @@ describe('ComplianceManagementService', () => {
         },
         auditLogging: {
           enabled: true,
-          logLevel: 'detailed',
-          retentionDays: 2555,
+          logLevel: 'detailed' as const,
+          logUserActions: true,
+          logSystemEvents: true,
+          logDataAccess: true,
+          retentionPeriod: 2555,
         },
         accessControls: {
           requireMFA: true,
-          ipWhitelist: [],
           sessionTimeout: 30,
+          ipWhitelist: [],
+          allowedCountries: [],
+          blockSuspiciousActivity: false,
         },
         privacySettings: {
+          dataProcessingConsent: true,
+          marketingConsent: false,
+          analyticsConsent: true,
+          cookieConsent: true,
           gdprCompliance: true,
           ccpaCompliance: true,
-          dataEncryption: true,
         },
         regulatoryCompliance: [],
       };
