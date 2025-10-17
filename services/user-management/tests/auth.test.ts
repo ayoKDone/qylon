@@ -28,9 +28,10 @@ describe('Auth Routes (Supabase)', () => {
 
       // Delete from Postgres
       await pool.query('DELETE FROM users WHERE email = $1', [testEmail]);
-      console.log(`Deleted user ${testEmail} from Postgres`);
     } catch (err) {
-      console.error('Error deleting test user:', err);
+      throw new Error(
+        `Failed to delete test user: ${err instanceof Error ? err.message : String(err)}`,
+      );
     }
   };
 

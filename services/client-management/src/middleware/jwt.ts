@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import supabase from '../supabaseClient';
-import { Users } from '../types';
+import supabase from '../supabaseClients';
+import { logUser } from '../types';
 
 interface AuthRequest extends Request {
-  user?: Users;
+  user?: logUser;
 }
 
 export async function verifyJWT(req: AuthRequest, res: Response, next: NextFunction) {

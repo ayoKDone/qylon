@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { pool } from '../database';
 import supabase from '../supabaseClient';
-import { LoginResponse, RegisterResponse, User } from '../types';
+import { LoginResponse, RegisterResponse, Users } from '../types';
 import { logger } from '../utils/logger';
 
 export async function registerUser(req: Request, res: Response<RegisterResponse>) {
@@ -41,17 +41,19 @@ export async function registerUser(req: Request, res: Response<RegisterResponse>
     const values = [email, hashedPassword, full_name, company_name, industry, company_size];
     const result = await pool.query(query, values);
 
-    const user: User = {
+    const user: Users = {
       id: result.rows[0].id,
       email: result.rows[0].email,
     };
 
     res.status(201).json({ message: 'User registered', user });
   } catch (dbError) {
-    logger.error('Failed to save user to Postgres', { error: dbError });
     // If user not registered in DB then rollback
     await supabase.auth.admin.deleteUser(supabaseUser.id).catch(() => {});
-    res.status(500).json({ message: 'Database error', user: null });
+    res.status(500).json({
+      message: `Database error: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
+      user: null,
+    });
   }
 }
 
@@ -135,7 +137,9 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
 
     const token = data.session?.access_token || '';
 
-    const user: User | null = data.user ? { id: data.user.id, email: data.user.email || '' } : null;
+    const user: Users | null = data.user
+      ? { id: data.user.id, email: data.user.email || '' }
+      : null;
 
     // Update last_login_at in Postgres
     if (user) {
@@ -144,7 +148,10 @@ export async function loginUser(req: Request, res: Response<LoginResponse>) {
 
     res.json({ message: 'Login successful', token, user });
   } catch (dbError) {
-    logger.error('Failed to update last_login_at', { error: dbError });
-    res.status(500).json({ message: 'Database error', token: '', user: null });
+    res.status(500).json({
+      message: `Database error: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
+      token: '',
+      user: null,
+    });
   }
 }
