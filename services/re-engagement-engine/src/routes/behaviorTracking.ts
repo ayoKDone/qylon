@@ -202,18 +202,18 @@ router.post(
       throw createError('User not authenticated', 401, 'UNAUTHORIZED');
     }
 
-  const { factor } = req.params;
-  const clientId = req.body.clientId as string | undefined;
+    const { factor } = req.params;
+    const clientId = req.body.clientId as string | undefined;
 
-  if (!factor) {
-    return res.status(400).json({ error: 'Risk factor is required' });
-  }
+    if (!factor) {
+      return res.status(400).json({ error: 'Risk factor is required' });
+    }
 
-  await behaviorTrackingService.resolveRiskFactor(
-    userId,
-    factor,
-    ...(clientId ? [clientId] : []),
-  );
+    await behaviorTrackingService.resolveRiskFactor(
+      userId,
+      factor,
+      ...(clientId ? [clientId] : []),
+    );
 
     logger.info('Risk factor resolved', {
       userId,
