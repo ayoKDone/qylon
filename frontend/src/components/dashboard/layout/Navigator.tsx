@@ -7,6 +7,7 @@ import { HiOutlineLink } from 'react-icons/hi';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { LuBuilding2 } from 'react-icons/lu';
 import { Link, useLocation } from 'react-router-dom';
+import logoImage from '../../assets/images/qylon-logo.png';
 import RecordingStatus from './RecordingStatus';
 
 export default function Navigator() {
@@ -30,10 +31,10 @@ export default function Navigator() {
       icon: <FaRegCircleCheck />,
     },
     { to: '/dashboard/analytics', label: 'Analytics', icon: <FiBarChart2 /> },
-    { to: '/dashboard/team', label: 'Workflow', icon: <GoWorkflow /> },
-    { to: '/dashboard/clients', label: 'Clients', icon: <LuBuilding2 /> },
+    { to: '/dashboard/workflow', label: 'Workflow', icon: <GoWorkflow /> },
+    { to: '/dashboard/contents', label: 'Contents', icon: <LuBuilding2 /> },
     {
-      to: '/dashboard/calendar',
+      to: '/dashboard/integration',
       label: 'Integration',
       icon: <HiOutlineLink />,
     },
@@ -44,7 +45,7 @@ export default function Navigator() {
     <div className='navigator'>
       <div className='brand'>
         <img
-          src='/src/assets/images/qylon-logo.png'
+          src={logoImage}
           alt='Qylon Logo'
           className='xui-img-100 xui-h-auto'
         />
@@ -57,11 +58,10 @@ export default function Navigator() {
             <Link
               key={to}
               to={to}
-              className={`link-box xui-d-flex xui-flex-ai-center gap-3 xui-bdr-rad-2 xui-text-[var(--black)] ${
-                isActive
-                  ? 'xui-text-[var(--black)] border border-[var(--gray-300)] xui-bdr-rad-2'
-                  : 'text-gray-600'
-              }`}
+              className={`link-box xui-d-flex xui-flex-ai-center gap-3 xui-bdr-rad-2 xui-text-[var(--black)] ${isActive
+                ? 'xui-text-[var(--black)] border border-[var(--gray-300)] xui-bdr-rad-2'
+                : 'text-gray-600'
+                }`}
             >
               <div className='icon text-lg'>{icon}</div>
               <span className='text'>{label}</span>

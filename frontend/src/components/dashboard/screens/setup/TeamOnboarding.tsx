@@ -618,8 +618,8 @@ export default function TeamOnboarding() {
                     {steps.map((step, index) => (
                         <div key={step.id} className="flex items-center">
                             <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= step.id
-                                    ? 'bg-purple-600 text-white'
-                                    : 'bg-gray-300 text-gray-600'
+                                ? 'bg-purple-600 text-white'
+                                : 'bg-gray-300 text-gray-600'
                                 }`}>
                                 {currentStep > step.id ? (
                                     <FaCheckCircle className="w-4 h-4" />

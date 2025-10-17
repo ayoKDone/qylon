@@ -18,7 +18,7 @@ export const errorHandler = (
   error: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   // Log the error
   logger.error('Error occurred', {
@@ -107,9 +107,8 @@ export const errorHandler = (
   res.status(500).json({
     success: false,
     error: 'INTERNAL_SERVER_ERROR',
-    message: process.env.NODE_ENV === 'production'
-      ? 'An internal server error occurred'
-      : error.message,
+    message:
+      process.env.NODE_ENV === 'production' ? 'An internal server error occurred' : error.message,
     timestamp: new Date().toISOString(),
     requestId: req.headers['x-request-id'] || 'unknown',
   });
@@ -138,7 +137,7 @@ export const validateRequest = (schema: any, data: any) => {
       'Validation failed',
       'VALIDATION_ERROR',
       400,
-      result.error.errors
+      result.error.errors,
     );
   }
   return result.data;
@@ -155,11 +154,7 @@ export const createValidationError = (message: string, details?: any) => {
  * Create not found error
  */
 export const createNotFoundError = (resource: string, id: string) => {
-  return new TeamOnboardingError(
-    `${resource} with ID ${id} not found`,
-    'NOT_FOUND',
-    404
-  );
+  return new TeamOnboardingError(`${resource} with ID ${id} not found`, 'NOT_FOUND', 404);
 };
 
 /**

@@ -3,17 +3,20 @@
 [![CI/CD Pipeline](https://github.com/KD-Squares/qylon/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/KD-Squares/qylon/actions/workflows/ci-cd.yml)
 [![Coverage Status](https://coveralls.io/repos/github/KD-Squares/qylon/badge.svg?branch=main)](https://coveralls.io/github/KD-Squares/qylon?branch=main)
 
-**Chief Architect:** Bill (siwale)
-**Repository:** https://github.com/KD-Squares/KDS-Development
-**Last Updated:** October 2025
+**Chief Architect:** Bill (siwale) **Repository:**
+https://github.com/KD-Squares/KDS-Development **Last Updated:** October 2025
 
 ## 🎯 Project Overview
 
-Qylon is an AI automation platform that transforms manual business processes into intelligent, self-running systems. Built with a microservices architecture on DigitalOcean + Supabase, featuring 8 core services with event-driven communication.
+Qylon is an AI automation platform that transforms manual business processes
+into intelligent, self-running systems. Built with a microservices architecture
+on DigitalOcean + Supabase, featuring 8 core services with event-driven
+communication.
 
 ## 🏗️ Architecture
 
 ### Core Services
+
 - **API Gateway (3000)** - Central routing and authentication
 - **Security Service (3001)** - Authentication and authorization
 - **Frontend (3002)** - React-based user interface
@@ -25,9 +28,11 @@ Qylon is an AI automation platform that transforms manual business processes int
 - **Analytics & Reporting (3008)** - Business intelligence
 
 ### Technology Stack
+
 - **Backend:** Node.js 22.x, TypeScript, Express.js
 - **Frontend:** React 18, Vite, Tailwind CSS
-- **Database:** Supabase PostgreSQL with Row Level Security, MongoDB for analytics
+- **Database:** Supabase PostgreSQL with Row Level Security, MongoDB for
+  analytics
 - **Cache:** Redis 7
 - **AI/ML:** OpenAI GPT-4, Recall.ai, Whisper
 - **Infrastructure:** DigitalOcean App Platform, Docker, Kubernetes
@@ -38,6 +43,7 @@ Qylon is an AI automation platform that transforms manual business processes int
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Node.js 22.x** (required by package.json engines)
 - **npm >=9.0.0** (required by package.json engines)
 - **Git** (for version control)
@@ -49,17 +55,20 @@ Qylon is an AI automation platform that transforms manual business processes int
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/KD-Squares/qylon.git
    cd qylon
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp env.example .env
    # Edit .env with your configuration
@@ -67,6 +76,7 @@ Qylon is an AI automation platform that transforms manual business processes int
    ```
 
 4. **Install all dependencies**
+
    ```bash
    npm install
    # Install service dependencies
@@ -78,6 +88,7 @@ Qylon is an AI automation platform that transforms manual business processes int
    ```
 
 5. **Start local development with Docker**
+
    ```bash
    # Start all services with Docker Compose
    docker-compose up -d
@@ -94,11 +105,14 @@ Qylon is an AI automation platform that transforms manual business processes int
 ## 🧪 Local CI/CD Pipeline
 
 ### Overview
-Our local CI/CD pipeline mimics GitHub Actions to catch issues before pushing to remote, saving CI/CD minutes and ensuring faster feedback.
+
+Our local CI/CD pipeline mimics GitHub Actions to catch issues before pushing to
+remote, saving CI/CD minutes and ensuring faster feedback.
 
 ### Running the Local CI/CD Pipeline
 
 #### Manual Execution
+
 ```bash
 # Run the complete local CI/CD pipeline
 npm run ci:local
@@ -109,6 +123,7 @@ npm run ci:local
 The local CI/CD pipeline is automatically triggered using Git hooks:
 
 ##### 1. Pre-commit Hook (Automatic)
+
 The pre-commit hook automatically runs basic checks before each commit:
 
 ```bash
@@ -117,6 +132,7 @@ git commit -m "your commit message"
 ```
 
 **What it checks:**
+
 - Branch naming convention validation
 - Code formatting (Prettier, Black, isort)
 - Basic linting (ESLint, flake8)
@@ -126,6 +142,7 @@ git commit -m "your commit message"
 - Integration tests (critical subset)
 
 ##### 2. Pre-push Hook (Automatic)
+
 The pre-push hook runs the full CI/CD pipeline before pushing:
 
 ```bash
@@ -134,6 +151,7 @@ git push origin <branch>
 ```
 
 **What it checks:**
+
 - Enhanced branch management validation
 - Comprehensive code quality checks
 - Full test suite execution
@@ -145,6 +163,7 @@ git push origin <branch>
 - Health check validation
 
 ##### 3. Manual Pre-PR Validation
+
 Before creating a PR, run the full pipeline manually:
 
 ```bash
@@ -166,7 +185,8 @@ The local CI/CD pipeline includes the following stages:
 
 2. **Dependency Installation**
    - Root dependencies (`npm install`)
-   - Service-specific dependencies (api-gateway, meeting-intelligence, workflow-automation, integration-management)
+   - Service-specific dependencies (api-gateway, meeting-intelligence,
+     workflow-automation, integration-management)
    - Frontend dependencies
 
 3. **Code Quality Checks**
@@ -200,13 +220,15 @@ git commit --no-verify -m "emergency fix"
 git push --no-verify origin <branch>
 ```
 
-⚠️ **Warning:** Only use `--no-verify` in genuine emergencies. The hooks are there to prevent broken code from reaching the repository.
+⚠️ **Warning:** Only use `--no-verify` in genuine emergencies. The hooks are
+there to prevent broken code from reaching the repository.
 
 ### Troubleshooting
 
 #### Common Issues
 
 1. **Hook Permission Denied**
+
    ```bash
    chmod +x .git/hooks/pre-commit
    chmod +x .git/hooks/pre-push
@@ -214,6 +236,7 @@ git push --no-verify origin <branch>
    ```
 
 2. **Node Version Mismatch**
+
    ```bash
    # The project requires Node.js 22.x (not 20.x)
    # Use Node Version Manager
@@ -222,6 +245,7 @@ git push --no-verify origin <branch>
    ```
 
 3. **Dependency Issues**
+
    ```bash
    # Clean install for all services
    rm -rf node_modules package-lock.json
@@ -231,6 +255,7 @@ git push --no-verify origin <branch>
    ```
 
 4. **Test Failures**
+
    ```bash
    # Run tests individually
    npm run test:unit
@@ -240,6 +265,7 @@ git push --no-verify origin <branch>
    ```
 
 5. **Docker Issues**
+
    ```bash
    # Restart Docker services
    docker-compose down
@@ -301,8 +327,11 @@ npm run test:coverage
 ### Test Coverage
 
 Current test coverage status:
-- **Unit Tests:** Meeting Intelligence (137 tests), Integration Management (57 tests)
-- **Coverage Threshold:** Currently set to 1% for development (temporarily lowered)
+
+- **Unit Tests:** Meeting Intelligence (137 tests), Integration Management (57
+  tests)
+- **Coverage Threshold:** Currently set to 1% for development (temporarily
+  lowered)
 - **Integration Tests:** Placeholder scripts (not yet implemented)
 - **E2E Tests:** Placeholder scripts (not yet implemented)
 - **Performance Tests:** Placeholder scripts (not yet implemented)
@@ -310,6 +339,7 @@ Current test coverage status:
 ## 🚀 Deployment
 
 ### Local Development
+
 ```bash
 # Start all services with Docker Compose
 docker-compose up -d
@@ -319,6 +349,7 @@ npm run start:api-gateway  # Starts API Gateway on port 3000
 ```
 
 ### Staging Deployment
+
 ```bash
 # Deploy to DigitalOcean App Platform (staging)
 # Requires DO_ACCESS_TOKEN and DO_APP_ID environment variables
@@ -326,6 +357,7 @@ npm run deploy:staging
 ```
 
 ### Production Deployment
+
 ```bash
 # Deploy to DigitalOcean App Platform (production)
 # Only triggered from main branch
@@ -333,6 +365,7 @@ npm run deploy:production
 ```
 
 ### Build Process
+
 ```bash
 # Build all services
 npm run build
@@ -350,29 +383,37 @@ See [Deployment Guide](DEPLOYMENT_GUIDE.md) for detailed instructions.
 ## ⚠️ Current Development Status
 
 ### ✅ Completed
+
 - **API Gateway Service** - Complete with authentication and routing
-- **Meeting Intelligence Service** - AI-powered meeting analysis with 137 passing tests
-- **Integration Management Service** - Third-party integrations with 57 passing tests
+- **Meeting Intelligence Service** - AI-powered meeting analysis with 137
+  passing tests
+- **Integration Management Service** - Third-party integrations with 57 passing
+  tests
 - **Local CI/CD Pipeline** - Comprehensive testing and validation
 - **Docker Setup** - Multi-service containerization
 - **Database Schema** - PostgreSQL with Row Level Security
 - **Git Hooks** - Pre-commit and pre-push validation
 
 ### 🚧 In Progress
+
 - **Workflow Automation Service** - Business process automation
 - **Content Creation Service** - Python-based content generation
 - **Notification Service** - Multi-channel notifications
 - **Analytics & Reporting Service** - Business intelligence
 
 ### 📋 Known Issues
+
 - **Node.js Version Mismatch**: CI shows Node.js 20.x but project requires 22.x
-- **Test Coverage**: Coverage thresholds temporarily lowered to 1% for development
+- **Test Coverage**: Coverage thresholds temporarily lowered to 1% for
+  development
 - **Integration Tests**: Placeholder scripts (not yet implemented)
 - **E2E Tests**: Placeholder scripts (not yet implemented)
 - **Performance Tests**: Placeholder scripts (not yet implemented)
-- **Security Vulnerability**: 1 moderate severity vulnerability in integration-management service
+- **Security Vulnerability**: 1 moderate severity vulnerability in
+  integration-management service
 
 ### 🔧 Required Environment Variables
+
 ```bash
 # Database
 SUPABASE_URL=https://your-project.supabase.co
@@ -423,6 +464,7 @@ DO_APP_ID=your-app-id
 7. **Create a Pull Request**
 
 ### Branch Naming Convention
+
 - `feature/JIRA-XXXX-short-description`
 - `bugfix/JIRA-XXXX-short-description`
 - `hotfix/JIRA-XXXX-short-description`
@@ -449,7 +491,8 @@ DO_APP_ID=your-app-id
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
 
 ---
 

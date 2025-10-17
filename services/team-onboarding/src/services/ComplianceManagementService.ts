@@ -7,7 +7,7 @@ import {
   NotFoundError,
   RegulatoryCompliance,
   TeamOnboardingError,
-  ValidationError
+  ValidationError,
 } from '../types';
 import { logComplianceEvent, logger } from '../utils/logger';
 
@@ -27,7 +27,7 @@ export class ComplianceManagementService {
   async createComplianceSettings(
     teamId: string,
     complianceSettings: ComplianceSettings,
-    createdBy: string
+    createdBy: string,
   ): Promise<ComplianceSettings> {
     try {
       // Verify team exists
@@ -55,20 +55,18 @@ export class ComplianceManagementService {
       const settingsId = uuidv4();
 
       // Save compliance settings to database
-      const { error: settingsError } = await this.supabase
-        .from('compliance_settings')
-        .insert({
-          id: settingsId,
-          team_id: teamId,
-          data_retention_policy: JSON.stringify(complianceSettings.dataRetentionPolicy),
-          audit_logging: JSON.stringify(complianceSettings.auditLogging),
-          access_controls: JSON.stringify(complianceSettings.accessControls),
-          privacy_settings: JSON.stringify(complianceSettings.privacySettings),
-          regulatory_compliance: JSON.stringify(complianceSettings.regulatoryCompliance),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          created_by: createdBy,
-        });
+      const { error: settingsError } = await this.supabase.from('compliance_settings').insert({
+        id: settingsId,
+        team_id: teamId,
+        data_retention_policy: JSON.stringify(complianceSettings.dataRetentionPolicy),
+        audit_logging: JSON.stringify(complianceSettings.auditLogging),
+        access_controls: JSON.stringify(complianceSettings.accessControls),
+        privacy_settings: JSON.stringify(complianceSettings.privacySettings),
+        regulatory_compliance: JSON.stringify(complianceSettings.regulatoryCompliance),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        created_by: createdBy,
+      });
 
       if (settingsError) {
         logger.error('Failed to create compliance settings', {
@@ -80,7 +78,7 @@ export class ComplianceManagementService {
           'Failed to create compliance settings',
           'DATABASE_ERROR',
           500,
-          settingsError
+          settingsError,
         );
       }
 
@@ -113,7 +111,7 @@ export class ComplianceManagementService {
         'Compliance settings creation failed',
         'COMPLIANCE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -124,7 +122,7 @@ export class ComplianceManagementService {
   async updateComplianceSettings(
     teamId: string,
     updates: Partial<ComplianceSettings>,
-    updatedBy: string
+    updatedBy: string,
   ): Promise<ComplianceSettings> {
     try {
       // Get existing settings
@@ -178,7 +176,7 @@ export class ComplianceManagementService {
           'Failed to update compliance settings',
           'DATABASE_ERROR',
           500,
-          updateError
+          updateError,
         );
       }
 
@@ -202,7 +200,7 @@ export class ComplianceManagementService {
         'Compliance settings update failed',
         'UPDATE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -247,12 +245,7 @@ export class ComplianceManagementService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get compliance settings',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get compliance settings', 'FETCH_ERROR', 500, error);
     }
   }
 
@@ -269,7 +262,7 @@ export class ComplianceManagementService {
     ipAddress: string,
     userAgent: string,
     success: boolean,
-    errorMessage?: string
+    errorMessage?: string,
   ): Promise<AuditLog> {
     try {
       const logId = uuidv4();
@@ -304,22 +297,20 @@ export class ComplianceManagementService {
       }
 
       // Save audit log to database
-      const { error: logError } = await this.supabase
-        .from('audit_logs')
-        .insert({
-          id: auditLog.id,
-          team_id: auditLog.teamId,
-          user_id: auditLog.userId,
-          action: auditLog.action,
-          resource: auditLog.resource,
-          resource_id: auditLog.resourceId,
-          details: JSON.stringify(auditLog.details),
-          ip_address: auditLog.ipAddress,
-          user_agent: auditLog.userAgent,
-          timestamp: auditLog.timestamp.toISOString(),
-          success: auditLog.success,
-          error_message: auditLog.errorMessage,
-        });
+      const { error: logError } = await this.supabase.from('audit_logs').insert({
+        id: auditLog.id,
+        team_id: auditLog.teamId,
+        user_id: auditLog.userId,
+        action: auditLog.action,
+        resource: auditLog.resource,
+        resource_id: auditLog.resourceId,
+        details: JSON.stringify(auditLog.details),
+        ip_address: auditLog.ipAddress,
+        user_agent: auditLog.userAgent,
+        timestamp: auditLog.timestamp.toISOString(),
+        success: auditLog.success,
+        error_message: auditLog.errorMessage,
+      });
 
       if (logError) {
         logger.error('Failed to create audit log', {
@@ -374,7 +365,7 @@ export class ComplianceManagementService {
     pagination?: {
       page: number;
       limit: number;
-    }
+    },
   ): Promise<{ logs: AuditLog[]; total: number }> {
     try {
       let query = this.supabase
@@ -416,12 +407,7 @@ export class ComplianceManagementService {
           error: error.message,
           teamId,
         });
-        throw new TeamOnboardingError(
-          'Failed to get audit logs',
-          'DATABASE_ERROR',
-          500,
-          error
-        );
+        throw new TeamOnboardingError('Failed to get audit logs', 'DATABASE_ERROR', 500, error);
       }
 
       const logs: AuditLog[] = (data || []).map((log: any) => ({
@@ -453,12 +439,7 @@ export class ComplianceManagementService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get audit logs',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get audit logs', 'FETCH_ERROR', 500, error);
     }
   }
 
@@ -468,19 +449,19 @@ export class ComplianceManagementService {
   async runComplianceAssessment(
     teamId: string,
     framework: 'GDPR' | 'CCPA' | 'HIPAA' | 'SOX' | 'ISO27001',
-    runBy: string
+    runBy: string,
   ): Promise<RegulatoryCompliance> {
     try {
       const complianceSettings = await this.getComplianceSettings(teamId);
 
       // Get existing compliance record
       let existingCompliance = complianceSettings.regulatoryCompliance.find(
-        c => c.framework === framework
+        c => c.framework === framework,
       );
 
       const requirements: ComplianceRequirement[] = await this.assessComplianceRequirements(
         teamId,
-        framework
+        framework,
       );
 
       const metRequirements = requirements.filter(r => r.status === 'met').length;
@@ -505,14 +486,14 @@ export class ComplianceManagementService {
 
       // Update compliance settings with new assessment
       const updatedCompliance = complianceSettings.regulatoryCompliance.filter(
-        c => c.framework !== framework
+        c => c.framework !== framework,
       );
       updatedCompliance.push(assessment);
 
       await this.updateComplianceSettings(
         teamId,
         { regulatoryCompliance: updatedCompliance },
-        runBy
+        runBy,
       );
 
       logComplianceEvent('compliance_assessment_completed', teamId, runBy, framework, {
@@ -534,12 +515,7 @@ export class ComplianceManagementService {
         runBy,
       });
 
-      throw new TeamOnboardingError(
-        'Compliance assessment failed',
-        'ASSESSMENT_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Compliance assessment failed', 'ASSESSMENT_ERROR', 500, error);
     }
   }
 
@@ -548,7 +524,7 @@ export class ComplianceManagementService {
    */
   private async assessComplianceRequirements(
     teamId: string,
-    framework: 'GDPR' | 'CCPA' | 'HIPAA' | 'SOX' | 'ISO27001'
+    framework: 'GDPR' | 'CCPA' | 'HIPAA' | 'SOX' | 'ISO27001',
   ): Promise<ComplianceRequirement[]> {
     // This is a simplified implementation
     // In a real system, this would involve complex compliance checking logic
@@ -686,12 +662,7 @@ export class ComplianceManagementService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Data cleanup failed',
-        'CLEANUP_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Data cleanup failed', 'CLEANUP_ERROR', 500, error);
     }
   }
 
@@ -735,7 +706,7 @@ export class ComplianceManagementService {
         'Compliance report generation failed',
         'REPORT_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -757,7 +728,9 @@ export class ComplianceManagementService {
     }
 
     if (settings.auditLogging.logLevel === 'minimal') {
-      recommendations.push('Consider upgrading to detailed audit logging for better compliance tracking');
+      recommendations.push(
+        'Consider upgrading to detailed audit logging for better compliance tracking',
+      );
     }
 
     // Access control recommendations

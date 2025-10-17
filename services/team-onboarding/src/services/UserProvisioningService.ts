@@ -34,7 +34,7 @@ export class UserProvisioningService {
    */
   async createUserProvisioningRequest(
     requestData: any,
-    createdBy: string
+    createdBy: string,
   ): Promise<UserProvisioningRequest> {
     try {
       // Validate request data
@@ -69,7 +69,7 @@ export class UserProvisioningService {
       if (currentUserCount + validatedData.users.length > teamSettings.maxUsers) {
         throw new ValidationError(
           `User limit exceeded. Team allows ${teamSettings.maxUsers} users, ` +
-          `currently has ${currentUserCount}, trying to add ${validatedData.users.length}`
+            `currently has ${currentUserCount}, trying to add ${validatedData.users.length}`,
         );
       }
 
@@ -97,14 +97,20 @@ export class UserProvisioningService {
           'Failed to create user provisioning request',
           'DATABASE_ERROR',
           500,
-          requestError
+          requestError,
         );
       }
 
-      logUserProvisioning('provisioning_request_created', validatedData.teamId, createdBy, validatedData.users.length, {
-        requestId,
-        teamName: team.name,
-      });
+      logUserProvisioning(
+        'provisioning_request_created',
+        validatedData.teamId,
+        createdBy,
+        validatedData.users.length,
+        {
+          requestId,
+          teamName: team.name,
+        },
+      );
 
       return request;
     } catch (error) {
@@ -129,7 +135,7 @@ export class UserProvisioningService {
         'User provisioning request creation failed',
         'PROVISIONING_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -139,7 +145,7 @@ export class UserProvisioningService {
    */
   async processUserProvisioningRequest(
     requestId: string,
-    processedBy: string
+    processedBy: string,
   ): Promise<UserProvisioningRequest> {
     try {
       // Get provisioning request
@@ -211,16 +217,22 @@ export class UserProvisioningService {
           'Failed to update provisioning request',
           'DATABASE_ERROR',
           500,
-          updateError
+          updateError,
         );
       }
 
-      logUserProvisioning('provisioning_request_processed', request.team_id, processedBy, users.length, {
-        requestId,
-        status: finalStatus,
-        successCount,
-        failedCount,
-      });
+      logUserProvisioning(
+        'provisioning_request_processed',
+        request.team_id,
+        processedBy,
+        users.length,
+        {
+          requestId,
+          status: finalStatus,
+          successCount,
+          failedCount,
+        },
+      );
 
       return {
         id: updatedRequest.id,
@@ -255,7 +267,7 @@ export class UserProvisioningService {
         'User provisioning request processing failed',
         'PROCESSING_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -265,7 +277,7 @@ export class UserProvisioningService {
    */
   private async provisionUser(
     userData: UserProvisioningData,
-    teamId: string
+    teamId: string,
   ): Promise<ProvisioningResult> {
     try {
       // Check if user already exists
@@ -293,18 +305,16 @@ export class UserProvisioningService {
         }
 
         // Add existing user to team
-        const { error: addError } = await this.supabase
-          .from('team_users')
-          .insert({
-            id: uuidv4(),
-            team_id: teamId,
-            user_id: existingUser.id,
-            role: userData.role,
-            department: userData.department,
-            manager: userData.manager,
-            custom_fields: JSON.stringify(userData.customFields || {}),
-            created_at: new Date().toISOString(),
-          });
+        const { error: addError } = await this.supabase.from('team_users').insert({
+          id: uuidv4(),
+          team_id: teamId,
+          user_id: existingUser.id,
+          role: userData.role,
+          department: userData.department,
+          manager: userData.manager,
+          custom_fields: JSON.stringify(userData.customFields || {}),
+          created_at: new Date().toISOString(),
+        });
 
         if (addError) {
           throw new Error(`Failed to add user to team: ${addError.message}`);
@@ -320,37 +330,33 @@ export class UserProvisioningService {
 
       // Create new user
       const userId = uuidv4();
-      const { error: userError } = await this.supabase
-        .from('users')
-        .insert({
-          id: userId,
-          email: userData.email,
-          first_name: userData.firstName,
-          last_name: userData.lastName,
-          role: userData.role,
-          is_active: true,
-          email_verified: false,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        });
+      const { error: userError } = await this.supabase.from('users').insert({
+        id: userId,
+        email: userData.email,
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        role: userData.role,
+        is_active: true,
+        email_verified: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
 
       if (userError) {
         throw new Error(`Failed to create user: ${userError.message}`);
       }
 
       // Add user to team
-      const { error: teamUserError } = await this.supabase
-        .from('team_users')
-        .insert({
-          id: uuidv4(),
-          team_id: teamId,
-          user_id: userId,
-          role: userData.role,
-          department: userData.department,
-          manager: userData.manager,
-          custom_fields: JSON.stringify(userData.customFields || {}),
-          created_at: new Date().toISOString(),
-        });
+      const { error: teamUserError } = await this.supabase.from('team_users').insert({
+        id: uuidv4(),
+        team_id: teamId,
+        user_id: userId,
+        role: userData.role,
+        department: userData.department,
+        manager: userData.manager,
+        custom_fields: JSON.stringify(userData.customFields || {}),
+        created_at: new Date().toISOString(),
+      });
 
       if (teamUserError) {
         throw new Error(`Failed to add user to team: ${teamUserError.message}`);
@@ -373,10 +379,7 @@ export class UserProvisioningService {
   /**
    * Create bulk user operation
    */
-  async createBulkUserOperation(
-    operationData: any,
-    createdBy: string
-  ): Promise<BulkUserOperation> {
+  async createBulkUserOperation(operationData: any, createdBy: string): Promise<BulkUserOperation> {
     try {
       // Validate operation data
       const validatedData = BulkUserOperationSchema.parse(operationData);
@@ -411,12 +414,7 @@ export class UserProvisioningService {
         .in('id', validatedData.userIds);
 
       if (usersError) {
-        throw new TeamOnboardingError(
-          'Failed to verify users',
-          'DATABASE_ERROR',
-          500,
-          usersError
-        );
+        throw new TeamOnboardingError('Failed to verify users', 'DATABASE_ERROR', 500, usersError);
       }
 
       if (users.length !== validatedData.userIds.length) {
@@ -424,18 +422,16 @@ export class UserProvisioningService {
       }
 
       // Save bulk operation to database
-      const { error: operationError } = await this.supabase
-        .from('bulk_user_operations')
-        .insert({
-          id: operation.id,
-          team_id: operation.teamId,
-          operation: operation.operation,
-          user_ids: JSON.stringify(operation.userIds),
-          parameters: JSON.stringify(operation.parameters),
-          status: operation.status,
-          created_by: operation.createdBy,
-          created_at: operation.createdAt.toISOString(),
-        });
+      const { error: operationError } = await this.supabase.from('bulk_user_operations').insert({
+        id: operation.id,
+        team_id: operation.teamId,
+        operation: operation.operation,
+        user_ids: JSON.stringify(operation.userIds),
+        parameters: JSON.stringify(operation.parameters),
+        status: operation.status,
+        created_by: operation.createdBy,
+        created_at: operation.createdAt.toISOString(),
+      });
 
       if (operationError) {
         logger.error('Failed to create bulk user operation', {
@@ -449,15 +445,21 @@ export class UserProvisioningService {
           'Failed to create bulk user operation',
           'DATABASE_ERROR',
           500,
-          operationError
+          operationError,
         );
       }
 
-      logBulkOperation('bulk_operation_created', validatedData.teamId, createdBy, validatedData.userIds.length, {
-        operationId,
-        operation: validatedData.operation,
-        teamName: team.name,
-      });
+      logBulkOperation(
+        'bulk_operation_created',
+        validatedData.teamId,
+        createdBy,
+        validatedData.userIds.length,
+        {
+          operationId,
+          operation: validatedData.operation,
+          teamName: team.name,
+        },
+      );
 
       return operation;
     } catch (error) {
@@ -482,7 +484,7 @@ export class UserProvisioningService {
         'Bulk user operation creation failed',
         'BULK_OPERATION_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -492,7 +494,7 @@ export class UserProvisioningService {
    */
   async processBulkUserOperation(
     operationId: string,
-    processedBy: string
+    processedBy: string,
   ): Promise<BulkUserOperation> {
     try {
       // Get bulk operation
@@ -524,7 +526,7 @@ export class UserProvisioningService {
             operation.operation,
             userId,
             operation.team_id,
-            parameters
+            parameters,
           );
           results.push(result);
         } catch (error) {
@@ -538,9 +540,10 @@ export class UserProvisioningService {
 
       // Determine overall status
       const successCount = results.filter(r => r.status === 'success').length;
-      const finalStatus = successCount === userIds.length
-        ? BulkOperationStatus.COMPLETED
-        : BulkOperationStatus.FAILED;
+      const finalStatus =
+        successCount === userIds.length
+          ? BulkOperationStatus.COMPLETED
+          : BulkOperationStatus.FAILED;
 
       // Update operation with results
       const { data: updatedOperation, error: updateError } = await this.supabase
@@ -563,7 +566,7 @@ export class UserProvisioningService {
           'Failed to update bulk operation',
           'DATABASE_ERROR',
           500,
-          updateError
+          updateError,
         );
       }
 
@@ -583,7 +586,9 @@ export class UserProvisioningService {
         status: updatedOperation.status as BulkOperationStatus,
         createdBy: updatedOperation.created_by,
         createdAt: new Date(updatedOperation.created_at),
-        completedAt: updatedOperation.completed_at ? new Date(updatedOperation.completed_at) : undefined,
+        completedAt: updatedOperation.completed_at
+          ? new Date(updatedOperation.completed_at)
+          : undefined,
         results: JSON.parse(updatedOperation.results || '[]'),
       };
     } catch (error) {
@@ -601,7 +606,7 @@ export class UserProvisioningService {
         'Bulk user operation processing failed',
         'PROCESSING_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -613,7 +618,7 @@ export class UserProvisioningService {
     operation: BulkOperationType,
     userId: string,
     teamId: string,
-    parameters: Record<string, any>
+    parameters: Record<string, any>,
   ): Promise<BulkOperationResult> {
     try {
       switch (operation) {
@@ -696,7 +701,11 @@ export class UserProvisioningService {
     }
   }
 
-  private async updateUserDepartment(userId: string, teamId: string, department: string): Promise<void> {
+  private async updateUserDepartment(
+    userId: string,
+    teamId: string,
+    department: string,
+  ): Promise<void> {
     const { error } = await this.supabase
       .from('team_users')
       .update({ department, updated_at: new Date().toISOString() })
@@ -737,7 +746,7 @@ export class UserProvisioningService {
    */
   async parseCSVForUserProvisioning(
     csvBuffer: Buffer,
-    teamId: string
+    teamId: string,
   ): Promise<UserProvisioningData[]> {
     return new Promise((resolve, reject) => {
       const users: UserProvisioningData[] = [];
@@ -745,7 +754,7 @@ export class UserProvisioningService {
 
       stream
         .pipe(csv())
-        .on('data', (row) => {
+        .on('data', row => {
           users.push({
             email: row.email,
             firstName: row.first_name || row.firstName,
@@ -763,13 +772,10 @@ export class UserProvisioningService {
         .on('end', () => {
           resolve(users);
         })
-        .on('error', (error) => {
-          reject(new TeamOnboardingError(
-            'Failed to parse CSV file',
-            'CSV_PARSE_ERROR',
-            400,
-            error
-          ));
+        .on('error', error => {
+          reject(
+            new TeamOnboardingError('Failed to parse CSV file', 'CSV_PARSE_ERROR', 400, error),
+          );
         });
     });
   }
@@ -784,12 +790,7 @@ export class UserProvisioningService {
       .eq('team_id', teamId);
 
     if (error) {
-      throw new TeamOnboardingError(
-        'Failed to get team user count',
-        'DATABASE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get team user count', 'DATABASE_ERROR', 500, error);
     }
 
     return count || 0;
@@ -800,7 +801,7 @@ export class UserProvisioningService {
    */
   private async updateProvisioningStatus(
     requestId: string,
-    status: ProvisioningStatus
+    status: ProvisioningStatus,
   ): Promise<void> {
     const { error } = await this.supabase
       .from('user_provisioning_requests')
@@ -815,7 +816,7 @@ export class UserProvisioningService {
         'Failed to update provisioning status',
         'DATABASE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -825,7 +826,7 @@ export class UserProvisioningService {
    */
   private async updateBulkOperationStatus(
     operationId: string,
-    status: BulkOperationStatus
+    status: BulkOperationStatus,
   ): Promise<void> {
     const { error } = await this.supabase
       .from('bulk_user_operations')
@@ -840,7 +841,7 @@ export class UserProvisioningService {
         'Failed to update bulk operation status',
         'DATABASE_ERROR',
         500,
-        error
+        error,
       );
     }
   }

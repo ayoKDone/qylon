@@ -367,3 +367,4 @@ backups/
 temp/
 temporary/
 scratch/
+frontend/cypress/videos/*.mp4

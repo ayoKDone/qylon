@@ -2,13 +2,13 @@ import { createClient } from '@supabase/supabase-js';
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 import {
-    ConversionRecoveryCampaign,
-    ConversionRecoveryExecution,
-    CreateRecoveryCampaignRequest,
-    IncentiveOffer,
-    RecoveryMetrics,
-    RecoveryResult,
-    UpdateRecoveryCampaignRequest
+  ConversionRecoveryCampaign,
+  ConversionRecoveryExecution,
+  CreateRecoveryCampaignRequest,
+  IncentiveOffer,
+  RecoveryMetrics,
+  RecoveryResult,
+  UpdateRecoveryCampaignRequest,
 } from '../types';
 import { logBusinessEvent, logger } from '../utils/logger';
 
@@ -40,7 +40,6 @@ export class ConversionRecoveryService {
         recoveryStrategy: request.recoveryStrategy as any,
         isActive: true,
         userId,
-        clientId: request.clientId,
         successMetrics: {
           targetConversionRate: 0,
           currentConversionRate: 0,
@@ -51,6 +50,7 @@ export class ConversionRecoveryService {
         },
         createdAt: now,
         updatedAt: now,
+        ...(request.clientId && { clientId: request.clientId }),
       };
 
       const { data, error } = await this.supabase
@@ -97,7 +97,8 @@ export class ConversionRecoveryService {
       if (request.name !== undefined) updateData.name = request.name;
       if (request.description !== undefined) updateData.description = request.description;
       if (request.targetSegment !== undefined) updateData.targetSegment = request.targetSegment;
-      if (request.recoveryStrategy !== undefined) updateData.recoveryStrategy = request.recoveryStrategy as any;
+      if (request.recoveryStrategy !== undefined)
+        updateData.recoveryStrategy = request.recoveryStrategy as any;
       if (request.isActive !== undefined) updateData.isActive = request.isActive;
 
       const { data, error } = await this.supabase
@@ -133,7 +134,10 @@ export class ConversionRecoveryService {
   /**
    * Get recovery campaigns for a user
    */
-  async getRecoveryCampaigns(userId: string, clientId?: string): Promise<ConversionRecoveryCampaign[]> {
+  async getRecoveryCampaigns(
+    userId: string,
+    clientId?: string,
+  ): Promise<ConversionRecoveryCampaign[]> {
     try {
       let query = this.supabase
         .from('conversion_recovery_campaigns')
@@ -165,7 +169,10 @@ export class ConversionRecoveryService {
   /**
    * Get a specific recovery campaign
    */
-  async getRecoveryCampaign(campaignId: string, userId: string): Promise<ConversionRecoveryCampaign | null> {
+  async getRecoveryCampaign(
+    campaignId: string,
+    userId: string,
+  ): Promise<ConversionRecoveryCampaign | null> {
     try {
       const { data, error } = await this.supabase
         .from('conversion_recovery_campaigns')
@@ -251,24 +258,20 @@ export class ConversionRecoveryService {
       );
 
       // Generate incentive offer if applicable
-      const incentiveOffer = await this.generateIncentiveOffer(
-        campaign,
-        targetUserId,
-        clientId,
-      );
+      const incentiveOffer = await this.generateIncentiveOffer(campaign, targetUserId, clientId);
 
       const execution: ConversionRecoveryExecution = {
         id: executionId,
         campaignId,
         userId: targetUserId,
-        clientId,
         status: 'pending',
         strategy: campaign.recoveryStrategy,
-        personalizedContent,
-        incentiveOffer,
         startDate: now,
         createdAt: now,
         updatedAt: now,
+        ...(personalizedContent && { personalizedContent }),
+        ...(incentiveOffer && { incentiveOffer }),
+        ...(clientId && { clientId }),
       };
 
       const { data, error } = await this.supabase
@@ -375,7 +378,8 @@ export class ConversionRecoveryService {
         messages: [
           {
             role: 'system',
-            content: 'You are a customer success specialist helping to re-engage users who are at risk of churning. Generate personalized, empathetic, and actionable recovery content.',
+            content:
+              'You are a customer success specialist helping to re-engage users who are at risk of churning. Generate personalized, empathetic, and actionable recovery content.',
           },
           {
             role: 'user',
@@ -386,7 +390,10 @@ export class ConversionRecoveryService {
         temperature: 0.7,
       });
 
-      return completion.choices[0]?.message?.content || 'We value your business and would love to help you succeed.';
+      return (
+        completion.choices[0]?.message?.content ||
+        'We value your business and would love to help you succeed.'
+      );
     } catch (error) {
       logger.error('Failed to generate personalized content', {
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -442,12 +449,13 @@ export class ConversionRecoveryService {
 
       // Generate appropriate incentive based on user's situation
       const incentiveTypes = ['discount', 'free_trial', 'feature_upgrade', 'consultation'];
-      const selectedType = incentiveTypes[Math.floor(Math.random() * incentiveTypes.length)];
+      const selectedType =
+        incentiveTypes[Math.floor(Math.random() * incentiveTypes.length)] || 'discount';
 
       const incentive: IncentiveOffer = {
         type: selectedType as any,
-        value: this.generateIncentiveValue(selectedType, planDetails),
-        description: this.generateIncentiveDescription(selectedType, planDetails),
+        value: this.generateIncentiveValue(selectedType, planDetails || {}),
+        description: this.generateIncentiveDescription(selectedType, planDetails || {}),
         expirationDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
       };
 
@@ -466,7 +474,7 @@ export class ConversionRecoveryService {
   /**
    * Generate incentive value based on type and plan
    */
-  private generateIncentiveValue(type: string, planDetails: any): string {
+  private generateIncentiveValue(type: string, _planDetails: any): string {
     switch (type) {
       case 'discount':
         return '20%';
@@ -484,7 +492,7 @@ export class ConversionRecoveryService {
   /**
    * Generate incentive description
    */
-  private generateIncentiveDescription(type: string, planDetails: any): string {
+  private generateIncentiveDescription(type: string, _planDetails: any): string {
     switch (type) {
       case 'discount':
         return '20% discount on your next billing cycle';
@@ -546,60 +554,308 @@ export class ConversionRecoveryService {
   /**
    * Execute email sequence strategy
    */
-  private async executeEmailSequenceStrategy(execution: ConversionRecoveryExecution): Promise<void> {
-    // This would integrate with the EmailSequenceService
-    // For now, we'll just log the action
-    logger.info('Executing email sequence strategy', {
-      executionId: execution.id,
-      userId: execution.userId,
-    });
+  private async executeEmailSequenceStrategy(
+    execution: ConversionRecoveryExecution,
+  ): Promise<void> {
+    try {
+      // Find an appropriate email sequence for recovery
+      const { data: sequences, error: sequencesError } = await this.supabase
+        .from('email_sequences')
+        .select('*')
+        .eq('trigger_event', 'recovery_campaign')
+        .eq('is_active', true)
+        .limit(1);
+
+      if (sequencesError || !sequences || sequences.length === 0) {
+        logger.warn('No recovery email sequences found', {
+          executionId: execution.id,
+          userId: execution.userId,
+        });
+        return;
+      }
+
+      const sequence = sequences[0];
+
+      // Start the email sequence execution
+      const { data: sequenceExecution, error: executionError } = await this.supabase
+        .from('email_sequence_executions')
+        .insert([
+          {
+            sequence_id: sequence.id,
+            user_id: execution.userId,
+            client_id: execution.clientId,
+            status: 'pending',
+            metadata: {
+              recovery_execution_id: execution.id,
+              personalized_content: execution.personalizedContent,
+            },
+          },
+        ])
+        .select()
+        .single();
+
+      if (executionError) {
+        throw new Error(`Failed to start email sequence: ${executionError.message}`);
+      }
+
+      logger.info('Email sequence strategy executed', {
+        executionId: execution.id,
+        userId: execution.userId,
+        sequenceId: sequence.id,
+        sequenceExecutionId: sequenceExecution.id,
+      });
+    } catch (error) {
+      logger.error('Failed to execute email sequence strategy', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionId: execution.id,
+        userId: execution.userId,
+      });
+      throw error;
+    }
   }
 
   /**
    * Execute personalized outreach strategy
    */
-  private async executePersonalizedOutreachStrategy(execution: ConversionRecoveryExecution): Promise<void> {
-    // This would integrate with the notification service
-    // For now, we'll just log the action
-    logger.info('Executing personalized outreach strategy', {
-      executionId: execution.id,
-      userId: execution.userId,
-      content: execution.personalizedContent,
-    });
+  private async executePersonalizedOutreachStrategy(
+    execution: ConversionRecoveryExecution,
+  ): Promise<void> {
+    try {
+      // Get user information for personalized outreach
+      const { data: user, error: userError } = await this.supabase
+        .from('users')
+        .select('email, full_name, phone')
+        .eq('id', execution.userId)
+        .single();
+
+      if (userError) {
+        throw new Error(`Failed to get user information: ${userError.message}`);
+      }
+
+      // Create a notification record for the outreach
+      const { data: notification, error: notificationError } = await this.supabase
+        .from('notifications')
+        .insert([
+          {
+            user_id: execution.userId,
+            client_id: execution.clientId,
+            type: 'recovery_outreach',
+            title: "We miss you! Let's get you back on track",
+            message:
+              execution.personalizedContent ||
+              "We noticed you haven't been active lately. We'd love to help you get back on track.",
+            priority: 'high',
+            metadata: {
+              recovery_execution_id: execution.id,
+              strategy: 'personalized_outreach',
+              incentive_offer: execution.incentiveOffer,
+            },
+            status: 'pending',
+          },
+        ])
+        .select()
+        .single();
+
+      if (notificationError) {
+        logger.warn('Failed to create notification, falling back to email', {
+          executionId: execution.id,
+          userId: execution.userId,
+          error: notificationError.message,
+        });
+
+        // Fallback: Send email directly
+        await this.sendRecoveryEmail(
+          user.email,
+          execution.personalizedContent || '',
+          execution.incentiveOffer,
+        );
+      }
+
+      logger.info('Personalized outreach strategy executed', {
+        executionId: execution.id,
+        userId: execution.userId,
+        notificationId: notification?.id,
+        content: execution.personalizedContent,
+      });
+    } catch (error) {
+      logger.error('Failed to execute personalized outreach strategy', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionId: execution.id,
+        userId: execution.userId,
+      });
+      throw error;
+    }
   }
 
   /**
    * Execute incentive offer strategy
    */
-  private async executeIncentiveOfferStrategy(execution: ConversionRecoveryExecution): Promise<void> {
-    // This would integrate with the notification service and billing system
-    // For now, we'll just log the action
-    logger.info('Executing incentive offer strategy', {
-      executionId: execution.id,
-      userId: execution.userId,
-      offer: execution.incentiveOffer,
-    });
+  private async executeIncentiveOfferStrategy(
+    execution: ConversionRecoveryExecution,
+  ): Promise<void> {
+    try {
+      // Get user information
+      const { data: user, error: userError } = await this.supabase
+        .from('users')
+        .select('email, full_name')
+        .eq('id', execution.userId)
+        .single();
+
+      if (userError) {
+        throw new Error(`Failed to get user information: ${userError.message}`);
+      }
+
+      // Send incentive offer email
+      await this.sendRecoveryEmail(
+        user.email,
+        execution.personalizedContent || 'We have a special offer just for you!',
+        execution.incentiveOffer,
+      );
+
+      // Create incentive record in database
+      const { error: incentiveError } = await this.supabase.from('incentive_offers').insert([
+        {
+          user_id: execution.userId,
+          client_id: execution.clientId,
+          recovery_execution_id: execution.id,
+          type: execution.incentiveOffer?.type || 'discount',
+          value: execution.incentiveOffer?.value || '10%',
+          description: execution.incentiveOffer?.description || 'Special recovery offer',
+          expiration_date: execution.incentiveOffer?.expirationDate,
+          status: 'sent',
+        },
+      ]);
+
+      if (incentiveError) {
+        logger.warn('Failed to create incentive offer record', {
+          executionId: execution.id,
+          userId: execution.userId,
+          error: incentiveError.message,
+        });
+      }
+
+      logger.info('Incentive offer strategy executed', {
+        executionId: execution.id,
+        userId: execution.userId,
+        offer: execution.incentiveOffer,
+      });
+    } catch (error) {
+      logger.error('Failed to execute incentive offer strategy', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionId: execution.id,
+        userId: execution.userId,
+      });
+      throw error;
+    }
   }
 
   /**
    * Execute feature highlight strategy
    */
-  private async executeFeatureHighlightStrategy(execution: ConversionRecoveryExecution): Promise<void> {
-    // This would integrate with the notification service
-    // For now, we'll just log the action
-    logger.info('Executing feature highlight strategy', {
-      executionId: execution.id,
-      userId: execution.userId,
-    });
+  private async executeFeatureHighlightStrategy(
+    execution: ConversionRecoveryExecution,
+  ): Promise<void> {
+    try {
+      // Get user information
+      const { data: user, error: userError } = await this.supabase
+        .from('users')
+        .select('email, full_name')
+        .eq('id', execution.userId)
+        .single();
+
+      if (userError) {
+        throw new Error(`Failed to get user information: ${userError.message}`);
+      }
+
+      // Use user data for logging or future functionality
+      if (user) {
+        logger.info('Feature highlight strategy executed for user', {
+          userId: execution.userId,
+          userEmail: user.email,
+          userName: user.full_name,
+        });
+      }
+
+      // Create feature highlight notification
+      const { data: notification, error: notificationError } = await this.supabase
+        .from('notifications')
+        .insert([
+          {
+            user_id: execution.userId,
+            client_id: execution.clientId,
+            type: 'feature_highlight',
+            title: 'Discover features you might have missed!',
+            message:
+              execution.personalizedContent ||
+              "We've added some amazing new features that could help you get more value from Qylon.",
+            priority: 'medium',
+            metadata: {
+              recovery_execution_id: execution.id,
+              strategy: 'feature_highlight',
+              action_url: '/features',
+            },
+            status: 'pending',
+          },
+        ])
+        .select()
+        .single();
+
+      if (notificationError) {
+        logger.warn('Failed to create feature highlight notification', {
+          executionId: execution.id,
+          userId: execution.userId,
+          error: notificationError.message,
+        });
+      }
+
+      logger.info('Feature highlight strategy executed', {
+        executionId: execution.id,
+        userId: execution.userId,
+        notificationId: notification?.id,
+      });
+    } catch (error) {
+      logger.error('Failed to execute feature highlight strategy', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionId: execution.id,
+        userId: execution.userId,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Send recovery email
+   */
+  private async sendRecoveryEmail(
+    email: string,
+    content: string,
+    incentiveOffer?: IncentiveOffer,
+  ): Promise<void> {
+    try {
+      // This would integrate with the email service
+      // For now, we'll just log the action
+      logger.info('Sending recovery email', {
+        email,
+        content: content.substring(0, 100) + '...',
+        hasIncentive: !!incentiveOffer,
+        incentiveType: incentiveOffer?.type,
+      });
+
+      // TODO: Integrate with actual email service (SendGrid, etc.)
+      // await emailService.sendRecoveryEmail(email, content, incentiveOffer);
+    } catch (error) {
+      logger.error('Failed to send recovery email', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        email,
+      });
+      throw error;
+    }
   }
 
   /**
    * Complete a recovery execution
    */
-  async completeRecoveryExecution(
-    executionId: string,
-    result: RecoveryResult,
-  ): Promise<void> {
+  async completeRecoveryExecution(executionId: string, result: RecoveryResult): Promise<void> {
     try {
       const { error } = await this.supabase
         .from('conversion_recovery_executions')

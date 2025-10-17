@@ -34,7 +34,8 @@ describe('Teams Routes', () => {
     app.use(express.json());
     app.use('/api/v1/teams', teamsRouter);
 
-    mockTeamAdministratorService = new TeamAdministratorService() as jest.Mocked<TeamAdministratorService>;
+    mockTeamAdministratorService =
+      new TeamAdministratorService() as jest.Mocked<TeamAdministratorService>;
     (TeamAdministratorService as jest.Mock).mockImplementation(() => mockTeamAdministratorService);
   });
 
@@ -53,6 +54,9 @@ describe('Teams Routes', () => {
         id: 'team-123',
         name: 'Test Team',
         organizationId: 'org-123',
+        settings: {},
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -60,10 +64,7 @@ describe('Teams Routes', () => {
 
       mockTeamAdministratorService.createTeam.mockResolvedValue(mockTeam);
 
-      const response = await request(app)
-        .post('/api/v1/teams')
-        .send(teamData)
-        .expect(201);
+      const response = await request(app).post('/api/v1/teams').send(teamData).expect(201);
 
       expect(response.body).toEqual({
         success: true,
@@ -81,13 +82,10 @@ describe('Teams Routes', () => {
       };
 
       mockTeamAdministratorService.createTeam.mockRejectedValue(
-        new ValidationError('Invalid team data')
+        new ValidationError('Invalid team data'),
       );
 
-      const response = await request(app)
-        .post('/api/v1/teams')
-        .send(teamData)
-        .expect(400);
+      const response = await request(app).post('/api/v1/teams').send(teamData).expect(400);
 
       expect(response.body).toEqual({
         success: false,
@@ -105,6 +103,9 @@ describe('Teams Routes', () => {
         id: 'team-123',
         name: 'Test Team',
         organizationId: 'org-123',
+        settings: {},
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -112,9 +113,7 @@ describe('Teams Routes', () => {
 
       mockTeamAdministratorService.getTeam.mockResolvedValue(mockTeam);
 
-      const response = await request(app)
-        .get(`/api/v1/teams/${teamId}`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/teams/${teamId}`).expect(200);
 
       expect(response.body).toEqual({
         success: true,
@@ -128,13 +127,9 @@ describe('Teams Routes', () => {
     it('should handle team not found', async () => {
       const teamId = 'non-existent-team';
 
-      mockTeamAdministratorService.getTeam.mockRejectedValue(
-        new NotFoundError('Team', teamId)
-      );
+      mockTeamAdministratorService.getTeam.mockRejectedValue(new NotFoundError('Team', teamId));
 
-      const response = await request(app)
-        .get(`/api/v1/teams/${teamId}`)
-        .expect(404);
+      const response = await request(app).get(`/api/v1/teams/${teamId}`).expect(404);
 
       expect(response.body).toEqual({
         success: false,
@@ -159,6 +154,8 @@ describe('Teams Routes', () => {
         name: 'Test Team',
         organizationId: 'org-123',
         settings,
+        complianceSettings: {},
+        isActive: true,
         createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -180,7 +177,7 @@ describe('Teams Routes', () => {
       expect(mockTeamAdministratorService.updateTeamSettings).toHaveBeenCalledWith(
         teamId,
         settings,
-        'user-123'
+        'user-123',
       );
     });
   });
@@ -200,6 +197,8 @@ describe('Teams Routes', () => {
         userId: 'user-456',
         role: 'admin',
         permissions: ['manage_users', 'manage_settings'],
+        isActive: true,
+        createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -219,7 +218,7 @@ describe('Teams Routes', () => {
 
       expect(mockTeamAdministratorService.createTeamAdministrator).toHaveBeenCalledWith(
         { ...adminData, teamId },
-        'user-123'
+        'user-123',
       );
     });
   });
@@ -234,6 +233,8 @@ describe('Teams Routes', () => {
           userId: 'user-1',
           role: 'admin',
           permissions: ['manage_users'],
+          isActive: true,
+          createdBy: 'user-123',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -243,6 +244,8 @@ describe('Teams Routes', () => {
           userId: 'user-2',
           role: 'member',
           permissions: ['view_analytics'],
+          isActive: true,
+          createdBy: 'user-123',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -250,9 +253,7 @@ describe('Teams Routes', () => {
 
       mockTeamAdministratorService.getTeamAdministrators.mockResolvedValue(mockAdministrators);
 
-      const response = await request(app)
-        .get(`/api/v1/teams/${teamId}/administrators`)
-        .expect(200);
+      const response = await request(app).get(`/api/v1/teams/${teamId}/administrators`).expect(200);
 
       expect(response.body).toEqual({
         success: true,
@@ -279,11 +280,15 @@ describe('Teams Routes', () => {
         userId: 'user-456',
         role: 'member',
         permissions: ['view_analytics'],
+        isActive: true,
+        createdBy: 'user-123',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      mockTeamAdministratorService.updateTeamAdministrator.mockResolvedValue(mockUpdatedAdministrator);
+      mockTeamAdministratorService.updateTeamAdministrator.mockResolvedValue(
+        mockUpdatedAdministrator,
+      );
 
       const response = await request(app)
         .put(`/api/v1/teams/${teamId}/administrators/${adminId}`)
@@ -299,7 +304,7 @@ describe('Teams Routes', () => {
       expect(mockTeamAdministratorService.updateTeamAdministrator).toHaveBeenCalledWith(
         adminId,
         updates,
-        'user-123'
+        'user-123',
       );
     });
   });
@@ -323,7 +328,7 @@ describe('Teams Routes', () => {
 
       expect(mockTeamAdministratorService.deleteTeamAdministrator).toHaveBeenCalledWith(
         adminId,
-        'user-123'
+        'user-123',
       );
     });
   });
@@ -336,13 +341,10 @@ describe('Teams Routes', () => {
       };
 
       mockTeamAdministratorService.createTeam.mockRejectedValue(
-        new TeamOnboardingError('Internal error', 'INTERNAL_ERROR', 500)
+        new TeamOnboardingError('Internal error', 'INTERNAL_ERROR', 500),
       );
 
-      const response = await request(app)
-        .post('/api/v1/teams')
-        .send(teamData)
-        .expect(500);
+      const response = await request(app).post('/api/v1/teams').send(teamData).expect(500);
 
       expect(response.body).toEqual({
         success: false,
@@ -359,13 +361,10 @@ describe('Teams Routes', () => {
       };
 
       mockTeamAdministratorService.createTeam.mockRejectedValue(
-        new ValidationError('Team name is required')
+        new ValidationError('Team name is required'),
       );
 
-      const response = await request(app)
-        .post('/api/v1/teams')
-        .send(teamData)
-        .expect(400);
+      const response = await request(app).post('/api/v1/teams').send(teamData).expect(400);
 
       expect(response.body).toEqual({
         success: false,

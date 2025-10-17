@@ -69,13 +69,12 @@ app.use((req, res, next) => {
 });
 
 // Mock authentication middleware (replace with actual auth)
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   // In a real implementation, this would validate JWT tokens
   const authHeader = req.headers.authorization;
   if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7);
     // Mock user data - replace with actual JWT validation
-    req.user = {
+    (req as any).user = {
       id: 'mock-user-id',
       role: 'user',
       email: 'user@example.com',
@@ -114,7 +113,8 @@ app.get('/api/docs', (_req, res) => {
   res.json({
     title: 'Qylon Re-engagement Engine API',
     version: '1.0.0',
-    description: 'API for managing email sequences, user behavior tracking, and conversion recovery',
+    description:
+      'API for managing email sequences, user behavior tracking, and conversion recovery',
     endpoints: {
       health: {
         'GET /health': 'Basic health check',

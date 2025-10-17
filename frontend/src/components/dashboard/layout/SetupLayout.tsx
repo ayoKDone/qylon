@@ -1,6 +1,7 @@
 // src/components/dashboard/layout/DashboardLayout.tsx
 import { Outlet, useNavigate } from 'react-router-dom';
 import { onboardingService } from '../../../services/onboardingService';
+import logoImage from '../../assets/images/qylon-logo.png';
 
 export default function SetUpLayout() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function SetUpLayout() {
     <>
       <nav className='xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
         <img
-          src='/static/images/logo-full.png'
+          src={logoImage}
           alt='Qylon Logo'
           className='xui-img-100'
           width={118}

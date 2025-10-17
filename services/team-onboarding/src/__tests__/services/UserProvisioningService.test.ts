@@ -114,7 +114,7 @@ describe('UserProvisioningService', () => {
 
       const result = await userProvisioningService.createUserProvisioningRequest(
         requestData,
-        createdBy
+        createdBy,
       );
 
       expect(result).toEqual({
@@ -136,7 +136,7 @@ describe('UserProvisioningService', () => {
       const createdBy = 'user-123';
 
       await expect(
-        userProvisioningService.createUserProvisioningRequest(invalidRequestData, createdBy)
+        userProvisioningService.createUserProvisioningRequest(invalidRequestData, createdBy),
       ).rejects.toThrow(ValidationError);
     });
 
@@ -154,13 +154,17 @@ describe('UserProvisioningService', () => {
       };
       const createdBy = 'user-123';
 
-      mockSupabase.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       await expect(
-        userProvisioningService.createUserProvisioningRequest(requestData, createdBy)
+        userProvisioningService.createUserProvisioningRequest(requestData, createdBy),
       ).rejects.toThrow(NotFoundError);
     });
 
@@ -197,7 +201,7 @@ describe('UserProvisioningService', () => {
       });
 
       await expect(
-        userProvisioningService.createUserProvisioningRequest(requestData, createdBy)
+        userProvisioningService.createUserProvisioningRequest(requestData, createdBy),
       ).rejects.toThrow(ValidationError);
     });
   });
@@ -243,42 +247,51 @@ describe('UserProvisioningService', () => {
       });
 
       // Mock final update
-      mockSupabase.from().update().eq().select().single.mockResolvedValueOnce({
-        data: {
-          ...mockRequest,
-          status: 'completed',
-          results: JSON.stringify([
-            {
-              email: 'user1@example.com',
-              status: 'success',
-              userId: 'new-user-123',
-            },
-          ]),
-        },
-        error: null,
-      });
+      mockSupabase
+        .from()
+        .update()
+        .eq()
+        .select()
+        .single.mockResolvedValueOnce({
+          data: {
+            ...mockRequest,
+            status: 'completed',
+            results: JSON.stringify([
+              {
+                email: 'user1@example.com',
+                status: 'success',
+                userId: 'new-user-123',
+              },
+            ]),
+          },
+          error: null,
+        });
 
       const result = await userProvisioningService.processUserProvisioningRequest(
         requestId,
-        processedBy
+        processedBy,
       );
 
       expect(result.status).toBe('completed');
       expect(result.results).toHaveLength(1);
-      expect(result.results[0].status).toBe('success');
+      expect(result.results?.[0]?.status).toBe('success');
     });
 
     it('should throw NotFoundError when request does not exist', async () => {
       const requestId = 'non-existent-request';
       const processedBy = 'user-123';
 
-      mockSupabase.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       await expect(
-        userProvisioningService.processUserProvisioningRequest(requestId, processedBy)
+        userProvisioningService.processUserProvisioningRequest(requestId, processedBy),
       ).rejects.toThrow(NotFoundError);
     });
   });
@@ -305,10 +318,13 @@ describe('UserProvisioningService', () => {
       });
 
       // Mock users verification
-      mockSupabase.from().select().in.mockResolvedValueOnce({
-        data: [{ id: 'user-1' }, { id: 'user-2' }],
-        error: null,
-      });
+      mockSupabase
+        .from()
+        .select()
+        .in.mockResolvedValueOnce({
+          data: [{ id: 'user-1' }, { id: 'user-2' }],
+          error: null,
+        });
 
       // Mock operation creation
       mockSupabase.from().insert().mockResolvedValueOnce({
@@ -318,7 +334,7 @@ describe('UserProvisioningService', () => {
 
       const result = await userProvisioningService.createBulkUserOperation(
         operationData,
-        createdBy
+        createdBy,
       );
 
       expect(result).toEqual({
@@ -354,13 +370,16 @@ describe('UserProvisioningService', () => {
       });
 
       // Mock users verification (only one user found)
-      mockSupabase.from().select().in.mockResolvedValueOnce({
-        data: [{ id: 'user-1' }],
-        error: null,
-      });
+      mockSupabase
+        .from()
+        .select()
+        .in.mockResolvedValueOnce({
+          data: [{ id: 'user-1' }],
+          error: null,
+        });
 
       await expect(
-        userProvisioningService.createBulkUserOperation(operationData, createdBy)
+        userProvisioningService.createBulkUserOperation(operationData, createdBy),
       ).rejects.toThrow(ValidationError);
     });
   });
@@ -400,40 +419,43 @@ describe('UserProvisioningService', () => {
       });
 
       // Mock final update
-      mockSupabase.from().update().eq().select().single.mockResolvedValueOnce({
-        data: {
-          ...mockOperation,
-          status: 'completed',
-          results: JSON.stringify([
-            { userId: 'user-1', status: 'success' },
-            { userId: 'user-2', status: 'success' },
-          ]),
-          completed_at: new Date().toISOString(),
-        },
-        error: null,
-      });
+      mockSupabase
+        .from()
+        .update()
+        .eq()
+        .select()
+        .single.mockResolvedValueOnce({
+          data: {
+            ...mockOperation,
+            status: 'completed',
+            results: JSON.stringify([
+              { userId: 'user-1', status: 'success' },
+              { userId: 'user-2', status: 'success' },
+            ]),
+            completed_at: new Date().toISOString(),
+          },
+          error: null,
+        });
 
       const result = await userProvisioningService.processBulkUserOperation(
         operationId,
-        processedBy
+        processedBy,
       );
 
       expect(result.status).toBe('completed');
       expect(result.results).toHaveLength(2);
-      expect(result.results.every(r => r.status === 'success')).toBe(true);
+      expect(result.results?.every(r => r.status === 'success')).toBe(true);
     });
   });
 
   describe('parseCSVForUserProvisioning', () => {
     it('should parse CSV data successfully', async () => {
-      const csvData = 'email,first_name,last_name,role,department\nuser1@example.com,John,Doe,user,Engineering';
+      const csvData =
+        'email,first_name,last_name,role,department\nuser1@example.com,John,Doe,user,Engineering';
       const csvBuffer = Buffer.from(csvData);
       const teamId = 'team-123';
 
-      const result = await userProvisioningService.parseCSVForUserProvisioning(
-        csvBuffer,
-        teamId
-      );
+      const result = await userProvisioningService.parseCSVForUserProvisioning(csvBuffer, teamId);
 
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
@@ -455,10 +477,7 @@ describe('UserProvisioningService', () => {
       const csvBuffer = Buffer.from(csvData);
       const teamId = 'team-123';
 
-      const result = await userProvisioningService.parseCSVForUserProvisioning(
-        csvBuffer,
-        teamId
-      );
+      const result = await userProvisioningService.parseCSVForUserProvisioning(csvBuffer, teamId);
 
       expect(result).toHaveLength(0);
     });
@@ -469,7 +488,9 @@ describe('UserProvisioningService', () => {
       delete process.env.SUPABASE_URL;
       delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-      expect(() => new UserProvisioningService()).toThrow('Supabase environment variables are not set.');
+      expect(() => new UserProvisioningService()).toThrow(
+        'Supabase environment variables are not set.',
+      );
     });
   });
 });

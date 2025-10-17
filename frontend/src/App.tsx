@@ -15,6 +15,7 @@ import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
 import ProblemsVsSolutions from './components/ProblemsVsSolutions';
 import ROI from './components/ROI';
+import WorkflowBuilderPage from './components/dashboard/screens/WorkflowBuilderPage';
 
 // Lazy load heavy components for better performance
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
@@ -91,6 +92,9 @@ const AppContent: React.FC = () => {
 
           {/* Fallback */}
           <Route path='*' element={<Navigate to='/' replace />} />
+
+          {/* Workflow routes */}
+          <Route path='/workflow/edit' element={<WorkflowBuilderPage />} />
         </Routes>
       </Suspense>
     </Router>

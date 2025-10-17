@@ -272,12 +272,7 @@ export class TeamAdministratorService {
         teamId,
       });
 
-      throw new TeamOnboardingError(
-        'Failed to get team administrators',
-        'FETCH_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to get team administrators', 'FETCH_ERROR', 500, error);
     }
   }
 
@@ -287,7 +282,7 @@ export class TeamAdministratorService {
   async updateTeamAdministrator(
     adminId: string,
     updates: Partial<Pick<TeamAdministrator, 'role' | 'permissions' | 'isActive'>>,
-    updatedBy: string
+    updatedBy: string,
   ): Promise<TeamAdministrator> {
     try {
       // Get existing administrator
@@ -362,12 +357,7 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Team administrator update failed',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Team administrator update failed', 'UPDATE_ERROR', 500, error);
     }
   }
 
@@ -433,7 +423,7 @@ export class TeamAdministratorService {
         'Team administrator deletion failed',
         'DELETE_ERROR',
         500,
-        error
+        error,
       );
     }
   }
@@ -541,12 +531,7 @@ export class TeamAdministratorService {
         updatedBy,
       });
 
-      throw new TeamOnboardingError(
-        'Team settings update failed',
-        'UPDATE_ERROR',
-        500,
-        error
-      );
+      throw new TeamOnboardingError('Failed to update team settings', 'UPDATE_ERROR', 500, error);
     }
   }
 }

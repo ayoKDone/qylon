@@ -63,7 +63,11 @@ export const logBusinessEvent = (event: string, data: Record<string, any>): void
 };
 
 // Performance logging
-export const logPerformance = (operation: string, duration: number, metadata?: Record<string, any>): void => {
+export const logPerformance = (
+  operation: string,
+  duration: number,
+  metadata?: Record<string, any>,
+): void => {
   logger.info('Performance metric', {
     operation,
     duration,

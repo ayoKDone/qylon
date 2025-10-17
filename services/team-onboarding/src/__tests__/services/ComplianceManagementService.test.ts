@@ -110,7 +110,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,
@@ -151,10 +153,14 @@ describe('ComplianceManagementService', () => {
       });
 
       // Mock existing settings check
-      mockSupabase.from().select().eq().single.mockResolvedValueOnce({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValueOnce({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       // Mock settings creation
       mockSupabase.from().insert().mockResolvedValueOnce({
@@ -165,7 +171,7 @@ describe('ComplianceManagementService', () => {
       const result = await complianceService.createComplianceSettings(
         teamId,
         complianceSettings,
-        createdBy
+        createdBy,
       );
 
       expect(result).toEqual(complianceSettings);
@@ -177,7 +183,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,
@@ -206,13 +214,17 @@ describe('ComplianceManagementService', () => {
       };
       const createdBy = 'user-123';
 
-      mockSupabase.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       await expect(
-        complianceService.createComplianceSettings(teamId, complianceSettings, createdBy)
+        complianceService.createComplianceSettings(teamId, complianceSettings, createdBy),
       ).rejects.toThrow(NotFoundError);
     });
 
@@ -222,7 +234,9 @@ describe('ComplianceManagementService', () => {
         dataRetentionPolicy: {
           userDataRetentionDays: 365,
           auditLogRetentionDays: 2555,
+          meetingDataRetentionDays: 2555,
           autoDeleteEnabled: true,
+          retentionExceptions: [],
         },
         auditLogging: {
           enabled: true,
@@ -263,13 +277,17 @@ describe('ComplianceManagementService', () => {
       });
 
       // Mock existing settings check (settings exist)
-      mockSupabase.from().select().eq().single.mockResolvedValueOnce({
-        data: { id: 'settings-123' },
-        error: null,
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValueOnce({
+          data: { id: 'settings-123' },
+          error: null,
+        });
 
       await expect(
-        complianceService.createComplianceSettings(teamId, complianceSettings, createdBy)
+        complianceService.createComplianceSettings(teamId, complianceSettings, createdBy),
       ).rejects.toThrow(ValidationError);
     });
   });
@@ -346,10 +364,14 @@ describe('ComplianceManagementService', () => {
     it('should throw NotFoundError when settings do not exist', async () => {
       const teamId = 'team-123';
 
-      mockSupabase.from().select().eq().single.mockResolvedValue({
-        data: null,
-        error: { message: 'Not found' },
-      });
+      mockSupabase
+        .from()
+        .select()
+        .eq()
+        .single.mockResolvedValue({
+          data: null,
+          error: { message: 'Not found' },
+        });
 
       await expect(complianceService.getComplianceSettings(teamId)).rejects.toThrow(NotFoundError);
     });
@@ -397,7 +419,7 @@ describe('ComplianceManagementService', () => {
         details,
         ipAddress,
         userAgent,
-        success
+        success,
       );
 
       expect(result).toEqual({
@@ -443,10 +465,13 @@ describe('ComplianceManagementService', () => {
       jest.spyOn(complianceService, 'getComplianceSettings').mockResolvedValue(mockSettings as any);
 
       // Mock audit log creation failure
-      mockSupabase.from().insert().mockResolvedValue({
-        data: null,
-        error: { message: 'Database error' },
-      });
+      mockSupabase
+        .from()
+        .insert()
+        .mockResolvedValue({
+          data: null,
+          error: { message: 'Database error' },
+        });
 
       const result = await complianceService.createAuditLog(
         teamId,
@@ -457,7 +482,7 @@ describe('ComplianceManagementService', () => {
         details,
         ipAddress,
         userAgent,
-        success
+        success,
       );
 
       expect(result).toEqual({
@@ -584,7 +609,9 @@ describe('ComplianceManagementService', () => {
       jest.spyOn(complianceService, 'getComplianceSettings').mockResolvedValue(mockSettings as any);
 
       // Mock updateComplianceSettings
-      jest.spyOn(complianceService, 'updateComplianceSettings').mockResolvedValue(mockSettings as any);
+      jest
+        .spyOn(complianceService, 'updateComplianceSettings')
+        .mockResolvedValue(mockSettings as any);
 
       const result = await complianceService.runComplianceAssessment(teamId, framework, runBy);
 
@@ -746,7 +773,9 @@ describe('ComplianceManagementService', () => {
       delete process.env.SUPABASE_URL;
       delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-      expect(() => new ComplianceManagementService()).toThrow('Supabase environment variables are not set.');
+      expect(() => new ComplianceManagementService()).toThrow(
+        'Supabase environment variables are not set.',
+      );
     });
   });
 });

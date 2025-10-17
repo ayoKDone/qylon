@@ -128,7 +128,7 @@ export interface AppError {
 export interface NavItem {
   label: string;
   href: string;
-  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon?: React.ComponentType<{ className?: string }>; // ✅ FIXED
   children?: NavItem[];
 }
 
