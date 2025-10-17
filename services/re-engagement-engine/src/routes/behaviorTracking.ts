@@ -205,6 +205,10 @@ router.post(
     const { factor } = req.params;
     const clientId = req.body.clientId as string | undefined;
 
+    if (!factor) {
+      return res.status(400).json({ error: 'Risk factor is required' });
+    }
+
     await behaviorTrackingService.resolveRiskFactor(
       userId,
       factor,
@@ -217,7 +221,7 @@ router.post(
       factor,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       data: { message: 'Risk factor resolved successfully' },
       timestamp: new Date().toISOString(),

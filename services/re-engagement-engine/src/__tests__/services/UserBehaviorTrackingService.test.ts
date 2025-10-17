@@ -6,6 +6,42 @@ const mockSupabaseClient = {
   from: jest.fn(),
 };
 
+// Builder to simulate Supabase query chaining
+const buildChain = (
+  final: any,
+  terminal: 'single' | 'order' | 'range' | 'limit' | 'eq' | 'eq2' = 'single',
+) => {
+  const chain: any = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    lt: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    range: jest.fn().mockReturnThis(),
+    single: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+  };
+  if (terminal === 'eq2') {
+    let count = 0;
+    chain.eq = jest.fn().mockImplementation(() => {
+      count++;
+      if (count >= 2) {
+        return Promise.resolve(final);
+      }
+      return chain;
+    });
+    return chain;
+  }
+  if (terminal === 'eq') {
+    chain.eq = jest.fn().mockImplementation(() => Promise.resolve(final));
+    return chain;
+  }
+  chain[terminal].mockResolvedValue(final);
+  return chain;
+};
+
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => mockSupabaseClient),
 }));
@@ -39,42 +75,31 @@ describe('UserBehaviorTrackingService', () => {
       };
 
       // Mock event insertion
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: mockEvent, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockEvent, error: null }, 'single'),
+      );
 
       // Mock behavior profile update (existing profile)
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
-                data: {
-                  id: 'profile-id',
-                  userId,
-                  clientId,
-                  engagementScore: 0.5,
-                  lastActivityAt: '2023-01-01T00:00:00Z',
-                },
-                error: null,
-              }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({
+          data: {
+            id: 'profile-id',
+            userId,
+            clientId,
+            engagementScore: 0.5,
+            lastActivityAt: '2023-01-01T00:00:00Z',
+            preferredChannels: [],
+            behaviorPatterns: [],
+            riskFactors: [],
+          },
+          error: null,
+        }, 'single'),
+      );
 
       // Mock profile update
-      mockSupabaseClient.from.mockReturnValueOnce({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockResolvedValue({ error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ error: null }, 'eq'),
+      );
 
       const result = await behaviorTrackingService.trackEvent(
         userId,
@@ -106,42 +131,31 @@ describe('UserBehaviorTrackingService', () => {
       };
 
       // Mock event insertion
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: mockEvent, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockEvent, error: null }, 'single'),
+      );
 
       // Mock behavior profile not found
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: null, error: { code: 'PGRST116' } }, 'single'),
+      );
 
       // Mock profile creation
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({
-              data: {
-                id: 'profile-id',
-                userId,
-                clientId,
-                engagementScore: 0.1,
-                lastActivityAt: '2023-01-01T00:00:00Z',
-              },
-              error: null,
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({
+          data: {
+            id: 'profile-id',
+            userId,
+            clientId,
+            engagementScore: 0.1,
+            lastActivityAt: '2023-01-01T00:00:00Z',
+            preferredChannels: [],
+            behaviorPatterns: [],
+            riskFactors: [],
+          },
+          error: null,
+        }, 'single'),
+      );
 
       const result = await behaviorTrackingService.trackEvent(
         userId,
@@ -174,15 +188,9 @@ describe('UserBehaviorTrackingService', () => {
       };
 
       // Mock the profile query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: mockProfile, error: null }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockProfile, error: null }, 'single'),
+      );
 
       const result = await behaviorTrackingService.getBehaviorProfile(userId, clientId);
 
@@ -193,15 +201,9 @@ describe('UserBehaviorTrackingService', () => {
       const userId = 'test-user-id';
 
       // Mock the profile query to return null
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: null, error: { code: 'PGRST116' } }, 'single'),
+      );
 
       const result = await behaviorTrackingService.getBehaviorProfile(userId);
 
@@ -226,19 +228,9 @@ describe('UserBehaviorTrackingService', () => {
       ];
 
       // Mock the events query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              eq: jest.fn().mockReturnValue({
-                order: jest.fn().mockReturnValue({
-                  range: jest.fn().mockResolvedValue({ data: mockEvents, error: null }),
-                }),
-              }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockEvents, error: null }, 'range'),
+      );
 
       const result = await behaviorTrackingService.getBehaviorEvents(
         userId,
@@ -267,17 +259,9 @@ describe('UserBehaviorTrackingService', () => {
       ];
 
       // Mock the at-risk users query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            lt: jest.fn().mockReturnValue({
-              order: jest.fn().mockReturnValue({
-                limit: jest.fn().mockResolvedValue({ data: mockAtRiskUsers, error: null }),
-              }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockAtRiskUsers, error: null }, 'limit'),
+      );
 
       const result = await behaviorTrackingService.getAtRiskUsers(clientId, 0.3, 10);
 
@@ -309,13 +293,9 @@ describe('UserBehaviorTrackingService', () => {
       ];
 
       // Mock the profiles query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockResolvedValue({ data: mockProfiles, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockProfiles as any, error: null }, 'eq2'),
+      );
 
       const result = await behaviorTrackingService.getBehaviorAnalytics(userId, clientId);
 
@@ -332,13 +312,9 @@ describe('UserBehaviorTrackingService', () => {
       const clientId = 'test-client-id';
 
       // Mock the risk factor resolution
-      mockSupabaseClient.from.mockReturnValueOnce({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockResolvedValue({ error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ error: null }, 'eq2'),
+      );
 
       await expect(
         behaviorTrackingService.resolveRiskFactor(userId, factor, clientId),

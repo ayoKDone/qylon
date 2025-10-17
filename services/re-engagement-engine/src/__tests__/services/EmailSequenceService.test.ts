@@ -6,6 +6,45 @@ const mockSupabaseClient = {
   from: jest.fn(),
 };
 
+// Builder to simulate Supabase query chaining
+const buildChain = (
+  final: any,
+  terminal: 'single' | 'order' | 'range' | 'limit' | 'eq' | 'eq2' = 'single',
+) => {
+  const chain: any = {
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    lt: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    range: jest.fn().mockReturnThis(),
+    single: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+  };
+
+  if (terminal === 'eq2') {
+    let count = 0;
+    chain.eq = jest.fn().mockImplementation(() => {
+      count++;
+      if (count >= 2) {
+        return Promise.resolve(final);
+      }
+      return chain;
+    });
+    return chain;
+  }
+
+  if (terminal === 'eq') {
+    chain.eq = jest.fn().mockImplementation(() => Promise.resolve(final));
+    return chain;
+  }
+
+  chain[terminal].mockResolvedValue(final);
+  return chain;
+};
+
 jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn(() => mockSupabaseClient),
 }));
@@ -79,22 +118,14 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock the sequence creation
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: mockSequence, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequence, error: null }),
+      );
 
       // Mock the step creation
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: mockStep, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockStep, error: null }),
+      );
 
       const result = await emailSequenceService.createEmailSequence(userId, request);
 
@@ -123,15 +154,9 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock the sequence creation to fail
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest
-              .fn()
-              .mockResolvedValue({ data: null, error: { message: 'Database error' } }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: null, error: { message: 'Database error' } }),
+      );
 
       await expect(emailSequenceService.createEmailSequence(userId, request)).rejects.toThrow(
         'Failed to create email sequence: Database error',
@@ -156,22 +181,11 @@ describe('EmailSequenceService', () => {
       ];
 
       // Mock the sequences query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: mockSequences, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequences, error: null }, 'order'),
+      );
 
-      // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      });
+      // (No steps query needed here)
 
       const result = await emailSequenceService.getEmailSequences(userId);
 
@@ -190,24 +204,11 @@ describe('EmailSequenceService', () => {
       ];
 
       // Mock the sequences query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              order: jest.fn().mockResolvedValue({ data: mockSequences, error: null }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequences, error: null }, 'order'),
+      );
 
-      // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      });
+      // (No steps query needed here)
 
       const result = await emailSequenceService.getEmailSequences(userId, clientId);
 
@@ -226,24 +227,14 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock the sequence query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: mockSequence, error: null }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequence, error: null }, 'single'),
+      );
 
       // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: [], error: null }, 'order'),
+      );
 
       const result = await emailSequenceService.getEmailSequence(sequenceId, userId);
 
@@ -255,15 +246,9 @@ describe('EmailSequenceService', () => {
       const userId = 'test-user-id';
 
       // Mock the sequence query to return null
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: null, error: { code: 'PGRST116' } }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: null, error: { code: 'PGRST116' } }, 'single'),
+      );
 
       const result = await emailSequenceService.getEmailSequence(sequenceId, userId);
 
@@ -288,26 +273,14 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock the update query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              select: jest.fn().mockReturnValue({
-                single: jest.fn().mockResolvedValue({ data: mockUpdatedSequence, error: null }),
-              }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockUpdatedSequence, error: null }, 'single'),
+      );
 
-      // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: [], error: null }),
-          }),
-        }),
-      });
+      // Mock the steps query (if fetched)
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: [], error: null }, 'order'),
+      );
 
       const result = await emailSequenceService.updateEmailSequence(
         sequenceId,
@@ -325,18 +298,14 @@ describe('EmailSequenceService', () => {
       const userId = 'test-user-id';
 
       // Mock the steps deletion
-      mockSupabaseClient.from.mockReturnValueOnce({
-        delete: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: null }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ error: null }, 'eq2'),
+      );
 
       // Mock the sequence deletion
-      mockSupabaseClient.from.mockReturnValueOnce({
-        delete: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ error: null }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ error: null }, 'eq2'),
+      );
 
       await expect(
         emailSequenceService.deleteEmailSequence(sequenceId, userId),
@@ -380,33 +349,19 @@ describe('EmailSequenceService', () => {
       };
 
       // Mock getEmailSequence
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: mockSequence, error: null }),
-            }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequence, error: null }, 'single'),
+      );
 
       // Mock the steps query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue({
-            order: jest.fn().mockResolvedValue({ data: mockSequence.steps, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockSequence.steps, error: null }, 'order'),
+      );
 
       // Mock execution creation
-      mockSupabaseClient.from.mockReturnValueOnce({
-        insert: jest.fn().mockReturnValue({
-          select: jest.fn().mockReturnValue({
-            single: jest.fn().mockResolvedValue({ data: mockExecution, error: null }),
-          }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockExecution, error: null }, 'single'),
+      );
 
       const result = await emailSequenceService.startEmailSequenceExecution(
         sequenceId,
@@ -431,11 +386,9 @@ describe('EmailSequenceService', () => {
       ];
 
       // Mock the deliveries query
-      mockSupabaseClient.from.mockReturnValueOnce({
-        select: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({ data: mockDeliveries, error: null }),
-        }),
-      });
+      mockSupabaseClient.from.mockReturnValueOnce(
+        buildChain({ data: mockDeliveries, error: null }, 'eq'),
+      );
 
       const result = await emailSequenceService.getDeliveryStats(userId);
 
