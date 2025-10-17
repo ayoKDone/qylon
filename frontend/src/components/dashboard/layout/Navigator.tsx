@@ -5,7 +5,7 @@ import { GoWorkflow } from 'react-icons/go';
 import { GrHistory } from 'react-icons/gr';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { Link, useLocation } from 'react-router-dom';
-import logoImage from '../../assets/images/qylon-logo.png';
+import logoImage from '../../../assets/images/qylon-logo.png';
 import RecordingStatus from './RecordingStatus';
 
 export default function Navigator() {
