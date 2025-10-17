@@ -3,6 +3,7 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 import { ErrorBoundary } from './components/ErrorBoundary';
 import PerformanceDashboard from './components/PerformanceDashboard';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import './settings.css';
 import Stylexui from './utils/Stylexui';
 
 // Landing page components (loaded immediately for SEO)

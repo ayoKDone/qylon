@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaSpinner } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft, FaArrowRight, FaSpinner } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 import { onboardingService } from '../../../../services/onboardingService';
 import Icon from '../../../icons/Icon';
+import OnboardingProgress from '../../../UI/OnboardingProgress';
 
 interface FormValues {
   image: FileList;
@@ -90,21 +91,20 @@ export default function Profile() {
 
   return (
     <>
-      <div className='xui-text-center xui-max-w-[500] xui-w-fluid-100 xui-mx-auto'>
-        <h2 className='xui-font-sz-[24px] xui-md-font-sz-[24px] xui-font-w-bold'>Profile Setup</h2>
-        <p className='xui-font-sz-[15px] xui-mt-half xui-opacity-6'>
-          Let's get you started by filling in your credentials, this way we can better interact with
-          you.
-        </p>
+    <OnboardingProgress step={2} />
+    <section className='xui-box-shadow-1 xui-py-2 xui-px-1 xui-md-px-3'>
+      <div className='xui-text-left'>
+        <h4 className='xui-mt-1 text-[18px]'>Set Up Your Profile</h4>
+        <p className='text-[15px] xui-mt-half xui-w-fluid-80 xui-opacity-7'>Help us personalize your Qylon experience</p>
       </div>
       <form
         onSubmit={handleSubmit(submitProfile)}
         className='xui-max-w-800 xui-mt-2 xui-mx-auto xui-w-fluid-100 xui-form'
         noValidate
       >
-        <div className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-[16px] xui-mb-2'>
+        <div className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-1 xui-mb-2'>
           <label
-            className='xui-w-[120px] xui-h-[120px] xui-bg-light xui-bdr-rad-circle xui-overflow-hidden xui-pos-relative xui-cursor-pointer'
+            className='w-[120px] h-[120px] xui-bg-light xui-bdr-rad-circle xui-overflow-hidden xui-pos-relative xui-cursor-pointer'
             htmlFor='image'
           >
             <img
@@ -118,7 +118,7 @@ export default function Profile() {
               className='xui-w-fluid-100 xui-h-fluid-100'
             />
             <div
-              className='xui-w-fluid-100 xui-position-absolute xui-h-[32px] xui-bg-[#000000b8] xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-text-white'
+              className='xui-w-fluid-100 xui-position-absolute h-[32px] bg-[#000000b8] xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-text-white'
               style={{ bottom: 0, left: 0 }}
             >
               <Icon name='camera' size={16} />
@@ -168,7 +168,7 @@ export default function Profile() {
           id='image'
           accept='image/*'
         />
-        <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-[12px]'>
+        <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-1 xui-grid-gap-half'>
           <div className='xui-form-box' xui-error={errors.names ? 'true' : 'false'}>
             <label htmlFor='names'>Full Names</label>
             <input
@@ -198,7 +198,7 @@ export default function Profile() {
             )}
           </div>
         </div>
-        <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-[12px]'>
+        <div className='xui-d-grid xui-grid-col-1 xui-md-grid-col-1 xui-grid-gap-half'>
           <div className='xui-form-box' xui-error={errors.role_selection ? 'true' : 'false'}>
             <label htmlFor='role_selection'>Role Selection</label>
             <select
@@ -257,14 +257,24 @@ export default function Profile() {
             <span className='xui-form-error-msg'>{errors.industry_selection.message}</span>
           )}
         </div>
-        <button
-          type='submit'
-          disabled={isSubmitting}
-          className='w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white flex items-center justify-center'
-        >
-          {isSubmitting ? <FaSpinner className='animate-spin h-6 w-6' /> : 'Complete Profile'}
-        </button>
+        <div className='xui-d-grid xui-grid-col-2 xui-grid-gap-1'>
+            <Link to={'/setup'}
+              className='w-full outline-none xui-mt-half py-2.5 xui-btn xui-btn-block text-black flex xui-grid-gap-half items-center justify-center xui-bdr-rad-half'
+            >
+              <FaArrowLeft size={14} />
+              {'Back'}
+            </Link>
+            <button
+              type='submit'
+              disabled={isSubmitting}
+              className='w-full outline-none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-[#124697] to-[#07224B] text-white flex xui-grid-gap-half items-center justify-center'
+            >
+              {isSubmitting ? <FaSpinner className='animate-spin h-6 w-6' /> : 'Continue'}
+              <FaArrowRight size={14} />
+            </button>
+        </div>
       </form>
+    </section>
     </>
   );
 }
