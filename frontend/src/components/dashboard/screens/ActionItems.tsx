@@ -419,14 +419,15 @@ export default function ActionItems() {
       {/* Right Sidebar - Right Column */}
       <div className='lg:col-span-4 flex flex-col gap-4'>
         {/* Raw Recording Retrieval */}
-        <StatsHeader title='Raw Recording Retrieval'
+        <StatsHeader
+          title='Raw Recording Retrieval'
           rightContent={
             <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
               <ArrowRight className='w-4 h-4' />
             </button>
           }
         >
-          <RawRecordingRetrieval limit={3}/>
+          <RawRecordingRetrieval limit={3} />
         </StatsHeader>
 
         {/* Transcription Retrieval */}
@@ -438,7 +439,7 @@ export default function ActionItems() {
             </button>
           }
         >
-          <TranscriptRetrieval limit={3}/>
+          <TranscriptRetrieval limit={3} />
         </StatsHeader>
       </div>
     </div>
