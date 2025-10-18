@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, ArrowRight } from 'lucide-react';
 import TaskStats from '../widgets/TaskStats';
 import TasksList from '../widgets/TasksList';
 import BulkActions from '../widgets/BulkActions';
-import RecentMeetings from '../widgets/RecentMeeting';
 import StatsHeader from '../widgets/StatsHeader';
-import UpcomingMeetings from '../widgets/UpcomingMeetings';
+import RawRecordingRetrieval from '../widgets/RawRecordingRetrieval';
+import TranscriptRetrieval from '../widgets/TranscriptRetrieval';
 
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
@@ -27,22 +27,6 @@ interface Task {
   tags: string[];
 }
 
-interface RecentMeeting {
-  id: string;
-  title: string;
-  time: string;
-  participants: number;
-  date: string;
-  status: 'active' | 'completed' | 'scheduled';
-  statusColor: 'green' | 'orange' | 'blue';
-}
-
-interface upcomingMeetings {
-  time: string;
-  title: string;
-  attendees: number;
-}
-
 export default function ActionItems() {
   const { setNavbar } = useOutletContext<NavbarContext>();
   const [selectAll, setSelectAll] = useState(false);
@@ -53,41 +37,6 @@ export default function ActionItems() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
-  const upcomingMeetingsData: upcomingMeetings[] = [
-    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
-    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
-    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
-  ];
-
-  const recentMeetingsData: RecentMeeting[] = [
-    // {
-    //   id: '1',
-    //   title: 'Product Strategy Session',
-    //   time: '48:12',
-    //   participants: 5,
-    //   date: '1/15/2024',
-    //   status: 'completed',
-    //   statusColor: 'green',
-    // },
-    // {
-    //   id: '2',
-    //   title: 'Client Onboarding Call',
-    //   time: '32:15',
-    //   participants: 3,
-    //   date: '1/14/2024',
-    //   status: 'completed',
-    //   statusColor: 'orange',
-    // },
-    // {
-    //   id: '3',
-    //   title: 'Team Standup',
-    //   time: '16:42',
-    //   participants: 7,
-    //   date: '1/14/2024',
-    //   status: 'active',
-    //   statusColor: 'green',
-    // },
-  ];
 
   const [tasks, setTasks] = useState<Task[]>([
     // {
@@ -419,17 +368,27 @@ export default function ActionItems() {
 
       {/* Right Sidebar - Right Column */}
       <div className='lg:col-span-4 flex flex-col gap-4'>
-        {/* Upcoming Meetings */}
-        <StatsHeader title='Upcoming Meetings'>
-          <UpcomingMeetings meetings={upcomingMeetingsData} />
+        {/* Raw Recording Retrieval */}
+        <StatsHeader title='Raw Recording Retrieval'
+          rightContent={
+            <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+              <ArrowRight className='w-4 h-4' />
+            </button>
+          }
+        >
+          <RawRecordingRetrieval limit={3}/>
         </StatsHeader>
 
-        {/* Recent Meetings */}
-        <StatsHeader title='Recent Meetings'>
-          <RecentMeetings
-            meetings={recentMeetingsData}
-            onMeetingClick={id => console.log('Clicked meeting:', id)}
-          />
+        {/* Transcription Retrieval */}
+        <StatsHeader 
+          title='Transcription Retrieval'
+          rightContent={
+            <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+              <ArrowRight className='w-4 h-4' />
+            </button>
+          }
+        >
+          <TranscriptRetrieval limit={3}/>
         </StatsHeader>
       </div>
     </div>
