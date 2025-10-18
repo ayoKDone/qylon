@@ -40,6 +40,7 @@ export default function TeamOnboarding() {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<TeamOnboardingFormData>({
     defaultValues: {
       maxUsers: 50,
@@ -72,7 +73,7 @@ export default function TeamOnboarding() {
     reader.onload = e => {
       const text = e.target?.result as string;
       const lines = text.split('\n');
-      // const headers = lines[0].split(',').map(h => h.trim());
+      const headers = lines[0].split(',').map(h => h.trim());
 
       const data: UserProvisioningData[] = lines
         .slice(1)
