@@ -1,6 +1,6 @@
+import { FileText, Plus, Workflow as WorkflowIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Workflow as WorkflowIcon, FileText, Plus } from 'lucide-react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import FilterTabs from '../widgets/FilterTabs';
 import IntegrationCard from '../widgets/IntegrationCard';
 import TemplateCard from '../widgets/TemplateCard';

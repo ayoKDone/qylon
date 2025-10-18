@@ -409,7 +409,7 @@ export class PersonalizationService {
         }
       }
       return true;
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -468,17 +468,19 @@ export class PersonalizationService {
       case 'analytics.has_event_type':
         return analytics.some(event => event.event_type === value);
 
-      case 'analytics.last_activity_after':
+      case 'analytics.last_activity_after': {
         const lastActivity = analytics.reduce((latest, event) => {
           return new Date(event.timestamp) > new Date(latest) ? event.timestamp : latest;
         }, '1970-01-01');
         return new Date(lastActivity) >= new Date(value);
+      }
 
-      case 'analytics.last_activity_before':
+      case 'analytics.last_activity_before': {
         const lastActivityBefore = analytics.reduce((latest, event) => {
           return new Date(event.timestamp) > new Date(latest) ? event.timestamp : latest;
         }, '1970-01-01');
         return new Date(lastActivityBefore) <= new Date(value);
+      }
 
       default:
         return false;
@@ -654,7 +656,6 @@ export class PersonalizationService {
     trigger: PersonalizationTrigger,
     userId: string,
     eventType?: string,
-    eventData?: Record<string, any>,
   ): Promise<boolean> {
     try {
       // Check trigger type conditions
@@ -674,7 +675,7 @@ export class PersonalizationService {
         default:
           return false;
       }
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }
@@ -683,8 +684,8 @@ export class PersonalizationService {
    * Evaluate user behavior conditions
    */
   private async evaluateUserBehaviorConditions(
-    conditions: Record<string, any>,
-    userId: string,
+    _conditions: Record<string, any>,
+    _userId: string,
   ): Promise<boolean> {
     // Implementation would depend on specific behavior conditions
     // This is a simplified version

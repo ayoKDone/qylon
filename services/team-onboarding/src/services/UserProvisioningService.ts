@@ -281,7 +281,7 @@ export class UserProvisioningService {
   ): Promise<ProvisioningResult> {
     try {
       // Check if user already exists
-      const { data: existingUser, error: checkError } = await this.supabase
+      const { data: existingUser, error: _checkError } = await this.supabase
         .from('users')
         .select('id, email')
         .eq('email', userData.email)
@@ -289,7 +289,7 @@ export class UserProvisioningService {
 
       if (existingUser) {
         // Check if user is already in the team
-        const { data: teamUser, error: teamCheckError } = await this.supabase
+        const { data: teamUser, error: _teamCheckError } = await this.supabase
           .from('team_users')
           .select('id')
           .eq('team_id', teamId)
@@ -640,13 +640,14 @@ export class UserProvisioningService {
         case BulkOperationType.RESET_PASSWORDS:
           await this.resetUserPassword(userId);
           break;
-        case BulkOperationType.EXPORT_USER_DATA:
+        case BulkOperationType.EXPORT_USER_DATA: {
           const userData = await this.exportUserData(userId);
           return {
             userId,
             status: 'success',
             data: userData,
           };
+        }
         default:
           throw new Error(`Unknown operation type: ${operation}`);
       }
@@ -746,7 +747,7 @@ export class UserProvisioningService {
    */
   async parseCSVForUserProvisioning(
     csvBuffer: Buffer,
-    teamId: string,
+    _teamId: string,
   ): Promise<UserProvisioningData[]> {
     return new Promise((resolve, reject) => {
       const users: UserProvisioningData[] = [];

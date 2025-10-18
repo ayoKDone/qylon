@@ -42,7 +42,7 @@ export class ComplianceManagementService {
       }
 
       // Check if compliance settings already exist
-      const { data: existingSettings, error: checkError } = await this.supabase
+      const { data: existingSettings, error: _checkError } = await this.supabase
         .from('compliance_settings')
         .select('id')
         .eq('team_id', teamId)
@@ -455,7 +455,7 @@ export class ComplianceManagementService {
       const complianceSettings = await this.getComplianceSettings(teamId);
 
       // Get existing compliance record
-      let existingCompliance = complianceSettings.regulatoryCompliance.find(
+      const _existingCompliance = complianceSettings.regulatoryCompliance.find(
         c => c.framework === framework,
       );
 

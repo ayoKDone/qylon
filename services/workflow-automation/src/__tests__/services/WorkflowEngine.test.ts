@@ -7,7 +7,7 @@ jest.mock('../../services/WorkflowEngine', () => {
   return {
     ...originalModule,
     WorkflowEngine: jest.fn().mockImplementation(() => ({
-      executeWorkflow: jest.fn().mockImplementation(async (workflowDef: any, context: any) => {
+      executeWorkflow: jest.fn().mockImplementation(async (workflowDef: any, _context: any) => {
         // Mock successful execution for valid workflows
         if (workflowDef.id === 'test-workflow') {
           return {

@@ -1,12 +1,12 @@
+import { ArrowRight, Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Search, Filter } from 'lucide-react';
+import BulkActions from '../widgets/BulkActions';
+import RawRecordingRetrieval from '../widgets/RawRecordingRetrieval';
+import StatsHeader from '../widgets/StatsHeader';
 import TaskStats from '../widgets/TaskStats';
 import TasksList from '../widgets/TasksList';
-import BulkActions from '../widgets/BulkActions';
-import RecentMeetings from '../widgets/RecentMeeting';
-import StatsHeader from '../widgets/StatsHeader';
-import UpcomingMeetings from '../widgets/UpcomingMeetings';
+import TranscriptRetrieval from '../widgets/TranscriptRetrieval';
 
 type NavbarContext = {
   setNavbar: (val: { title: string; subtitle?: string }) => void;
@@ -27,20 +27,19 @@ interface Task {
   tags: string[];
 }
 
-interface RecentMeeting {
-  id: string;
-  title: string;
-  time: string;
-  participants: number;
-  date: string;
-  status: 'active' | 'completed' | 'scheduled';
-  statusColor: 'green' | 'orange' | 'blue';
-}
-
 interface upcomingMeetings {
   time: string;
   title: string;
-  attendees: number;
+}
+
+interface RecentMeeting {
+  id: string;
+  time: string;
+  title: string;
+  participants: number;
+  date: string;
+  status: string;
+  statusColor: string;
 }
 
 export default function ActionItems() {
@@ -419,17 +418,27 @@ export default function ActionItems() {
 
       {/* Right Sidebar - Right Column */}
       <div className='lg:col-span-4 flex flex-col gap-4'>
-        {/* Upcoming Meetings */}
-        <StatsHeader title='Upcoming Meetings'>
-          <UpcomingMeetings meetings={upcomingMeetingsData} />
+        {/* Raw Recording Retrieval */}
+        <StatsHeader title='Raw Recording Retrieval'
+          rightContent={
+            <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+              <ArrowRight className='w-4 h-4' />
+            </button>
+          }
+        >
+          <RawRecordingRetrieval limit={3}/>
         </StatsHeader>
 
-        {/* Recent Meetings */}
-        <StatsHeader title='Recent Meetings'>
-          <RecentMeetings
-            meetings={recentMeetingsData}
-            onMeetingClick={id => console.log('Clicked meeting:', id)}
-          />
+        {/* Transcription Retrieval */}
+        <StatsHeader
+          title='Transcription Retrieval'
+          rightContent={
+            <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
+              <ArrowRight className='w-4 h-4' />
+            </button>
+          }
+        >
+          <TranscriptRetrieval limit={3}/>
         </StatsHeader>
       </div>
     </div>

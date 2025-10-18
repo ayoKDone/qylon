@@ -86,7 +86,7 @@ export class AuthMiddleware {
       };
 
       next();
-    } catch (error) {
+    } catch (_error) {
       res.status(500).json({
         error: 'AUTHENTICATION_ERROR',
         message: 'Internal authentication error',
@@ -201,7 +201,7 @@ export class AuthMiddleware {
       };
 
       next();
-    } catch (error) {
+    } catch (_error) {
       // Error during authentication, continue without authentication
       next();
     }

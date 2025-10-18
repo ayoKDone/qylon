@@ -1,11 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🔍 Running pre-commit quality checks..."
+echo "🔍 Running pre-commit quality check..."
 
 # Run lint-staged to format and lint staged files
 npx lint-staged
-
 # Run TypeScript type checking (no emit)
 echo "📝 Running TypeScript type checking..."
 npx tsc --noEmit
