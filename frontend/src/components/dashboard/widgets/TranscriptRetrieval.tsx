@@ -43,11 +43,11 @@ export default function TranscriptRetrieval({ limit }: TranscriptRetrievalProps 
 
   if (!transcripts || transcripts.length === 0) {
     return (
-        <EmptyState
-            icon={FileText}
-            title="No transcripts available"
-            message="Meeting transcripts will be displayed here once they are retrieved from recall"
-        />
+      <EmptyState
+        icon={FileText}
+        title='No transcripts available'
+        message='Meeting transcripts will be displayed here once they are retrieved from recall'
+      />
     );
   }
 
@@ -72,7 +72,9 @@ export default function TranscriptRetrieval({ limit }: TranscriptRetrievalProps 
 
           <div className='flex-shrink-0 ml-4 text-right'>
             <p className='text-xs font-medium text-gray-900'>{transcript.language}</p>
-            <p className='text-xs text-gray-500 mt-0.5'>{transcript.wordCount?.toLocaleString()} words</p>
+            <p className='text-xs text-gray-500 mt-0.5'>
+              {transcript.wordCount?.toLocaleString()} words
+            </p>
           </div>
         </div>
       ))}

@@ -1,6 +1,6 @@
+import { FileText, Plus, Workflow as WorkflowIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Workflow as WorkflowIcon, FileText, Plus } from 'lucide-react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import FilterTabs from '../widgets/FilterTabs';
 import IntegrationCard from '../widgets/IntegrationCard';
 import TemplateCard from '../widgets/TemplateCard';
@@ -215,8 +215,8 @@ export default function Workflow() {
           {searchQuery
             ? 'Try adjusting your search terms or create a new automation.'
             : 'Get started by creating your first automation or browse templates for inspiration.'}
-          <div className="xui-tooltip" xui-set="bottom-right">
-            <span className='ml-1 text-blue-600 text-xs cursor-pointer group-hover:underline'>
+          <div className='xui-tooltip' xui-set='bottom-right'>
+            <span className='ml-1 text-blue-950 text-xs cursor-pointer group-hover:underline'>
               Learn more
             </span>
             <span className='xui-tooltip-content'>

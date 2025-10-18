@@ -24,81 +24,81 @@ export default function UpcomingCalendarMeetings() {
       date: '2025-10-17',
       time: '08:00 - 09:00',
       attendees: 3,
-      attendeeImages: ['DT', 'AM']
+      attendeeImages: ['DT', 'AM'],
     },
     {
       title: 'Design Presentation',
       date: '2025-10-17',
       time: '10:00 - 11:00',
       attendees: 3,
-      attendeeImages: ['DP', 'KL']
+      attendeeImages: ['DP', 'KL'],
     },
     {
       title: 'Client Meeting',
       date: '2025-10-05',
       time: '14:00 - 15:00',
       attendees: 2,
-      attendeeImages: ['CM']
+      attendeeImages: ['CM'],
     },
     {
       title: 'Team Sync',
       date: '2025-10-12',
       time: '09:00 - 10:00',
       attendees: 5,
-      attendeeImages: ['TS']
+      attendeeImages: ['TS'],
     },
     {
       title: 'Product Review',
       date: '2025-10-26',
       time: '15:00 - 16:00',
       attendees: 4,
-      attendeeImages: ['PR']
-    }
+      attendeeImages: ['PR'],
+    },
   ];
 
   const daysOfWeek = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  
+
   const getMonthData = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
-    
+
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const startDay = (firstDay.getDay() + 6) % 7; // Adjust to start week on Monday
     const daysInMonth = lastDay.getDate();
-    
+
     const prevMonthLastDay = new Date(year, month, 0).getDate();
-    
+
     const days = [];
-    
+
     // Previous month days
     for (let i = startDay - 1; i >= 0; i--) {
       days.push({
         day: prevMonthLastDay - i,
         isCurrentMonth: false,
-        date: new Date(year, month - 1, prevMonthLastDay - i)
+        date: new Date(year, month - 1, prevMonthLastDay - i),
       });
     }
-    
+
     // Current month days
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({
         day: i,
         isCurrentMonth: true,
-        date: new Date(year, month, i)
+        date: new Date(year, month, i),
       });
     }
-    
+
     // Next month days
     const remainingDays = 42 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
         day: i,
         isCurrentMonth: false,
-        date: new Date(year, month + 1, i)
+        date: new Date(year, month + 1, i),
       });
     }
-    
+
     return days;
   };
 
@@ -123,7 +123,7 @@ export default function UpcomingCalendarMeetings() {
   const monthData = getMonthData(currentDate);
   const today = new Date();
   const selectedDateMeetings = getMeetingsForDate(selectedDate);
-  
+
   // Check if selected date is in the past
   const isPastDate = selectedDate.toDateString() !== today.toDateString() && selectedDate < today;
 
@@ -133,9 +133,9 @@ export default function UpcomingCalendarMeetings() {
         {/* Header */}
         <div className='flex items-center justify-between mb-6'>
           <div className='flex items-center gap-3'>
-            <select 
+            <select
               value={selectedYear}
-              onChange={(e) => {
+              onChange={e => {
                 const newYear = parseInt(e.target.value);
                 setSelectedYear(newYear);
                 setCurrentDate(new Date(newYear, currentDate.getMonth(), 1));
@@ -143,11 +143,13 @@ export default function UpcomingCalendarMeetings() {
               className='text-base font-semibold text-gray-900 bg-transparent border-0 cursor-pointer focus:outline-none'
             >
               {[2021, 2022, 2023, 2024, 2025, 2026].map(year => (
-                <option key={year} value={year}>{year}</option>
+                <option key={year} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
           </div>
-          
+
           <div className='flex items-center gap-4'>
             <button
               onClick={goToPreviousMonth}
@@ -155,11 +157,11 @@ export default function UpcomingCalendarMeetings() {
             >
               <ChevronLeft className='w-5 h-5 text-gray-600' />
             </button>
-            
+
             <span className='text-base font-medium text-gray-900 min-w-20 text-center'>
               {currentDate.toLocaleDateString('en-US', { month: 'long' })}
             </span>
-            
+
             <button
               onClick={goToNextMonth}
               className='p-1 hover:bg-gray-100 rounded transition-colors'
@@ -186,29 +188,24 @@ export default function UpcomingCalendarMeetings() {
               const dayMeetings = getMeetingsForDate(dayData.date);
               const isToday = dayData.date.toDateString() === today.toDateString();
               const isSelected = dayData.date.toDateString() === selectedDate.toDateString();
-              
+
               return (
-                <div
-                  key={idx}
-                  className='flex flex-col items-center justify-center py-2'
-                >
+                <div key={idx} className='flex flex-col items-center justify-center py-2'>
                   <div
                     onClick={() => dayData.isCurrentMonth && setSelectedDate(dayData.date)}
                     className={`w-10 h-10 flex flex-col items-center justify-center rounded-full transition-colors ${
                       isToday ? 'bg-blue-950 text-white' : ''
                     } ${
                       dayData.isCurrentMonth ? 'cursor-pointer hover:bg-gray-100' : 'cursor-default'
-                    } ${
-                      isSelected && !isToday ? 'bg-blue-100' : ''
-                    }`}
+                    } ${isSelected && !isToday ? 'bg-blue-100' : ''}`}
                   >
                     <span
                       className={`text-sm font-medium ${
                         isToday
                           ? 'text-white'
                           : dayData.isCurrentMonth
-                          ? 'text-gray-900'
-                          : 'text-gray-300'
+                            ? 'text-gray-900'
+                            : 'text-gray-300'
                       }`}
                     >
                       {dayData.day}
@@ -254,16 +251,16 @@ export default function UpcomingCalendarMeetings() {
                         {selectedDate.getDate()}
                       </span>
                     </div>
-                    
+
                     <div className='flex-1 relative pl-4'>
                       <div className='absolute left-0 top-0 bottom-0 w-1 bg-blue-950 rounded-full' />
-                      
+
                       <div className='flex items-center justify-between'>
                         <div>
                           <h4 className='text-sm font-semibold text-gray-900'>{meeting.title}</h4>
                           <p className='text-xs text-gray-500'>{meeting.time}</p>
                         </div>
-                        
+
                         <div className='flex items-center -space-x-2'>
                           {meeting.attendeeImages?.map((img, i) => (
                             <div

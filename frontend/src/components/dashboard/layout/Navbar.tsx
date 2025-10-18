@@ -1,14 +1,6 @@
 // src/components/dashboard/layout/Navbar.tsx
 import { useState } from 'react';
-import {
-  FiBell,
-  FiSun,
-  FiMoon,
-  FiUser,
-  FiChevronDown,
-  FiLogOut,
-  FiMenu,
-} from 'react-icons/fi';
+import { FiBell, FiSun, FiMoon, FiUser, FiChevronDown, FiLogOut, FiMenu } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 type NavbarProps = {
@@ -22,8 +14,6 @@ export default function Navbar({ title, subtitle, userName = 'Amaka', avatarUrl 
   const [showDropdown, setShowDropdown] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
-
-
 
   return (
     <nav className='flex items-center justify-between px-5 py-4  rounded-2xl mt-3'>
@@ -85,7 +75,10 @@ export default function Navbar({ title, subtitle, userName = 'Amaka', avatarUrl 
           {/* Dropdown Menu */}
           {showDropdown && (
             <div className='absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-100'>
-              <button className='w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left' onClick={() => navigate('/dashboard/settings')}>
+              <button
+                className='w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left'
+                onClick={() => navigate('/dashboard/settings')}
+              >
                 <FiUser size={16} className='text-gray-600' />
                 <span className='text-sm text-gray-700'>Profile</span>
               </button>

@@ -1,11 +1,11 @@
+import { ArrowRight, Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { Search, Filter, ArrowRight } from 'lucide-react';
+import BulkActions from '../widgets/BulkActions';
+import RawRecordingRetrieval from '../widgets/RawRecordingRetrieval';
+import StatsHeader from '../widgets/StatsHeader';
 import TaskStats from '../widgets/TaskStats';
 import TasksList from '../widgets/TasksList';
-import BulkActions from '../widgets/BulkActions';
-import StatsHeader from '../widgets/StatsHeader';
-import RawRecordingRetrieval from '../widgets/RawRecordingRetrieval';
 import TranscriptRetrieval from '../widgets/TranscriptRetrieval';
 
 type NavbarContext = {
@@ -27,6 +27,21 @@ interface Task {
   tags: string[];
 }
 
+interface upcomingMeetings {
+  time: string;
+  title: string;
+}
+
+interface RecentMeeting {
+  id: string;
+  time: string;
+  title: string;
+  participants: number;
+  date: string;
+  status: string;
+  statusColor: string;
+}
+
 export default function ActionItems() {
   const { setNavbar } = useOutletContext<NavbarContext>();
   const [selectAll, setSelectAll] = useState(false);
@@ -37,6 +52,41 @@ export default function ActionItems() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
+  const upcomingMeetingsData: upcomingMeetings[] = [
+    // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
+    // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
+    // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
+  ];
+
+  const recentMeetingsData: RecentMeeting[] = [
+    // {
+    //   id: '1',
+    //   title: 'Product Strategy Session',
+    //   time: '48:12',
+    //   participants: 5,
+    //   date: '1/15/2024',
+    //   status: 'completed',
+    //   statusColor: 'green',
+    // },
+    // {
+    //   id: '2',
+    //   title: 'Client Onboarding Call',
+    //   time: '32:15',
+    //   participants: 3,
+    //   date: '1/14/2024',
+    //   status: 'completed',
+    //   statusColor: 'orange',
+    // },
+    // {
+    //   id: '3',
+    //   title: 'Team Standup',
+    //   time: '16:42',
+    //   participants: 7,
+    //   date: '1/14/2024',
+    //   status: 'active',
+    //   statusColor: 'green',
+    // },
+  ];
 
   const [tasks, setTasks] = useState<Task[]>([
     // {
@@ -369,18 +419,19 @@ export default function ActionItems() {
       {/* Right Sidebar - Right Column */}
       <div className='lg:col-span-4 flex flex-col gap-4'>
         {/* Raw Recording Retrieval */}
-        <StatsHeader title='Raw Recording Retrieval'
+        <StatsHeader
+          title='Raw Recording Retrieval'
           rightContent={
             <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
               <ArrowRight className='w-4 h-4' />
             </button>
           }
         >
-          <RawRecordingRetrieval limit={3}/>
+          <RawRecordingRetrieval limit={3} />
         </StatsHeader>
 
         {/* Transcription Retrieval */}
-        <StatsHeader 
+        <StatsHeader
           title='Transcription Retrieval'
           rightContent={
             <button className='text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1'>
@@ -388,7 +439,7 @@ export default function ActionItems() {
             </button>
           }
         >
-          <TranscriptRetrieval limit={3}/>
+          <TranscriptRetrieval limit={3} />
         </StatsHeader>
       </div>
     </div>

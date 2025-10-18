@@ -47,11 +47,11 @@ export default function RawRecordingRetrieval({ limit }: RawRecordingRetrievalPr
 
   if (!recordings || recordings.length === 0) {
     return (
-        <EmptyState
-            icon={FileAudio}
-            title="No recordings available"
-            message="Raw meeting recordings will be displayed here once they are retrieved from recall"
-        />
+      <EmptyState
+        icon={FileAudio}
+        title='No recordings available'
+        message='Raw meeting recordings will be displayed here once they are retrieved from recall'
+      />
     );
   }
 
