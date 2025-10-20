@@ -1,4 +1,4 @@
-import type { Session, User as SupabaseUser } from '@supabase/auth-js';
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
 
 export type LoginFormInputs = {
   email: string;
@@ -16,11 +16,23 @@ export type SignUpFormInputs = {
   fullName?: string;
 };
 
-export type SignUpResponse = {
-  user: SupabaseUser | null;
+export interface SignUpResponse {
+  user: BackendUser | null;
   session: Session | null;
   error?: string;
-};
+}
 export type ForgotPasswordInputs = {
   email: string;
 };
+export interface BackendRegisterResponse {
+  message: string;
+  user: {
+    id: string;
+    email: string;
+  };
+  session: Session | null;
+}
+export interface BackendUser {
+  id: string;
+  email: string;
+}

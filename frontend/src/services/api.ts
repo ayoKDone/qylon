@@ -1,14 +1,6 @@
-import { ApiResponse, PaginatedResponse } from '@/types';
+import { PaginatedResponse } from '@/types';
 
-// Type definitions for fetch API
-type HeadersInit = Headers | string[][] | Record<string, string>;
-type BodyInit = Blob | FormData | URLSearchParams | string;
-type FetchRequestInit = {
-  method?: string;
-  headers?: HeadersInit;
-  body?: BodyInit | null;
-};
-
+// Base API URL (from .env or fallback)
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
@@ -28,79 +20,113 @@ class ApiService {
   private defaultHeaders: HeadersInit;
 
   constructor(baseURL: string = API_BASE_URL) {
-    this.baseURL = baseURL;
+    this.baseURL = baseURL.replace(/\/+$/, ''); // remove trailing slashes
     this.defaultHeaders = {
       'Content-Type': 'application/json',
     };
   }
 
+  private buildUrl(port: number, path: string): string {
+    const cleanPath = path.replace(/^\/+/, '');
+    return `${this.baseURL}:${port}/${cleanPath}`;
+  }
+  /**
+   * Generic request method
+   */
   private async request<T>(
+    port: number,
     endpoint: string,
-    options: FetchRequestInit = {},
-  ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}${endpoint}`;
-    const config: FetchRequestInit = {
+    options: RequestInit = {},
+  ): Promise<T & { httpStatus: number }> {
+    const url = this.buildUrl(port, endpoint);
+
+    const config: RequestInit = {
       ...options,
       headers: {
         ...this.defaultHeaders,
-        ...options.headers,
+        ...(options.headers || {}),
       },
     };
 
+    const response = await fetch(url, config);
+
+    // Safely parse JSON without using "any"
+    let data: unknown;
     try {
-      const response = await fetch(url, config);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new ApiError(data.message || 'An error occurred', response.status, data.code);
-      }
-
-      return data;
-    } catch (error) {
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw new ApiError('Network error occurred', 0, 'NETWORK_ERROR');
+      data = await response.json();
+    } catch {
+      data = {};
     }
+
+    if (!response.ok) {
+      const message =
+        typeof data === 'object' && data !== null && 'message' in data
+          ? String((data as { message?: string }).message)
+          : 'An error occurred';
+      const code =
+        typeof data === 'object' && data !== null && 'code' in data
+          ? String((data as { code?: string }).code)
+          : undefined;
+
+      throw new ApiError(message, response.status, code);
+    }
+
+    // Ensure the result matches expected type
+    return { ...(data as T), httpStatus: response.status };
   }
 
-  // Generic CRUD operations
-  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  /**
+   * Standard CRUD methods
+   */
+  async get<T>(port: number, endpoint: string): Promise<T & { httpStatus: number }> {
+    return this.request<T>(port, endpoint, { method: 'GET' });
   }
 
-  async post<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
+  async post<T>(
+    port: number,
+    endpoint: string,
+    data?: unknown,
+  ): Promise<T & { httpStatus: number }> {
+    return this.request<T>(port, endpoint, {
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async put<T>(endpoint: string, data?: unknown): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, {
+  async put<T>(
+    port: number,
+    endpoint: string,
+    data?: unknown,
+  ): Promise<T & { httpStatus: number }> {
+    return this.request<T>(port, endpoint, {
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
-  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    return this.request<T>(endpoint, { method: 'DELETE' });
+  async delete<T>(port: number, endpoint: string): Promise<T & { httpStatus: number }> {
+    return this.request<T>(port, endpoint, { method: 'DELETE' });
   }
 
-  // Paginated requests
+  /**
+   * Paginated GET
+   */
   async getPaginated<T>(
+    port: number,
     endpoint: string,
     page: number = 1,
     limit: number = 10,
-  ): Promise<ApiResponse<PaginatedResponse<T>>> {
+  ): Promise<PaginatedResponse<T> & { httpStatus: number }> {
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
-    return this.get<PaginatedResponse<T>>(`${endpoint}?${params}`);
+    return this.get<PaginatedResponse<T>>(port, `${endpoint}?${params.toString()}`);
   }
 
-  // Set authentication token
+  /**
+   * Auth token management
+   */
   setAuthToken(token: string) {
     this.defaultHeaders = {
       ...this.defaultHeaders,
@@ -108,16 +134,11 @@ class ApiService {
     };
   }
 
-  // Remove authentication token
   clearAuthToken() {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Authorization, ...headers } = this.defaultHeaders as Record<string, string>;
+    const { _Authorization, ...headers } = this.defaultHeaders as Record<string, string>;
     this.defaultHeaders = headers;
   }
 }
 
-// Create singleton instance
 export const apiService = new ApiService();
-
-// Export the class for testing
 export { ApiError, ApiService };

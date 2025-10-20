@@ -1,4 +1,4 @@
-import type { User } from '@supabase/auth-js';
+import type { User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
@@ -12,7 +12,6 @@ export function useSupabaseSession() {
     // Load initial session
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return;
-      console.log('Initial session data:', data);
       setUser(data.session?.user ?? null);
       setLoading(false);
       if (data.session) {
