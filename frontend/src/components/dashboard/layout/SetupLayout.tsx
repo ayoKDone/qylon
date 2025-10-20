@@ -5,7 +5,7 @@ import { onboardingService } from '../../../services/onboardingService';
 export default function SetUpLayout() {
   const navigate = useNavigate();
 
-  const handleSkipOnboarding = async () => {
+  const _handleSkipOnboarding = async () => {
     try {
       // Mark onboarding as complete to prevent future redirects
       await onboardingService.updateOnboardingProgress('complete', {

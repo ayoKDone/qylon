@@ -52,13 +52,13 @@ export default function ActionItems() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
 
-  const upcomingMeetingsData: upcomingMeetings[] = [
+  const _upcomingMeetingsData: upcomingMeetings[] = [
     // { time: '2:00 PM', title: 'Sprint Planning', attendees: 6 },
     // { time: '4:30 PM', title: 'Client Review', attendees: 3 },
     // { time: 'Tomorrow, 10:00 AM', title: 'Design Critique', attendees: 4 },
   ];
 
-  const recentMeetingsData: RecentMeeting[] = [
+  const _recentMeetingsData: RecentMeeting[] = [
     // {
     //   id: '1',
     //   title: 'Product Strategy Session',
