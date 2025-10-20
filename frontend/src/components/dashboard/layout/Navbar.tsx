@@ -1,7 +1,8 @@
 // src/components/dashboard/layout/Navbar.tsx
 import { useState } from 'react';
-import { FiBell, FiSun, FiMoon, FiUser, FiChevronDown, FiLogOut, FiMenu } from 'react-icons/fi';
+import { FiBell, FiChevronDown, FiLogOut, FiMenu, FiMoon, FiSun, FiUser } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../../../services/authService';
 
 type NavbarProps = {
   title: string;
@@ -14,6 +15,15 @@ export default function Navbar({ title, subtitle, userName = 'Amaka', avatarUrl 
   const [showDropdown, setShowDropdown] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      navigate('/login'); // Redirect after logout
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
 
   return (
     <nav className='flex items-center justify-between px-5 py-4  rounded-2xl mt-3'>
@@ -87,7 +97,10 @@ export default function Navbar({ title, subtitle, userName = 'Amaka', avatarUrl 
                 <span className='text-sm text-gray-700'>Notifications</span>
               </button>
               <div className='border-t border-gray-200'></div>
-              <button className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-left'>
+              <button
+                onClick={handleLogout}
+                className='w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-left'
+              >
                 <FiLogOut size={16} className='text-red-600' />
                 <span className='text-sm text-red-600'>Logout</span>
               </button>

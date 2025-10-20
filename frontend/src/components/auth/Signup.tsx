@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
-import type { SignUpFormInputs } from '../../types/auth';
+import type { SignUpFormInputs, SignUpResponse } from '../../types/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -19,26 +19,34 @@ export default function Signup() {
     setFormError(null);
 
     try {
-      const response = await authService.signUp({
-        email: data.email,
+      const response: SignUpResponse = await authService.signUp({
+        email: data.email.trim(),
         password: data.password,
       });
 
+      // Handle backend or Supabase error
       if (response.error) {
         setFormError(response.error);
         return;
       }
 
-      // If session is null, user needs to confirm email
+      // Handle unverified email (no session)
       if (!response.session) {
-        navigate('/verify-email', { state: { email: data.email } });
+        navigate('/verify-email', {
+          state: { email: data.email },
+        });
         return;
       }
+
       // Redirect to onboarding after successful signup
       navigate('/setup');
     } catch (err: unknown) {
-      setFormError('An unexpected error occurred. Please try again.');
-      console.error(err);
+      console.error('Unexpected signup error:', err);
+
+      // Defensive error handling for network/runtime issues
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.';
+      setFormError(errorMessage);
     }
   };
 

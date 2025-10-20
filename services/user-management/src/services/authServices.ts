@@ -20,14 +20,17 @@ export async function registerUser(req: Request, res: Response<RegisterResponse>
   if (error) {
     // Check if user already exists
     if (error.message.includes('already registered')) {
-      return res.status(409).json({ message: 'User already registered', user: null });
+      return res
+        .status(409)
+        .json({ message: 'User already registered', user: null, session: null });
     }
-    return res.status(400).json({ message: error.message, user: null });
+    return res.status(400).json({ message: error.message, user: null, session: null });
   }
 
   const supabaseUser = data.user;
+  const session = data.session;
   if (!supabaseUser) {
-    return res.status(500).json({ message: 'Failed to create user', user: null });
+    return res.status(500).json({ message: 'Failed to create user', user: null, session: null });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -46,13 +49,14 @@ export async function registerUser(req: Request, res: Response<RegisterResponse>
       email: result.rows[0].email,
     };
 
-    res.status(201).json({ message: 'User registered', user });
+    res.status(201).json({ message: 'User registered', user, session });
   } catch (dbError) {
     // If user not registered in DB then rollback
     await supabase.auth.admin.deleteUser(supabaseUser.id).catch(() => {});
     res.status(500).json({
       message: `Database error: ${dbError instanceof Error ? dbError.message : String(dbError)}`,
       user: null,
+      session: null,
     });
   }
 }

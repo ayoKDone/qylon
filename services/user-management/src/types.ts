@@ -1,4 +1,4 @@
-import { User } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { Request } from 'express';
 
 export interface Users {
@@ -22,6 +22,7 @@ export interface LoginResponse {
 export interface RegisterResponse {
   message: string;
   user: Users | null;
+  session: Session | null;
 }
 export interface AuthRequest extends Request {
   user?: {

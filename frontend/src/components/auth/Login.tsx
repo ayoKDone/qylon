@@ -1,17 +1,17 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useSupabaseSession } from '../../hooks/useSupabaseSession';
 import { authService } from '../../services/authService';
 import type { LoginFormInputs } from '../../types/auth';
+
+import { useNavigate } from 'react-router-dom';
 import { getErrorMessage } from '../../utils/handleError';
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const { user, loading } = useSupabaseSession();
-  const loading = false;
+  const { user, loading } = useSupabaseSession();
   const navigate = useNavigate();
-
   const checkOnboardingStatus = useCallback(async () => {
     try {
       const needsOnboarding = await authService.needsOnboarding();
@@ -22,17 +22,15 @@ export default function Login() {
       }
     } catch (error) {
       console.error('Error checking onboarding status:', error);
-      // Default to onboarding if we can't determine status
       navigate('/setup');
     }
   }, [navigate]);
 
-  // useEffect(() => {
-  //   if (!loading && user) {
-  //     // Check if user has completed onboarding
-  //     checkOnboardingStatus();
-  //   }
-  // }, [user, loading, checkOnboardingStatus]);
+  useEffect(() => {
+    if (!loading && user) {
+      checkOnboardingStatus();
+    }
+  }, [user, loading, checkOnboardingStatus]);
 
   const {
     register,

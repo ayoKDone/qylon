@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express, { Request, Response } from 'express';
 import { verifyJWT } from './middleware/jwt';
 import authRoutes from './routes/auth';
@@ -5,6 +6,7 @@ import profileRoutes from './routes/profileRoutes';
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Auth routes
 app.use('/auth', authRoutes);
