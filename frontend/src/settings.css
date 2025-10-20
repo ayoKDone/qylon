@@ -1,0 +1,23 @@
+/* This CSS file was designed to style the settings page of a web application. It includes styles for layout, typography, and interactive elements to ensure a user-friendly interface. */
+.qylon-tab {
+  position: sticky;
+  z-index: 1;
+  top: -30px;
+}
+.qylon-tab-active {
+  border-bottom: 2px solid #000000;
+}
+.qylon-progress-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 8px;
+  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.16);
+}
+.qylon-progress-bar {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+}

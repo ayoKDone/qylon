@@ -1,0 +1,91 @@
+name: Test Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup DigitalOcean CLI
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DO_ACCESS_TOKEN }}
+
+      - name: Test Registry Authentication
+        run: |
+          echo "🔧 Testing DigitalOcean Container Registry Authentication"
+
+          # Test registry login
+          echo "🔍 Testing registry login..."
+          echo "${{ secrets.DO_REGISTRY_PASSWORD }}" | docker login registry.digitalocean.com -u "${{ secrets.DO_REGISTRY_USERNAME }}" --password-stdin
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Registry authentication successful!"
+          else
+            echo "❌ Registry authentication failed"
+            exit 1
+          fi
+
+      - name: Test Docker Build
+        run: |
+          echo "🔨 Testing Docker build for workflow-automation service..."
+
+          # Build a test image
+          cd services/workflow-automation
+          docker build -t registry.digitalocean.com/qylon/workflow-automation:test .
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Docker build successful!"
+          else
+            echo "❌ Docker build failed"
+            exit 1
+          fi
+
+      - name: Test Docker Push
+        run: |
+          echo "📤 Testing Docker push to registry..."
+
+          # Push the test image
+          docker push registry.digitalocean.com/qylon/workflow-automation:test
+
+          if [ $? -eq 0 ]; then
+            echo "✅ Docker push successful!"
+            echo "🎯 Registry authentication is working correctly!"
+          else
+            echo "❌ Docker push failed"
+            exit 1
+          fi
+
+      - name: Deploy to DigitalOcean
+        run: |
+          echo "🚀 Deploying to DigitalOcean App Platform..."
+
+          # Check if we have an app
+          APPS=$(doctl apps list --format ID,Name --no-header 2>/dev/null)
+          if [ -n "$APPS" ]; then
+            APP_ID=$(echo "$APPS" | head -n1 | awk '{print $1}')
+            echo "📱 Found app ID: $APP_ID"
+            
+            # Create deployment
+            doctl apps create-deployment "$APP_ID" --force-rebuild
+            echo "✅ Deployment triggered successfully!"
+            
+            # Get app info
+            echo "📊 Getting app information..."
+            doctl apps get "$APP_ID" --format "Name,DefaultIngress"
+            
+          else
+            echo "❌ No DigitalOcean app found"
+            echo "Please create an app first using the manual setup guide"
+          fi
+
+      - name: Show Results
+        run: |
+          echo "🎯 Deployment test completed!"
+          echo "🔗 Monitor deployment at:"
+          echo "   DigitalOcean: https://cloud.digitalocean.com/apps"
+          echo "   GitHub Actions: https://github.com/KD-Squares/qylon/actions"

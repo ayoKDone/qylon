@@ -1,0 +1,76 @@
+name: qylon-app
+region: fra
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+features:
+  - buildpack-stack=ubuntu-22
+ingress:
+  rules:
+    - match:
+        path:
+          prefix: /api
+      component:
+        name: api-gateway
+    - match:
+        path:
+          prefix: /
+      component:
+        name: frontend
+static_sites:
+  - name: frontend
+    source_dir: /
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+      deploy_on_push: true
+    build_command: cd frontend && npm ci && npm run build
+    output_dir: frontend/dist
+    catchall_document: index.html
+    index_document: index.html
+    envs:
+      - key: VITE_SUPABASE_URL
+        value: 'https://netabvqkeinfjbwqjnpm.supabase.co'
+      - key: VITE_SUPABASE_ANON_KEY
+        value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldGFidnFrZWluZmpid3FqbnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMzQ1MzYsImV4cCI6MjA3NTcxMDUzNn0.DIvahxO7eMcCFT7Lf0PzCL5LuOmZJNl7jE1iELWNCHA'
+      - key: VITE_API_URL
+        value: https://qylon-app-f7utg.ondigitalocean.app/api
+services:
+  - name: api-gateway
+    source_dir: /
+    github:
+      repo: KD-Squares/qylon
+      branch: main
+      deploy_on_push: true
+    build_command: cd services/api-gateway && npm ci && npm run build
+    run_command: cd services/api-gateway && npm start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    http_port: 8080
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: '8080'
+      - key: JWT_SECRET
+        value: 'ZoFt0Mg+6YJGwdyH9OawUGrS5QEx/JewOvyhoj2E/3Q='
+      - key: SUPABASE_URL
+        value: 'https://netabvqkeinfjbwqjnpm.supabase.co'
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldGFidnFrZWluZmpid3FqbnBtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDEzNDUzNiwiZXhwIjoyMDc1NzEwNTM2fQ.ilDJg6xBLbVDIc9YiRlm2wZuoKdNXI82OKH3LHsLq1Y'
+      - key: SUPABASE_ANON_KEY
+        value: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldGFidnFrZWluZmpid3FqbnBtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMzQ1MzYsImV4cCI6MjA3NTcxMDUzNn0.DIvahxO7eMcCFT7Lf0PzCL5LuOmZJNl7jE1iELWNCHA'
+      - key: OPENAI_API_KEY
+        value: '${OPENAI_API_KEY}'
+      - key: RECALL_AI_API_KEY
+        value: '${RECALL_AI_API_KEY}'
+      - key: CORS_ORIGIN
+        value: https://qylon-app-f7utg.ondigitalocean.app
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 30
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3

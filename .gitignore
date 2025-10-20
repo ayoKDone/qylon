@@ -217,6 +217,7 @@ scripts/
 !scripts/validate-branch.sh
 !scripts/setup-git-hooks.sh
 !scripts/setup.sh
+!scripts/local-ci.sh
 !tests/utils/test-helpers.ts
 
 # Logs and temporary files
@@ -366,3 +367,4 @@ backups/
 temp/
 temporary/
 scratch/
+frontend/cypress/videos/*.mp4

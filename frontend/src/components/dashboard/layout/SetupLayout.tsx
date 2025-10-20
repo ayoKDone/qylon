@@ -1,26 +1,37 @@
 // src/components/dashboard/layout/DashboardLayout.tsx
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { onboardingService } from '../../../services/onboardingService';
 
 export default function SetUpLayout() {
+  const navigate = useNavigate();
+
+  const _handleSkipOnboarding = async () => {
+    try {
+      // Mark onboarding as complete to prevent future redirects
+      await onboardingService.updateOnboardingProgress('complete', {
+        completed_at: new Date().toISOString(),
+        preferences: {
+          notifications: true,
+          email_updates: true,
+          data_sharing: false,
+        },
+      });
+
+      // Navigate to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error skipping onboarding:', error);
+      // Still navigate to dashboard even if there's an error
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <>
-      <nav className='xui-py-[20px] xui xui-container xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
-        <img
-          src='/static/images/logo-full.png'
-          alt='Qylon Logo'
-          className='xui-img-100'
-          width={118}
-          height={45}
-        />
-        <p className='text-sm text-gray-500'>
-          <a href='/signup' className='text-purple-600 font-medium xui-text-dc-underline'>
-            Skip this for later
-          </a>
-        </p>
-      </nav>
-      <hr />
-      <section className='xui-container xui-py-1 xui-md-py-1'>
-        <Outlet />
+      <section className='xui-containermin-h-[100dvh] min-h-[100vh] xui-h-fluid-100 xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-py-1 xui-md-py-2'>
+        <div className='xui-max-w-600 xui-w-fluid-100 xui-mx-auto'>
+          <Outlet />
+        </div>
       </section>
     </>
   );

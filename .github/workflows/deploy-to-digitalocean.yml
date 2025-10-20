@@ -1,0 +1,80 @@
+name: Deploy to DigitalOcean App Platform
+
+on:
+  push:
+    branches: [main]
+  # Removed pull_request trigger - only deploy when pushing to main or merging to main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to DigitalOcean App Platform
+        uses: digitalocean/app_action/deploy@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          app_spec_path: .do/app-spec-minimal.json
+          deploy_pr_preview: ${{ github.event_name == 'pull_request' }}
+
+      - name: Comment on PR with deployment URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { DEPLOY_LOGS, BUILD_LOGS } = process.env;
+            const appUrl = '${{ fromJson(steps.deploy.outputs.app).live_url }}';
+
+            if (appUrl && appUrl !== 'null') {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🚀 **Preview Deployment Successful!**
+
+                **App URL:** ${appUrl}
+
+                **Deployment Details:**
+                - Branch: \`${context.ref.replace('refs/heads/', '')}\`
+                - Commit: \`${context.sha.substring(0, 7)}\`
+                - Triggered by: @${context.actor}
+
+                This preview will be automatically deleted when the PR is closed or merged.`
+              });
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `❌ **Deployment Failed**
+
+                The deployment to DigitalOcean App Platform failed. Please check the logs for more details.
+
+                **Build Logs:**
+                \`\`\`
+                ${BUILD_LOGS || 'No build logs available'}
+                \`\`\`
+
+                **Deploy Logs:**
+                \`\`\`
+                ${DEPLOY_LOGS || 'No deploy logs available'}
+                \`\`\``
+              });
+            }
+
+  delete-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete preview app
+        uses: digitalocean/app_action/delete@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          from_pr_preview: "true"
+          ignore_not_found: "true"

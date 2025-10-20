@@ -1,7 +1,7 @@
-import { logSecurity, logger } from '@/utils/logger';
 import { createClient } from '@supabase/supabase-js';
 import { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import { logSecurity, logger } from '../utils/logger';
 
 // Extend Express Request interface to include rateLimit property
 declare module 'express-serve-static-core' {
@@ -104,12 +104,11 @@ export const rateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -120,12 +119,11 @@ export const authRateLimiter = rateLimit({
   keyGenerator,
   skip: (req: Request) => req.path === '/health',
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Too many authentication attempts. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -136,12 +134,11 @@ export const apiRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'API rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -152,12 +149,11 @@ export const readOnlyRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Read rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -168,12 +164,11 @@ export const writeRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Write rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -185,12 +180,11 @@ export const createCustomRateLimiter = (windowMs: number, max: number) => {
     keyGenerator,
     skip,
     handler,
-    standardHeaders: true,
-    legacyHeaders: false,
     message: {
       error: 'Too Many Requests',
       message: 'Rate limit exceeded. Please try again later.',
       timestamp: new Date().toISOString(),
+      status: 429,
     },
   });
 };
@@ -202,12 +196,11 @@ export const uploadRateLimiter = rateLimit({
   keyGenerator,
   skip,
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Upload rate limit exceeded. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });
 
@@ -218,11 +211,10 @@ export const passwordResetRateLimiter = rateLimit({
   keyGenerator,
   skip: (req: Request) => req.path === '/health',
   handler,
-  standardHeaders: true,
-  legacyHeaders: false,
   message: {
     error: 'Too Many Requests',
     message: 'Too many password reset attempts. Please try again later.',
     timestamp: new Date().toISOString(),
+    status: 429,
   },
 });

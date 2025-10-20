@@ -5,19 +5,19 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { authMiddleware } from '@/middleware/auth';
-import { errorHandler } from '@/middleware/errorHandler';
-import { rateLimiter } from '@/middleware/rateLimiter';
-import { requestLogger } from '@/middleware/requestLogger';
-import { healthCheck } from '@/routes/health';
-import { proxyRoutes } from '@/routes/proxy';
-import { logger } from '@/utils/logger';
+import { authMiddleware } from './middleware/auth';
+import { errorHandler } from './middleware/errorHandler';
+import { rateLimiter } from './middleware/rateLimiter';
+import { requestLogger } from './middleware/requestLogger';
+import { healthCheck } from './routes/health';
+import { proxyRoutes } from './routes/proxy';
+import { logger } from './utils/logger';
 
 // Load environment variables
 dotenv.config();
 
 const app: express.Application = express();
-const PORT = process.env.API_GATEWAY_PORT || 3000;
+const PORT = process.env.PORT || process.env.API_GATEWAY_PORT || 8080;
 
 // Security middleware
 app.use(
@@ -66,8 +66,9 @@ app.use(rateLimiter);
 // Request logging middleware
 app.use(requestLogger);
 
-// Health check endpoint
+// Health check endpoints - mounted at both /health and /api/health
 app.use('/health', healthCheck);
+app.use('/api/health', healthCheck);
 
 // Authentication middleware for protected routes
 app.use('/api/v1', authMiddleware as any);
@@ -75,11 +76,21 @@ app.use('/api/v1', authMiddleware as any);
 // API routes with proxy to microservices
 app.use('/api/v1', proxyRoutes);
 
-// 404 handler
-app.use('*', (req, res) => {
+// API routes only - frontend will be served separately
+// Only handle requests that start with /api/v1
+app.get('/api/v1/*', (req, res) => {
   res.status(404).json({
     error: 'Not Found',
-    message: `Route ${req.originalUrl} not found`,
+    message: `API route ${req.originalUrl} not found. This is the API Gateway.`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Catch-all for any other routes (should not reach here if routing is correct)
+app.get('*', (req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.originalUrl} not found. This is the API Gateway - please check the frontend static site.`,
     timestamp: new Date().toISOString(),
   });
 });
@@ -98,11 +109,13 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`🚀 API Gateway running on port ${PORT}`);
-  logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`🔒 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`);
-});
+// Start server only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    logger.info(`🚀 API Gateway running on port ${PORT}`);
+    logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`🔒 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:3000'}`);
+  });
+}
 
 export default app;

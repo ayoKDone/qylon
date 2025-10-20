@@ -1,81 +1,42 @@
-// src/components/StatCard.tsx
-import { LucideIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { TrendingUp } from 'lucide-react';
 
 interface StatCardProps {
-  icon: LucideIcon;
+  icon: React.ElementType;
   iconColor: string;
+  bgColor: string;
   value: string | number;
   label: string;
   subtitle: string;
   subtitleColor: string;
-  trendIcon?: boolean;
-  isAnimating?: boolean;
+  showTrend?: boolean;
 }
 
 export default function StatCard({
   icon: Icon,
   iconColor,
+  bgColor,
   value,
   label,
   subtitle,
   subtitleColor,
-  trendIcon = false,
-  isAnimating = false,
+  showTrend = false,
 }: StatCardProps) {
-  const [displayValue, setDisplayValue] = useState(value);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  // Animate value changes
-  useEffect(() => {
-    if (displayValue !== value) {
-      setIsUpdating(true);
-      setDisplayValue(value);
-
-      const timer = setTimeout(() => {
-        setIsUpdating(false);
-      }, 500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [value, displayValue]);
-
   return (
-    <div
-      className={`bg-white rounded-lg p-6 border border-gray-200 hover:shadow-md transition-all duration-300 ${
-        isUpdating ? 'ring-2 ring-blue-400 ' : ''
-      }`}
-    >
-      <div className='xui-d-flex xui-flex-ai-flex-end xui-flex-jc-space-between mb-4'>
-        <div className={`${isAnimating ? 'animate-pulse' : ''}`}>
-          <Icon className={`w-8 h-8 ${iconColor}`} />
-        </div>
-        {trendIcon && (
-          <svg
-            className='w-5 h-5 text-green-500 animate-bounce'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke='currentColor'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth={2}
-              d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
-            />
-          </svg>
-        )}
+    <div className={`${bgColor} rounded-2xl p-6 min-w-[240px] relative`}>
+      {/* Icon in top right */}
+      <div className='flex justify-between items-start mb-8'>
+        <h3 className='text-sm font-medium text-gray-600'>{label}</h3>
+        <Icon className={`w-5 h-5 ${iconColor}`} strokeWidth={2} />
       </div>
 
-      <div
-        className={`text-4xl font-bold text-gray-800 mb-1 transition-all duration-300 ${
-          isUpdating ? 'scale-110' : ''
-        }`}
-      >
-        {displayValue}
+      {/* Value */}
+      <div className='text-4xl font-semibold text-gray-900 mb-2'>{value}</div>
+
+      {/* Subtitle with trend */}
+      <div className='flex items-center gap-1.5'>
+        {showTrend && <TrendingUp className={`w-3.5 h-3.5 ${subtitleColor}`} strokeWidth={2} />}
+        <span className={`text-xs font-medium ${subtitleColor}`}>{subtitle}</span>
       </div>
-      <div className='text-sm text-gray-600 mb-2'>{label}</div>
-      <div className={`text-xs font-medium ${subtitleColor}`}>{subtitle}</div>
     </div>
   );
 }

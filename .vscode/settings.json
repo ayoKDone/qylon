@@ -82,11 +82,5 @@
   },
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": false,
-  "typescript.updateImportsOnFileMove.enabled": "always",
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#7c3aed",
-    "activityBar.foreground": "#ffffff",
-    "titleBar.activeBackground": "#7c3aed",
-    "titleBar.activeForeground": "#ffffff"
-  }
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }

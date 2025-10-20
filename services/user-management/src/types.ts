@@ -1,6 +1,7 @@
+import { Session, User } from '@supabase/supabase-js';
 import { Request } from 'express';
 
-export interface User {
+export interface Users {
   id: string;
   email: string;
 }
@@ -15,17 +16,29 @@ export interface JwtPayload {
 export interface LoginResponse {
   message: string;
   token: string;
-  user: User | null;
+  user: Users | null;
 }
 
 export interface RegisterResponse {
   message: string;
-  user: User | null;
+  user: Users | null;
+  session: Session | null;
 }
 export interface AuthRequest extends Request {
   user?: {
     id?: string;
     email?: string;
     [key: string]: any;
+  };
+}
+
+export interface AuthenticatedRequest extends Request {
+  userId?: string;
+  user: User;
+  dbUser: {
+    id: string;
+    email: string;
+    full_name: string;
+    phone_number?: string;
   };
 }

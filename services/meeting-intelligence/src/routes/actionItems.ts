@@ -1,11 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 import { Request, Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errorHandler';
+import { ActionItemEventService } from '../services/ActionItemEventService';
 import { ApiResponse, PaginatedResponse } from '../types';
 import { logger } from '../utils/logger';
 
 const router: Router = Router();
 const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+const actionItemEventService = new ActionItemEventService();
 
 /**
  * Get action items for a meeting
@@ -153,32 +155,41 @@ router.patch(
       if (assignee !== undefined) updateData.assignee = assignee;
       if (due_date) updateData.due_date = new Date(due_date).toISOString();
 
-      // Update action item
-      const { data: updatedActionItem, error } = await supabase
-        .from('action_items')
-        .update(updateData)
-        .eq('id', actionItemId)
-        .select()
+      // Get client ID for event service
+      const { data: clientData } = await supabase
+        .from('clients')
+        .select('id')
+        .eq('user_id', userId)
         .single();
 
-      if (error) {
-        logger.error('Failed to update action item', {
-          actionItemId,
-          userId,
-          error: error.message,
-        });
-        res.status(500).json({
+      const clientId = clientData?.id;
+
+      if (!clientId) {
+        res.status(400).json({
           success: false,
-          error: 'DatabaseError',
-          message: 'Failed to update action item',
+          error: 'BadRequest',
+          message: 'Client not found for user',
           timestamp: new Date().toISOString(),
         });
         return;
       }
 
-      logger.info('Action item updated successfully', {
+      // Update action item using event service
+      const updatedActionItem = await actionItemEventService.updateActionItem(
+        actionItemId,
+        {
+          status,
+          assignee,
+          due_date: due_date ? new Date(due_date) : undefined,
+        },
+        userId,
+        clientId,
+      );
+
+      logger.info('Action item updated successfully with event trigger', {
         actionItemId,
         userId,
+        clientId,
       });
 
       const response: ApiResponse<any> = {

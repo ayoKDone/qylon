@@ -55,9 +55,7 @@ app.add_middleware(
 
 class ContentRequest(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    content_type: str = Field(
-        ..., pattern="^(article|blog|social|email|report|summary)$"
-    )
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
     topic: str = Field(..., min_length=1, max_length=100)
     target_audience: str = Field(..., min_length=1, max_length=100)
     tone: str = Field(..., pattern="^(professional|casual|friendly|formal|creative)$")
@@ -90,17 +88,13 @@ class ContentResponse(BaseModel):
 class ContentUpdateRequest(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     content: Optional[str] = None
-    status: Optional[str] = Field(
-        None, pattern="^(draft|review|approved|published|archived)$"
-    )
+    status: Optional[str] = Field(None, pattern="^(draft|review|approved|published|archived)$")
     metadata: Optional[Dict[str, Any]] = None
 
 
 class TemplateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    content_type: str = Field(
-        ..., pattern="^(article|blog|social|email|report|summary)$"
-    )
+    content_type: str = Field(..., pattern="^(article|blog|social|email|report|summary)$")
     template_content: str = Field(..., min_length=1)
     variables: List[str] = Field(default=[])
     description: Optional[str] = None
@@ -153,9 +147,7 @@ async def health_check():
 
 
 # Content creation endpoints
-@app.post(
-    "/content", response_model=ContentResponse, status_code=status.HTTP_201_CREATED
-)
+@app.post("/content", response_model=ContentResponse, status_code=status.HTTP_201_CREATED)
 async def create_content(
     content_request: ContentRequest,
     current_user: dict = Depends(get_current_user),
@@ -201,7 +193,10 @@ async def create_content(
 
 
 @app.get("/content/{content_id}", response_model=ContentResponse)
-async def get_content(content_id: str, current_user: dict = Depends(get_current_user)):
+async def get_content(
+    content_id: str,
+    current_user: dict = Depends(get_current_user),
+):
     """Get content by ID"""
     try:
         # Retrieve content from database
@@ -234,9 +229,7 @@ async def update_content(
     """Update existing content"""
     try:
         # Update content in database
-        updated_content = await update_content_in_db(
-            content_id, update_request, current_user
-        )
+        updated_content = await update_content_in_db(content_id, update_request, current_user)
 
         if not updated_content:
             raise HTTPException(
@@ -283,9 +276,7 @@ async def list_content(
 
 
 # Template endpoints
-@app.post(
-    "/templates", response_model=TemplateResponse, status_code=status.HTTP_201_CREATED
-)
+@app.post("/templates", response_model=TemplateResponse, status_code=status.HTTP_201_CREATED)
 async def create_template(
     template_request: TemplateRequest,
     current_user: dict = Depends(get_current_user),
@@ -343,9 +334,7 @@ async def list_templates(
 
 
 # AI Content Generation
-async def generate_ai_content(
-    content_request: ContentRequest, current_user: dict
-) -> str:
+async def generate_ai_content(content_request: ContentRequest, current_user: dict) -> str:
     """Generate content using AI"""
     try:
         # This would integrate with OpenAI, Claude, or other AI services
@@ -439,22 +428,15 @@ async def generate_ai_content(
 
 
 # Database operations (mock implementations)
-async def save_content(
-    content_request: ContentRequest, content: str, current_user: dict
-) -> str:
+async def save_content(content_request: ContentRequest, content: str, current_user: dict) -> str:
     """Save content to database"""
     # This would integrate with Supabase
-    content_id = (
-        f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_"
-        f"{current_user['id']}"
-    )
+    content_id = f"content_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_" f"{current_user['id']}"
     logger.info(f"Content saved to database: {content_id}")
     return content_id
 
 
-async def retrieve_content(
-    content_id: str, current_user: dict
-) -> Optional[ContentResponse]:
+async def retrieve_content(content_id: str, current_user: dict) -> Optional[ContentResponse]:
     """Retrieve content from database"""
     # This would integrate with Supabase
     # For now, return None to simulate not found
@@ -486,10 +468,7 @@ async def list_content_from_db(
 async def save_template(template_request: TemplateRequest, current_user: dict) -> str:
     """Save template to database"""
     # This would integrate with Supabase
-    template_id = (
-        f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_"
-        f"{current_user['id']}"
-    )
+    template_id = f"template_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_" f"{current_user['id']}"
     logger.info(f"Template saved to database: {template_id}")
     return template_id
 

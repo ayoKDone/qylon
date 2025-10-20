@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
-import type { SignUpFormInputs } from '../../types/auth';
-import { Divider } from '../UI/Divider';
-import { SocialLogin } from '../UI/SocialLogin';
+import type { SignUpFormInputs, SignUpResponse } from '../../types/auth';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -22,87 +19,118 @@ export default function Signup() {
     setFormError(null);
 
     try {
-      const response = await authService.signUp({
-        email: data.email,
+      const response: SignUpResponse = await authService.signUp({
+        email: data.email.trim(),
         password: data.password,
       });
 
+      // Handle backend or Supabase error
       if (response.error) {
         setFormError(response.error);
         return;
       }
 
-      // If session is null, user needs to confirm email
+      // Handle unverified email (no session)
       if (!response.session) {
-        navigate('/verify-email', { state: { email: data.email } });
+        navigate('/verify-email', {
+          state: { email: data.email },
+        });
         return;
       }
-      navigate('/dashboard');
+
+      // Redirect to onboarding after successful signup
+      navigate('/setup');
     } catch (err: unknown) {
-      setFormError('An unexpected error occurred. Please try again.');
-      console.error(err);
+      console.error('Unexpected signup error:', err);
+
+      // Defensive error handling for network/runtime issues
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.';
+      setFormError(errorMessage);
     }
   };
 
   return (
     <>
-      <section className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-half xui-flex-ai-center xui-w-fluid-100 xui-min-h-[100dvh] xui-min-h-[100vh] xui-h-fluid-100 xui-p-[16px]'>
-        <div className='xui-h-fluid-100 bg-gradient-to-r from-purple-500 to-indigo-500 xui-bdr-rad-[16px]'></div>
-        <div className='xui-py-2 xui-md-py-4 xui-px-2 xui-md-px-4'>
-          <h1 className='xui-font-sz-[28px] xui-md-font-sz-[28px]'>Sign Up</h1>
+      <section className='xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-half xui-flex-ai-center xui-w-fluid-100 h-[100dvh] h-[100vh] xui-h-fluid-100 p-[16px]'>
+        <div
+          style={{
+            backgroundImage: 'url("/static/images/signup-visual.png")',
+          }}
+          className='xui-d-none xui-md-d-block qylon-auth-visuals xui-bg-position-center-center xui-bg-size-cover xui-h-fluid-100 xui-bdr-rad-half'
+        ></div>
+        <div className='xui-py-2 xui-md-py-4 xui-px-2 xui-md-px-4 xui-max-w-600 xui-w-fluid-100 xui-mx-auto lg:min-h-100'>
+          {/* Back to Home Button */}
+          <div className='xui-mb-2'>
+            <a
+              href='/'
+              className='xui-d-inline-flex xui-flex-ai-center xui-grid-gap-half text-gray-600 hover:text-gray-800 transition-colors duration-200'
+            >
+              <img
+                src='/static/images/logo-full.png'
+                alt='Qylon Logo'
+                width={118}
+                height={45}
+                className='xui-img-100 xui-h-auto'
+              />
+            </a>
+          </div>
+          <h1 className='xui-font-w-600 text-[28px]'>Sign Up</h1>
           <p className='xui-opacity-7 xui-font-sz-[14px]'>
             Get started with Qylon and let's set your account.
           </p>
-          <form
-            className='xui-form xui-max-w-500 xui-mx-auto xui-mt-2'
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <form className='xui-form xui-mt-2' onSubmit={handleSubmit(onSubmit)}>
             {/* Email */}
             <div className='xui-form-box' xui-error={errors.email ? 'true' : 'false'}>
-              <label>Work Email</label>
-              <input
-                {...register('email', {
-                  required: 'Email is required',
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: 'Please enter a valid email',
-                  },
-                })}
-                type='email'
-                placeholder='olivia@untitledui.com'
-                id='email'
-              />
+              {/* <label>Work Email</label> */}
+              <div className='input-holder' xui-border={'false'}>
+                <div className='left'>
+                  <img
+                    src='/static/images/icons/envelope.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
+                </div>
+                <input
+                  {...register('email')}
+                  type='email'
+                  placeholder='Enter your email'
+                  id='email'
+                />
+              </div>
               {errors.email && <span className='message'>{errors.email.message}</span>}
             </div>
-
             {/* Password */}
             <div className='xui-form-box' xui-error={errors.password ? 'true' : 'false'}>
-              <label>Password</label>
-              <div className='xui-pos-relative'>
-                <input
-                  {...register('password', {
-                    required: 'Password is required',
-                    minLength: {
-                      value: 6,
-                      message: 'Password must be at least 6 characters',
-                    },
-                  })}
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder='Create a strong password'
-                  className='pr-10 w-full'
-                  id='password'
-                />
-                <button
-                  type='button'
-                  onClick={() => setShowPassword(!showPassword)}
-                  className='xui-pos-absolute inset-y-0 right-0 xui-d-flex xui-flex-ai-center px-2 text-gray-600'
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className='h-5 w-5' />
-                  ) : (
-                    <FaEye className='h-5 w-5' />
-                  )}
-                </button>
+              {/* <label>Password</label> */}
+              <div className='input-holder' xui-border={'false'}>
+                <div className='left'>
+                  <img
+                    src='/static/images/icons/key.png'
+                    alt='Key Icon'
+                    width={16}
+                    height={16}
+                    className='w-[16px] xui-h-auto'
+                  />
+                </div>
+                <div className='relative xui-w-fluid-100'>
+                  <input
+                    {...register('password')}
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder='Enter a strong password'
+                    className='pr-10 w-full'
+                    id='password'
+                  />
+                  <button
+                    type='button'
+                    onClick={() => setShowPassword(!showPassword)}
+                    className='xui-pos-absolute inset-y-0 right-0 xui-d-flex xui-flex-ai-center px-2 text-gray-600'
+                  >
+                    {showPassword ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                </div>
               </div>
               {errors.password && <span className='message'>{errors.password.message}</span>}
             </div>
@@ -115,11 +143,11 @@ export default function Signup() {
               <input type='checkbox' required />
               <p>
                 I agree to the{' '}
-                <a href='#' className='text-purple-600 underline'>
+                <a href='#' className='text-[#266987] underline'>
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href='#' className='text-purple-600 underline'>
+                <a href='#' className='text-[#266987] underline'>
                   Privacy Policy
                 </a>
               </p>
@@ -128,18 +156,18 @@ export default function Signup() {
             {/* Submit */}
             <button
               type='submit'
-              className='w-full outline:none xui-mt-half py-2.5 xui-bdr-rad-half bg-gradient-to-r from-purple-500 to-indigo-500 text-white'
+              className='w-full outline:none xui-mt-half py-2.5 xui-bdr-rad-half bg-[#266987] text-white'
               disabled={isSubmitting}
             >
-              {isSubmitting ? <FaSpinner className='animate-spin h-6 w-6' /> : 'Create Account'}
+              {isSubmitting ? '⏳' : 'Sign Up'}
             </button>
           </form>
-          <Divider label='or' />
-          <SocialLogin />
-          <p className='text-sm text-gray-500 xui-my-2'>
+          {/* <Divider label='or' />
+          <SocialLogin /> */}
+          <p className='text-[15px] text-gray-500 xui-my-2'>
             Already have an account?{' '}
-            <a href='/login' className='text-purple-600 font-medium'>
-              <span className='xui-text-dc-underline'>Sign in</span>
+            <a href='/login' className='text-[#266987] font-medium'>
+              <span className='xui-text-dc-underline'>Log in</span>
             </a>
           </p>
         </div>

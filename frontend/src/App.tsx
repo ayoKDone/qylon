@@ -21,16 +21,14 @@ import ROI from './components/ROI';
 // New placeholder imports (to be implemented)
 import ForgotPassword from '@/components/auth/ForgotPassword';
 import Login from '@/components/auth/Login';
+import ProfileSetup from '@/components/auth/ProfileSetup';
 import ResetPassword from '@/components/auth/ResetPassword';
 import Signup from '@/components/auth/Signup';
+import ProtectedRoute from '@/components/layouts/ProtectedRoute';
 import Verification from './components/auth/Verification';
 import Stylexui from './utils/Stylexui';
-
 // Dashboard imports
 import DashboardPage from '@/pages/Dashboard';
-
-// Setup imports
-import Setup from './pages/Setup';
 
 const AppContent: React.FC = () => {
   const { isDark } = useTheme();
@@ -50,7 +48,14 @@ const AppContent: React.FC = () => {
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/verify' element={<Verification />} />
         <Route path='/reset-password' element={<ResetPassword />} />
-
+        <Route
+          path='/setup'
+          element={
+            <ProtectedRoute>
+              <ProfileSetup />
+            </ProtectedRoute>
+          }
+        />
         <Route path='/get-started' element={<GetStarted />} />
 
         {/* Landing page */}
@@ -79,10 +84,14 @@ const AppContent: React.FC = () => {
         <Route path='*' element={<Navigate to='/' replace />} />
 
         {/* Dashboard routes */}
-        <Route path='/dashboard/*' element={<DashboardPage />} />
-
-        {/* Setup routes */}
-        <Route path='/setup/*' element={<Setup />} />
+        <Route
+          path='/dashboard'
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

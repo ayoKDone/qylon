@@ -8,7 +8,7 @@ interface StatsHeaderProps {
 
 export default function StatsHeader({ title, rightContent, children }: StatsHeaderProps) {
   return (
-    <div className='xui-bg-white xui-bdr-rad-1-half border border-gray-200 p-6'>
+    <div className='xui-bg-white xui-bdr-rad-1-half border border-gray-200 p-5'>
       {(title || rightContent) && (
         <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between'>
           {title && <h2 className='text-lg xui-font-w-600 text-gray-900'>{title}</h2>}
