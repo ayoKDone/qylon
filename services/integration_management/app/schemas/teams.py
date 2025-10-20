@@ -1,11 +1,12 @@
-from sqlmodel import SQLModel, Field
-from datetime import datetime
-import uuid
+from pydantic import BaseModel, EmailStr
 
-class TeamsIntegration(SQLModel, table=True):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
-    user_id: str
-    access_token: str
-    refresh_token: str
-    expires_at: datetime
-    tenant_id: str
+class TeamsAuthURL(BaseModel):
+    auth_url: str
+
+
+class TeamsUser(BaseModel):
+    id: str
+    email: EmailStr
+
+    class Config:
+        orm_mode = True

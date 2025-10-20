@@ -28,6 +28,11 @@ async def create_tables_async(drop_existing: bool = False):
     from app.models.google_integrations import GoogleIntegration
     from app.models.team_model import TeamsIntegration
     from app.models.google_meet import GoogleMeetingTranscript
+    from app.models.clickup_model import ClickUpIntegration
+    from app.models.asana_model import AsanaIntegration
+    from app.models.monday_model import MondayIntegration
+
+
 
     async with engine.begin() as conn:
         if drop_existing:

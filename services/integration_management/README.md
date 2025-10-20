@@ -158,3 +158,4 @@ The project includes placeholders for unit and integration tests. To run them, y
 ```bash
 pytest
 ```
+psql -U myapp_user -d myapp_db -h 127.0.0.1 -p 5432

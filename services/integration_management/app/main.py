@@ -5,6 +5,7 @@ from app.routes.google_routes import router as google_router
 from app.routes.teams_routes import router as teams_router
 from app.utils.logger import setup_logging
 from app.utils.error_handler import register_handlers
+from app.routes.clickup_routes import router as clickup_router
 #from app.db import create_tables
 
 # Setup logging
@@ -23,6 +24,7 @@ async def startup():
 app.include_router(zoom_router)
 app.include_router(google_router)
 app.include_router(teams_router)
+app.include_router(clickup_router)
 
 # Health check
 @app.get("/health")
